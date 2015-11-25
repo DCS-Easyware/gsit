@@ -6851,3 +6851,66 @@ CREATE TABLE `glpi_wifinetworks` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+### Dump table glpi_entities_itilcategories
+
+DROP TABLE IF EXISTS `glpi_entities_itilcategories`;
+CREATE TABLE `glpi_entities_itilcategories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itilcategories_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilcategories_id` (`itilcategories_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  
+  
+  
+### Dump table glpi_groups_itilcategories
+  
+DROP TABLE IF EXISTS `glpi_groups_itilcategories`;
+CREATE TABLE `glpi_groups_itilcategories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itilcategories_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '-1',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilcategories_id` (`itilcategories_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_itilcategories_profiles
+
+DROP TABLE IF EXISTS `glpi_itilcategories_profiles`;
+CREATE TABLE `glpi_itilcategories_profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itilcategories_id` int(11) NOT NULL DEFAULT '0',
+  `profiles_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '-1',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilcategories_id` (`itilcategories_id`),
+  KEY `profiles_id` (`profiles_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_itilcategories_users
+
+DROP TABLE IF EXISTS `glpi_itilcategories_users`;
+CREATE TABLE `glpi_itilcategories_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itilcategories_id` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilcategories_id` (`itilcategories_id`),
+  KEY `users_id` (`users_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+

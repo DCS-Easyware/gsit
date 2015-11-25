@@ -38,5 +38,44 @@
 include ('../inc/includes.php');
 
 $dropdown = new ITILCategory();
+
+if (isset($_POST["addvisibility"])) {
+   if (isset($_POST["_type"]) && !empty($_POST["_type"])
+       && isset($_POST["itilcategories_id"]) && $_POST["itilcategories_id"]) {
+      $item = NULL;
+      switch ($_POST["_type"]) {
+         case 'User' :
+            if (isset($_POST['users_id']) && $_POST['users_id']) {
+               $item = new ITILCategory_User();
+            }
+            break;
+
+         case 'Group' :
+            if (isset($_POST['groups_id']) && $_POST['groups_id']) {
+               $item = new Group_ITILCategory();
+            }
+            break;
+
+         case 'Profile' :
+            if (isset($_POST['profiles_id']) && $_POST['profiles_id']) {
+               $item = new ITILCategory_Profile();
+            }
+            break;
+
+         case 'Entity' :
+            $item = new Entity_ITILCategory();
+            break;
+      }
+      if (!is_null($item)) {
+         $item->add($_POST);
+         Event::log($_POST["itilcategories_id"], "itilcategorie", 4, "tools",
+                    //TRANS: %s is the user login
+                    sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
+      }
+   }
+   Html::back();
+}
+
+
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
 ?>

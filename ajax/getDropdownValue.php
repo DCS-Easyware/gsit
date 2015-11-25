@@ -238,6 +238,36 @@ if ($item instanceof CommonTreeDropdown) {
                            AND `commentt`.`field` = 'comment')";
    }
 
+   if ($_GET['itemtype'] == 'ITILCategory') {
+      $addjoin = " LEFT JOIN `glpi_groups_itilcategories`
+                        ON (`glpi_groups_itilcategories`.`itilcategories_id` = `$table`.`id`)
+                   LEFT JOIN `glpi_entities_itilcategories`
+                        ON (`glpi_entities_itilcategories`.`itilcategories_id` = `$table`.`id`)
+                   LEFT JOIN `glpi_itilcategories_users`
+                        ON (`glpi_itilcategories_users`.`itilcategories_id` = `$table`.`id`)
+                   LEFT JOIN `glpi_itilcategories_profiles`
+                        ON (`glpi_itilcategories_profiles`.`itilcategories_id` = `$table`.`id`) ";
+
+      $where .= " AND (";
+      // groups
+      if (!empty($_SESSION['glpigroups'])) {
+         $where .= " `glpi_groups_itilcategories`.`groups_id` IN ('".implode("', '", $_SESSION['glpigroups'])."') OR ";
+      }
+      // entity
+      $where .= " (`glpi_entities_itilcategories`.`entities_id`='".$_GET['entity_restrict']."') OR "
+              . "(`glpi_entities_itilcategories`.`entities_id` IN "
+              . "('".implode("','", getAncestorsOf('glpi_entities', $_GET['entity_restrict']))."') "
+              . "AND `glpi_entities_itilcategories`.`is_recursive`= '1') OR ";
+
+      // user
+      $where .= " `glpi_itilcategories_users`.`users_id`='".$_SESSION['glpiID']."' OR ";
+      // profile
+      $where .= " `glpi_itilcategories_profiles`.`profiles_id`='".$_SESSION['glpiactiveprofile']['id']."' ";
+
+      $where .= " )";
+      $where .= " GROUP BY `glpi_itilcategories`.`id`";
+   }
+
    $query = "SELECT `$table`.* $addselect
              FROM `$table`
              $addjoin

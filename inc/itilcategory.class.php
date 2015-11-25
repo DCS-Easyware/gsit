@@ -48,6 +48,12 @@ class ITILCategory extends CommonTreeDropdown {
    public $dohistory       = true;
    var $can_be_translated  = true;
 
+   // For visibility checks
+   protected $users     = array();
+   protected $groups    = array();
+   protected $profiles  = array();
+   protected $entities  = array();
+
    static $rightname       = 'itilcategory';
 
 
@@ -158,7 +164,7 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[85]['field']          = 'is_change';
       $tab[85]['name']           = __('Visible for a change');
       $tab[85]['datatype']       = 'bool';
-      
+
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'is_helpdeskvisible';
       $tab[3]['name']            = __('Visible in the simplified interface');
@@ -212,6 +218,39 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 
+   function post_getFromDB() {
+      // Users
+      $this->users    = ITILCategory_User::getUsers($this->fields['id']);
+
+      // Entities
+      $this->entities = Entity_ITILCategory::getEntities($this->fields['id']);
+
+      // Group / entities
+      $this->groups   = Group_ITILCategory::getGroups($this->fields['id']);
+
+      // Profile / entities
+      $this->profiles = ITILCategory_Profile::getProfiles($this->fields['id']);
+   }
+
+
+
+   /**
+    * Add current entity in target when add
+    *
+    * @global type $DB
+    */
+   function post_addItem() {
+      global $DB;
+
+      $entity_itilcategory = new Entity_ITILCategory();
+      $input = array(
+          'itilcategories_id' => $this->fields['id'],
+          'entities_id'       => $this->fields['entities_id'],
+          'is_recursive'      => $this->fields['is_recursive']);
+      $entity_itilcategory->add($input);
+   }
+
+
    /**
     * Get links to Faq
     *
@@ -262,10 +301,24 @@ class ITILCategory extends CommonTreeDropdown {
          switch ($item->getType()) {
             case 'TicketTemplate' :
                $ong[1] = $this->getTypeName(Session::getPluralNumber());
-               return $ong;
          }
       }
-      return parent::getTabNameForItem($item, $withtemplate);
+      $ong[1] = parent::getTabNameForItem($item, $withtemplate);
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               if ($item->canUpdateItem()) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     $nb = $item->countVisibilities();
+                     $ong[10] = self::createTabEntry(_n('Target','Targets',$nb),
+                                                    $nb);
+                  } else {
+                     $ong[10] = _n('Target','Targets',2);
+                  }
+               }
+         }
+      }
+      return $ong;
    }
 
 
@@ -273,6 +326,14 @@ class ITILCategory extends CommonTreeDropdown {
 
       if ($item->getType() == 'TicketTemplate') {
          self::showForTicketTemplate($item, $withtemplate);
+      }
+      if ($item->getType() == __CLASS__) {
+         switch($tabnum) {
+
+            case 10 :
+               $item->showVisibility();
+               return;
+         }
       }
       return parent::displayTabContentForItem($item, $tabnum, $withtemplate);
    }
@@ -350,5 +411,304 @@ class ITILCategory extends CommonTreeDropdown {
       }
    }
 
+   /**
+    * @since version 0.86
+   **/
+   function countVisibilities() {
+
+      return (count($this->entities)
+              + count($this->users)
+              + count($this->groups)
+              + count($this->profiles));
+   }
+
+
+   /**
+    * Show visibility config for a ITILCategory
+    *
+    * @since version 0.86
+   **/
+   function showVisibility() {
+      global $DB, $CFG_GLPI;
+
+      $ID      = $this->fields['id'];
+      $canedit = $this->can($ID, READ);
+
+      echo "<div class='center'>";
+
+      $rand = mt_rand();
+      $nb   = count($this->users) + count($this->groups) + count($this->profiles)
+              + count($this->entities);
+
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='itilcategoryvisibility_form$rand' id='itilcategoryvisibility_form$rand' ";
+         echo " method='post' action='".Toolbox::getItemTypeFormURL('ITILCategory')."'>";
+         echo "<input type='hidden' name='itilcategories_id' value='$ID'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td width='100px'>";
+
+         $types = array('Entity', 'Group', 'Profile', 'User');
+
+         $addrand = Dropdown::showItemTypes('_type', $types);
+         $params  = array('type'  => '__VALUE__',
+                          'right' => 'dropdown');
+
+         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/visibility.php",
+                                       $params);
+
+         echo "</td>";
+         echo "<td><span id='visibility$rand'></span>";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
+
+      echo "<div class='spaced'>";
+      // Users
+      if (count($this->users)) {
+         if ($canedit && $nb) {
+            Html::openMassiveActionsForm('massITILCategory_User'.$rand);
+            $massiveactionparams = array('container' => 'massITILCategory_User'.$rand);
+            Html::showMassiveActions($massiveactionparams);
+         }
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit && $nb) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('massITILCategory_User'.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('massITILCategory_User'.$rand);
+            $header_end    .= "</th>";
+         }
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>"._n('Recipient', 'Recipients', 2)."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
+
+         foreach ($this->users as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr class='tab_bg_1'>";
+               if ($canedit) {
+                  echo "<td>";
+                  Html::showMassiveActionCheckBox('ITILCategory_User',$data["id"]);
+                  echo "</td>";
+               }
+               echo "<td>".__('User')."</td>";
+               echo "<td>".getUserName($data['users_id'])."</td>";
+               echo "</tr>";
+            }
+         }
+         if ($nb) {
+            echo $header_begin.$header_bottom.$header_end;
+         }
+
+         echo "</table>";
+         if ($canedit && $nb) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+      }
+
+
+      // Groups
+      if (count($this->groups)) {
+         if ($canedit && $nb) {
+            Html::openMassiveActionsForm('massGroup_ITILCategory'.$rand);
+            $massiveactionparams = array('container' => 'massGroup_ITILCategory'.$rand);
+            Html::showMassiveActions($massiveactionparams);
+
+         }
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit && $nb) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('massGroup_ITILCategory'.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('massGroup_ITILCategory'.$rand);
+            $header_end    .= "</th>";
+         }
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>"._n('Recipient', 'Recipients', 2)."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
+
+         foreach ($this->groups as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr class='tab_bg_1'>";
+               if ($canedit) {
+                  echo "<td>";
+                  Html::showMassiveActionCheckBox('Group_ITILCategory',$data["id"]);
+                  echo "</td>";
+               }
+               echo "<td>".__('Group')."</td>";
+               echo "<td>";
+               $names     = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
+               $groupname = sprintf(__('%1$s %2$s'), $names["name"],
+                                    Html::showToolTip($names["comment"], array('display' => false)));
+               if ($data['entities_id'] >= 0) {
+                  $groupname = sprintf(__('%1$s / %2$s'), $groupname,
+                                       Dropdown::getDropdownName('glpi_entities',
+                                                                 $data['entities_id']));
+                  if ($data['is_recursive']) {
+                     $groupname = sprintf(__('%1$s %2$s'), $groupname,
+                                          "<span class='b'>(".__('R').")</span>");
+                  }
+               }
+               echo $groupname;
+               echo "</td>";
+               echo "</tr>";
+            }
+         }
+
+         if ($nb) {
+            echo $header_begin.$header_bottom.$header_end;
+         }
+
+         echo "</table>";
+         if ($canedit && $nb) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+      }
+
+      // Entity
+      if (count($this->entities)) {
+         if ($canedit && $nb) {
+            Html::openMassiveActionsForm('massEntity_ITILCategory'.$rand);
+            $massiveactionparams = array('container' => 'massEntity_ITILCategory'.$rand);
+            Html::showMassiveActions($massiveactionparams);
+         }
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit && $nb) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('massEntity_ITILCategory'.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('massEntity_ITILCategory'.$rand);
+            $header_end    .= "</th>";
+         }
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>"._n('Recipient', 'Recipients', 2)."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
+
+         foreach ($this->entities as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr class='tab_bg_1'>";
+               if ($canedit) {
+                  echo "<td>";
+                  Html::showMassiveActionCheckBox('Entity_ITILCategory', $data["id"]);
+                  echo "</td>";
+               }
+               echo "<td>".__('Entity')."</td>";
+               echo "<td>";
+               $names      = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
+               $entityname = sprintf(__('%1$s %2$s'), $names["name"],
+                                    Html::showToolTip($names["comment"], array('display' => false)));
+               if ($data['is_recursive']) {
+                  $entityname = sprintf(__('%1$s %2$s'), $entityname,
+                                        "<span class='b'>(".__('R').")</span>");
+               }
+               echo $entityname;
+               echo "</td>";
+               echo "</tr>";
+            }
+         }
+
+         if ($nb) {
+            echo $header_begin.$header_bottom.$header_end;
+         }
+
+         echo "</table>";
+         if ($canedit && $nb) {
+//            $massiveactionparams['ontop']       = false;
+//            $massiveactionparams['forcecreate'] = true;
+//            Html::showMassiveActions('Entity_ITILCategory', $massiveactionparams);
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+      }
+
+      // Profiles
+      if (count($this->profiles)) {
+         if ($canedit && $nb) {
+            Html::openMassiveActionsForm('massITILCategory_Profile'.$rand);
+            $massiveactionparams = array('container' => 'massITILCategory_Profile'.$rand);
+            Html::showMassiveActions($massiveactionparams);
+
+         }
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit && $nb) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('massITILCategory_Profile'.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('massITILCategory_Profile'.$rand);
+            $header_end    .= "</th>";
+         }
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>"._n('Recipient', 'Recipients', 2)."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
+
+         foreach ($this->profiles as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr class='tab_bg_1'>";
+               if ($canedit) {
+                  echo "<td>";
+                  Html::showMassiveActionCheckBox('ITILCategory_Profile',$data["id"]);
+                  echo "</td>";
+               }
+               echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
+               echo "<td>";
+               $names       = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
+               $profilename = sprintf(__('%1$s %2$s'), $names["name"],
+                                    Html::showToolTip($names["comment"], array('display' => false)));
+               if ($data['entities_id'] >= 0) {
+                  $profilename = sprintf(__('%1$s / %2$s'), $profilename,
+                                       Dropdown::getDropdownName('glpi_entities',
+                                                                 $data['entities_id']));
+                  if ($data['is_recursive']) {
+                     $profilename = sprintf(__('%1$s %2$s'), $profilename,
+                                        "<span class='b'>(".__('R').")</span>");
+                  }
+               }
+               echo $profilename;
+               echo "</td>";
+               echo "</tr>";
+            }
+         }
+         if ($nb) {
+            echo $header_begin.$header_bottom.$header_end;
+         }
+
+         echo "</table>";
+         if ($canedit && $nb) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+      }
+      echo "</div>";
+      // Add items
+
+      return true;
+   }
 }
 ?>
