@@ -623,11 +623,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_requester']['_type']) {
                case "user" :
-                  if (isset($input['_itil_requester']['use_notification']) 
+                  if (isset($input['_itil_requester']['use_notification'])
                       && is_array($input['_itil_requester']['use_notification'])) {
                      $input['_itil_requester']['use_notification'] = $input['_itil_requester']['use_notification'][0];
                   }
-                  if (isset($input['_itil_requester']['alternative_email']) 
+                  if (isset($input['_itil_requester']['alternative_email'])
                       && is_array($input['_itil_requester']['alternative_email'])) {
                      $input['_itil_requester']['alternative_email'] = $input['_itil_requester']['alternative_email'][0];
                   }
@@ -679,11 +679,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_observer']['_type']) {
                case "user" :
-                  if (isset($input['_itil_observer']['use_notification']) 
+                  if (isset($input['_itil_observer']['use_notification'])
                       && is_array($input['_itil_observer']['use_notification'])) {
                      $input['_itil_observer']['use_notification'] = $input['_itil_observer']['use_notification'][0];
                   }
-                  if (isset($input['_itil_observer']['alternative_email']) 
+                  if (isset($input['_itil_observer']['alternative_email'])
                       && is_array($input['_itil_observer']['alternative_email'])) {
                      $input['_itil_observer']['alternative_email'] = $input['_itil_observer']['alternative_email'][0];
                   }
@@ -722,6 +722,50 @@ abstract class CommonITILObject extends CommonDBTM {
                      }
                   }
                   break;
+
+               default :
+                  foreach ($input['_itil_observer']['_type'] as $r=>$val) {
+                     if ($val == "user") {
+                        if (!empty($this->userlinkclass)) {
+                           if ((isset($input['_itil_observer']['alternative_email'])
+                                && $input['_itil_observer']['alternative_email'])
+                               || ($input['_itil_observer']['users_id'][$r] > 0)) {
+                              $useractors = new $this->userlinkclass();
+                              $inp = array(
+                                  '_type'    => 'user',
+                                  'users_id' => $input['_itil_observer']['users_id'][$r],
+                                  'type'     => CommonITILActor::OBSERVER,
+                                  $this->getForeignKeyField() => $input['id']
+                              );
+                              if (isset($input['_auto_update'])
+                                 || $useractors->can(-1,'w',$inp)) {
+                                 $inp['_from_object'] = true;
+                                 $useractors->add($inp);
+                                 $input['_forcenotif'] = true;
+                              }
+                           }
+                        }
+                     } else if ($val == 'group') {
+                        if (!empty($this->grouplinkclass)
+                            && ($input['_itil_observer']['groups_id'][$r] > 0)) {
+                           $groupactors = new $this->grouplinkclass();
+                           $inp = array(
+                              '_type'    => 'group',
+                              'groups_id' => $input['_itil_observer']['groups_id'][$r],
+                              'type'     => CommonITILActor::OBSERVER,
+                              $this->getForeignKeyField() => $input['id']
+                           );
+                           if (isset($input['_auto_update'])
+                               || $groupactors->can(-1,'w',$inp)) {
+                              $inp['_from_object'] = true;
+                              $groupactors->add($inp);
+                              $input['_forcenotif'] = true;
+                           }
+                        }
+                     }
+                  }
+                  break;
+
             }
          }
       }
@@ -733,11 +777,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_assign']['_type']) {
                case "user" :
-                  if (isset($input['_itil_assign']['use_notification']) 
+                  if (isset($input['_itil_assign']['use_notification'])
                       && is_array($input['_itil_assign']['use_notification'])) {
                      $input['_itil_assign']['use_notification'] = $input['_itil_assign']['use_notification'][0];
                   }
-                  if (isset($input['_itil_assign']['alternative_email']) 
+                  if (isset($input['_itil_assign']['alternative_email'])
                       && is_array($input['_itil_assign']['alternative_email'])) {
                      $input['_itil_assign']['alternative_email'] = $input['_itil_assign']['alternative_email'][0];
                   }
@@ -3297,25 +3341,31 @@ abstract class CommonITILObject extends CommonDBTM {
             return false;
       }
 
-      echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type' class='actor-dropdown'>";
-      $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
-      $params = array('type'            => '__VALUE__',
-                      'actortype'       => $typename,
-                      'itemtype'        => $this->getType(),
-                      'allow_email'     => (($type == CommonITILActor::OBSERVER)
-                                            || $type == CommonITILActor::REQUESTER),
-                      'entity_restrict' => $entities_id,
-                      'use_notif'       => Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1));
+      if ($type == CommonITILActor::OBSERVER) {
+         $divrand = mt_rand();
+         echo "<div id='addobserver'><div id='".$divrand."'></div></div>";
+         echo "<div id='observertempnum' style='display:none'>".$divrand."</div>";
+      } else {
+          echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type'>";
+          $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
+          $params = array('type'            => '__VALUE__',
+                          'actortype'       => $typename,
+                          'itemtype'        => $this->getType(),
+                          'allow_email'     => (($type == CommonITILActor::OBSERVER)
+                                                || $type == CommonITILActor::REQUESTER),
+                          'entity_restrict' => $entities_id,
+                          'use_notif'       => Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1));
 
-      Ajax::updateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
-                                    "showitilactor".$typename."_$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
-                                    $params);
-      echo "<span id='showitilactor".$typename."_$rand' class='actor-dropdown'>&nbsp;</span>";
-      if ($inobject) {
-         echo "<hr>";
+          Ajax::updateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
+                                        "showitilactor".$typename."_$rand",
+                                        $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
+                                        $params);
+          echo "<span id='showitilactor".$typename."_$rand'>&nbsp;</span>";
+          if ($inobject) {
+             echo "<hr>";
+          }
+          echo "</div>";
       }
-      echo "</div>";
    }
 
 
@@ -3734,9 +3784,15 @@ abstract class CommonITILObject extends CommonDBTM {
          $rand_observer = mt_rand();
 
          echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_observer")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+          echo "<span id='addobserverbutton'><img title=\"".__s('Add')."\" alt=\"".
+                 __s('Add')."\" onClick=\"var currentrand = $('#observertempnum').text();".
+                  "var div = document.getElementById(currentrand);".
+                  "var rand = Math.floor((Math.random() * 100000000) + 1);".
+                  "div.innerHTML = '<div id=\'observer_' + rand + '\'></div><br><div id=\'' + rand + '\'></div>';".
+                  "$('#observer_' + rand).load('".$CFG_GLPI["root_doc"]."/ajax/dropdownObserver.php'".
+                  ",{entities_id:".$this->fields['entities_id']."});".
+                  "$('#observertempnum').text(rand);\"
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
 
          $candeleteobserver = true;
 
