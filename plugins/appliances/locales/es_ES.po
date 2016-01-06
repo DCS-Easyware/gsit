@@ -1,0 +1,81 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-11 16:05+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: hook.php:76 hook.php:242 hook.php:256 setup.php:105
+#: front/appliance.form.php:148 front/appliance.form.php:151
+#: front/appliance.php:35 front/appliance.php:38 inc/appliance.class.php:46
+#: inc/appliance.class.php:48 inc/appliance.class.php:93
+#: inc/appliance_item.class.php:530
+msgid "Appliance"
+msgid_plural "Appliances"
+msgstr[0] "Aplicativo"
+msgstr[1] "Aplicativo"
+
+#: hook.php:193 inc/appliancetype.class.php:39
+msgid "Type of appliance"
+msgstr "Tipo de aplicativo"
+
+#: hook.php:194 inc/appliance.class.php:154 inc/appliance.class.php:275
+#: inc/appliance.class.php:394 inc/environment.class.php:39
+msgid "Environment"
+msgstr "Entorno"
+
+#: hook.php:352 inc/appliance_item.class.php:137
+msgid "Associate"
+msgstr "Asociar"
+
+#: hook.php:353
+msgid "Dissociate"
+msgstr "Disociar"
+
+#: hook.php:358
+msgid "Associate to appliance"
+msgstr "Asociado al aplicativo"
+
+#: setup.php:146 inc/profile.class.php:95 inc/profile.class.php:152
+msgid "Appliances"
+msgstr "Aplicativo"
+
+#: inc/appliance.class.php:121 inc/appliance_item.class.php:341
+#: inc/appliance_item.class.php:479
+msgid "Associated items"
+msgstr "Elementos asociados"
+
+#: inc/appliance.class.php:324 inc/appliance_item.class.php:145
+#: inc/appliance_item.class.php:489 inc/relation.class.php:246
+msgid "Item to link"
+msgstr "Item a vincular"
+
+#: inc/appliance_item.class.php:147 inc/appliance_item.class.php:489
+#: inc/optvalue.class.php:67 inc/optvalue.class.php:117
+#: inc/optvalue_item.class.php:150
+msgid "User fields"
+msgstr "Campos de usuario"
+
+#: inc/appliance_item.class.php:273
+msgid "Associated appliances"
+msgstr "Aplicativo(s) asociado(s)"
+
+#: inc/optvalue.class.php:92
+msgid "Default"
+msgstr "Defecto"
+
+#: inc/profile.class.php:90
+msgid "Rights management"
+msgstr "Permisos de uso"

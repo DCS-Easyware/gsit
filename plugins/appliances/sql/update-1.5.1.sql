@@ -1,0 +1,1 @@
+ALTER TABLE `glpi_plugin_applicatifs` ADD `helpdesk_visible` int(11) NOT NULL default '1';
