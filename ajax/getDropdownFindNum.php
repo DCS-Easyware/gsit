@@ -87,7 +87,6 @@ if ($_GET["itemtype"] == "PluginAppliancesAppliance_Item") {
          array_push($datas, array('id'  => $datalink['id'],
                                  'text' => $output));
          $count++;
-
       }
    }
    $ret['count']   = $count;
@@ -96,6 +95,44 @@ if ($_GET["itemtype"] == "PluginAppliancesAppliance_Item") {
    exit;
 }
 
+
+if ($_GET["itemtype"] == "PluginDatabasesDatabase_Item") {
+   $restrictEnt = 0;
+   $a_restrictEntities = getSonsOf("glpi_entities", $restrictEnt);
+   $where = '';
+   if (in_array($_GET["entity_restrict"], $a_restrictEntities)) {
+      $where = getEntitiesRestrictRequest(
+              "WHERE",
+              "glpi_plugin_databases_databases",
+              '',
+              $_GET["entity_restrict"],
+              True);
+   }
+
+   $querylink = "SELECT `glpi_plugin_databases_databases_items`.*, `name`
+         FROM `glpi_plugin_databases_databases_items`
+      LEFT JOIN `glpi_plugin_databases_databases`
+         ON `glpi_plugin_databases_databases`.`id`=`plugin_databases_databases_id`
+         ".$where."
+      ORDER by `name`";
+
+   $resultlink = $DB->query($querylink);
+   $items_id_display = 0;
+   if ($DB->numrows($resultlink)) {
+      while ($datalink = $DB->fetch_array($resultlink)) {
+         $itemlink = new $datalink['itemtype'];
+         $itemlink->getFromDB($datalink['items_id']);
+         $output = $datalink['name']." > ".$itemlink->fields['name'];
+         array_push($datas, array('id'  => $datalink['id'],
+                                 'text' => $output));
+         $count++;
+    }
+   }
+   $ret['count']   = $count;
+   $ret['results'] = $datas;
+   echo json_encode($ret);
+   exit;
+}
 
 if ($item->isEntityAssign()) {
    if (isset($_GET["entity_restrict"]) && ($_GET["entity_restrict"] >= 0)) {

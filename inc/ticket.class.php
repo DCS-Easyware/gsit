@@ -4176,10 +4176,10 @@ class Ticket extends CommonITILObject {
                break;
             }
             if (class_exists($itdata['itemtype'])) {
-                $item = new $itdata['itemtype'];
-                $item->getFromDB($itdata['items_id']);
-                echo $item->getTypeName(1).": ".$item->getLink(array('comments' => true))."<br/>";
-                $i++;
+               $item = new $itdata['itemtype'];
+               $item->getFromDB($itdata['items_id']);
+               echo $item->getTypeName(1).": ".$item->getLink(array('comments' => true))."<br/>";
+               $i++;
             }
          }
 
