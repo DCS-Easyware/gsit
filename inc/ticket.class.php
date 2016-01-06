@@ -1000,13 +1000,20 @@ class Ticket extends CommonITILObject {
 
       if (isset($input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
-         if (!empty($input['_link']['tickets_id_2'])) {
-            if ($ticket_ticket->can(-1, CREATE, $input['_link'])) {
-               if ($ticket_ticket->add($input['_link'])) {
-                  $input['_forcenotif'] = true;
+         foreach ($input['_link'] as $num=>$value) {
+            if (!empty($input['_linkid'][$num])) {
+               $inputlink = array(
+                  'tickets_id_1' => $input['id'],
+                  'tickets_id_2' => $input['_linkid'][$num],
+                  'link'         => $value
+               );
+               if ($ticket_ticket->can(-1, CREATE, $inputlink)) {
+                  if ($ticket_ticket->add($inputlink)) {
+                     $input['_forcenotif'] = true;
+                  }
+               } else {
+                  Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
                }
-            } else {
-               Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
             }
          }
       }
@@ -1584,13 +1591,21 @@ class Ticket extends CommonITILObject {
 
       // From interface
       if (isset($this->input['_link'])) {
-         $this->input['_link']['tickets_id_1'] = $this->fields['id'];
-         // message if ticket's ID doesn't exist
-         if (!empty($this->input['_link']['tickets_id_2'])) {
-            if ($ticket_ticket->can(-1, CREATE, $this->input['_link'])) {
-               $ticket_ticket->add($this->input['_link']);
-            } else {
-               Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
+         $ticket_ticket = new Ticket_Ticket();
+         foreach ($this->input['_link'] as $num=>$value) {
+            if (!empty($this->input['_linkid'][$num])) {
+               $inputlink = array(
+                  'tickets_id_1' => $this->fields['id'],
+                  'tickets_id_2' => $this->input['_linkid'][$num],
+                  'link'         => $value
+               );
+               if ($ticket_ticket->can(-1, CREATE, $inputlink)) {
+                  if ($ticket_ticket->add($inputlink)) {
+                     $this->input['_forcenotif'] = true;
+                  }
+               } else {
+                  Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
+               }
             }
          }
       }
@@ -4264,28 +4279,33 @@ class Ticket extends CommonITILObject {
          echo "<th width='$colsize1%'>". _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
          $rand_linked_ticket = mt_rand();
          if ($canupdate) {
-            echo "&nbsp;";
-            echo "<img onClick=\"".Html::jsShow("linkedticket$rand_linked_ticket")."\"
-                   title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                   class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+            self::showLinkticketAddButton();
          }
          echo '</th>';
          echo "<td width='".(100-$colsize1)."%' colspan='3'>";
          if ($canupdate) {
+            echo "<div id='linktickets'></div>";
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
-            echo "<table class='tab_format' width='100%'><tr><td width='30%'>";
-            Ticket_Ticket::dropdownLinks('_link[link]',
-                                         (isset($values["_link"])?$values["_link"]['link']:''));
-            echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
-            echo "</td><td width='70%'>";
-            $linkparam = array('name'        => '_link[tickets_id_2]',
-                               'displaywith' => array('id'));
-
-            if (isset($values["_link"])) {
-               $linkparam['value'] = $values["_link"]['tickets_id_2'];
+            if (isset($values['_link']['tickets_id_2'])
+                    && $values['_link']['tickets_id_2']) {
+               echo "<script>
+                   $.get('".$CFG_GLPI["root_doc"]."/ajax/linkTicket.php', 'tickets_id_2=".
+                       json_encode($values['_link'])."', function(data){
+                     $(data).appendTo('#linktickets');
+                   });
+               </script>";
             }
-            Ticket::dropdown($linkparam);
-            echo "</td></tr></table>";
+            if (isset($values['_linkid'])) {
+               foreach ($values['_linkid'] as $idx => $ticketlinkid) {
+                  echo "<script>
+                     $.get('".$CFG_GLPI["root_doc"]."/ajax/linkTicket.php', '_link=".
+                          $values['_link'][$idx]."&_linkid=".
+                          $ticketlinkid."', function(data){
+                        $(data).appendTo('#linktickets');
+                     });
+                  </script>";
+               }
+            }
             echo "</div>";
 
             if (isset($values["_link"])
@@ -6734,6 +6754,27 @@ class Ticket extends CommonITILObject {
 
       $html.= "<script type='text/javascript'>split_button();</script>";
       return $html;
+   }
+
+
+
+    /**
+    * @param $size (default 25)
+   **/
+   static function showLinkticketAddButton($size=25) {
+      global $CFG_GLPI;
+
+      echo "<span id='addfilebutton'><img title=\"".__s('Add')."\" alt=\"".
+             __s('Add')."\" id='linkticketbutton'
+              class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
+echo '<script type="text/javascript">';
+echo "$('#linkticketbutton').on(
+                'click',
+                function(event) {
+$.get('".$CFG_GLPI["root_doc"]."/ajax/linkTicket.php', function(data){
+  $(data).appendTo('#linktickets');
+})});";
+echo "</script>";
    }
 
 }
