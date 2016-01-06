@@ -816,6 +816,10 @@ function updateDbUpTo031() {
          exit();
    }
 
+   # Patch David
+   include("update_999_sla_target.php");
+   update999SlaTarget();
+
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
    Config::setConfigurationValues('core', array('version'             => '0.90.1',
                                                 'language'            => $glpilanguage,

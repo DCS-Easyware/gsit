@@ -429,7 +429,7 @@ if ($item instanceof CommonTreeDropdown) {
                }
                array_push($datastoadd, array('id'    => $ID,
                                              'text'  => $outputval,
-                                             'level' => $level, 
+                                             'level' => $level,
                                              'title' => $title));
                $count++;
             }
@@ -557,6 +557,37 @@ if ($item instanceof CommonTreeDropdown) {
                    $where";
          break;
 
+      case "SLA" :
+         $where .= " AND (";
+         // groups
+         if (!empty($_SESSION['glpigroups'])) {
+            $where .= " `glpi_groups_slas`.`groups_id` IN ('".implode("', '", $_SESSION['glpigroups'])."') OR ";
+         }
+         // entity
+         $where .= " (`glpi_entities_slas`.`entities_id`='".$_GET['entity_restrict']."') OR "
+                 . "(`glpi_entities_slas`.`entities_id` IN "
+                 . "('".implode("','", getAncestorsOf('glpi_entities', $_GET['entity_restrict']))."') "
+                 . "AND `glpi_entities_slas`.`is_recursive`= '1') OR ";
+         // user
+         $where .= " `glpi_slas_users`.`users_id`='".$_SESSION['glpiID']."' OR ";
+         // profile
+         $where .= " `glpi_slas_profiles`.`profiles_id`='".$_SESSION['glpiactiveprofile']['id']."' ";
+
+         $where .= " )";
+
+         $query = "SELECT DISTINCT `$table`.*
+                   FROM `$table`
+                   LEFT JOIN `glpi_groups_slas`
+                        ON (`glpi_groups_slas`.`slas_id` = `$table`.`id`)
+                   LEFT JOIN `glpi_entities_slas`
+                        ON (`glpi_entities_slas`.`slas_id` = `$table`.`id`)
+                   LEFT JOIN `glpi_slas_users`
+                        ON (`glpi_slas_users`.`slas_id` = `$table`.`id`)
+                   LEFT JOIN `glpi_slas_profiles`
+                        ON (`glpi_slas_profiles`.`slas_id` = `$table`.`id`)
+                  $where";
+         break;
+
       default :
          $query = "SELECT `$table`.* $addselect
                    FROM `$table`
@@ -662,7 +693,7 @@ if ($item instanceof CommonTreeDropdown) {
                $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
             }
             array_push($datastoadd, array('id'    => $ID,
-                                          'text'  => $outputval, 
+                                          'text'  => $outputval,
                                           'title' => $title));
             $count++;
          }
