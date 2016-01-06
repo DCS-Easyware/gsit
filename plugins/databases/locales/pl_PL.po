@@ -1,0 +1,91 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Databases Development Team
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: GLPI Project - databases plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-17 09:33+0200\n"
+"PO-Revision-Date: 2015-09-17 07:35+0000\n"
+"Last-Translator: Xavier CAILLAUD <tsmr@thetsmr.fr>\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/tsmr/GLPI_databases/language/pl_PL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: hook.php:558
+msgid "Associate to the database"
+msgstr "Połączenie z bazą danych"
+
+#: setup.php:88 inc/database.class.php:44 inc/menu.class.php:35
+#: inc/profile.class.php:144
+msgid "Database"
+msgid_plural "Databases"
+msgstr[0] "Baza danych"
+msgstr[1] "Bazy danych"
+msgstr[2] "Baz danych"
+
+#: setup.php:102
+msgid "This plugin requires GLPI >= 0.90"
+msgstr ""
+
+#: inc/databasecategory.class.php:41
+msgid "Category"
+msgid_plural "Categories"
+msgstr[0] "Kategoria"
+msgstr[1] "Kategorie"
+msgstr[2] "Kategorii"
+
+#: inc/database.class.php:115 inc/database.class.php:271
+#: inc/database_item.class.php:489
+msgid "Editor"
+msgstr "Producent"
+
+#: inc/database.class.php:468
+msgid "Database associated"
+msgid_plural "Databases associated"
+msgstr[0] "Połączona baza danych"
+msgstr[1] "Połoączone bazy danych"
+msgstr[2] "Połączonych baz danych"
+
+#: inc/database_item.class.php:460
+msgctxt "button"
+msgid "Associate a database"
+msgstr "Dołącz bazę danych"
+
+#: inc/instance.class.php:44
+msgid "Instance"
+msgid_plural "Instances"
+msgstr[0] "Egzemplarz"
+msgstr[1] "Egzemplarze"
+msgstr[2] "Egzemplarzy"
+
+#: inc/instance.class.php:134 inc/instance.class.php:218
+#: inc/script.class.php:132 inc/script.class.php:218
+msgid "Path"
+msgstr "Ścieżka"
+
+#: inc/script.class.php:44
+msgid "Script"
+msgid_plural "Scripts"
+msgstr[0] "Skrypt"
+msgstr[1] "Skrypty"
+msgstr[2] "Skryptów"
+
+#: inc/scripttype.class.php:41
+msgid "Type of script"
+msgid_plural "Types of script"
+msgstr[0] "Rodzaj skryptu"
+msgstr[1] "Rodzaje skryptów"
+msgstr[2] "Rodzaji skryptów"
+
+#: inc/servertype.class.php:40
+msgid "Engine"
+msgid_plural "Engines"
+msgstr[0] "Silnik"
+msgstr[1] "Silniki"
+msgstr[2] "Silników"
