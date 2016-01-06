@@ -165,8 +165,8 @@ function plugin_version_appliances() {
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_appliances_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.85.3','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
-      echo "This plugin requires GLPI >= 0.85.3 and GLPI < 0.86";
+   if (version_compare(GLPI_VERSION,'0.85.3','lt') || version_compare(GLPI_VERSION,'0.91','ge')) {
+      echo "This plugin requires GLPI >= 0.85.3 and GLPI < 0.91";
       return false;
    }
    return true;

@@ -76,6 +76,9 @@ function plugin_appliances_AssignToTicket($types) {
       $types['PluginAppliancesAppliance'] = _n('Appliance', 'Appliances', 2, 'appliances');
       //$types['PluginAppliancesAppliance_Item'] = _n('Appliance item', 'Appliances item', 2, 'appliances');
    }
+   if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+      $types['PluginAppliancesAppliance_Item'] = _n('Appliance', 'Appliances', 2, 'appliances')." (Détail)";
+   }
    return $types;
 }
 /*
@@ -252,7 +255,7 @@ function plugin_appliances_install() {
    PluginAppliancesProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
    $migration = new Migration("2.0.0");
    $migration->dropTable('glpi_plugin_appliances_profiles');
-   
+
    return true;
 }
 
@@ -294,17 +297,17 @@ function plugin_appliances_uninstall() {
              FROM `glpi_logs`
              WHERE `itemtype` = 'PluginAppliancesAppliance'";
    $DB->query($query);
-   
+
    $query = "DELETE
              FROM `glpi_notepads`
              WHERE `itemtype` = 'PluginAppliancesAppliance'";
    $DB->query($query);
-   
+
    $query = "DELETE
              FROM `glpi_items_tickets`
              WHERE `itemtype` = 'PluginAppliancesAppliance'";
    $DB->query($query);
-   
+
    if ($temp = getItemForItemtype('PluginDatainjectionModel')) {
       $temp->deleteByCriteria(array('itemtype'=>'PluginAppliancesAppliance'));
    }
@@ -317,7 +320,7 @@ function plugin_appliances_uninstall() {
    }
    PluginAppliancesMenu::removeRightsFromSession();
    PluginAppliancesProfile::removeRightsFromSession();
-   
+
    return true;
 }
 
@@ -653,7 +656,7 @@ function plugin_datainjection_populate_appliances() {
    $INJECTABLE_TYPES['PluginAppliancesApplianceInjection'] = 'appliances';
 }
 
-/*
+
 
 function plugin_appliances_addSelect($type,$id,$num) {
 
@@ -680,13 +683,16 @@ function plugin_appliances_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
    switch ($itemtype) {
 
       case 'Ticket':
-         return " LEFT JOIN `glpi_plugin_appliances_appliances` AS glpi_plugin_appliances_appliances
-            ON (`glpi_items_tickets`.`items_id` = `glpi_plugin_appliances_appliances`.`id`
-                  AND `glpi_items_tickets`.`itemtype`='PluginAppliancesAppliance')
+         return " LEFT JOIN `glpi_items_tickets` AS glpi_items_tickets_appl
+            ON `glpi_items_tickets_appl`.`tickets_id` = `glpi_tickets`.`id`
+
+        LEFT JOIN `glpi_plugin_appliances_appliances` AS glpi_plugin_appliances_appliances
+            ON (`glpi_items_tickets_appl`.`items_id` = `glpi_plugin_appliances_appliances`.`id`
+                  AND `glpi_items_tickets_appl`.`itemtype`='PluginAppliancesAppliance')
 
          LEFT JOIN `glpi_plugin_appliances_appliances_items`
-            ON (`glpi_items_tickets`.`items_id` = `glpi_plugin_appliances_appliances_items`.`id`
-                  AND `glpi_items_tickets`.`itemtype`='PluginAppliancesAppliance_Item')
+            ON (`glpi_items_tickets_appl`.`items_id` = `glpi_plugin_appliances_appliances_items`.`id`
+                  AND `glpi_items_tickets_appl`.`itemtype`='PluginAppliancesAppliance_Item')
          LEFT JOIN `glpi_plugin_appliances_appliances` AS glpi_plugin_appliances_appliances_bis
             ON (`glpi_plugin_appliances_appliances_items`.`plugin_appliances_appliances_id` = `glpi_plugin_appliances_appliances_bis`.`id`)";
          break;
@@ -765,6 +771,6 @@ function plugin_appliances_addWhere($link,$nott,$type,$id,$val,$searchtype) {
          }
          break;
    }
-}*/
+}
 
 ?>

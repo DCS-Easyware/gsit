@@ -936,6 +936,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
 
    static function updateSchema(Migration $migration) {
+      global $DB;
 
       $migration->displayTitle(sprintf(__('%1$s: %2$s'), __('Update'), self::getTypeName(9)));
       $table = getTableForItemType(__CLASS__);
@@ -957,9 +958,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
 
       $migration->addField($table, 'groups_id_tech', 'integer', array('after' => 'groups_id'));
       $migration->addKey($table, 'groups_id_tech');
-      
+
       if (TableExists("glpi_plugin_appliances_profiles")) {
-   
+
          $notepad_tables = array('glpi_plugin_appliances_appliances');
 
          foreach ($notepad_tables as $t) {
@@ -982,7 +983,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
          }
       }
    }
-   
+
    /**
     * @since version 0.85
     *
@@ -1006,7 +1007,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
       }
       return $actions;
    }
-   
+
    /**
     * @since version 0.85
     *
@@ -1022,13 +1023,13 @@ class PluginAppliancesAppliance extends CommonDBTM {
             return true;
             break;
          case "install" :
-            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true), 
+            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true),
                                    false, false, 'typeitem');
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
             break;
          case "uninstall" :
-            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true), 
+            Dropdown::showAllItems("item_item", 0, 0, -1, self::getTypes(true),
                                    false, false, 'typeitem');
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
             return true;
@@ -1041,8 +1042,8 @@ class PluginAppliancesAppliance extends CommonDBTM {
     }
       return parent::showMassiveActionsSubForm($ma);
    }
-   
-   
+
+
    /**
     * @since version 0.85
     *
@@ -1051,9 +1052,9 @@ class PluginAppliancesAppliance extends CommonDBTM {
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $DB;
-      
+
       $appliance_item = new PluginAppliancesAppliance_Item();
-      
+
       switch ($ma->getAction()) {
          case "plugin_appliances_add_item":
             $input = $ma->getInput();
@@ -1116,7 +1117,7 @@ class PluginAppliancesAppliance extends CommonDBTM {
                }
             }
             return;
-            
+
          case 'uninstall':
             $input = $ma->getInput();
             foreach ($ids as $key) {

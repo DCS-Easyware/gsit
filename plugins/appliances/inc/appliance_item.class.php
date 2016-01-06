@@ -38,11 +38,11 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
    static public $itemtype_1 = 'PluginAppliancesAppliance';
    static public $items_id_1 = 'plugin_appliances_appliances_id';
    static public $take_entity_1 = false ;
-   
+
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
    static public $take_entity_2 = true ;
-   
+
    static $rightname = "plugin_appliances";
 
    static function getTypeName($nb=0) {
@@ -676,7 +676,7 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       }
       return true;
    }
-   
+
    function getFromDBbyAppliancesAndItem($plugin_appliances_appliances_id,$items_id,$itemtype) {
       global $DB;
 
@@ -703,5 +703,18 @@ class PluginAppliancesAppliance_Item extends CommonDBRelation {
       if ($this->getFromDBbyAppliancesAndItem($plugin_appliances_appliances_id,$items_id,$itemtype)) {
          $this->delete(array('id'=>$this->fields["id"]));
       }
+   }
+
+
+   
+   function getLink($with_comment=0) {
+      $paAppliance = new PluginAppliancesAppliance();
+      $paAppliance->getFromDB($this->fields['plugin_appliances_appliances_id']);
+
+      $itemtype = $this->fields['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($this->fields['items_id']);
+      return $item->getLink($with_comment)." sur ".
+              $paAppliance->getLink($with_comment);
    }
 }
