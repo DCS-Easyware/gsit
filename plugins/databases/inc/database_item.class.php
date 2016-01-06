@@ -37,21 +37,21 @@ class PluginDatabasesDatabase_Item extends CommonDBRelation {
    static public $itemtype_1 = "PluginDatabasesDatabase";
    static public $items_id_1 = 'plugin_databases_databases_id';
    static public $take_entity_1 = false ;
-    
+
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
    static public $take_entity_2 = true ;
-   
+
    static $rightname = "plugin_databases";
 
-   
-   /*static function getTypeName($nb=0) {
+
+   static function getTypeName($nb=0) {
 
       if ($nb > 1) {
          return _n('Database item', 'Databases items', 2, 'databases');
       }
-      return _n('Database item', 'Databases items', 1, 'databases');
-   }*/
+      return _n('Database item', 'Databases items', 1, 'databases')." (détail)";
+   }
 
    /**
     * Clean table when item is purged
@@ -451,7 +451,7 @@ class PluginDatabasesDatabase_Item extends CommonDBRelation {
             if ($item->getType() == 'Ticket') {
                echo "<input type='hidden' name='tickets_id' value='$ID'>";
             }
-            
+
             PluginDatabasesDatabase::dropdownDatabase(array('entity' => $entities ,
                                                      'used'   => $used));
 
@@ -545,6 +545,19 @@ class PluginDatabasesDatabase_Item extends CommonDBRelation {
          Html::closeForm();
       }
       echo "</div>";
+   }
+
+
+
+   function getLink($with_comment=0) {
+      $paDatabase = new PluginDatabasesDatabase();
+      $paDatabase->getFromDB($this->fields['plugin_databases_databases_id']);
+
+      $itemtype = $this->fields['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($this->fields['items_id']);
+      return $item->getLink($with_comment)." sur ".
+              $paDatabase->getLink($with_comment);
    }
 }
 

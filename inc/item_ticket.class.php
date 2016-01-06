@@ -281,7 +281,63 @@ class Item_Ticket extends CommonDBRelation{
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
+         if ($itemtype == 'PluginDatabasesDatabase_Item') {
+            if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+               $itemtable = getTableForItemType($itemtype);
+               $query = "SELECT `$itemtable`.*,
+                                `glpi_items_tickets`.`id` AS IDD,
+                                `glpi_plugin_databases_databases`.`id` as appid,
+                                `glpi_plugin_databases_databases`.`name` as appname
+                         FROM `glpi_items_tickets`,
+                              `$itemtable`";
+               $query .= "LEFT JOIN `glpi_plugin_databases_databases`"
+                       . " ON `plugin_databases_databases_id`=`glpi_plugin_databases_databases`.`id`";
 
+               $query .= " WHERE `$itemtable`.`id` = `glpi_items_tickets`.`items_id`
+                                 AND `glpi_items_tickets`.`itemtype` = '$itemtype'
+                                 AND `glpi_items_tickets`.`tickets_id` = '$instID'";
+
+               $result_linked = $DB->query($query);
+               $nb            = $DB->numrows($result_linked);
+
+               for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+                  $itemapp = new $data['itemtype'];
+                  $itemapp->getFromDB($data['items_id']);
+
+                  if($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+                     $link     = Toolbox::getItemTypeFormURL('PluginDatabasesDatabase');
+                     $namelink = "<a href=\"".$link."?id=".$data["appid"]."\">".$data["appname"]."</a>";
+                     $link     = Toolbox::getItemTypeFormURL($data['itemtype']);
+                     $namelink .= " > <a href=\"".$link."?id=".$data['items_id']."\">".$itemapp->fields["name"]."</a>";
+                  } else {
+                     $namelink = $data["appname"]." > ".$itemapp->fields["name"];
+                  }
+
+                  echo "<tr class='tab_bg_1'>";
+                  if ($canedit) {
+                     echo "<td width='10'>";
+                     Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
+                     echo "</td>";
+                  }
+                  if ($prem) {
+                     $typename = $item->getTypeName($nb);
+                     echo "<td class='center top' rowspan='$nb'>".
+                            (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename)."</td>";
+                  }
+                  echo "<td class='center'>";
+                  echo Dropdown::getDropdownName("glpi_entities", $itemapp->fields['entities_id'])."</td>";
+                  echo "<td class='center".
+                           (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
+                  echo ">".$namelink."</td>";
+                  echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-").
+                       "</td>";
+                  echo "<td class='center'>".
+                         (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+                  echo "</tr>";
+               }
+               $totalnb += $nb;
+            }
+         } else {
          if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             $itemtable = getTableForItemType($itemtype);
             $query = "SELECT `$itemtable`.*,
@@ -346,6 +402,7 @@ class Item_Ticket extends CommonDBRelation{
                echo "</tr>";
             }
             $totalnb += $nb;
+         }
          }
       }
 

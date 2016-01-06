@@ -4160,10 +4160,12 @@ class Ticket extends CommonITILObject {
                .__('Display all items')." (".count($item_tickets).")</a></i>";
                break;
             }
-            $item = new $itdata['itemtype'];
-            $item->getFromDB($itdata['items_id']);
-            echo $item->getTypeName(1).": ".$item->getLink(array('comments' => true))."<br/>";
-            $i++;
+            if (class_exists($itdata['itemtype'])) {
+               $item = new $itdata['itemtype'];
+               $item->getFromDB($itdata['items_id']);
+               echo $item->getTypeName(1).": ".$item->getLink(array('comments' => true))."<br/>";
+               $i++;
+            }
          }
 
       }

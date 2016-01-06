@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -54,6 +54,47 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
    exit;
 }
 
+$count = 0;
+$datas = array();
+
+if ($_GET["itemtype"] == "PluginDatabasesDatabase_Item") {
+   $restrictEnt = 0;
+   $a_restrictEntities = getSonsOf("glpi_entities", $restrictEnt);
+   $where = '';
+   if (in_array($_GET["entity_restrict"], $a_restrictEntities)) {
+      $where = getEntitiesRestrictRequest(
+              "WHERE",
+              "glpi_plugin_databases_databases",
+              '',
+              $_GET["entity_restrict"],
+              True);
+   }
+
+   $querylink = "SELECT `glpi_plugin_databases_databases_items`.*, `name`
+         FROM `glpi_plugin_databases_databases_items`
+      LEFT JOIN `glpi_plugin_databases_databases`
+         ON `glpi_plugin_databases_databases`.`id`=`plugin_databases_databases_id`
+         ".$where."
+      ORDER by `name`";
+
+   $resultlink = $DB->query($querylink);
+   $items_id_display = 0;
+   if ($DB->numrows($resultlink)) {
+      while ($datalink = $DB->fetch_array($resultlink)) {
+         $itemlink = new $datalink['itemtype'];
+         $itemlink->getFromDB($datalink['items_id']);
+         $output = $datalink['name']." > ".$itemlink->fields['name'];
+         array_push($datas, array('id'  => $datalink['id'],
+                                 'text' => $output));
+         $count++;
+     }
+   }
+   $ret['count']   = $count;
+   $ret['results'] = $datas;
+   echo json_encode($ret);
+   exit;
+}
+
 if ($item->isEntityAssign()) {
    if (isset($_GET["entity_restrict"]) && ($_GET["entity_restrict"] >= 0)) {
       $entity = $_GET["entity_restrict"];
@@ -64,6 +105,17 @@ if ($item->isEntityAssign()) {
    // allow opening ticket on recursive object (printer, software, ...)
    $recursive = $item->maybeRecursive();
    $where     = getEntitiesRestrictRequest("WHERE", $_GET['table'], '', $entity, $recursive);
+
+   if ($_GET["itemtype"] == "PluginAppliancesAppliance"
+           OR $_GET["itemtype"] == "PluginDatabasesDatabase") {
+      // restrict entities only for "Application nationales"
+      $restrictEnt = 0;
+      $a_restrictEntities = getSonsOf("glpi_entities", $restrictEnt);
+      $where = "WHERE 1";
+      if (in_array($_GET["entity_restrict"], $a_restrictEntities)) {
+         $where = getEntitiesRestrictRequest("WHERE", $_GET['table'], '', $entity, $recursive);
+      }
+   }
 
 } else {
    $where = "WHERE 1";
@@ -120,14 +172,14 @@ $query = "SELECT *
           $LIMIT";
 $result = $DB->query($query);
 
-$datas = array();
+//$datas = array();
 
 // Display first if no search
 if ($_GET['page'] == 1 && empty($_GET['searchText'])) {
    array_push($datas, array('id'   => 0,
                             'text' => Dropdown::EMPTY_VALUE));
 }
-$count = 0;
+//$count = 0;
 if ($DB->numrows($result)) {
    while ($data = $DB->fetch_assoc($result)) {
       $output = $data['name'];

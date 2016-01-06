@@ -34,10 +34,10 @@ function plugin_init_databases() {
    $PLUGIN_HOOKS['csrf_compliant']['databases'] = true;
    $PLUGIN_HOOKS['change_profile']['databases'] = array('PluginDatabasesProfile', 'initProfile');
    $PLUGIN_HOOKS['assign_to_ticket']['databases'] = true;
-   
+
    //$PLUGIN_HOOKS['assign_to_ticket_dropdown']['databases'] = true;
    //$PLUGIN_HOOKS['assign_to_ticket_itemtype']['databases'] = array('PluginDatabasesDatabase_Item');
-   
+
    Plugin::registerClass('PluginDatabasesDatabase', array(
          'linkgroup_tech_types'   => true,
          'linkuser_tech_types'    => true,
@@ -48,14 +48,17 @@ function plugin_init_databases() {
    ));
    Plugin::registerClass('PluginDatabasesProfile',
                          array('addtabon' => 'Profile'));
-                         
+
+   Plugin::registerClass('PluginDatabasesDatabase_Item',
+                         array('ticket_types' => true));
+
    //Plugin::registerClass('PluginDatabasesDatabase_Item',
    //                      array('ticket_types' => true));
 
    if (class_exists('PluginAccountsAccount')) {
       PluginAccountsAccount::registerType('PluginDatabasesDatabase');
    }
-      
+
    if (Session::getLoginUserID()) {
 
       $plugin = new Plugin();

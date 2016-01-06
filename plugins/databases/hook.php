@@ -70,9 +70,9 @@ function plugin_databases_install() {
       $DB->runFile(GLPI_ROOT ."/plugins/databases/sql/update-1.5.0.sql");
    }
 
-   
+
    if (TableExists("glpi_plugin_databases_profiles")) {
-   
+
       $notepad_tables = array('glpi_plugin_databases_databases');
 
       foreach ($notepad_tables as $t) {
@@ -94,7 +94,7 @@ function plugin_databases_install() {
          }
       }
    }
-   
+
    if ($update) {
       $query_="SELECT *
             FROM `glpi_plugin_databases_profiles` ";
@@ -148,16 +148,16 @@ function plugin_databases_install() {
    PluginDatabasesProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
    $migration = new Migration("1.7.0");
    $migration->dropTable('glpi_plugin_databases_profiles');
-   
+
    return true;
 }
 
 function plugin_databases_uninstall() {
    global $DB;
-   
+
    include_once (GLPI_ROOT."/plugins/databases/inc/profile.class.php");
    include_once (GLPI_ROOT."/plugins/databases/inc/menu.class.php");
-   
+
    $tables = array("glpi_plugin_databases_databases",
                "glpi_plugin_databases_databasetypes",
                "glpi_plugin_databases_databasecategories",
@@ -199,7 +199,7 @@ function plugin_databases_uninstall() {
    if (class_exists('PluginDatainjectionModel')) {
       PluginDatainjectionModel::clean(array('itemtype'=>'PluginDatabasesDatabase'));
    }
-   
+
    //Delete rights associated with the plugin
    $profileRight = new ProfileRight();
    foreach (PluginDatabasesProfile::getAllRights() as $right) {
@@ -207,7 +207,7 @@ function plugin_databases_uninstall() {
    }
    PluginDatabasesMenu::removeRightsFromSession();
    PluginDatabasesProfile::removeRightsFromSession();
-   
+
    return true;
 }
 
@@ -229,7 +229,9 @@ function plugin_databases_AssignToTicket($types) {
 
    if (Session::haveRight("plugin_databases_open_ticket", "1")) {
       $types['PluginDatabasesDatabase']=PluginDatabasesDatabase::getTypeName(2);
-      //$types['PluginDatabasesDatabase_Item'] = _n('Database item', 'Databases item', 2, 'databases');
+      if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+         $types['PluginDatabasesDatabase_Item'] = _n('Database item', 'Databases item', 2, 'databases')." (détail)";
+      }
    }
    return $types;
 }
@@ -611,7 +613,7 @@ function plugin_datainjection_populate_databases() {
    $INJECTABLE_TYPES['PluginDatabasesDatabaseInjection'] = 'databases';
 }
 
-/*
+
 function plugin_databases_addSelect($type,$id,$num) {
 
    $searchopt = &Search::getOptions($type);
@@ -637,13 +639,16 @@ function plugin_databases_addLeftJoin($itemtype,$ref_table,$new_table,$linkfield
    switch ($itemtype) {
 
       case 'Ticket':
-         return " LEFT JOIN `glpi_plugin_databases_databases` AS glpi_plugin_databases_databases
-            ON (`glpi_items_tickets`.`items_id` = `glpi_plugin_databases_databases`.`id`
-                  AND `glpi_items_tickets`.`itemtype`='PluginDatabasesDatabase')
+         return " LEFT JOIN `glpi_items_tickets` AS glpi_items_tickets_datab
+            ON `glpi_items_tickets_datab`.`tickets_id` = `glpi_tickets`.`id`
+
+         LEFT JOIN `glpi_plugin_databases_databases` AS glpi_plugin_databases_databases
+            ON (`glpi_items_tickets_datab`.`items_id` = `glpi_plugin_databases_databases`.`id`
+                  AND `glpi_items_tickets_datab`.`itemtype`='PluginDatabasesDatabase')
 
          LEFT JOIN `glpi_plugin_databases_databases_items`
-            ON (`glpi_items_tickets`.`items_id` = `glpi_plugin_databases_databases_items`.`id`
-                  AND `glpi_items_tickets`.`itemtype`='PluginDatabasesDatabase_Item')
+            ON (`glpi_items_tickets_datab`.`items_id` = `glpi_plugin_databases_databases_items`.`id`
+                  AND `glpi_items_tickets_datab`.`itemtype`='PluginDatabasesDatabase_Item')
          LEFT JOIN `glpi_plugin_databases_databases` AS glpi_plugin_databases_databases_bis
             ON (`glpi_plugin_databases_databases_items`.`plugin_databases_databases_id` = `glpi_plugin_databases_databases_bis`.`id`)";
          break;
@@ -723,6 +728,6 @@ function plugin_databases_addWhere($link,$nott,$type,$id,$val,$searchtype) {
          break;
    }
 }
-*/
+
 
 ?>
