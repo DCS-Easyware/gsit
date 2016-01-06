@@ -6871,6 +6871,21 @@ CREATE TABLE `glpi_entities_slas` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_entities_solutiontemplates
+
+DROP TABLE IF EXISTS `glpi_entities_solutiontemplates`;
+CREATE TABLE `glpi_entities_solutiontemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `solutiontemplates_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_groups_slas
 
 DROP TABLE IF EXISTS `glpi_groups_slas`;
@@ -6882,6 +6897,23 @@ CREATE TABLE `glpi_groups_slas` (
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `slas_id` (`slas_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_groups_solutiontemplates
+
+DROP TABLE IF EXISTS `glpi_groups_solutiontemplates`;
+CREATE TABLE `glpi_groups_solutiontemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `solutiontemplates_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '-1',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
@@ -6905,6 +6937,23 @@ CREATE TABLE `glpi_slas_profiles` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_solutiontemplates_profiles
+
+DROP TABLE IF EXISTS `glpi_solutiontemplates_profiles`;
+CREATE TABLE `glpi_solutiontemplates_profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `solutiontemplates_id` int(11) NOT NULL DEFAULT '0',
+  `profiles_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '-1',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
+  KEY `profiles_id` (`profiles_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_slas_users
 
 DROP TABLE IF EXISTS `glpi_slas_users`;
@@ -6914,5 +6963,18 @@ CREATE TABLE `glpi_slas_users` (
   `users_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `slas_id` (`slas_id`),
+  KEY `users_id` (`users_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_solutiontemplates_users
+
+DROP TABLE IF EXISTS `glpi_solutiontemplates_users`;
+CREATE TABLE `glpi_solutiontemplates_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `solutiontemplates_id` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
   KEY `users_id` (`users_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

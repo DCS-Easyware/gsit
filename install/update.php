@@ -819,6 +819,8 @@ function updateDbUpTo031() {
    # Patch David
    include("update_999_sla_target.php");
    update999SlaTarget();
+   include("update_999_solutiontemplate_target.php");
+   update999SolutionTemplateTarget();
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
    Config::setConfigurationValues('core', array('version'             => '0.90.1',
