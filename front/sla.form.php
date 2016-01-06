@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -73,6 +73,42 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "slas", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+   Html::back();
+
+} else if (isset($_POST["addvisibility"])) {
+   if (isset($_POST["_type"]) && !empty($_POST["_type"])
+       && isset($_POST["slas_id"]) && $_POST["slas_id"]) {
+      $item = NULL;
+      switch ($_POST["_type"]) {
+         case 'User' :
+            if (isset($_POST['users_id']) && $_POST['users_id']) {
+               $item = new SLA_User();
+            }
+            break;
+
+         case 'Group' :
+            if (isset($_POST['groups_id']) && $_POST['groups_id']) {
+               $item = new Group_SLA();
+            }
+            break;
+
+         case 'Profile' :
+            if (isset($_POST['profiles_id']) && $_POST['profiles_id']) {
+               $item = new SLA_Profile();
+            }
+            break;
+
+         case 'Entity' :
+            $item = new Entity_SLA();
+            break;
+      }
+      if (!is_null($item)) {
+         $item->add($_POST);
+         Event::log($_POST["slas_id"], "sla", 4, "tools",
+                    //TRANS: %s is the user login
+                    sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
+      }
+   }
    Html::back();
 
 } else {
