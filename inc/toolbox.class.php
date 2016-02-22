@@ -3591,4 +3591,22 @@ HTML;
 
       return $tabs;
    }
+
+   /**
+    * Determine if Openssl is usable checking openssl extension existence
+    *
+    * @return boolean
+   **/
+   static function canUseOpenssl() {
+      return extension_loaded('openssl');
+   }
+
+   /**
+    * Determine if mcryot is usable checking mcrpt extension existence
+    *
+    * @return boolean
+   **/
+   static function canUseMcrypt() {
+      return extension_loaded('mcrypt');
+   }
 }
