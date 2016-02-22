@@ -46,6 +46,46 @@ function update946to947() {
 
    $DB->updateOrDie('glpi_events', ['type'   => 'dcrooms'], ['type' => 'serverroms']);
 
+   /**************SAML authentication ************ */
+   if (!$DB->tableExists('glpi_authsamls')) {
+      $query = "CREATE TABLE `glpi_authsamls` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `sp_entityid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `sp_assertionconsumerservice_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `sp_assertionconsumerservice_binding` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `sp_singlelogoutservice_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `sp_singlelogoutservice_binding` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `sp_nameidformat` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `idp_entityid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `idp_singlesignonservice_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `idp_singlesignonservice_binding` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `idp_singlelogoutservice_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `idp_singlelogoutservice_binding` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `idp_certfingerprint` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `idp_certfingerprintalgorithm` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `date_mod` datetime DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `is_active` tinyint(1) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `is_active` (`is_active`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.4 add table glpi_authsamls");
+      $DB->queryOrDie("INSERT INTO `glpi_authsamls` (`id`, `sp_entityid`, `sp_assertionconsumerservice_url`, `sp_assertionconsumerservice_binding`, `sp_singlelogoutservice_url`, `sp_singlelogoutservice_binding`, `sp_nameidformat`, `idp_entityid`, `idp_singlesignonservice_url`) VALUES (1, 'https://glpi/index.php', 'https://glpi/front/login.php', 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST', 'https://glpi/front/logout.php', 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress', 'http://adfs.test.local/adfs/services/trust', 'https://adfs.test.local/adfs/ls/IdpInitiatedSignon.aspx');");
+   }
+   if (!$DB->tableExists('glpi_authmappings')) {
+      $query = "CREATE TABLE `glpi_authmappings` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `remotefield` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `userfield` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.4 add table glpi_authmappings");
+   }
+
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

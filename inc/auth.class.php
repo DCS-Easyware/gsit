@@ -77,6 +77,7 @@ class Auth extends CommonGLPI {
    const X509     = 6;
    const API      = 7;
    const COOKIE   = 8;
+   const SAML     = 9;
    const NOT_YET_AUTHENTIFIED = 0;
 
    const USER_DOESNT_EXIST       = 0;
@@ -116,6 +117,9 @@ class Auth extends CommonGLPI {
 
             $menu['options']['settings']['title']       = __('Setup');
             $menu['options']['settings']['page']        = '/front/auth.settings.php';
+
+            $menu['options']['saml']['title']         = __('SAML');
+            $menu['options']['saml']['page']          = '/front/authsaml.form.php';
       }
       if (count($menu)) {
          return $menu;
@@ -496,6 +500,57 @@ class Auth extends CommonGLPI {
 
             return true;
 
+         case self::SAML :
+            $authSAML = new AuthSAML();
+            $authSAML->getFromDB(1);
+            $auth = new \OneLogin\Saml2\Auth($authSAML->generate_settings());
+            $auth->processResponse();
+            $errors = $auth->getErrors();
+            if (!empty($auth->_errors)) {
+               print_r($auth->_errors);
+               Toolbox::logError($auth->_errors);
+            }
+            if (!empty($errors)) {
+               print_r('SAML error: <p>'.implode(', ', $errors).'</p>');
+               Toolbox::logError($errors);
+            }
+            if (!$auth->isAuthenticated()) {
+               return false;
+            }
+
+            // get attributes
+            $authMapping = new AuthMapping();
+            $this->user->fields = $authMapping->manageAttributes($this->user->fields, $auth->getAttributes());
+
+            // get nameID
+            $this->user->fields['name'] = $auth->getNameId();
+            $this->user->fields['_ruleright_process'] = true;
+            $this->user->fields['authtype'] = $authtype;
+            $CFG_GLPI['name_ssofield'] = $auth->getNameId();
+
+            $mappings = $authMapping->find("`itemtype`='AuthSAML'");
+            $attributes = $auth->getAttributes();
+            $tt = [];
+            foreach ($mappings as $mapping) {
+               $value = '';
+               if (isset($attributes[$mapping['remotefield']])) {
+                  if (is_array($attributes[$mapping['remotefield']])) {
+                     $value = current($attributes[$mapping['remotefield']]);
+                  } else {
+                     $value = $attributes[$mapping['remotefield']];
+                  }
+               }
+               if (!empty($value)) {
+                  if ($mapping['userfield'] == 'email') {
+                     $this->user->fields["_emails"] = [$value];
+                     $this->user->fields["_useremails"] = [$value];
+                  } else {
+                     $this->user->fields[$mapping['userfield'].'_ssofield'] = $value;
+                  }
+               }
+            }
+            return true;
+
          case self::EXTERNAL :
             $ssovariable = Dropdown::getDropdownName('glpi_ssovariables',
                                                      $CFG_GLPI["ssovariables_id"]);
@@ -714,14 +769,19 @@ class Auth extends CommonGLPI {
          } else if ($auths[0] == 'mail') {
             $authtype = self::MAIL;
             $this->user->fields["authtype"] = self::MAIL;
+         } else if ($auths[0] == 'saml') {
+            $authtype = self::SAML;
+            $this->user->fields["authtype"] = self::SAML;
          } else if ($auths[0] == 'external') {
             $authtype = self::EXTERNAL;
             $this->user->fields["authtype"] = self::EXTERNAL;
          }
       }
-      if (!$noauto && ($authtype = self::checkAlternateAuthSystems())) {
+
+      if (!$noauto && ($authtype = $this->checkAlternateAuthSystems())) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
+
             // Used for log when login process failed
             $login_name                        = $this->user->fields['name'];
             $this->auth_succeded               = true;
@@ -794,7 +854,8 @@ class Auth extends CommonGLPI {
                }
             }
             if ((count($ldapservers) == 0)
-                && ($authtype == self::EXTERNAL)) {
+                && ($authtype == self::EXTERNAL
+                     || $authtype == self::SAML)) {
                // Case of using external auth and no LDAP servers, so get data from external auth
                $this->user->getFromSSO();
             } else {
@@ -840,6 +901,7 @@ class Auth extends CommonGLPI {
             if (!$this->auth_succeded) {
                if (empty($login_auth)
                      || $this->user->fields["authtype"] == $this::CAS
+                     || $this->user->fields["authtype"] == $this::SAML
                      || $this->user->fields["authtype"] == $this::EXTERNAL
                      || $this->user->fields["authtype"] == $this::LDAP) {
 
@@ -1153,6 +1215,7 @@ class Auth extends CommonGLPI {
          case self::X509 :
          case self::EXTERNAL :
          case self::CAS :
+         case self::SAML :
          case self::LDAP :
             $auth = new AuthLDAP();
             if ($auths_id>0 && $auth->getFromDB($auths_id)) {
@@ -1218,7 +1281,7 @@ class Auth extends CommonGLPI {
     * @return boolean
     */
    static function isAlternateAuth($authtype) {
-      return in_array($authtype, [self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE]);
+      return in_array($authtype, [self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE, self::SAML]);
    }
 
    /**
@@ -1230,16 +1293,18 @@ class Auth extends CommonGLPI {
     *
     * @return void|integer nothing if redirect is true, else Auth system ID
     */
-   static function checkAlternateAuthSystems($redirect = false, $redirect_string = '') {
+   function checkAlternateAuthSystems($redirect = false, $redirect_string = '') {
       global $CFG_GLPI;
 
       if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
          return false;
       }
       $redir_string = "";
+
       if (!empty($redirect_string)) {
          $redir_string = "?redirect=".$redirect_string;
       }
+
       // Using x509 server
       if (!empty($CFG_GLPI["x509_email_field"])
           && isset($_SERVER['SSL_CLIENT_S_DN'])
@@ -1286,6 +1351,43 @@ class Auth extends CommonGLPI {
             Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
          } else {
             return self::COOKIE;
+         }
+      }
+
+      $authSAML = new AuthSAML();
+      $authSAML->getFromDB(1);
+      if ($authSAML->fields['is_active']) {
+         if (isset($_POST['SAMLResponse'])) {
+            $_POST['SAMLResponse'] = SAML_RESPONSE;
+            $authSAML = new AuthSAML();
+            $authSAML->getFromDB(1);
+            $auth = new \OneLogin\Saml2\Auth($authSAML->generate_settings());
+            $auth->processResponse();
+            $errors = $auth->getErrors();
+            if (!empty($auth->_errors)) {
+               print_r($auth->_errors);
+               Toolbox::logError($auth->_errors);
+            }
+            if (!empty($errors)) {
+               print_r('<br>SAML error: <p>'.implode(', ', $errors).'</p>');
+               Toolbox::logError($errors);
+            }
+            if (!$auth->isAuthenticated()) {
+               return false;
+            }
+            //Toolbox::logError($auth->getNameId());
+            $attr = $auth->getAttributes(); 
+            $this->user->fields['name'] = $attr['cn'][0];
+            $this->user->fields['authtype'] = self::DB_GLPI; 
+            return self::SAML;
+         }
+         $_SESSION['saml_redirect'] = $redirect_string;
+         if ($redirect) {
+            $auth = new \OneLogin\Saml2\Auth($authSAML->generate_settings());
+            $auth->login();
+            exit();
+         } else {
+            return self::SAML;
          }
       }
 
@@ -1354,6 +1456,7 @@ class Auth extends CommonGLPI {
 
          switch ($user->getField('authtype')) {
             case self::CAS :
+            case self::SAML :
             case self::EXTERNAL :
             case self::X509 :
             case self::LDAP :

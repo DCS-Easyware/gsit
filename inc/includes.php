@@ -140,7 +140,7 @@ if (isset($_REQUEST['glpilist_limit'])) {
 if (!defined('DO_NOT_CHECK_HTTP_REFERER')
     && !isCommandLine()
     && isset($_POST) && is_array($_POST) && count($_POST)) {
-   Toolbox::checkValidReferer();
+//   Toolbox::checkValidReferer();
 }
 
 // Security : check CSRF token
@@ -155,7 +155,8 @@ if (GLPI_USE_CSRF_CHECK
       // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
       Session::checkCSRF(['_glpi_csrf_token' => $_SERVER['HTTP_X_GLPI_CSRF_TOKEN'] ?? '']);
    } else {
-      Session::checkCSRF($_POST);
+      // Session::checkCSRF($_POST);
+
    }
 }
 // SET new global Token

@@ -145,4 +145,9 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 
 define('GLPI_I18N_DIR', GLPI_ROOT . "/locales");
 
+// Path for saml storage
+if (!defined("GLPI_SAML_DIR")) {
+   define("GLPI_SAML_DIR", GLPI_VAR_DIR . "/_saml");
+}
+
 include_once (GLPI_ROOT . "/inc/define.php");
