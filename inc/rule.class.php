@@ -2227,6 +2227,9 @@ class Rule extends CommonDBTM {
 
                case "dropdown_tickettype" :
                   return Ticket::getTicketTypeName($pattern);
+
+               case "dropdown_changetype" :
+                  return Change::getChangeTypeName($pattern);
             }
          }
       }
@@ -2347,6 +2350,11 @@ class Rule extends CommonDBTM {
                $display = true;
                break;
 
+            case "dropdown_changetype" :
+               Dropdown::showFromArray($name, Change::getTypes(), ['value' => $value]);
+               $display = true;
+               break;
+
             default:
                $tested = false;
                break;
@@ -2422,6 +2430,9 @@ class Rule extends CommonDBTM {
 
             case "dropdown_tickettype" :
                return Ticket::getTicketTypeName($value);
+
+            case "dropdown_changetype" :
+               return Change::getChangeTypeName($value);
 
             case "dropdown_management" :
                return Dropdown::getGlobalSwitch($value);

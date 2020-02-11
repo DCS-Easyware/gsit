@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -60,6 +62,14 @@ class Change extends CommonITILObject {
    const READMY                        = 1;
    const READALL                       = 1024;
 
+   // Standard type
+   const STANDARD_TYPE  = 1;
+   // Normal type
+   const NORMAL_TYPE    = 2;
+   // Major type
+   const MAJOR_TYPE     = 3;
+   // Emergency type
+   const EMERGENCY_TYPE = 4;
 
 
    static function getTypeName($nb = 0) {
@@ -262,8 +272,74 @@ class Change extends CommonITILObject {
    }
 
 
+   function prepareInputForUpdate($input) {
+
+      // Process Business Rules
+      $this->fillInputForBusinessRules($input);
+
+      if (isset($input['entities_id'])) {
+         $entid = $input['entities_id'];
+      } else {
+         $entid = $this->fields['entities_id'];
+         $input['entities_id'] = $entid;
+      }
+
+      $rules = new RuleChangeCollection($entid);
+      if (defined('TU_USER')) {
+         // reload rule singleton
+         $rules->getCollectionPart();
+      }
+      // Clean new lines before passing to rules
+      if (isset($input["content"])) {
+         $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
+         $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+      }
+
+      $input = $rules->processAllRules($input,
+                                       $input,
+                                       ['recursive' => true],
+                                       ['condition' => RuleTicket::ONUPDATE]);
+      $input = Toolbox::stripslashes_deep($input);
+
+      // Manage fields from auto update or rules : map rule actions to standard additional ones
+      $usertypes  = ['assign', 'requester', 'observer'];
+      $actortypes = ['user','group','supplier'];
+      foreach ($usertypes as $t) {
+         foreach ($actortypes as $a) {
+            if (isset($input['_'.$a.'s_id_'.$t])) {
+               switch ($a) {
+                  case 'user' :
+                     $additionalfield           = '_additional_'.$t.'s';
+                     $input[$additionalfield][] = ['users_id' => $input['_'.$a.'s_id_'.$t]];
+                     break;
+
+                  default :
+                     $additionalfield           = '_additional_'.$a.'s_'.$t.'s';
+                     $input[$additionalfield][] = $input['_'.$a.'s_id_'.$t];
+                     break;
+               }
+            }
+         }
+      }
+
+      // Recompute default values based on values computed by rules
+      $input = $this->computeDefaultValuesForAdd($input);
+      $input = parent::prepareInputForUpdate($input);
+
+      return $input;
+   }
+
+
+   function pre_updateInDB() {
+      parent::pre_updateInDB();
+   }
+
+
    function post_updateItem($history = 1) {
-      global $CFG_GLPI;
+      global $DB, $CFG_GLPI;
+
+      //Action for send_validation rule : do validation before clean
+      $this->manageValidationAdd($this->input);
 
       parent::post_updateItem($history);
 
@@ -271,6 +347,32 @@ class Change extends CommonITILObject {
 
       if (isset($this->input['_forcenotif'])) {
          $donotif = true;
+      }
+
+      if (!empty($this->input['items_id'])) {
+         $change_item = new Change_Item();
+         $dbItems = [];
+         $iterator = $DB->request([
+            'FIELDS' => ['id'],
+            'FROM'   => 'glpi_changes_items',
+            'WHERE'  => [
+               'changes_id' => $this->fields['id']
+            ]
+         ]);
+         while ($data = $iterator->next()) {
+            $dbItems[$data['itemtype']][] = $data['items_id'];
+         }
+
+         foreach ($this->input['items_id'] as $itemtype => $items) {
+            foreach ($items as $items_id) {
+               if (!isset($dbItems[$itemtype][$items_id])) {
+                  $change_item->add(['items_id'      => $items_id,
+                                    'itemtype'      => $itemtype,
+                                    'changes_id'    => $this->fields['id'],
+                                    '_disablenotif' => true]);
+               }
+            }
+         }
       }
 
       if (isset($this->input['_disablenotif'])) {
@@ -301,8 +403,52 @@ class Change extends CommonITILObject {
    }
 
 
+   function prepareInputForAdd($input) {
+      $input =  parent::prepareInputForAdd($input);
+
+      // Process Business Rules
+      $this->fillInputForBusinessRules($input);
+
+      $rules = new RuleChangeCollection($input['entities_id']);
+      if (defined('TU_USER')) {
+         // reload rule singleton
+         $rules->getCollectionPart();
+      }
+      // Clean new lines before passing to rules
+      if (isset($input["content"])) {
+         $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
+         $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+      }
+
+      $input = $rules->processAllRules($input,
+                                       $input,
+                                       ['recursive' => true],
+                                       ['condition' => RuleTicket::ONADD]);
+      $input = Toolbox::stripslashes_deep($input);
+
+      // Recompute default values based on values computed by rules
+      $input = $this->computeDefaultValuesForAdd($input);
+
+      return $input;
+   }
+
+
    function post_addItem() {
       global $CFG_GLPI, $DB;
+
+      $this->manageValidationAdd($this->input);
+
+      if (!empty($this->input['items_id'])) {
+         $change_item = new Change_Item();
+         foreach ($this->input['items_id'] as $itemtype => $items) {
+            foreach ($items as $items_id) {
+               $change_item->add(['items_id'      => $items_id,
+                                  'itemtype'      => $itemtype,
+                                  'changes_id'    => $this->fields['id'],
+                                  '_disablenotif' => true]);
+            }
+         }
+      }
 
       parent::post_addItem();
 
@@ -899,9 +1045,45 @@ class Change extends CommonITILObject {
          }
          echo "</tr>";
       }
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>".__('Planned start date')."</th>";
+      echo "<td>";
+      $date = $this->fields["plan_start_date"];
+      if (!$ID) {
+         $date = date("Y-m-d H:i:s");
+      }
+      Html::showDateTimeField("plan_start_date", ['value'      => $date,
+                                                  'timestep'   => 1,
+                                                  'maybeempty' => false]);
+      echo "</td>";
+      echo "<th>".__('Planned end date')."</th>";
+      echo "<td>";
+      $date = $this->fields["plan_end_date"];
+      if (!$ID) {
+         $date = date("Y-m-d H:i:s");
+      }
+      Html::showDateTimeField("plan_end_date", ['value'      => $date,
+                                                'timestep'   => 1,
+                                                'maybeempty' => false]);
+      echo "</td>";
+      echo "</tr>";
+
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
+
+      echo "<th width='$colsize1%'>".__('Type')."</th>";
+      echo "<td width='$colsize2%'>";
+      Dropdown::showFromArray('type', self::getTypes(), ['value' => $this->fields['type']]);
+      echo "</td>";
+      echo "<th width='$colsize1%'>".__('Urgency')."</th>";
+      echo "<td width='$colsize2%'>";
+      // Only change during creation OR when allowed to change priority OR when user is the creator
+      $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
+      echo "</td>";
+      echo "</tr>";
+
       echo "<tr class='tab_bg_1'>";
 
       echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('status');
@@ -1047,6 +1229,15 @@ class Change extends CommonITILObject {
          $CFG_GLPI["root_doc"]."/ajax/priority.php",
          $params
       );
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>".__('Total duration')."</th>";
+      echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
+      echo "<th>".__('Unavailability of the service')."</th>";
+      echo "<td>";
+      Dropdown::showYesNo('service_unavailability', $this->fields['service_unavailability']);
       echo "</td>";
       echo "</tr>";
 
@@ -1638,4 +1829,296 @@ class Change extends CommonITILObject {
    public static function getItemLinkClass(): string {
       return Change_Item::class;
    }
+
+   /**
+    * Get change types
+    *
+    * @since 0.95
+    *
+    * @return array of types
+   **/
+   static function getTypes() {
+
+      $options[self::STANDARD_TYPE] = __('Standard');
+      $options[self::NORMAL_TYPE]   = __('Normal');
+      $options[self::MAJOR_TYPE] = __('Major');
+      $options[self::EMERGENCY_TYPE] = __('Emergency');
+
+      return $options;
+   }
+
+
+   /**
+    * Get change type Name
+    *
+    * @since 0.95
+    *
+    * @param $value type ID
+   **/
+   static function getChangeTypeName($value) {
+
+      $types = self::getTypes();
+      if (isset($types[$value])) {
+         return $types[$value];
+      }
+      // Return $value if not defined
+      return $value;
+   }
+
+
+   /**
+    * @param $output
+   **/
+   static function showPreviewAssignAction($output) {
+
+      //If change is assign to an object, display this information first
+      if (isset($output["entities_id"])
+          && isset($output["items_id"])
+          && isset($output["itemtype"])) {
+
+         if ($item = getItemForItemtype($output["itemtype"])) {
+            if ($item->getFromDB($output["items_id"])) {
+               echo "<tr class='tab_bg_2'>";
+               echo "<td>".__('Assign equipment')."</td>";
+
+               echo "<td>".$item->getLink(['comments' => true])."</td>";
+               echo "</tr>";
+            }
+         }
+
+         unset($output["items_id"]);
+         unset($output["itemtype"]);
+      }
+      unset($output["entities_id"]);
+      return $output;
+   }
+
+   /**
+    * Fill input with values related to business rules.
+    *
+    * @param array $input
+    *
+    * @return void
+    */
+   private function fillInputForBusinessRules(array &$input) {
+
+      global $DB;
+
+      $entities_id = isset($input['entities_id'])
+         ? $input['entities_id']
+         : $this->fields['entities_id'];
+
+      // If creation date is not set, then this function is called during ticket creation
+      $creation_date = !empty($this->fields['date_creation'])
+         ? strtotime($this->fields['date_creation'])
+         : time();
+
+      // add calendars matching date creation (for business rules)
+      $calendars = [];
+      $ite_calendar = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => Calendar::getTable(),
+         'WHERE'  => getEntitiesRestrictCriteria('', '', $entities_id, true)
+      ]);
+      foreach ($ite_calendar as $calendar_data) {
+         $calendar = new Calendar();
+         $calendar->getFromDB($calendar_data['id']);
+         if ($calendar->isAWorkingHour($creation_date)) {
+            $calendars[] = $calendar_data['id'];
+         }
+      }
+      if (count($calendars)) {
+         $input['_date_creation_calendars_id'] = $calendars;
+      }
+   }
+
+   /**
+    * Manage Validation add from input
+    *
+    * @since 9.4
+    *
+    * @param $input array : input array
+    *
+    * @return nothing
+   **/
+   function manageValidationAdd($input) {
+
+      //Action for send_validation rule
+      if (isset($input["_add_validation"])) {
+         if (isset($input['entities_id'])) {
+            $entid = $input['entities_id'];
+         } else if (isset($this->fields['entities_id'])) {
+            $entid = $this->fields['entities_id'];
+         } else {
+            return false;
+         }
+
+         $validations_to_send = [];
+         if (!is_array($input["_add_validation"])) {
+            $input["_add_validation"] = [$input["_add_validation"]];
+         }
+
+         foreach ($input["_add_validation"] as $key => $validation) {
+            switch ($validation) {
+               case 'requester_supervisor' :
+                  if (isset($input['_groups_id_requester'])
+                      && $input['_groups_id_requester']) {
+                     $users = Group_User::getGroupUsers(
+                        $input['_groups_id_requester'],
+                        ['is_manager' => 1]
+                     );
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];
+                     }
+                  }
+                  // Add to already set groups
+                  foreach ($this->getGroups(CommonITILActor::REQUESTER) as $d) {
+                     $users = Group_User::getGroupUsers(
+                        $d['groups_id'],
+                        ['is_manager' => 1]
+                     );
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];
+                     }
+                  }
+                  break;
+
+               case 'assign_supervisor' :
+                  if (isset($input['_groups_id_assign'])
+                      && $input['_groups_id_assign']) {
+                     $users = Group_User::getGroupUsers(
+                        $input['_groups_id_assign'],
+                        ['is_manager' => 1]
+                     );
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];
+                     }
+                  }
+                  foreach ($this->getGroups(CommonITILActor::ASSIGN) as $d) {
+                     $users = Group_User::getGroupUsers(
+                        $d['groups_id'],
+                        ['is_manager' => 1]
+                     );
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];
+                     }
+                  }
+                  break;
+
+               case 'requester_responsible':
+                  // Main use for Update change
+                  $change_User = new Change_User();
+                  $allActors = $change_User->getActors($this->fields['id']);
+                  if (isset($allActors[Change_User::REQUESTER])) {
+                     foreach ($allActors[Change_User::REQUESTER] as $data) {
+                        $user = new User();
+                        if ($user->getFromDB($data['users_id'])) {
+                           $validations_to_send[] = $user->getField('users_id_supervisor');
+                        }
+                     }
+                  }
+                  // Main use for Add change
+                  if (isset($input['_users_id_requester'])) {
+                     if (is_array($input['_users_id_requester'])) {
+                        foreach ($input['_users_id_requester'] as $users_id) {
+                           $user = new User();
+                           if ($user->getFromDB($users_id)) {
+                              $validations_to_send[] = $user->getField('users_id_supervisor');
+                           }
+                        }
+                     } else {
+                        $user = new User();
+                        if ($user->getFromDB($input['_users_id_requester'])) {
+                           $validations_to_send[] = $user->getField('users_id_supervisor');
+                        }
+                     }
+                  }
+                  break;
+
+               default :
+                  // Group case from rules
+                  if ($key === 'group') {
+                     foreach ($validation as $groups_id) {
+                        $opt = ['groups_id' => $groups_id,
+                                'right'     => 'validate',
+                                'entity'    => $entid];
+
+                        $data_users = ChangeValidation::getGroupUserHaveRights($opt);
+
+                        foreach ($data_users as $user) {
+                           $validations_to_send[] = $user['id'];
+                        }
+                     }
+                  } else {
+                     $validations_to_send[] = $validation;
+                  }
+            }
+
+         }
+
+         // Validation user added on change form
+         if (isset($input['users_id_validate'])) {
+            if (array_key_exists('groups_id', $input['users_id_validate'])) {
+               foreach ($input['users_id_validate'] as $key => $validation_to_add) {
+                  if (is_numeric($key)) {
+                     $validations_to_send[] = $validation_to_add;
+                  }
+               }
+            } else {
+               foreach ($input['users_id_validate'] as $key => $validation_to_add) {
+                  if (is_numeric($key)) {
+                     $validations_to_send[] = $validation_to_add;
+                  }
+               }
+            }
+         }
+
+         // Keep only one
+         $validations_to_send = array_unique($validations_to_send);
+
+         $validation          = new ChangeValidation();
+
+         if (count($validations_to_send)) {
+            $values                = [];
+            $values['changes_id']  = $this->fields['id'];
+            if (isset($input['id']) && $input['id'] != $this->fields['id']) {
+               $values['_change_add'] = true;
+            }
+
+            // to know update by rules
+            if (isset($input["_rule_process"])) {
+               $values['_rule_process'] = $input["_rule_process"];
+            }
+            // if auto_import, tranfert it for validation
+            if (isset($input['_auto_import'])) {
+               $values['_auto_import'] = $input['_auto_import'];
+            }
+
+            // Cron or rule process of hability to do
+            if (Session::isCron()
+                || isset($input["_auto_import"])
+                || isset($input["_rule_process"])
+                || $validation->can(-1, CREATE, $values)) { // cron or allowed user
+
+               $add_done = false;
+               foreach ($validations_to_send as $user) {
+                  // Do not auto add twice same validation
+                  if (!ChangeValidation::alreadyExists($values['changes_id'], $user)) {
+                     $values["users_id_validate"] = $user;
+                     if ($validation->add($values)) {
+                        $add_done = true;
+                     }
+                  }
+               }
+               if ($add_done) {
+                  Event::log($this->fields['id'], "change", 4, "tracking",
+                             sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
+                                     $this->fields['id']));
+               }
+            }
+         }
+      }
+      return true;
+   }
+
 }
