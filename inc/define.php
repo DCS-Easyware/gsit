@@ -359,6 +359,7 @@ $CFG_GLPI["rulecollections_types"]        = ['RuleImportEntityCollection',
                                                   'RuleRightCollection',
                                                   'RuleSoftwareCategoryCollection',
                                                   'RuleTicketCollection',
+                                                  'RuleChangeCollection',
                                                   'RuleAssetCollection'];
 
 // Items which can planned something

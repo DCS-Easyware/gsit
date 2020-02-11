@@ -2,7 +2,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2018 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -29,30 +29,10 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-/**
- * Update from 9.4.5 to 9.4.6
- *
- * @return bool for success (will die for most error)
-**/
-function update945to946() {
-   global $DB, $migration;
-   $updateresult     = true;
-   //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '9.4.6'));
-   $migration->setVersion('9.4.6');
-   $DB->deleteOrDie(
-      'glpi_profilerights',
-      [
-         'name'  => 'backup'
-      ]
-   );
-   /** Add type field to Changes */
-   $migration->addField('glpi_changes', 'type', 'INT( 11 ) NOT NULL DEFAULT 1');
-   $migration->addField('glpi_changes', 'plan_start_date', 'datetime');
-   $migration->addField('glpi_changes', 'plan_end_date', 'datetime');
-   $migration->addField('glpi_changes', 'service_unavailability', 'bool');
 
-   // ************ Keep it at the end **************
-   $migration->executeMigration();
-   return $updateresult;
-}
+include ('../inc/includes.php');
+
+$rulecollection = new RuleChangeCollection($_SESSION['glpiactive_entity']);
+
+include (GLPI_ROOT . "/front/rule.common.php");
+
