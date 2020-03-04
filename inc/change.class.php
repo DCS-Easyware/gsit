@@ -61,6 +61,7 @@ class Change extends CommonITILObject {
 
    const READMY                        = 1;
    const READALL                       = 1024;
+   const UPDATEPOSTACCEPTED            = 2048;
 
    // Standard type
    const STANDARD_TYPE  = 1;
@@ -93,6 +94,17 @@ class Change extends CommonITILObject {
 
    static function canView() {
       return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
+   }
+
+   function canUpdateFieldAfterAccepted() {
+
+      if (!isset($this->fields['status'])
+         || (isset($this->fields['status']) && in_array($this->fields['status'], [self::INCOMING, self::EVALUATION, self::APPROVAL]))) {
+         return true;
+      } else if (Session::haveRight(self::$rightname, self::UPDATEPOSTACCEPTED)) {
+         return true;
+      }
+      return false;
    }
 
 
@@ -436,6 +448,7 @@ class Change extends CommonITILObject {
    function post_addItem() {
       global $CFG_GLPI, $DB;
 
+      $this->manageTaskAdd($this->input);
       $this->manageValidationAdd($this->input);
 
       if (!empty($this->input['items_id'])) {
@@ -587,6 +600,15 @@ class Change extends CommonITILObject {
       ];
 
       $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'type',
+         'name'               => __('Type'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
+
+      $tab[] = [
          'id'                 => '131',
          'table'              => 'glpi_changes_items',
          'field'              => 'itemtype',
@@ -599,6 +621,37 @@ class Change extends CommonITILObject {
             'jointype'           => 'child'
          ],
          'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '132',
+         'table'              => $this->getTable(),
+         'field'              => 'plan_start_date',
+         'name'               => __('Planned start date'),
+         'datatype'           => 'datetime',
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '133',
+         'table'              => $this->getTable(),
+         'field'              => 'plan_end_date',
+         'name'               => __('Planned end date'),
+         'datatype'           => 'datetime',
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '134',
+         'table'              => $this->getTable(),
+         'field'              => 'service_unavailability',
+         'name'               => __('Unavailability of the service'),
+         'datatype'           => 'bool',
          'massiveaction'      => false
       ];
 
@@ -1050,22 +1103,26 @@ class Change extends CommonITILObject {
       echo "<th>".__('Planned start date')."</th>";
       echo "<td>";
       $date = $this->fields["plan_start_date"];
-      if (!$ID) {
-         $date = date("Y-m-d H:i:s");
+      if (!$ID || $this->canUpdateFieldAfterAccepted()) {
+         Html::showDateTimeField("plan_start_date", ['value'      => $date,
+                                                   'timestep'   => 1,
+                                                   'maybeempty' => false,
+                                                   'canedit'    => (!$ID || $this->canUpdateFieldAfterAccepted())]);
+      } else {
+         echo Html::convDateTime($date);
       }
-      Html::showDateTimeField("plan_start_date", ['value'      => $date,
-                                                  'timestep'   => 1,
-                                                  'maybeempty' => false]);
       echo "</td>";
       echo "<th>".__('Planned end date')."</th>";
       echo "<td>";
       $date = $this->fields["plan_end_date"];
-      if (!$ID) {
-         $date = date("Y-m-d H:i:s");
+      if (!$ID || $this->canUpdateFieldAfterAccepted()) {
+         Html::showDateTimeField("plan_end_date", ['value'      => $date,
+                                                   'timestep'   => 1,
+                                                   'maybeempty' => false,
+                                                   'canedit'    => (!$ID || $this->canUpdateFieldAfterAccepted())]);
+      } else {
+         echo Html::convDateTime($date);
       }
-      Html::showDateTimeField("plan_end_date", ['value'      => $date,
-                                                'timestep'   => 1,
-                                                'maybeempty' => false]);
       echo "</td>";
       echo "</tr>";
 
@@ -1075,7 +1132,11 @@ class Change extends CommonITILObject {
 
       echo "<th width='$colsize1%'>".__('Type')."</th>";
       echo "<td width='$colsize2%'>";
-      Dropdown::showFromArray('type', self::getTypes(), ['value' => $this->fields['type']]);
+      if (!$ID || $this->canUpdateFieldAfterAccepted()) {
+         Dropdown::showFromArray('type', self::getTypes(), ['value' => $this->fields['type']]);
+      } else {
+         echo self::getTypes()[$this->fields['type']];
+      }
       echo "</td>";
       echo "<th width='$colsize1%'>".__('Urgency')."</th>";
       echo "<td width='$colsize2%'>";
@@ -1303,9 +1364,13 @@ class Change extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td colspan='3'>";
       echo $tt->getBeginHiddenFieldValue('name');
-      echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
-               ($tt->isMandatoryField('name') ? " required='required'" : '') .
-               " value=\"".Html::cleanInputText($this->fields["name"])."\">";
+      if (!$ID || $this->canUpdateFieldAfterAccepted()) {
+         echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
+                  ($tt->isMandatoryField('name') ? " required='required'" : '') .
+                  " value=\"".Html::cleanInputText($this->fields["name"])."\">";
+      } else {
+         echo Html::cleanInputText($this->fields["name"]);
+      }
       echo $tt->getEndHiddenFieldValue('name', $this);
       echo "</td>";
       echo "</tr>";
@@ -1335,7 +1400,7 @@ class Change extends CommonITILObject {
       );
 
       echo "<div id='content$rand_text'>";
-      if ($canupdate) {
+      if ($canupdate && (!$ID || $this->canUpdateFieldAfterAccepted())) {
          $uploads = [];
          if (isset($this->input['_content'])) {
             $uploads['_content'] = $this->input['_content'];
@@ -1407,23 +1472,23 @@ class Change extends CommonITILObject {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Impacts')."</td><td colspan='3'>";
-      if ($canedit) {
+      if ($canedit && $this->canUpdateFieldAfterAccepted()) {
          echo "<textarea id='impactcontent' name='impactcontent' rows='6' cols='110'>";
          echo $this->getField('impactcontent');
          echo "</textarea>";
       } else {
-         echo $this->getField('impactcontent');
+         echo nl2br($this->getField('impactcontent'));
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Control list')."</td><td colspan='3'>";
-      if ($canedit) {
+      if ($canedit && $this->canUpdateFieldAfterAccepted()) {
          echo "<textarea id='controlistcontent' name='controlistcontent' rows='6' cols='110'>";
          echo $this->getField('controlistcontent');
          echo "</textarea>";
       } else {
-         echo $this->getField('controlistcontent');
+         echo nl2br($this->getField('controlistcontent'));
       }
       echo "</td></tr>";
 
@@ -1447,34 +1512,34 @@ class Change extends CommonITILObject {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Deployment plan')."</td><td colspan='3'>";
-      if ($canedit) {
+      if ($canedit && $this->canUpdateFieldAfterAccepted()) {
          echo "<textarea id='rolloutplancontent' name='rolloutplancontent' rows='6' cols='110'>";
          echo $this->getField('rolloutplancontent');
          echo "</textarea>";
       } else {
-         echo $this->getField('rolloutplancontent');
+         echo nl2br($this->getField('rolloutplancontent'));
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Backup plan')."</td><td colspan='3'>";
-      if ($canedit) {
+      if ($canedit && $this->canUpdateFieldAfterAccepted()) {
          echo "<textarea id='backoutplancontent' name='backoutplancontent' rows='6' cols='110'>";
          echo $this->getField('backoutplancontent');
          echo "</textarea>";
       } else {
-         echo $this->getField('backoutplancontent');
+         echo nl2br($this->getField('backoutplancontent'));
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Checklist')."</td><td colspan='3'>";
-      if ($canedit) {
+      if ($canedit && $this->canUpdateFieldAfterAccepted()) {
          echo "<textarea id='checklistcontent' name='checklistcontent' rows='6' cols='110'>";
          echo $this->getField('checklistcontent');
          echo "</textarea>";
       } else {
-         echo $this->getField('checklistcontent');
+         echo nl2br($this->getField('checklistcontent'));
       }
       echo "</td></tr>";
 
@@ -1492,6 +1557,8 @@ class Change extends CommonITILObject {
 
       $values[self::READALL] = __('See all');
       $values[self::READMY]  = __('See (author)');
+      $values[self::UPDATEPOSTACCEPTED] = ['short' => __('Update after accepted state'),
+                                           'long'  => __('Update change after accepted state')];
 
       return $values;
    }
@@ -2142,6 +2209,83 @@ class Change extends CommonITILObject {
       $items += self::getTypes();
 
       return Dropdown::showFromArray($name, $items, $params);
+   }
+
+   function manageTaskAdd($input) {
+
+      // Action for add new task
+      $values = [];
+      if (isset($input["_task_description"])) {
+         $values['content'] = $input["_task_description"];
+      }
+      if (isset($input["_task_assign_user"])) {
+         $values['users_id_tech'] = $input["_task_assign_user"];
+      }
+      if (isset($input["_task_assign_group"])) {
+         $values['groups_id_tech'] = $input["_task_assign_group"];
+      }
+      if (isset($input["_task_date_start"])) {
+         $values['plan']['begin'] = $input["_task_date_start"];
+      }
+      if (isset($input["_task_date_end"])) {
+         $values['plan']['end'] = $input["_task_date_end"];
+      }
+      if (isset($input["_task_duration"]) 
+         && is_numeric($input["_task_duration"])
+         && $input["_task_duration"] > 0) {
+         // Must have it in seconds
+         $values['plan']['_duration'] = ($input["_task_duration"] * 60);
+      }
+      if (count($values) > 0) {
+         $values['changes_id']  = $this->fields['id'];
+         $changeTask = new ChangeTask();
+         $changeTask->add($values);
+      }
+   }
+
+   /**
+    * @since 9.5
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+
+         case 'type':
+            return self::getTypes()[$values[$field]];
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   /**
+    * @since 9.5
+    *
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (default '')
+    * @param $options   array
+    *
+    * @return string
+   **/
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+      switch ($field) {
+
+         case 'type':
+            $options['value'] = $values[$field];
+            return self::dropdownType($name, $options);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
 }

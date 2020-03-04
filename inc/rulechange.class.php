@@ -302,6 +302,30 @@ class RuleChange extends Rule {
                      $output["items_id"][$result["itemtype"]][] = $result["id"];
                   }
                   break;
+
+               case "regex_result" :
+               case "append_regex_result" :
+                  //Regex result : assign value from the regex
+                  //Append regex result : append result from a regex
+                  if (isset($this->regex_results[0])) {
+                     $res = RuleAction::getRegexResultById($action->fields["value"],
+                                                            $this->regex_results[0]);
+                  } else {
+                     $res = $action->fields["value"];
+                  }
+
+                  if ($action->fields["action_type"] == "append_regex_result") {
+                     if (isset($params[$action->fields["field"]])) {
+                        $res = $params[$action->fields["field"]] . $res;
+                     } else {
+                        //keep rule value to append in a separate entry
+                        $output[$action->fields['field'] . '_append'] = $res;
+                     }
+                  }
+
+                  $output[$action->fields["field"]] = $res;
+                  break;
+
             }
          }
       }
@@ -430,16 +454,16 @@ class RuleChange extends Rule {
       $criterias['profiles_id']['type']                     = 'dropdown';
 
       $criterias['urgency']['name']                         = __('Urgency');
-      $criterias['urgency']['type']                         = 'dropdown_urgency';
+      $criterias['urgency']['type']                         = 'dropdown_changeurgency';
 
       $criterias['impact']['name']                          = __('Impact');
-      $criterias['impact']['type']                          = 'dropdown_impact';
+      $criterias['impact']['type']                          = 'dropdown_changeimpact';
 
       $criterias['priority']['name']                        = __('Priority');
-      $criterias['priority']['type']                        = 'dropdown_priority';
+      $criterias['priority']['type']                        = 'dropdown_changepriority';
 
       $criterias['status']['name']                          = __('Status');
-      $criterias['status']['type']                          = 'dropdown_status';
+      $criterias['status']['type']                          = 'dropdown_changestatus';
 
       $criterias['_date_creation_calendars_id'] = [
          'name'            => __("Creation date is a working hour in calendar"),
@@ -451,6 +475,10 @@ class RuleChange extends Rule {
 
       $criterias['service_unavailability']['name'] = __('Unavailability of the service');
       $criterias['service_unavailability']['type'] = 'yesno';
+
+      $criterias['global_validation']['name']                = __('Validation');
+      $criterias['global_validation']['type']                = 'dropdown_globalvalidation';
+
 
       return $criterias;
    }
@@ -526,17 +554,17 @@ class RuleChange extends Rule {
       $actions['_groups_id_observer']['appendto']           = '_additional_groups_observers';
 
       $actions['urgency']['name']                           = __('Urgency');
-      $actions['urgency']['type']                           = 'dropdown_urgency';
+      $actions['urgency']['type']                           = 'dropdown_changeurgency';
 
       $actions['impact']['name']                            = __('Impact');
-      $actions['impact']['type']                            = 'dropdown_impact';
+      $actions['impact']['type']                            = 'dropdown_changeimpact';
 
       $actions['priority']['name']                          = __('Priority');
-      $actions['priority']['type']                          = 'dropdown_priority';
+      $actions['priority']['type']                          = 'dropdown_changepriority';
       $actions['priority']['force_actions']                 = ['assign', 'compute'];
 
       $actions['status']['name']                            = __('Status');
-      $actions['status']['type']                            = 'dropdown_status';
+      $actions['status']['type']                            = 'dropdown_changestatus';
 
       $actions['affectobject']['name']                      = _n('Associated element', 'Associated elements', Session::getPluralNumber());
       $actions['affectobject']['type']                      = 'text';
@@ -582,6 +610,34 @@ class RuleChange extends Rule {
 
       $actions['service_unavailability']['name'] = __('Unavailability of the service');
       $actions['service_unavailability']['type'] = 'yesno';
+
+      $actions['plan_start_date']['name']          = __('Planned start date');
+      $actions['plan_start_date']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['plan_end_date']['name']          = __('Planned end date');
+      $actions['plan_end_date']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_description']['name']          = __('Task - Create task with a description');
+      $actions['_task_description']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_assign_user']['table'] = 'glpi_users';
+      $actions['_task_assign_user']['name']  = __('Task - Define assigned user to task');
+      $actions['_task_assign_user']['type']  = 'dropdown';
+      $actions['_task_assign_user']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_assign_group']['table'] = 'glpi_groups';
+      $actions['_task_assign_group']['name']  = __('Task - Define assigned group to task');
+      $actions['_task_assign_group']['type']  = 'dropdown';
+      $actions['_task_assign_group']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_date_start']['name']          = __('Task - Set start date planned');
+      $actions['_task_date_start']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_date_end']['name']          = __('Task - Set end date planned');
+      $actions['_task_date_end']['force_actions'] = ['assign', 'regex_result'];
+
+      $actions['_task_duration']['name']          = __('Task - Set duration of the task (in minutes)');
+      $actions['_task_duration']['force_actions'] = ['assign', 'regex_result'];
 
       return $actions;
    }

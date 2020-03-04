@@ -2230,6 +2230,22 @@ class Rule extends CommonDBTM {
 
                case "dropdown_changetype" :
                   return Change::getChangeTypeName($pattern);
+
+               case "dropdown_changestatus" :
+                  return Change::getStatus($pattern);
+
+               case "dropdown_changepriority" :
+                  return Change::getPriorityName($pattern);
+
+               case "dropdown_changeurgency" :
+                  return Change::getUrgencyName($pattern);
+
+               case "dropdown_changeimpact" :
+                  return Change::getImpactName($pattern);
+
+               case "dropdown_globalvalidation" :
+                  return CommonITILValidation::getStatus($pattern);
+
             }
          }
       }
@@ -2355,6 +2371,36 @@ class Rule extends CommonDBTM {
                $display = true;
                break;
 
+            case "dropdown_changeurgency" :
+               Change::dropdownUrgency(['name'  => $name,
+                                        'value' => $value]);
+               $display = true;
+               break;
+
+            case "dropdown_changeimpact" :
+               Change::dropdownImpact(['name'  => $name,
+                                       'value' => $value]);
+               $display = true;
+               break;
+
+            case "dropdown_changepriority" :
+               Change::dropdownPriority(['name'  => $name,
+                                         'value' => $value,
+                                         'withmajor' => true]);
+              $display = true;
+               break;
+
+            case "dropdown_changestatus" :
+               Change::dropdownStatus(['name'  => $name,
+                                       'value' => $value]);
+               $display = true;
+               break;
+
+            case "dropdown_globalvalidation" :
+               CommonITILValidation::dropdownStatus($name, ['value' => $value]);
+               $display = true;
+               break;
+
             default:
                $tested = false;
                break;
@@ -2433,6 +2479,18 @@ class Rule extends CommonDBTM {
 
             case "dropdown_changetype" :
                return Change::getChangeTypeName($value);
+
+            case "dropdown_changestatus" :
+               return Change::getStatus($value);
+
+            case "dropdown_changeurgency" :
+               return Change::getUrgencyName($value);
+
+            case "dropdown_changeimpact" :
+               return Change::getImpactName($value);
+
+            case "dropdown_changepriority" :
+               return Change::getPriorityName($value);
 
             case "dropdown_management" :
                return Dropdown::getGlobalSwitch($value);
