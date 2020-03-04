@@ -630,10 +630,41 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_validation_percent" :
-                     $ticket = new Ticket();
-                     echo $ticket->getValueToSelect('validation_percent', 'value', $param['value']);
+                     if ($options['sub_type'] == "RuleChange") {
+                        $item = new Change();
+                     } else {
+                        $item = new Ticket();
+                     }
+                     echo $item->getValueToSelect('validation_percent', 'value', $param['value']);
                      $display       = true;
                      break;
+
+                  case "dropdown_changeurgency" :
+                     $param['name']  = 'value';
+                     Change::dropdownUrgency($param);
+                     $display = true;
+                     break;
+
+                  case "dropdown_changeimpact" :
+                     $param['name']  = 'value';
+                     Change::dropdownImpact($param);
+                     $display = true;
+                     break;
+
+                  case "dropdown_changepriority" :
+                     if ($_POST["action_type"] != 'compute') {
+                        $param['name']  = 'value';
+                        Change::dropdownPriority($param);
+                     }
+                     $display = true;
+                     break;
+
+                  case "dropdown_changestatus" :
+                     $param['name']  = 'value';
+                     Change::dropdownStatus($param);
+                     $display = true;
+                     break;
+
 
                   default :
                      if ($rule = getItemForItemtype($options["sub_type"])) {

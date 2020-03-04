@@ -634,7 +634,7 @@ CREATE TABLE `glpi_changes` (
   `close_delay_stat` int(11) NOT NULL DEFAULT '0',
   `solve_delay_stat` int(11) NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
-  `type` int(11) NOT NULL DEFAULT '1',
+  `type` int(11) NOT NULL DEFAULT '2',
   `plan_start_date` datetime DEFAULT NULL,
   `plan_end_date` datetime DEFAULT NULL,
   `service_unavailability` tinyint(1) NOT NULL DEFAULT '0',

@@ -47,7 +47,7 @@ function update945to946() {
       ]
    );
    /** Add type field to Changes */
-   $migration->addField('glpi_changes', 'type', 'INT( 11 ) NOT NULL DEFAULT 1');
+   $migration->addField('glpi_changes', 'type', 'INT( 11 ) NOT NULL DEFAULT 2');
    $migration->addField('glpi_changes', 'plan_start_date', 'datetime');
    $migration->addField('glpi_changes', 'plan_end_date', 'datetime');
    $migration->addField('glpi_changes', 'service_unavailability', 'bool');
