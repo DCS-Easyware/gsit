@@ -2401,6 +2401,11 @@ class Rule extends CommonDBTM {
                $display = true;
                break;
 
+            case "dropdown_taskstatus" :
+               Planning::dropdownState($name, $value);
+               $display = true;
+               break;
+
             default:
                $tested = false;
                break;
@@ -2494,6 +2499,10 @@ class Rule extends CommonDBTM {
 
             case "dropdown_management" :
                return Dropdown::getGlobalSwitch($value);
+
+            case "dropdown_taskstatus" :
+               return Planning::getState($value);
+
 
             default :
                return $this->displayAdditionRuleActionValue($value);

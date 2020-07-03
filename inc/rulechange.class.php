@@ -639,6 +639,10 @@ class RuleChange extends Rule {
       $actions['_task_duration']['name']          = __('Task - Set duration of the task (in minutes)');
       $actions['_task_duration']['force_actions'] = ['assign', 'regex_result'];
 
+      $actions['_task_status']['name']          = __('Task - Set status');
+      $actions['_task_status']['type']          = 'dropdown_taskstatus';
+      $actions['_task_status']['force_actions'] = ['assign'];
+
       return $actions;
    }
 

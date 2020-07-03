@@ -2230,6 +2230,9 @@ class Change extends CommonITILObject {
       if (isset($input["_task_date_end"])) {
          $values['plan']['end'] = $input["_task_date_end"];
       }
+      if (isset($input["_task_status"])) {
+         $values['state'] = $input["_task_status"];
+      }
       if (isset($input["_task_duration"]) 
          && is_numeric($input["_task_duration"])
          && $input["_task_duration"] > 0) {

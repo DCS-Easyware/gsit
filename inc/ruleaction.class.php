@@ -666,6 +666,13 @@ class RuleAction extends CommonDBChild {
                      break;
 
 
+                  case "dropdown_taskstatus" :
+                     $param['name']  = 'value';
+                     Planning::dropdownState($param['name'], $param['value']);
+                     $display = true;
+                     break;
+
+
                   default :
                      if ($rule = getItemForItemtype($options["sub_type"])) {
                         $display = $rule->displayAdditionalRuleAction($actions[$options["field"]], $param['value']);
