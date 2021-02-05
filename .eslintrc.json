@@ -4,7 +4,6 @@
         "/config/*",
         "/files/*",
         "/lib/*",
-        "/marketplace/*",
         "/node_modules/*",
         "/plugins/*",
         "/public/lib/*",
