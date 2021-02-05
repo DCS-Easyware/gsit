@@ -8,8 +8,6 @@ Please note that current repository is about GLPI core only. All related plugins
 
 ## Bugs
 
-Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesionnal services](http://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).
-
 If you found a bug, the first steps to do are:
 - check if you're using the latest version, and if not, upgrade to see if problem is not yet solved,
 - search in already existing tickets to see if someone else already report the issue.
