@@ -70,7 +70,6 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
     - ldap (users authentication)
     - openssl (encrypted communication)
     - sodium (performances enhancement on sensitive data encryption/decryption)
-    - zip and bz2 (installation of zip and bz2 packages from marketplace)
 
  * Supported browsers:
     - Edge
