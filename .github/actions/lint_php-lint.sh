@@ -6,7 +6,6 @@ echo $ROOT_DIR
 echo "Check for syntax errors"
 vendor/bin/parallel-lint \
   --exclude ./files/ \
-  --exclude ./marketplace/ \
   --exclude ./plugins/ \
   --exclude ./tools/vendor/ \
   --exclude ./vendor/ \
@@ -28,5 +27,5 @@ vendor/bin/phpcs \
   -p \
   --extensions=php \
   --standard=vendor/glpi-project/coding-standard/GlpiStandard/ \
-  --ignore="/.git/,^$ROOT_DIR/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/" \
+  --ignore="/.git/,^$ROOT_DIR/(config|files|lib|node_modules|plugins|tests/config|vendor)/" \
   .

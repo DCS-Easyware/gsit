@@ -88,8 +88,6 @@ class RequirementsManager {
       $requirements[] = new Extension('xmlrpc', true); // for XMLRPC API
       $requirements[] = new ExtensionClass('CAS', 'phpCAS', true); // for CAS lib
       $requirements[] = new Extension('exif', true); // for security reasons (images checks)
-      $requirements[] = new Extension('zip', true); // to handle zip packages on marketplace
-      $requirements[] = new Extension('bz2', true); // to handle bz2 packages on marketplace
       $requirements[] = new Extension('sodium', true); // to enhance performances on encrypt/decrypt (fallback to polyfill)
 
       if ($db instanceof \DBmysql) {
@@ -106,8 +104,6 @@ class RequirementsManager {
          }
          $requirements[] = new DirectoryWriteAccess($directory);
       }
-
-      $requirements[] = new DirectoryWriteAccess(GLPI_MARKETPLACE_DIR, true);
 
       $requirements[] = new ProtectedWebAccess(Variables::getDataDirectories());
 
