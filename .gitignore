@@ -3,7 +3,6 @@
 /config/glpicrypt.key
 /config/local_define.php
 /tests/config_db*
-/marketplace/
 /plugins/
 /files/
 /.buildpath
