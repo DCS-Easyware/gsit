@@ -78,12 +78,9 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
       'GLPI_IDOR_EXPIRES'              => '7200',
       'GLPI_ALLOW_IFRAME_IN_RICH_TEXT' => false,
 
-      // Constants related to GLPI Project / GLPI Network external services
+      // Constants related to GLPI Project external services
       'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
       'GLPI_INSTALL_MODE'                 => is_dir(GLPI_ROOT . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
-      'GLPI_NETWORK_MAIL'                 => 'glpi@teclib.com',
-      'GLPI_NETWORK_SERVICES'             => 'https://services.glpi-network.com', // GLPI Network services project URL
-      'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_SERVICES}/api/registration/',
       'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
 
       // Other constants
