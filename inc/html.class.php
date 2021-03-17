@@ -6439,7 +6439,12 @@ JAVASCRIPT;
     * @return string HTML copyright
     */
    static function getCopyrightMessage($withVersion = true) {
-      $message = "<a href=\"http://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
+      $message = '<a href="https://github.com/DCS-Easyware/glpi_sc_dcs">GLPISC (secure and clean) ';
+      if ($withVersion) {
+          $message .= GLPI_VERSION;
+      }
+      $message .= '</a> <a href="https://www.dcsit-group.com/">by DCS EASYWARE</a><br>'; 
+      $message .= "<a href=\"http://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
       $message .= "GLPI ";
       // if required, add GLPI version (eg not for login page)
       if ($withVersion) {
