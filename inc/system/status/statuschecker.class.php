@@ -167,18 +167,18 @@ final class StatusChecker {
                   try {
                      if (AuthLDAP::tryToConnectToServer($method, $method['rootdn'],
                         Toolbox::sodiumDecrypt($method['rootdn_passwd']))) {
-                        $status['servers'][$method['name']] = [
+                        $status['servers']['id'.$method['id']] = [
                            'status' => self::STATUS_OK
                         ];
                      } else {
-                        $status['servers'][$method['name']] = [
+                        $status['servers']['id'.$method['id']] = [
                            'status' => self::STATUS_PROBLEM
                         ];
                         $status['status'] = self::STATUS_PROBLEM;
                      }
                   } catch (\RuntimeException $e) {
                      // May be missing LDAP extension (Probably test environment)
-                     $status['servers'][$method['name']] = [
+                     $status['servers']['id'.$method['id']] = [
                         'status' => self::STATUS_PROBLEM
                      ];
                      $status['status'] = self::STATUS_PROBLEM;
@@ -289,11 +289,11 @@ final class StatusChecker {
                   if ($mailcol->getFromDB($mc['id'])) {
                      try {
                         $mailcol->connect();
-                        $status['servers'][$mc['name']] = [
+                        $status['servers']['id'.$mc['id']] = [
                            'status' => 'OK'
                         ];
                      } catch (\Exception $e) {
-                        $status['servers'][$mc['name']] = [
+                        $status['servers']['id'.$mc['id']] = [
                            'status'       => self::STATUS_PROBLEM,
                            'error_code'   => $e->getCode()
                         ];
