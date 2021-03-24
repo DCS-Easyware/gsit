@@ -98,6 +98,11 @@ class Html {
       $value = str_replace(["\r\n", "\r"], "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
 
+      foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
+         $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
+            'src="data:image/'.$imgtype.';base64,', $value);
+      }
+
       return trim($value);
    }
 
