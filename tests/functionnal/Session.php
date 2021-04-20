@@ -373,7 +373,6 @@ class Session extends \DbTestCase {
       return [
          ['itemtype' => 'Computer'],
          ['itemtype' => 'Ticket'],
-         ['itemtype' => 'Glpi\\Dashboard\\Item'],
          ['itemtype' => 'User', 'add_params' => ['right' => 'all']],
          ['itemtype' => 'User', 'add_params' => ['entity_restrict' => 0]],
       ];
