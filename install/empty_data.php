@@ -299,10 +299,6 @@ $default_prefs = [
    'password_expiration_delay'               => '-1',
    'password_expiration_notice'              => '-1',
    'password_expiration_lock_delay'          => '-1',
-   'default_dashboard_central'               => 'central',
-   'default_dashboard_assets'                => 'assets',
-   'default_dashboard_helpdesk'              => 'assistance',
-   'default_dashboard_mini_ticket'           => 'mini_tickets',
    'admin_email_noreply'                     => '',
    'admin_email_noreply_name'                => '',
    Impact::CONF_ENABLED                      => exportArrayToDB(Impact::getDefaultItemtypes())
@@ -679,29 +675,6 @@ $tables['glpi_crontasks'] = [
       'logs_lifetime' => 30,
    ],
 ];
-
-$dashboards_data = include_once __DIR__."/update_94_95/dashboards.php";
-$tables['glpi_dashboards_dashboards'] = [];
-$tables['glpi_dashboards_items'] = [];
-$i = $j = 1;
-foreach ($dashboards_data as $default_dashboard) {
-   $items = $default_dashboard['_items'];
-   unset($default_dashboard['_items']);
-   $tables['glpi_dashboards_dashboards'][] = array_merge([
-      'id' => $i
-   ], $default_dashboard);
-
-   foreach ($items as $item) {
-      $tables['glpi_dashboards_items'][] = array_merge([
-         'id' => $j,
-         'dashboards_dashboards_id' => $i,
-      ], $item);
-
-      $j++;
-   }
-
-   $i++;
-}
 
 $tables['glpi_devicememorytypes'] = [
    [
@@ -7361,38 +7334,6 @@ $tables['glpi_profilerights'] = [
       'profiles_id' => '8',
       'name'        => 'externalevent',
       'rights'      => 1,
-   ], [
-      'profiles_id' => '1',
-      'name'        => 'dashboard',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '2',
-      'name'        => 'dashboard',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '3',
-      'name'        => 'dashboard',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '4',
-      'name'        => 'dashboard',
-      'rights'      => 23,
-   ], [
-      'profiles_id' => '5',
-      'name'        => 'dashboard',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '6',
-      'name'        => 'dashboard',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '7',
-      'name'        => 'dashboard',
-      'rights'      => 0,
-   ], [
-      'profiles_id' => '8',
-      'name'        => 'dashboard',
-      'rights'      => 0,
    ], [
       'profiles_id' => '1',
       'name'        => 'appliance',

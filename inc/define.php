@@ -409,8 +409,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
                                      'set_default_requester', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'task_state',
                                      'use_flat_dropdowntree', 'layout', 'palette',
-                                     'highcontrast_css', 'default_dashboard_central', 'default_dashboard_assets',
-                                     'default_dashboard_helpdesk', 'default_dashboard_mini_ticket'];
+                                     'highcontrast_css'];
 
 $CFG_GLPI['layout_excluded_pages'] = ["profile.form.php",
                                            "knowbaseitem.php",
@@ -467,27 +466,20 @@ $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', '
 
 $CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain'];
 
-$dashboard_libs = [
-   'dashboard', 'gridstack',
-   'charts', 'clipboard', 'sortable'
-];
-
 $CFG_GLPI['javascript'] = [
    'central'   => [
       'central' => array_merge([
          'fullcalendar',
          'planning',
          'tinymce',
-      ], $dashboard_libs)
+      ])
    ],
    'assets'    => [
-      'dashboard' => $dashboard_libs,
       'rack'      => ['gridstack', 'rack']
    ],
    'helpdesk'  => [
-      'dashboard' => $dashboard_libs,
       'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
-      'ticket'    => array_merge(['rateit', 'tinymce', 'photoswipe'], $dashboard_libs),
+      'ticket'    => ['rateit', 'tinymce', 'photoswipe'],
       'problem'   => ['tinymce', 'photoswipe'],
       'change'    => ['tinymce', 'photoswipe'],
       'stat'      => ['charts']

@@ -1564,11 +1564,6 @@ class Profile extends CommonDBTM {
             'field'  => 'personalization'
          ],
          [
-            'itemtype'  => 'Glpi\Dashboard\Grid',
-            'label'     => __('All dashboards'),
-            'field'     => 'dashboard'
-         ],
-         [
             'itemtype'  => 'DisplayPreference',
             'label'     => __('Search result display'),
             'field'     => 'search_config'
