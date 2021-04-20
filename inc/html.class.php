@@ -1297,11 +1297,6 @@ class Html {
             Html::requireJs('rateit');
          }
 
-         if (in_array('dashboard', $jslibs)) {
-            echo Html::scss('css/dashboard');
-            Html::requireJs('dashboard');
-         }
-
          if (in_array('rack', $jslibs)) {
             Html::requireJs('rack');
          }
@@ -1486,7 +1481,7 @@ JAVASCRIPT;
                'CartridgeItem', 'ConsumableItem', 'Phone',
                'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment'
             ], $CFG_GLPI['devices_in_menu']),
-            'default' => '/front/dashboard_assets.php'
+            'default' => '/front/computer.php'
          ],
          'helpdesk' => [
             'title' => __('Assistance'),
@@ -1494,7 +1489,7 @@ JAVASCRIPT;
                'Ticket', 'Problem', 'Change',
                'Planning', 'Stat', 'TicketRecurrent'
             ],
-            'default' => '/front/dashboard_helpdesk.php'
+            'default' => '/front/ticket.php'
          ],
          'management' => [
             'title' => __('Management'),
@@ -6555,9 +6550,6 @@ JAVASCRIPT;
          case 'fuzzy':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fuzzy.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fuzzysearch.js';
-            break;
-         case 'dashboard':
-            $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
             break;
          case 'gridstack':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';

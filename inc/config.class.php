@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Dashboard\Grid;
 use Glpi\Cache\SimpleCache;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\System\RequirementsManager;
@@ -1400,38 +1399,6 @@ class Config extends CommonDBTM {
          echo "</td><td>". __('Direct Notification (requester for unlock will be the notification sender)').
               "</td><td>";
          Dropdown::showYesNo("lock_directunlock_notification", $data["lock_directunlock_notification"]);
-         echo "</td></tr>";
-      }
-
-      if (Grid::canViewOneDashboard()) {
-         echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Dashboards')."</th></tr>";
-
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>" . __('Default for central') . "</td><td>";
-         Grid::dropdownDashboard("default_dashboard_central", [
-            'value' => $data['default_dashboard_central'],
-            'display_emptychoice' => true
-         ]);
-         echo "</td><td>". __('Default for Assets').
-            "</td><td>";
-         Grid::dropdownDashboard("default_dashboard_assets", [
-            'value' => $data['default_dashboard_assets'],
-            'display_emptychoice' => true
-         ]);
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>". __('Default for Assistance') . "</td><td>";
-         Grid::dropdownDashboard("default_dashboard_helpdesk", [
-            'value' => $data['default_dashboard_helpdesk'],
-            'display_emptychoice' => true
-         ]);
-         echo "</td><td>". __('Default for tickets (mini dashboard)').
-            "</td><td>";
-         Grid::dropdownDashboard("default_dashboard_mini_ticket", [
-            'value' => $data['default_dashboard_mini_ticket'],
-            'display_emptychoice' => true
-         ]);
          echo "</td></tr>";
       }
 
