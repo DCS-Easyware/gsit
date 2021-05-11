@@ -644,11 +644,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
                   echo "<hr />";
                   echo "<h2>".__('One last thing before starting')."</h2>";
                   echo "<p>";
-                  echo GLPINetwork::showInstallMessage();
                   echo "</p>";
-                  echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
-                     __('Donate')."</a><br /><br />";
-
                   if (!Telemetry::isEnabled()) {
                      echo "<hr />";
                      echo Telemetry::showTelemetry();
