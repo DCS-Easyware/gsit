@@ -68,11 +68,6 @@ class Central extends CommonGLPI {
             4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
          ];
 
-         $grid = new Glpi\Dashboard\Grid('central');
-         if ($grid->canViewOneDashboard()) {
-            array_unshift($tabs, __('Dashboard'));
-         }
-
          return $tabs;
       }
       return '';
@@ -84,9 +79,6 @@ class Central extends CommonGLPI {
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 0 :
-               $item->showGlobalDashboard();
-               break;
-
             case 1 :
                $item->showMyView();
                break;
@@ -106,19 +98,6 @@ class Central extends CommonGLPI {
       }
       return true;
    }
-
-   public function showGlobalDashboard() {
-      echo "<table class='tab_cadre_central'>";
-      Plugin::doHook('display_central');
-      echo "</table>";
-
-      self::showMessages();
-
-      $default   = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('central');
-      $dashboard = new Glpi\Dashboard\Grid($default);
-      $dashboard->show();
-   }
-
 
    /**
     * Show the central global view
