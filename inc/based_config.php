@@ -55,7 +55,6 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
       // Constants related to system paths
       'GLPI_CONFIG_DIR'      => GLPI_ROOT . '/config', // Path for configuration files (db, security key, ...)
       'GLPI_VAR_DIR'         => GLPI_ROOT . '/files',  // Path for all files
-      'GLPI_MARKETPLACE_DIR' => GLPI_ROOT . '/marketplace', // Path for marketplace plugins
       'GLPI_DOC_DIR'         => '{GLPI_VAR_DIR}', // Path for documents storage
       'GLPI_CACHE_DIR'       => '{GLPI_VAR_DIR}/_cache', // Path for cache
       'GLPI_CRON_DIR'        => '{GLPI_VAR_DIR}/_cron', // Path for cron storage
@@ -82,11 +81,6 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
       // Constants related to GLPI Project external services
       'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
       'GLPI_INSTALL_MODE'                 => is_dir(GLPI_ROOT . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
-      'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_SERVICES}/api/glpi-plugins/',
-      // TODO set false before final release of 9.5.0 and remove this comment
-      'GLPI_MARKETPLACE_PRERELEASES'      => false, // display pre-releases of plugins in marketplace
-      'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
-      'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download link of plugins which cannot be installed/updated by marketplace
       'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
 
       // Other constants
@@ -143,7 +137,6 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
    // Order in this array is important (priority to first found).
    if (!defined('PLUGINS_DIRECTORIES')) {
       define('PLUGINS_DIRECTORIES', [
-         GLPI_MARKETPLACE_DIR,
          GLPI_ROOT . '/plugins',
       ]);
    } else if (!is_array(PLUGINS_DIRECTORIES)) {

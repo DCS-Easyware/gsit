@@ -46,7 +46,7 @@ foreach (readdir(DIRHANDLE)){
 	if ($_ ne '..' && $_ ne '.'){
 		if (-d "$dir/$_"){
 			# Excluded directories
-			if ($_ !~ m/^(.git|config|css_compiled|files|lib|marketplace|node_modules|plugins|vendor)$/i){
+			if ($_ !~ m/^(.git|config|css_compiled|files|lib|node_modules|plugins|vendor)$/i){
 				do_dir("$dir/$_");
 			}
 		} else {
