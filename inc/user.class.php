@@ -1648,9 +1648,21 @@ class User extends CommonDBTM {
 
                   case 'locations_id' :
                      // use import to build the location tree
+                     // Search entity for this LDAP
+                     $entityID = 0;
+                     $iteratorEntity = $DB->request([
+                        'SELECT' => 'id',
+                        'FROM'   => 'glpi_entities',
+                        'WHERE'  => ['authldaps_id' => $ldap_method['id']]
+                     ]);
+                     if (count($iteratorEntity) > 0) {
+                        $result = $iteratorEntity->next();
+                        $entityID = $result['id'];
+                     }
+
                      $this->fields[$k] = Dropdown::import('Location',
                                                           ['completename' => $val,
-                                                           'entities_id'  => 0,
+                                                           'entities_id'  => $entityID,
                                                            'is_recursive' => 1]);
                     break;
 
