@@ -625,6 +625,11 @@ class User extends CommonDBTM {
          $input["profiles_id"] = 0;
       }
 
+      if (isset($input["_ldap_rules"]["profiles_id_if_empty"])) {
+         $input['profiles_id'] = $input["_ldap_rules"]["profiles_id_if_empty"];
+      }
+
+
       return $input;
    }
 
@@ -890,6 +895,11 @@ class User extends CommonDBTM {
 
       if (array_key_exists('timezone', $input) && empty($input['timezone'])) {
          $input['timezone'] = 'NULL';
+      }
+      if (isset($input["_ldap_rules"]["profiles_id_if_empty"])) {
+         if (!isset($this->fields['profiles_id']) || $this->fields['profiles_id'] == 0) {
+            $input['profiles_id'] = $input["_ldap_rules"]["profiles_id_if_empty"];
+         }
       }
 
       return $input;

@@ -117,6 +117,10 @@ class RuleRight extends Rule {
                         $output['profiles_id'] = $action->fields["value"];
                         break;
 
+                     case '_profiles_id_default_if_empty':
+                        $output["_ldap_rules"]["profiles_id_if_empty"] = $action->fields["value"];
+                        break;
+
                      case 'groups_id':
                         $output['groups_id'] = $action->fields["value"];
                         break;
@@ -370,6 +374,12 @@ class RuleRight extends Rule {
       $actions['_profiles_id_default']['name']              = __('Default profile');
       $actions['_profiles_id_default']['linkfield']         = 'profiles_id';
       $actions['_profiles_id_default']['type']              = 'dropdown';
+
+      $actions['_profiles_id_default_if_empty']['table']             = 'glpi_profiles';
+      $actions['_profiles_id_default_if_empty']['field']             = 'name';
+      $actions['_profiles_id_default_if_empty']['name']              = __('Default profile if empty');
+      $actions['_profiles_id_default_if_empty']['linkfield']         = 'profiles_id';
+      $actions['_profiles_id_default_if_empty']['type']              = 'dropdown';
 
       $actions['timezone']['name']                          = __('Timezone');
       $actions['timezone']['type']                          = 'timezone';
