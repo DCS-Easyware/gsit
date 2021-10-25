@@ -1,8 +1,8 @@
-# GLPI SC by DCS EASYWARE
+# GSIT (Gestionnaire de Services IT)
 
 ## Introduction
 
-This version is a secure and cleaned version of [GLPI](https://github.com/glpi-project/glpi/).
+This version is a secure and cleaned fork version of [GLPI](https://github.com/glpi-project/glpi/).
 
 The patches are maintened by DCS EASYWARE, by the `Innovation and expertise center` of company [DCSEASYWARE](https://www.dcsit-group.com/).
 
