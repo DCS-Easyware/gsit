@@ -6464,13 +6464,13 @@ JAVASCRIPT;
     * @return string HTML copyright
     */
    static function getCopyrightMessage($withVersion = true) {
-      $message = "<a href=\"http://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
-      $message .= "GLPI ";
+      $message = "<a href=\"https://github.com/DCS-Easyware/gsit/\" title=\"Powered by DCS EASYWARE and contributors and community\" class=\"copyright\">";
+      $message .= "GSIT ";
       // if required, add GLPI version (eg not for login page)
       if ($withVersion) {
           $message .= GLPI_VERSION . " ";
       }
-      $message .= "Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors".
+      $message .= "Copyright (C) 2021-" . GLPI_YEAR . " DCS EASYWARE and contributors and community".
          "</a>";
       return $message;
    }
