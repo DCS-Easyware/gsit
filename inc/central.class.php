@@ -299,6 +299,11 @@ class Central extends CommonGLPI {
                                "install/install.php");
          }
 
+         if (@Toolbox::testWriteAccessToDirectory(GLPI_CONFIG_DIR) == 0) {
+            $warnings[] = sprintf(__('For security reasons, please remove webserver (apache, nginx...) write permission on folder : %s'),
+                               GLPI_CONFIG_DIR);
+         }
+
          $myisam_tables = $DB->getMyIsamTables();
          if (count($myisam_tables)) {
             $warnings[] = sprintf(
