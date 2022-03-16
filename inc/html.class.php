@@ -98,6 +98,10 @@ class Html {
       }
 
       $value = htmLawed($value, $config);
+      foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
+         $value = str_ireplace('&lt;img src="data:image/'.$imgtype.';base64,', '<img src="data:image/'.$imgtype.';base64,', $value); // correction affichage image en base64 dans ticket -> traitement du ticket
+      }
+      $value = str_ireplace('==" /&gt;', '==" />', $value);
 
       // Special case : remove the 'denied:' for base64 img in case the base64 have characters
       // combinaison introduce false positive
