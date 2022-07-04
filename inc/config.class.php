@@ -2906,7 +2906,12 @@ class Config extends CommonDBTM {
 
          Config::forceTable('glpi_configs');
 
-         $iterator = $DB->request(['FROM' => 'glpi_configs']);
+         $iterator = $DB->request([
+            'SELECT' => ['name', 'value'],
+            'FROM' => 'glpi_configs',
+            'WHERE' => ['context' => 'core']
+         ]);
+
          if ($iterator->count() === 0) {
             return false;
          }
@@ -2919,9 +2924,6 @@ class Config extends CommonDBTM {
          // multiple rows = 0.85+ config
          $config = [];
          while ($row = $iterator->next()) {
-            if ('core' !== $row['context']) {
-               continue;
-            }
             $config[$row['name']] = $row['value'];
          }
          return $config;
