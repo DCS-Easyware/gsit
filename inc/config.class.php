@@ -2061,6 +2061,8 @@ class Config extends CommonDBTM {
                  'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive' ],
                [ 'name'    => 'paragonie/sodium_compat',
                  'check'   => 'ParagonIE_Sodium_Compat' ],
+               [ 'name'    => 'enshrined/svg-sanitize',
+                 'check'   => 'enshrined\\svgSanitize\\Sanitizer'],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
