@@ -35,13 +35,11 @@
  *
  * @return bool for success (will die for most error)
  **/
-function update956to957() {
+function update957to958() {
    /** @global Migration $migration */
-   global $DB, $migration, $CFG_GLPI;
+   global $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.8'));
