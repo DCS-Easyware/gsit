@@ -35,14 +35,14 @@ if [ ! "$#" -eq 2 ]
 then
     echo "This script builds a release archive based on Git index of given directory."
     echo ""
-    echo "Usage $0 /path/to/glpi-git-dir release-name"
+    echo "Usage $0 /path/to/gsit-git-dir release-name"
     exit
 fi
 
 SOURCE_DIR=$(readlink -f $1)
 RELEASE=$2
-WORKING_DIR=/tmp/glpi-$RELEASE
-TARBALL_PATH=/tmp/glpi-$RELEASE.tgz
+WORKING_DIR=/tmp/gsit-$RELEASE
+TARBALL_PATH=/tmp/gsit-$RELEASE.tgz
 
 if [ ! -e $SOURCE_DIR ] || [ ! -e $SOURCE_DIR/.git ]
 then
@@ -62,13 +62,13 @@ if [ -e $WORKING_DIR ]
 then
     rm -rf $WORKING_DIR
 fi
-git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING_DIR/glpi/"
+git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING_DIR/gsit/"
 
 echo "Building application"
-$WORKING_DIR/glpi/tools/build_glpi.sh
+$WORKING_DIR/gsit/tools/build_gsit.sh
 
 echo "Creating tarball";
-tar -c -z -f $TARBALL_PATH -C $WORKING_DIR glpi
+tar -c -z -f $TARBALL_PATH -C $WORKING_DIR gsit
 
 echo "Deleting temp directory"
 rm -rf $WORKING_DIR
