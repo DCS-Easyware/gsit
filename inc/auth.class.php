@@ -705,16 +705,15 @@ class Auth extends CommonGLPI {
       if ($login_auth == 'local') {
          $authtype = self::DB_GLPI;
          $this->user->fields["authtype"] = self::DB_GLPI;
-      } else if (strstr($login_auth, '-')) {
-         $auths = explode('-', $login_auth);
-         $this->user->fields["auths_id"] = $auths[1];
-         if ($auths[0] == 'ldap') {
+      } else if (preg_match('/^(?<type>ldap|mail|external)-(?<id>\d+)$/', $login_auth, $matches)) {
+         $this->user->fields["auths_id"] = (int)$matches['id'];
+         if ($matches['type'] == 'ldap') {
             $authtype = self::LDAP;
             $this->user->fields["authtype"] = self::LDAP;
-         } else if ($auths[0] == 'mail') {
+         } else if ($matches['type'] == 'mail') {
             $authtype = self::MAIL;
             $this->user->fields["authtype"] = self::MAIL;
-         } else if ($auths[0] == 'external') {
+         } else if ($matches['type'] == 'external') {
             $authtype = self::EXTERNAL;
             $this->user->fields["authtype"] = self::EXTERNAL;
          }

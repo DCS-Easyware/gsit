@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use enshrined\svgSanitize\Sanitizer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1104,6 +1105,12 @@ class Document extends CommonDBTM {
                                           false, ERROR);
          return false;
       }
+
+      if (Toolbox::getMime($fullpath) == 'image/svg+xml') {
+         $sanitizer = new Sanitizer();
+         file_put_contents($fullpath, $sanitizer->sanitize(file_get_contents($fullpath)));
+      }
+
       $sha1sum  = sha1_file($fullpath);
       $dir      = self::isValidDoc($filename);
       $new_path = self::getUploadFileValidLocationName($dir, $sha1sum);
@@ -1190,6 +1197,11 @@ class Document extends CommonDBTM {
          }
 
          return false;
+      }
+
+      if ($FILEDESC['type'] == 'image/svg+xml') {
+         $sanitizer = new Sanitizer();
+         file_put_contents($FILEDESC['tmp_name'], $sanitizer->sanitize(file_get_contents($FILEDESC['tmp_name'])));
       }
 
       $sha1sum = sha1_file($FILEDESC['tmp_name']);
