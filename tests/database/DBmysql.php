@@ -70,6 +70,10 @@ class DBmysql extends \GLPITestCase {
          $updated = $update['schema'];
          $updated_idx = $update['index'];
 
+         // For mysql8 comptability, we need to remove the mb3 string
+         $fresh = str_replace('mb3', '', $fresh);
+         $updated = str_replace('mb3', '', $updated);
+
          //compare table schema
          $this->string($updated)->isIdenticalTo($fresh);
          //check index
