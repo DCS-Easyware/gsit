@@ -46,6 +46,7 @@ echo "Install dependencies"
 $WORKING_DIR/bin/console dependencies install --composer-options="--ignore-platform-reqs --prefer-dist --no-progress"
 
 echo "Minify stylesheets and javascripts"
+# need to have php < 8.0 to works
 php -d memory_limit=2G $WORKING_DIR/vendor/bin/robo minify --load-from $WORKING_DIR/tools
 
 echo "Compile SCSS"
