@@ -1415,12 +1415,28 @@ class Search {
                         if (strpos($val2, self::SHORTSEP) !== false) {
                            $split2                  = self::explodeWithID(self::SHORTSEP, $val2);
                            if (is_numeric($split2[1])) {
-                              $newrow[$j][$key2]['id'] = $split2[1];
-                              if ($split2[0] == self::NULLVALUE) {
-                                 $newrow[$j][$key2][$fieldname] = null;
-                              } else {
-                                 $newrow[$j][$key2][$fieldname] = $split2[0];
+                              $find=false;
+                              // recherche si l'ID existe déjà dans le tableau => si c'est le cas on ajoute le champs au nouvel ID qui n'est pas forcement celui dans l'ordre trouvé
+                              foreach (array_keys($newrow[$j]) as $key3) {
+                                 if ($newrow[$j][$key3]['id'] == $split2[1]) {
+                                    if ($split2[0] == self::NULLVALUE) {
+                                       $newrow[$j][$key3][$fieldname] = null;
+                                    } else {
+                                       $newrow[$j][$key3][$fieldname] = $split2[0];
+                                    }
+                                    $find=true;
+                                 }
                               }
+
+                              if ($find === false) {
+                                 $newrow[$j][$key2]['id'] = $split2[1];
+                                 if ($split2[0] == self::NULLVALUE) {
+                                    $newrow[$j][$key2][$fieldname] = null;
+                                 } else {
+                                    $newrow[$j][$key2][$fieldname] = $split2[0];
+                                 }
+                              }
+
                               $handled = true;
                            }
                         }
