@@ -1091,4 +1091,276 @@ class Toolbox extends \GLPITestCase {
    public function testDoubleEncodeEmails(string $source, string $result): void {
       $this->string(\Toolbox::doubleEncodeEmails($source))->isEqualTo($result);
    }
+
+   /**
+    * Data provider for testIsFloat
+    *
+    * @return Generator
+    */
+   protected function testIsFloatProvider(): Generator {
+      yield [
+         'value'    => null,
+         'expected' => false,
+      ];
+
+      yield [
+         'value'    => "",
+         'expected' => false,
+      ];
+
+      yield [
+         'value'    => "1",
+         'expected' => false,
+      ];
+
+      yield [
+         'value'    => "1.5",
+         'expected' => true,
+      ];
+
+      yield [
+         'value'    => "7.5569569",
+         'expected' => true,
+      ];
+
+      yield [
+         'value'    => "0",
+         'expected' => false,
+      ];
+
+      yield [
+         'value'    => 3.4,
+         'expected' => true,
+      ];
+
+      yield [
+         'value'    => 3,
+         'expected' => false,
+      ];
+
+      yield [
+         'value'    => "not a float",
+         'expected' => false,
+         'warning'  => "Calling isFloat on string",
+      ];
+
+      yield [
+         'value'    => new stdClass(),
+         'expected' => false,
+         'warning'  => "Calling isFloat on object",
+      ];
+
+      yield [
+         'value'    => [],
+         'expected' => false,
+         'warning'  => "Calling isFloat on array",
+      ];
+   }
+
+   /**
+    * Tests for Toolbox::IsFloat()
+    *
+    * @dataprovider testIsFloatProvider
+    *
+    * @param mixed         $value
+    * @param bool          $expected
+    * @param string|null   $warning
+    *
+    * @return void
+    */
+   public function testIsFloat(
+      $value,
+      bool $expected,
+      ?string $warning = null
+   ): void {
+      $result = null;
+
+      if (!is_null($warning)) {
+         $this->when(function () use ($value, &$result) {
+            $result = \Toolbox::isFloat($value);
+         })->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage($warning)
+            ->exists();
+      } else {
+         $result = \Toolbox::isFloat($value);
+      }
+
+      $this->boolean($result)->isEqualTo($expected);
+   }
+
+   /**
+    * Data provider for testgetDecimalNumbers
+    *
+    * @return Generator
+    */
+   protected function testgetDecimalNumbersProvider(): Generator {
+      yield [
+         'value'    => "1",
+         'decimals' => 0,
+      ];
+
+      yield [
+         'value'    => "1.5",
+         'decimals' => 1,
+      ];
+
+      yield [
+         'value'    => "7.5569569",
+         'decimals' => 7,
+      ];
+
+      yield [
+         'value'    => "0",
+         'decimals' => 0,
+      ];
+
+      yield [
+         'value'    => 3.4,
+         'decimals' => 1,
+      ];
+
+      yield [
+         'value'    => 3,
+         'decimals' => 0,
+      ];
+
+      yield [
+         'value'    => "not a float",
+         'decimals' => 0,
+         'warning'  => "Calling getDecimalNumbers on string",
+      ];
+
+      yield [
+         'value'    => new stdClass(),
+         'decimals' => 0,
+         'warning'  => "Calling getDecimalNumbers on object",
+      ];
+
+      yield [
+         'value'    => [],
+         'decimals' => 0,
+         'warning'  => "Calling getDecimalNumbers on array",
+      ];
+
+      yield [
+         'value'    => 3.141592653589791415926535897914159265358979,
+         'decimals' => 13, // floatval() round up after 13 decimals
+      ];
+
+   }
+
+   /**
+    * Tests for Toolbox::getDecimalNumbers()
+    *
+    * @dataprovider testgetDecimalNumbersProvider
+    *
+    * @param mixed         $value
+    * @param int           $decimals
+    * @param string|null   $warning
+    *
+    * @return void
+    */
+   public function testGetDecimalNumbers(
+      $value,
+      int $decimals,
+      ?string $warning = null
+   ): void {
+      $result = null;
+
+      if (!is_null($warning)) {
+         $this->when(function () use ($value, &$result) {
+            $result = \Toolbox::getDecimalNumbers($value);
+         })->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage($warning)
+            ->exists();
+      } else {
+         $result = \Toolbox::getDecimalNumbers($value);
+      }
+
+      $this->integer($result)->isEqualTo($decimals);
+   }
+
+   protected function safeUrlProvider(): iterable {
+      // Invalid URLs are refused
+      yield [
+         'url'      => '',
+         'expected' => false,
+      ];
+      yield [
+         'url'      => ' ',
+         'expected' => false,
+      ];
+
+      // Invalid schemes are refused
+      yield [
+         'url'      => 'file://tmp/test',
+         'expected' => false,
+      ];
+      yield [
+         'url'      => 'test://localhost/',
+         'expected' => false,
+      ];
+
+      // Local file are refused
+      yield [
+         'url'      => '//tmp/test',
+         'expected' => false,
+      ];
+
+      // http, https and feed URLs are accepted, unless they contains a user or port information
+      foreach (['http', 'https', 'feed'] as $scheme) {
+         foreach (['', '/', '/path/to/feed.php'] as $path) {
+            yield [
+               'url'      => sprintf('%s://localhost%s', $scheme, $path),
+               'expected' => true,
+            ];
+            yield [
+               'url'      => sprintf('%s://localhost:8080%s', $scheme, $path),
+               'expected' => false,
+            ];
+            yield [
+               'url'      => sprintf('%s://test@localhost%s', $scheme, $path),
+               'expected' => false,
+            ];
+            yield [
+               'url'      => sprintf('%s://test:pass@localhost%s', $scheme, $path),
+               'expected' => false,
+            ];
+         }
+      }
+
+      // Custom allowlist with multiple entries
+      $custom_allowlist = [
+         '|^https://\w+:[^/]+@calendar.mydomain.tld/|',
+         '|//intra.mydomain.tld/|',
+      ];
+      yield [
+         'url'       => 'https://calendar.external.tld/',
+         'expected'  => false,
+         'allowlist' => $custom_allowlist,
+      ];
+      yield [
+         'url'       => 'https://user:pass@calendar.mydomain.tld/',
+         'expected'  => true, // validates first item of allowlist
+         'allowlist' => $custom_allowlist,
+      ];
+      yield [
+         'url'       => 'http://intra.mydomain.tld/news.feed.php',
+         'expected'  => true, // validates second item of allowlist
+         'allowlist' => $custom_allowlist,
+      ];
+   }
+
+   /**
+    * @dataProvider safeUrlProvider
+    */
+   public function testIsUrlSafe(string $url, bool $expected, ?array $allowlist = null): void {
+      $params = [$url];
+      if ($allowlist !== null) {
+         $params[] = $allowlist;
+      }
+      $this->boolean(call_user_func_array('Toolbox::isUrlSafe', $params))->isEqualTo($expected);
+   }
 }
