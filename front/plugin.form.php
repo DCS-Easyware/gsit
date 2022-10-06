@@ -40,15 +40,15 @@ Session::checkRight("config", UPDATE);
 
 $plugin = new Plugin();
 
-if (isset($_POST['action'])
-    && isset($_POST['id'])) {
+$id     = isset($_POST['id']) && is_numeric($_POST['id']) &&  is_int((int)$_POST['id']) ? (int)$_POST['id'] : null;
+$action = !is_null($id) && $id > 0 && isset($_POST['action']) ? $_POST['action'] : null;
 
-   if (method_exists($plugin, $_POST['action'])) {
-      call_user_func([$plugin, $_POST['action']], $_POST['id']);
-   } else {
-      echo "Action ".$_POST['action']." undefined";
+$methodsAllowed = ['install', 'activate', 'unactivate', 'uninstall', 'clean'];
+if (!is_null($action) && in_array($action, $methodsAllowed)) {
+   if (method_exists($plugin, $action)) {
+      call_user_func([$plugin, $action], $id);
+      Html::back();
    }
-   Html::back();
 }
 
 Html::displayErrorAndDie('Lost');
