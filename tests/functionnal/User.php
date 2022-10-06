@@ -167,11 +167,28 @@ class User extends \DbTestCase {
 
       $this->exception(
          function () use ($uid) {
-            $this->testedInstance->getFromDBbyToken($uid, 'my_field');
+            $this->testedInstance->getFromDBbyToken(strval($uid), 'my_field');
          }
       )
          ->isInstanceOf('RuntimeException')
          ->message->contains('User::getFromDBbyToken() can only be called with $field parameter with theses values: \'personal_token\', \'api_token\'');
+
+      $this->when(
+         function() {
+            $this->testedInstance->getFromDBbyToken(['REGEX', '.*'], 'api_token');
+         }
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage('Unexpected token value received: "string" expected, received "array".')
+         ->exists();
+
+      $this->exception(
+         function() use ($user) {
+            $this->testedInstance->getFromDBbyToken('frefer"f', 'api_token');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('The token is not in the right format');
    }
 
    public function testPrepareInputForAdd() {
