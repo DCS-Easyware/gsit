@@ -1418,7 +1418,7 @@ class Search {
                               $find=false;
                               // recherche si l'ID existe déjà dans le tableau => si c'est le cas on ajoute le champs au nouvel ID qui n'est pas forcement celui dans l'ordre trouvé
                               foreach (array_keys($newrow[$j]) as $key3) {
-                                 if ($newrow[$j][$key3]['id'] == $split2[1]) {
+                                 if (isset($newrow[$j][$key3]['id']) && $newrow[$j][$key3]['id'] == $split2[1]) {
                                     if ($split2[0] == self::NULLVALUE) {
                                        $newrow[$j][$key3][$fieldname] = null;
                                     } else {
