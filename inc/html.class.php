@@ -3928,6 +3928,7 @@ JS;
                // Misc options
                browser_spellcheck: true,
                cache_suffix: '{$cache_suffix}',
+               contextmenu: false,
 
                setup: function(editor) {
 
