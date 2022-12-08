@@ -97,9 +97,23 @@ class RequirementsManager {
       global $PHPLOGGER;
       $requirements[] = new LogsWriteAccess($PHPLOGGER);
 
+      $commandsByPassConfigDir = [
+         'glpi:database:configure',
+         'db:configure',
+         'glpi:database:install ',
+         'db:install',
+         'glpi:database:update',
+         'db:update',
+         'glpi:security:change_key'
+      ];
+
       foreach (Variables::getDataDirectories() as $directory) {
          if ($directory === GLPI_LOG_DIR) {
             continue; // Specifically checked by LogsWriteAccess requirement
+         } else if ($directory === GLPI_CONFIG_DIR) {
+            if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && !in_array($_SERVER['argv'][1], $commandsByPassConfigDir)) {
+               continue;
+            }
          }
          $requirements[] = new DirectoryWriteAccess($directory);
       }
