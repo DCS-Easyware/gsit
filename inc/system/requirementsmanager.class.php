@@ -110,7 +110,7 @@ class RequirementsManager {
       foreach (Variables::getDataDirectories() as $directory) {
          if ($directory === GLPI_LOG_DIR) {
             continue; // Specifically checked by LogsWriteAccess requirement
-         } elseif ($directory === GLPI_CONFIG_DIR) {
+         } else if ($directory === GLPI_CONFIG_DIR) {
             if (isset($_SERVER['argv']) && isset($_SERVER['argv'][1]) && !in_array($_SERVER['argv'][1], $commandsByPassConfigDir)) {
                continue;
             }
