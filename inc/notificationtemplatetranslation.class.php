@@ -152,7 +152,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<td>";
       echo __('Email HTML body');
       echo "</td><td colspan='3'>";
-      echo "<textarea cols='100' rows='15' name='content_html'>".$this->fields["content_html"];
+      echo "<textarea cols='100' rows='15' id='content_html' name='content_html'>".$this->fields["content_html"];
       echo "</textarea>";
       echo "<input type='hidden' name='notificationtemplates_id' value='".
              $template->getField('id')."'>";
