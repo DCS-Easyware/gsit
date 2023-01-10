@@ -213,7 +213,8 @@ class ReminderTranslation extends CommonDBChild {
          $this->check(-1, CREATE, $options);
 
       }
-      Html::initEditorSystem('text');
+      $rand = mt_rand();
+      Html::initEditorSystem('text'.$rand);
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Language')."&nbsp;:</td>";
@@ -243,6 +244,7 @@ class ReminderTranslation extends CommonDBChild {
       echo "<td>".__('Description')."</td>";
       echo "<td colspan='3'>";
       Html::textarea(['name'              => 'text',
+                      'rand'              => $rand,
                       'value'             => $this->fields["text"],
                       'enable_richtext'   => true,
                       'enable_fileupload' => false]);
