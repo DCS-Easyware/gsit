@@ -360,7 +360,8 @@ $CFG_GLPI["rulecollections_types"]        = ['RuleImportEntityCollection',
                                                   'RuleRightCollection',
                                                   'RuleSoftwareCategoryCollection',
                                                   'RuleTicketCollection',
-                                                  'RuleAssetCollection'];
+                                                  'RuleAssetCollection',
+                                                  'RuleItilFollowupCollection'];
 
 // Items which can planned something
 $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Reminder',
