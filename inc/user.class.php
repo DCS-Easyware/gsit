@@ -1815,7 +1815,7 @@ class User extends CommonDBTM {
       $listgroups = [];
 
       //User dn may contain ( or ), need to espace it!
-      $user_dn = str_replace(["(", ")", "\,", "\+"], ["\(", "\)", "\\\,", "\\\+"],
+      $user_dn = str_replace(["(", ")", "\,", "\+", "\\ "], ["\(", "\)", "\\\,", "\\\+", "\\\\ "],
                              $user_dn);
 
       //Only retrive cn and member attributes from groups
