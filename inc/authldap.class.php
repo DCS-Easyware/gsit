@@ -1895,7 +1895,7 @@ class AuthLDAP extends CommonDBTM {
                                    'dn'         => $user['user_dn']];
                }
 
-            } else if (($values['mode'] == self::ACTION_ALL)
+            } else if ((in_array($values['mode'], [self::ACTION_ALL, self::ACTION_SYNCHRONIZE]))
                         && !$limitexceeded) {
                // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
