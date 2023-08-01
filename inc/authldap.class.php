@@ -1895,9 +1895,12 @@ class AuthLDAP extends CommonDBTM {
                                    'dn'         => $user['user_dn']];
                }
 
-            } else if ((in_array($values['mode'], [self::ACTION_ALL, self::ACTION_SYNCHRONIZE]))
-                        && !$limitexceeded) {
+            } else if (
+               ($values['mode'] == self::ACTION_ALL
+                 || ($values['mode'] == self::ACTION_SYNCHRONIZE && $values['script']))
+                  && !$limitexceeded) {
                // Only manage deleted user if ALL (because of entity visibility in delegated mode)
+               // AND when called by external script (bin/console) and use only synchronize
 
                //If user is marked as coming from LDAP, but is not present in it anymore
                if (!$user['is_deleted']
