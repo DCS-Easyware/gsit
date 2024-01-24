@@ -869,24 +869,21 @@ class Certificate extends CommonDBTM {
          );
 
          $message = "";
-         $items   = [];
 
          foreach ($result as $certificate) {
             $name     = $certificate['name'].' - '.$certificate['serial'];
             //TRANS: %1$s the license name, %2$s is the expiration date
             $message .= sprintf(__('Certificate %1$s expired on %2$s'),
                                 Html::convDate($certificate["date_expiration"]), $name)."<br>\n";
-            $items[$certificate['id']] = $certificate;
-         }
 
-         if (!empty($items)) {
+            $item = new self();
+            $item->getFromDB($certificate['id']);
             $alert   = new Alert();
             $options = [
-               'entities_id'  => $entity,
-               'certificates' => $items,
+               'entities_id'  => $entity
             ];
 
-            if (NotificationEvent::raiseEvent('alert', new self(), $options)) {
+            if (NotificationEvent::raiseEvent('alert', $item, $options)) {
                $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
                if ($task) {
                   //TRANS: %1$s is the entity, %2$s is the message
@@ -903,12 +900,8 @@ class Certificate extends CommonDBTM {
                ];
 
                // add alerts
-               foreach ($items as $ID => $certificate) {
-                  $input["items_id"] = $ID;
-                  $alert->add($input);
-                  unset($alert->fields['id']);
-               }
-
+               $input["items_id"] = $item->fields['id'];
+               $alert->add($input);
             } else {
                $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
                //TRANS: %s is entity name
