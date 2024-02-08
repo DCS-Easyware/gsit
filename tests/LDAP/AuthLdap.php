@@ -41,8 +41,7 @@ use Group_User;
 class AuthLDAP extends DbTestCase {
    private $ldap;
 
-   protected function usersLoginDataProvider()
-   {
+   protected function usersLoginDataProvider() {
       return [
          ["michel", "password"],
          ["O'Féelie", "password"],
@@ -1887,8 +1886,9 @@ class AuthLDAP extends DbTestCase {
     */
    public function testLoginWithLDAP($username, $password) {
       $auth = new \Auth();
+      // Like in real life, the username pass in common function in POST to clean the value
+      $username = \Toolbox::sanitize($username);
       $ret = $auth->connection_ldap($this->ldap->fields, $username, $password);
-      print_r($ret);
       $this->variable($ret)->isNotFalse();
    }
 }
