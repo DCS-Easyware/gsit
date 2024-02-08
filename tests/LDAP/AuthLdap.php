@@ -1889,9 +1889,10 @@ class AuthLDAP extends DbTestCase {
       $auth = new \Auth();
       // $ldap = new \AuthLDAP();
       // $ldap = getItemByTypeName('AuthLDAP', 'LDAP1');
-
+print_r($this->ldap->fields);
       // $authldap->fields;
       $ret = $auth->connection_ldap($this->ldap->fields, $username, $password);
+      print_r($ret);
       $this->variable($ret)->isNotFalse();
    }
 }
