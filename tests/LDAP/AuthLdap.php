@@ -1891,4 +1891,14 @@ class AuthLDAP extends DbTestCase {
       $ret = $auth->connection_ldap($this->ldap->fields, $username, $password);
       $this->variable($ret)->isNotFalse();
    }
+
+   /**
+    * @dataProvider usersLoginDataProvider
+    */
+    public function testLoginWithLDAPWithoutSanitize($username, $password) {
+      // Test in case not pass in sanitize (internal of code, not have POST values)
+      $auth = new \Auth();
+      $ret = $auth->connection_ldap($this->ldap->fields, $username, $password);
+      $this->variable($ret)->isNotFalse();
+   }
 }
