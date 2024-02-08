@@ -50,6 +50,26 @@ objectClass: inetOrgPerson
 sn: michel
 cn: michel
 
+dn: cn=O'Féelie,ou=people,ou=usa,ou=ldap2, dc=glpi,dc=org
+mail: ofeelie@mail.com
+uid: O'Féelie
+userPassword:: e1NIQX1MSCtmMGcrK3RCem9pVTdFWlQxbStuODdiaG89
+businessCategory: employee
+objectClass: top
+objectClass: inetOrgPerson
+sn: O'Féelie
+cn: O'Féelie
+
+dn: cn=GLPI\David,ou=people,ou=usa,ou=ldap2, dc=glpi,dc=org
+mail: david@mail.com
+uid: GLPI\David
+userPassword:: e1NIQX1MSCtmMGcrK3RCem9pVTdFWlQxbStuODdiaG89
+businessCategory: employee
+objectClass: top
+objectClass: inetOrgPerson
+sn: GLPI\David
+cn: GLPI\David
+
 dn: ou=groups,ou=usa,ou=ldap2, dc=glpi,dc=org
 ou: groups
 objectClass: top
