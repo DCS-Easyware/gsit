@@ -41,6 +41,15 @@ use Group_User;
 class AuthLDAP extends DbTestCase {
    private $ldap;
 
+   protected function usersLoginDataProvider()
+   {
+      return [
+         ["michel", "password"],
+         ["O'Féelie", "password"],
+         ["GLPI\David", "password"]
+      ];
+   }
+
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
       $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
@@ -1871,5 +1880,19 @@ class AuthLDAP extends DbTestCase {
          'users_id' => $users_id,
       ]);
       $this->array($gus)->hasSize(1);
+   }
+
+
+   /**
+    * @dataProvider usersLoginDataProvider
+    */
+   public function testLoginWithLDAP($username, $password) {
+      $auth = new \Auth();
+      $ldap = new \AuthLDAP();
+      $ldap = getItemByTypeName('AuthLDAP', 'LDAP1');
+
+      // $authldap->fields;
+      $ret = $auth->connection_ldap($ldap->fields, $username, $password);
+      $this->variable($ret)->isNotFalse();
    }
 }
