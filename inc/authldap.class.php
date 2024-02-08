@@ -2952,7 +2952,7 @@ class AuthLDAP extends CommonDBTM {
       }
       $filter_value = Toolbox::clean_LDAP_filter($filter_value);
       $filter = "(".$values['login_field']."=".$filter_value.")";
-
+echo "We are here !\n";
       if (!empty($values['condition'])) {
          $filter = "(& $filter ".$values['condition'].")";
       }
