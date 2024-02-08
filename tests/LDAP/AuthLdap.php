@@ -1882,17 +1882,16 @@ class AuthLDAP extends DbTestCase {
       $this->array($gus)->hasSize(1);
    }
 
-
    /**
     * @dataProvider usersLoginDataProvider
     */
    public function testLoginWithLDAP($username, $password) {
       $auth = new \Auth();
-      $ldap = new \AuthLDAP();
-      $ldap = getItemByTypeName('AuthLDAP', 'LDAP1');
+      // $ldap = new \AuthLDAP();
+      // $ldap = getItemByTypeName('AuthLDAP', 'LDAP1');
 
       // $authldap->fields;
-      $ret = $auth->connection_ldap($ldap->fields, $username, $password);
+      $ret = $auth->connection_ldap($this->ldap->fields, $username, $password);
       $this->variable($ret)->isNotFalse();
    }
 }
