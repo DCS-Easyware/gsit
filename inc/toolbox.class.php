@@ -3672,4 +3672,9 @@ HTML;
 
       return $tabs;
    }
+
+   static function clean_LDAP_filter($value) {
+      return ldap_escape($value, "", LDAP_ESCAPE_FILTER);
+   }
+
 }

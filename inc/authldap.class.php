@@ -1655,31 +1655,24 @@ class AuthLDAP extends CommonDBTM {
 
       do {
          $filter = Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($filter));
+         $filter = Toolbox::clean_LDAP_filter($filter);
          if (self::isLdapPageSizeAvailable($config_ldap)) {
-            if (version_compare(PHP_VERSION, '7.3') < 0) {
-               //prior to PHP 7.3, use ldap_control_paged_result
-               // phpcs:ignore Generic.PHP.DeprecatedFunctions
-               ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true, $cookie);
-               $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
-            } else {
-               //since PHP 7.3, send serverctrls to ldap_search
-               $controls = [
-                  [
-                     'oid'       =>LDAP_CONTROL_PAGEDRESULTS,
-                     'iscritical' => true,
-                     'value'     => [
-                        'size'   => $config_ldap->fields['pagesize'],
-                        'cookie' => $cookie
-                     ]
+            $controls = [
+               [
+                  'oid'       =>LDAP_CONTROL_PAGEDRESULTS,
+                  'iscritical' => true,
+                  'value'     => [
+                     'size'   => $config_ldap->fields['pagesize'],
+                     'cookie' => $cookie
                   ]
-               ];
-               $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
-               ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
-               if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
-                  $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
-               } else {
-                  $cookie = '';
-               }
+               ]
+            ];
+            $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+            ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
+            if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
+               $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+            } else {
+               $cookie = '';
             }
          } else {
             $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
@@ -2240,31 +2233,24 @@ class AuthLDAP extends CommonDBTM {
       $count  = 0;
       do {
          $filter = Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($filter));
+         $filter = Toolbox::clean_LDAP_filter($filter);
          if (self::isLdapPageSizeAvailable($config_ldap)) {
-            if (version_compare(PHP_VERSION, '7.3') < 0) {
-               //prior to PHP 7.3, use ldap_control_paged_result
-               // phpcs:ignore Generic.PHP.DeprecatedFunctions
-               ldap_control_paged_result($ldap_connection, $config_ldap->fields['pagesize'], true, $cookie);
-               $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
-            } else {
-               //since PHP 7.3, send serverctrls to ldap_search
-               $controls = [
-                  [
-                     'oid'       =>LDAP_CONTROL_PAGEDRESULTS,
-                     'iscritical' => true,
-                     'value'     => [
-                        'size'   => $config_ldap->fields['pagesize'],
-                        'cookie' => $cookie
-                     ]
+            $controls = [
+               [
+                  'oid'       =>LDAP_CONTROL_PAGEDRESULTS,
+                  'iscritical' => true,
+                  'value'     => [
+                     'size'   => $config_ldap->fields['pagesize'],
+                     'cookie' => $cookie
                   ]
-               ];
-               $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
-               ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
-               if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
-                  $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
-               } else {
-                  $cookie = '';
-               }
+               ]
+            ];
+            $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
+            ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls);
+            if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
+               $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+            } else {
+               $cookie = '';
             }
          } else {
             $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs);
@@ -2972,7 +2958,7 @@ class AuthLDAP extends CommonDBTM {
       if (!empty($values['condition'])) {
          $filter = "(& $filter ".$values['condition'].")";
       }
-
+      $filter = Toolbox::clean_LDAP_filter($filter);
       if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
          //search has been done, let's check for found results
          $info = self::get_entries_clean($ds, $result);
