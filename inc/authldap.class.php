@@ -2905,7 +2905,6 @@ class AuthLDAP extends CommonDBTM {
     * @throws \RuntimeException
     */
    static function searchUserDn($ds, $options = []) {
-      searchUserDn
       $values = [
          'basedn'            => '',
          'login_field'       => '',
