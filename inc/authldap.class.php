@@ -1655,7 +1655,6 @@ class AuthLDAP extends CommonDBTM {
 
       do {
          $filter = Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($filter));
-         $filter = Toolbox::clean_LDAP_filter($filter);
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             $controls = [
                [
@@ -2233,7 +2232,6 @@ class AuthLDAP extends CommonDBTM {
       $count  = 0;
       do {
          $filter = Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($filter));
-         $filter = Toolbox::clean_LDAP_filter($filter);
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             $controls = [
                [
@@ -2907,7 +2905,7 @@ class AuthLDAP extends CommonDBTM {
     * @throws \RuntimeException
     */
    static function searchUserDn($ds, $options = []) {
-
+      searchUserDn
       $values = [
          'basedn'            => '',
          'login_field'       => '',
@@ -2953,12 +2951,12 @@ class AuthLDAP extends CommonDBTM {
       if ($values['login_field'] == 'objectguid' && self::isValidGuid($filter_value)) {
          $filter_value = self::guidToHex($filter_value);
       }
+      $filter_value = Toolbox::clean_LDAP_filter($filter_value);
       $filter = "(".$values['login_field']."=".$filter_value.")";
 
       if (!empty($values['condition'])) {
          $filter = "(& $filter ".$values['condition'].")";
       }
-      $filter = Toolbox::clean_LDAP_filter($filter);
       if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
          //search has been done, let's check for found results
          $info = self::get_entries_clean($ds, $result);

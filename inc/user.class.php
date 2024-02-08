@@ -1815,9 +1815,9 @@ class User extends CommonDBTM {
       $listgroups = [];
 
       //User dn may contain ( or ), need to espace it!
-      $user_dn = str_replace(["(", ")", "\,", "\+", "\\ "], ["\(", "\)", "\\\,", "\\\+", "\\\\ "],
-                             $user_dn);
-
+      // $user_dn = str_replace(["(", ")", "\,", "\+", "\\ "], ["\(", "\)", "\\\,", "\\\+", "\\\\ "],
+      //                        $user_dn);
+      $user_dn = Toolbox::clean_LDAP_filter($user_dn);
       //Only retrive cn and member attributes from groups
       $attrs = ['dn'];
 
@@ -1830,7 +1830,6 @@ class User extends CommonDBTM {
 
       //Perform the search
       $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
-      $filter = Toolbox::clean_LDAP_filter($filter);
       $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
       //Get the result of the search as an array
