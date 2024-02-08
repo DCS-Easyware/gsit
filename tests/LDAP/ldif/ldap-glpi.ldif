@@ -60,7 +60,7 @@ objectClass: inetOrgPerson
 sn: O'Féelie
 cn: O'Féelie
 
-dn: cn=GLPI\David,ou=people,ou=usa,ou=ldap2, dc=glpi,dc=org
+dn: cn="GLPI\David",ou=people,ou=usa,ou=ldap2, dc=glpi,dc=org
 mail: david@mail.com
 uid: GLPI\David
 userPassword:: e1NIQX1MSCtmMGcrK3RCem9pVTdFWlQxbStuODdiaG89
