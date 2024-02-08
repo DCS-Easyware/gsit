@@ -709,7 +709,7 @@ class AuthLDAP extends DbTestCase {
          $limit
       );
 
-      $this->array($groups)->hasSize(910);
+      $this->array($groups)->hasSize(912);
 
       /** TODO: filter search... I do not know how to do. */
    }
