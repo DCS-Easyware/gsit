@@ -3674,8 +3674,10 @@ HTML;
    }
 
    static function clean_LDAP_filter($value) {
-      // To be sure not double pass slashed because will not works
-      $value = Toolbox::stripslashes_deep($value);
+      if (isset($_UPOST)) {
+         // to prevent double escape
+         $value = Toolbox::stripslashes_deep($value);
+      }
 
       return ldap_escape($value, "", LDAP_ESCAPE_FILTER);
    }

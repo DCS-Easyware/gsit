@@ -1888,6 +1888,7 @@ class AuthLDAP extends DbTestCase {
       $auth = new \Auth();
       // Like in real life, the username pass in common function in POST to clean the value
       [$username] = $username = \Toolbox::sanitize([$username]);
+      $_UPOST = [];
       $ret = $auth->connection_ldap($this->ldap->fields, $username, $password);
       $this->variable($ret)->isNotFalse();
    }
