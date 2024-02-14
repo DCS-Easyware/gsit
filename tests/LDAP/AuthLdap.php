@@ -41,6 +41,14 @@ use Group_User;
 class AuthLDAP extends DbTestCase {
    private $ldap;
 
+   protected function usersLoginDataProvider() {
+      return [
+         ["michel", "password"],
+         ["O'Féelie", "password"],
+         ["GLPI\David", "password"]
+      ];
+   }
+
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
       $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
@@ -655,7 +663,7 @@ class AuthLDAP extends DbTestCase {
          $limit
       );
 
-      $this->array($users)->hasSize(910);
+      $this->array($users)->hasSize(912);
       $this->array($results)->hasSize(0);
 
       $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
@@ -709,7 +717,7 @@ class AuthLDAP extends DbTestCase {
          $limit
       );
 
-      $this->array($groups)->hasSize(910);
+      $this->array($groups)->hasSize(912);
 
       /** TODO: filter search... I do not know how to do. */
    }
@@ -1255,7 +1263,7 @@ class AuthLDAP extends DbTestCase {
          $limit
       );
 
-      $this->array($users)->hasSize(910);
+      $this->array($users)->hasSize(912);
       $this->array($results)->hasSize(0);
 
       $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
@@ -1871,5 +1879,14 @@ class AuthLDAP extends DbTestCase {
          'users_id' => $users_id,
       ]);
       $this->array($gus)->hasSize(1);
+   }
+
+   /**
+    * @dataProvider usersLoginDataProvider
+    */
+   public function testLoginWithLDAP($username, $password) {
+      $auth = new \Auth();
+      $ret = $auth->connection_ldap($this->ldap->fields, $username, $password);
+      $this->variable($ret)->isNotFalse();
    }
 }

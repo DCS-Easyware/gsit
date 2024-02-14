@@ -45,19 +45,15 @@ if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'test
    }
 }
 
-$_POST = array_map('stripslashes', $_POST);
-
 //Do login and checks
 //$user_present = 1;
+$rawLogin = '';
+$rawPassword = '';
 if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
-   $login = $_POST[$_SESSION['namfield']];
-} else {
-   $login = '';
+   $rawLogin = $_UPOST[$_SESSION['namfield']];
 }
 if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-   $password = Toolbox::unclean_cross_side_scripting_deep($_POST[$_SESSION['pwdfield']]);
-} else {
-   $password = '';
+   $rawPassword = $_UPOST[$_SESSION['pwdfield']];
 }
 // Manage the selection of the auth source (local, LDAP id, MAIL id)
 if (isset($_POST['auth'])) {
@@ -81,7 +77,7 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false), $remember, $login_auth)) {
+if ($auth->login($rawLogin, $rawPassword, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false), $remember, $login_auth)) {
    Auth::redirectIfAuthenticated();
 } else {
    // we have done at least a good login? No, we exit.
