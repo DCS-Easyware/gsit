@@ -218,19 +218,23 @@ class Auth extends CommonGLPI {
     * Based on GRR auth system
     *
     * @param string $ldap_method ldap_method array to use
-    * @param string $login       User Login
-    * @param string $password    User Password
+    * @param string $rawLogin       User Login
+    * @param string $rawPassword    User Password
     *
     * @return string basedn of the user / false if not founded
     */
-   function connection_ldap($ldap_method, $login, $password) {
+   function connection_ldap($ldap_method, $rawLogin, $rawPassword) {
 
       // we prevent some delay...
       if (empty($ldap_method['host'])) {
          return false;
       }
 
-      $this->ldap_connection   = AuthLDAP::tryToConnectToServer($ldap_method, $login, $password);
+      $this->ldap_connection = AuthLDAP::tryToConnectToServer(
+         $ldap_method,
+         Toolbox::clean_LDAP_filter($rawLogin),
+         $rawPassword
+      );
       $this->user_found = false;
 
       if ($this->ldap_connection) {
@@ -250,7 +254,7 @@ class Auth extends CommonGLPI {
                'search_parameters' => $params,
                'user_params'       => [
                   'method' => AuthLDAP::IDENTIFIER_LOGIN,
-                   'value'  => $login
+                  'value'  => $rawLogin
                ],
                'condition'         => $ldap_method['condition'],
                'user_dn'           => $this->user_dn
@@ -263,7 +267,7 @@ class Auth extends CommonGLPI {
 
          $dn = $infos['dn'];
          $this->user_found = $dn != '';
-         if ($this->user_found && @ldap_bind($this->ldap_connection, $dn, $password)) {
+         if ($this->user_found && @ldap_bind($this->ldap_connection, $dn, $rawPassword)) {
 
             //Hook to implement to restrict access by checking the ldap directory
             if (Plugin::doHookFunction("restrict_ldap_auth", $infos)) {
@@ -356,12 +360,12 @@ class Auth extends CommonGLPI {
     * with an eventual error message
     *
     * @global DBmysql $DB
-    * @param string $name     User Login
-    * @param string $password User Password
+    * @param string $rawName     User Login
+    * @param string $rawPassword User Password
     *
     * @return boolean user in GLPI DB with the right password
     */
-   function connection_db($name, $password) {
+   function connection_db($rawName, $rawPassword) {
       global $CFG_GLPI, $DB;
 
       $pass_expiration_delay = (int)$CFG_GLPI['password_expiration_delay'];
@@ -390,7 +394,7 @@ class Auth extends CommonGLPI {
             ],
             'FROM'   => User::getTable(),
             'WHERE'  =>  [
-               'name'     => $name,
+               'name'     => addslashes($rawName),
                'authtype' => self::DB_GLPI,
                'auths_id' => 0,
             ]
@@ -402,7 +406,7 @@ class Auth extends CommonGLPI {
          $row = $result->next();
          $password_db = $row['password'];
 
-         if (self::checkPassword($password, $password_db)) {
+         if (self::checkPassword($rawPassword, $password_db)) {
             // Disable account if password expired
             if (-1 !== $pass_expiration_delay && -1 !== $lock_delay
                 && $row['lock_date'] < $_SESSION['glpi_currenttime']) {
@@ -426,8 +430,8 @@ class Auth extends CommonGLPI {
                ];
                // Set glpiID to allow password update
                $_SESSION['glpiID'] = $input['id'];
-               $input['password'] = $password;
-               $input['password2'] = $password;
+               $input['password'] = $rawPassword;
+               $input['password2'] = $rawPassword;
                $user = new User();
                $user->update($input);
             }
@@ -435,7 +439,7 @@ class Auth extends CommonGLPI {
             $this->extauth                  = 0;
             $this->user_present             = 1;
             $this->user->fields["authtype"] = self::DB_GLPI;
-            $this->user->fields["password"] = $password;
+            $this->user->fields["password"] = $rawPassword;
 
             // apply rule rights on local user
             $rules  = new RuleRightCollection();
@@ -501,6 +505,7 @@ class Auth extends CommonGLPI {
                                                      $CFG_GLPI["ssovariables_id"]);
             $login_string = '';
             // MoYo : checking REQUEST create a security hole for me !
+            // => ddurieux: this variable will be addslashes later
             if (isset($_SERVER[$ssovariable])) {
                $login_string = $_SERVER[$ssovariable];
             }
@@ -680,15 +685,15 @@ class Auth extends CommonGLPI {
    /**
     * Manage use authentication and initialize the session
     *
-    * @param string  $login_name      Login
-    * @param string  $login_password  Password
+    * @param string  $rawLoginName      Login
+    * @param string  $rawLoginPassword  Password
     * @param boolean $noauto          (false by default)
     * @param bool    $remember_me
     * @param string  $login_auth      Type of auth - id of the auth
     *
     * @return boolean (success)
     */
-   function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '') {
+   function login($rawLoginName, $rawLoginPassword, $noauto = false, $remember_me = false, $login_auth = '') {
       global $DB, $CFG_GLPI;
 
       $this->getAuthMethods();
@@ -697,8 +702,8 @@ class Auth extends CommonGLPI {
       //In case the user was deleted in the LDAP directory
       $user_deleted_ldap   = false;
 
-      // Trim login_name : avoid LDAP search errors
-      $login_name = trim($login_name);
+      // Trim rawLoginName : avoid LDAP search errors
+      $rawLoginName = trim($rawLoginName);
 
       // manage the $login_auth (force the auth source of the user account)
       $this->user->fields["auths_id"] = 0;
@@ -722,9 +727,9 @@ class Auth extends CommonGLPI {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
             // Used for log when login process failed
-            $login_name                        = $this->user->fields['name'];
+            $rawLoginName                      = trim($this->user->fields['name']);
             $this->auth_succeded               = true;
-            $this->user_present                = $this->user->getFromDBbyName(addslashes($login_name));
+            $this->user_present                = $this->user->getFromDBbyName(addslashes($rawLoginName));
             $this->extauth                     = 1;
             $user_dn                           = false;
 
@@ -775,7 +780,7 @@ class Auth extends CommonGLPI {
                            'condition'         => $ldap_method["condition"],
                            'user_params'       => [
                               'method' => AuthLDAP::IDENTIFIER_LOGIN,
-                              'value'  => $login_name
+                              'value'  => $rawLoginName
                            ],
                         ]);
                      } catch (\RuntimeException $e) {
@@ -785,7 +790,7 @@ class Auth extends CommonGLPI {
                      if ($user_dn) {
                         $this->user_found = true;
                         $this->user->fields['auths_id'] = $ldap_method['id'];
-                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name,
+                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $rawLoginName,
                                                  !$this->user_present);
                         break;
                      }
@@ -814,7 +819,7 @@ class Auth extends CommonGLPI {
                }
             }
             // Reset to secure it
-            $this->user->fields['name']       = $login_name;
+            $this->user->fields['name']       = $rawLoginName;
             $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 
          } else {
@@ -823,16 +828,16 @@ class Auth extends CommonGLPI {
       }
 
       if (!$this->auth_succeded) {
-         if (empty($login_name) || strstr($login_name, "\0")
-             || empty($login_password) || strstr($login_password, "\0")) {
+         if (empty($rawLoginName) || strstr($rawLoginName, "\0")
+             || empty($rawLoginPassword) || strstr($rawLoginPassword, "\0")) {
             $this->addToError(__('Empty login or password'));
          } else {
 
             // Try connect local user if not yet authenticated
             if (empty($login_auth)
                   || $this->user->fields["authtype"] == $this::DB_GLPI) {
-               $this->auth_succeded = $this->connection_db(addslashes($login_name),
-                                                           $login_password);
+               $this->auth_succeded = $this->connection_db(addslashes($rawLoginName),
+                                                           $rawLoginPassword);
             }
 
             // Try to connect LDAP user if not yet authenticated
@@ -843,11 +848,11 @@ class Auth extends CommonGLPI {
                      || $this->user->fields["authtype"] == $this::LDAP) {
 
                   if (Toolbox::canUseLdap()) {
-                     AuthLDAP::tryLdapAuth($this, $login_name, $login_password,
+                     AuthLDAP::tryLdapAuth($this, $rawLoginName, $rawLoginPassword,
                                              $this->user->fields["auths_id"]);
                      if (!$this->auth_succeded && !$this->user_found) {
                         $search_params = [
-                           'name'     => addslashes($login_name),
+                           'name'     => $DB->escape($rawLoginName),
                            'authtype' => $this::LDAP];
                         if (!empty($login_auth)) {
                            $search_params['auths_id'] = $this->user->fields["auths_id"];
@@ -866,8 +871,8 @@ class Auth extends CommonGLPI {
                      || $this->user->fields["authtype"] == $this::MAIL) {
                   AuthMail::tryMailAuth(
                      $this,
-                     $login_name,
-                     $login_password,
+                     $rawLoginName,
+                     $rawLoginPassword,
                      $this->user->fields["auths_id"]
                   );
                }
@@ -939,21 +944,21 @@ class Auth extends CommonGLPI {
          if ($this->auth_succeded) {
             if (GLPI_DEMO_MODE) {
                // not translation in GLPI_DEMO_MODE
-               Event::log(-1, "system", 3, "login", $login_name." log in from ".$ip);
+               Event::log(-1, "system", 3, "login", addslashes($rawLoginName)." log in from ".$ip);
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
                Event::log(-1, "system", 3, "login", sprintf(__('%1$s log in from IP %2$s'),
-                                                            $login_name, $ip));
+                                                            addslashes($rawLoginName), $ip));
             }
 
          } else {
             if (GLPI_DEMO_MODE) {
                Event::log(-1, "system", 3, "login", "login",
-                          "Connection failed for " . $login_name . " ($ip)");
+                          "Connection failed for " . addslashes($rawLoginName) . " ($ip)");
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
                Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
-                                                            $login_name, $ip));
+                                                            addslashes($rawLoginName), $ip));
             }
          }
       }

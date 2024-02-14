@@ -2488,7 +2488,7 @@ class AuthLDAP extends CommonDBTM {
                $login   = self::getFieldValue($infos, $search_parameters['fields'][$search_parameters['method']]);
 
                //Get information from LDAP
-               if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login),
+               if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, $login,
                                     ($action == self::ACTION_IMPORT))) {
                   // Add the auth method
                   // Force date sync
@@ -2768,18 +2768,19 @@ class AuthLDAP extends CommonDBTM {
     * Authentify a user by checking a specific directory
     *
     * @param object $auth        identification object
-    * @param string $login       user login
-    * @param string $password    user password
+    * @param string $rawLogin       user login
+    * @param string $rawPassword    user password
     * @param array  $ldap_method ldap_method array to use
     * @param string $user_dn     user LDAP DN if present
     *
     * @return object identification object
     */
-   static function ldapAuth($auth, $login, $password, $ldap_method, $user_dn) {
+   static function ldapAuth($auth, $rawLogin, $rawPassword, $ldap_method, $user_dn) {
+      global $DB;
 
       $oldlevel = error_reporting(0);
 
-      $infos  = $auth->connection_ldap($ldap_method, $login, $password);
+      $infos  = $auth->connection_ldap($ldap_method, $rawLogin, $rawPassword);
       $user_dn = $infos['dn'];
       $user_sync = (isset($infos['sync_field']) ? $infos['sync_field'] : null);
 
@@ -2791,22 +2792,22 @@ class AuthLDAP extends CommonDBTM {
       if ($user_dn) {
          $auth->auth_succeded            = true;
          // try by login+auth_id and next by dn
-         if ($auth->user->getFromDBbyNameAndAuth($login, Auth::LDAP, $ldap_method['id'])
+         if ($auth->user->getFromDBbyNameAndAuth($DB->escape($rawLogin), Auth::LDAP, $ldap_method['id'])
              || $auth->user->getFromDBbyDn(Toolbox::addslashes_deep($user_dn))) {
             //There's already an existing user in DB with the same DN but its login field has changed
-            $auth->user->fields['name'] = $login;
+            $auth->user->fields['name'] = $rawLogin;
             $auth->user_present         = true;
             $auth->user_dn              = $user_dn;
          } else if ($user_sync !== null && $auth->user->getFromDBbySyncField($user_sync)) {
             //user login/dn have changed
-            $auth->user->fields['name']      = $login;
+            $auth->user->fields['name']      = $rawLogin;
             $auth->user->fields['user_dn']   = $user_dn;
             $auth->user_present              = true;
             $auth->user_dn                   = $user_dn;
          } else { // The user is a new user
             $auth->user_present = false;
          }
-         $auth->user->getFromLDAP($auth->ldap_connection, $ldap_method, $user_dn, $login,
+         $auth->user->getFromLDAP($auth->ldap_connection, $ldap_method, $user_dn, $rawLogin,
                                   !$auth->user_present);
          $auth->user->fields["authtype"] = Auth::LDAP;
          $auth->user->fields["auths_id"] = $ldap_method["id"];
@@ -2819,8 +2820,8 @@ class AuthLDAP extends CommonDBTM {
     * Try to authentify a user by checking all the directories
     *
     * @param object  $auth     identification object
-    * @param string  $login    user login
-    * @param string  $password user password
+    * @param string  $rawLogin    user login
+    * @param string  $rawPassword user password
     * @param integer $auths_id auths_id already used for the user (default 0)
     * @param boolean $user_dn  user LDAP DN if present (false by default)
     * @param boolean $break    if user is not found in the first directory,
@@ -2828,7 +2829,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return object identification object
     */
-   static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true) {
+   static function tryLdapAuth($auth, $rawLogin, $rawPassword, $auths_id = 0, $user_dn = false, $break = true) {
       global $DB;
 
       //If no specific source is given, test all ldap directories
@@ -2846,7 +2847,7 @@ class AuthLDAP extends CommonDBTM {
             [
                'SELECT' => 'auths_id',
                'FROM'   => User::getTable(),
-               'WHERE'  => ['name' => addslashes($login)],
+               'WHERE'  => ['name' => $DB->escape($rawLogin)],
             ]
          );
          $known_servers_id = array_column(iterator_to_array($known_servers), 'auths_id');
@@ -2865,7 +2866,7 @@ class AuthLDAP extends CommonDBTM {
 
          foreach ($ldap_methods as $ldap_method) {
             if ($ldap_method['is_active']) {
-               $auth = self::ldapAuth($auth, $login, $password, $ldap_method, $user_dn);
+               $auth = self::ldapAuth($auth, $rawLogin, $rawPassword, $ldap_method, $user_dn);
 
                if ($auth->user_found) {
                   $user_found = true;
@@ -2883,7 +2884,7 @@ class AuthLDAP extends CommonDBTM {
       } else if (array_key_exists($auths_id, $auth->authtypes["ldap"])) {
          // Check if the ldap server indicated as the last good one still exists !
          //A specific ldap directory is given, test it and only this one !
-         $auth = self::ldapAuth($auth, $login, $password, $auth->authtypes["ldap"][$auths_id],
+         $auth = self::ldapAuth($auth, $rawLogin, $rawPassword, $auth->authtypes["ldap"][$auths_id],
                                 $user_dn);
       }
       return $auth;

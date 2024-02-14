@@ -1426,11 +1426,11 @@ class User extends CommonDBTM {
     * @param resource $ldap_connection LDAP connection
     * @param array    $ldap_method     LDAP method
     * @param string   $userdn          Basedn of the user
-    * @param string   $login           User login
+    * @param string   $rawLogin           User login
     *
     * @return string|boolean Basedn of the user / false if not found
     */
-   private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login) {
+   private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $rawLogin) {
       global $DB;
 
       // Search in DB the ldap_field we need to search for in LDAP
@@ -1523,11 +1523,11 @@ class User extends CommonDBTM {
     * @param resource $ldap_connection    LDAP connection
     * @param array    $ldap_method        LDAP method
     * @param string   $userdn             Basedn of the user
-    * @param string   $login              User login
+    * @param string   $rawLogin              User login
     *
     * @return boolean true if search is applicable, false otherwise
     */
-   private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login) {
+   private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $rawLogin) {
       global $DB;
 
       // No group_member_field : unable to get group
@@ -1539,7 +1539,7 @@ class User extends CommonDBTM {
          $user_tmp = $userdn;
       } else {
          //Don't add $ldap_method["login_field"]."=", because sometimes it may not work (for example with posixGroup)
-         $user_tmp = $login;
+         $user_tmp = $rawLogin;
       }
 
       $v = $this->ldap_get_user_groups($ldap_connection, $ldap_method["basedn"],
@@ -1574,12 +1574,12 @@ class User extends CommonDBTM {
     * @param resource $ldap_connection LDAP connection
     * @param array    $ldap_method     LDAP method
     * @param string   $userdn          Basedn of the user
-    * @param string   $login           User Login
+    * @param string   $rawLogin           User Login
     * @param boolean  $import          true for import, false for update
     *
     * @return boolean true if found / false if not
     */
-   function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true) {
+   function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $rawLogin, $import = true) {
       global $DB, $CFG_GLPI;
 
       // we prevent some delay...
@@ -1709,13 +1709,13 @@ class User extends CommonDBTM {
          ///The groups are retrieved by looking into an ldap user object
          if (($ldap_method["group_search_type"] == 0)
              || ($ldap_method["group_search_type"] == 2)) {
-            $this->getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login);
+            $this->getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $rawLogin);
          }
 
          ///The groups are retrived by looking into an ldap group object
          if (($ldap_method["group_search_type"] == 1)
              || ($ldap_method["group_search_type"] == 2)) {
-            $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login);
+            $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $rawLogin);
          }
 
          ///Only process rules if working on the master database
@@ -1815,8 +1815,6 @@ class User extends CommonDBTM {
       $listgroups = [];
 
       //User dn may contain ( or ), need to espace it!
-      // $user_dn = str_replace(["(", ")", "\,", "\+", "\\ "], ["\(", "\)", "\\\,", "\\\+", "\\\\ "],
-      //                        $user_dn);
       $user_dn = Toolbox::clean_LDAP_filter($user_dn);
       //Only retrive cn and member attributes from groups
       $attrs = ['dn'];
