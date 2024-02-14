@@ -441,7 +441,11 @@ class Application extends BaseApplication {
       $input = new ArgvInput();
 
       try {
-         $command = $this->find($this->getCommandName($input));
+         $commandName = $this->getCommandName($input);
+         if (is_null($commandName)) {
+            $commandName = '';
+         }
+         $command = $this->find($commandName);
          if ($command instanceof ForceNoPluginsOptionCommandInterface) {
             return !$command->getNoPluginsOptionValue();
          }
