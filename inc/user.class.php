@@ -1426,7 +1426,7 @@ class User extends CommonDBTM {
     * @param resource $ldap_connection LDAP connection
     * @param array    $ldap_method     LDAP method
     * @param string   $userdn          Basedn of the user
-    * @param string   $rawLogin           User login
+    * @param string   $rawLogin        User login
     *
     * @return string|boolean Basedn of the user / false if not found
     */
@@ -1574,7 +1574,7 @@ class User extends CommonDBTM {
     * @param resource $ldap_connection LDAP connection
     * @param array    $ldap_method     LDAP method
     * @param string   $userdn          Basedn of the user
-    * @param string   $rawLogin           User Login
+    * @param string   $rawLogin        User Login
     * @param boolean  $import          true for import, false for update
     *
     * @return boolean true if found / false if not

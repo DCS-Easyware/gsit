@@ -218,8 +218,8 @@ class Auth extends CommonGLPI {
     * Based on GRR auth system
     *
     * @param string $ldap_method ldap_method array to use
-    * @param string $rawLogin       User Login
-    * @param string $rawPassword    User Password
+    * @param string $rawLogin    User Login
+    * @param string $rawPassword User Password
     *
     * @return string basedn of the user / false if not founded
     */
@@ -687,9 +687,9 @@ class Auth extends CommonGLPI {
     *
     * @param string  $rawLoginName      Login
     * @param string  $rawLoginPassword  Password
-    * @param boolean $noauto          (false by default)
+    * @param boolean $noauto            (false by default)
     * @param bool    $remember_me
-    * @param string  $login_auth      Type of auth - id of the auth
+    * @param string  $login_auth        Type of auth - id of the auth
     *
     * @return boolean (success)
     */

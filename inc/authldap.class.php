@@ -2768,8 +2768,8 @@ class AuthLDAP extends CommonDBTM {
     * Authentify a user by checking a specific directory
     *
     * @param object $auth        identification object
-    * @param string $rawLogin       user login
-    * @param string $rawPassword    user password
+    * @param string $rawLogin    user login
+    * @param string $rawPassword user password
     * @param array  $ldap_method ldap_method array to use
     * @param string $user_dn     user LDAP DN if present
     *
@@ -2819,13 +2819,13 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Try to authentify a user by checking all the directories
     *
-    * @param object  $auth     identification object
+    * @param object  $auth        identification object
     * @param string  $rawLogin    user login
     * @param string  $rawPassword user password
-    * @param integer $auths_id auths_id already used for the user (default 0)
-    * @param boolean $user_dn  user LDAP DN if present (false by default)
-    * @param boolean $break    if user is not found in the first directory,
-    *                          continue searching on the following ones (true by default)
+    * @param integer $auths_id    auths_id already used for the user (default 0)
+    * @param boolean $user_dn     user LDAP DN if present (false by default)
+    * @param boolean $break       if user is not found in the first directory,
+    *                             continue searching on the following ones (true by default)
     *
     * @return object identification object
     */

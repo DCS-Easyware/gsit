@@ -3673,6 +3673,11 @@ HTML;
       return $tabs;
    }
 
+   /**
+    * Clean value used for filter or DN in LDAP queries
+    * 
+    * @param string  $value   string to clean
+    */
    static function clean_LDAP_filter($value) {
       return ldap_escape($value, "", LDAP_ESCAPE_FILTER);
    }
