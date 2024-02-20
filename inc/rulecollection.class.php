@@ -1084,7 +1084,6 @@ class RuleCollection extends CommonDBTM {
                         && empty($criteria['pattern'])) {
                      continue;
                   }
-
                   $criteria['pattern'] = $DB->escape(Html::entity_decode_deep($criteria['pattern']));
                   $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                   $item     = new $itemtype();
