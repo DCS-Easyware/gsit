@@ -911,7 +911,7 @@ class RuleCollection extends CommonDBTM {
             $available_criteria = $rule->getCriterias();
             $crit               = $criteria['criteria'];
             if (self::isCriteraADropdown($available_criteria, $criteria['condition'], $crit)) {
-               $criteria['pattern']
+               $criteria['pattern'] 
                   = Html::clean(Dropdown::getDropdownName($available_criteria[$crit]['table'],
                                                           $criteria['pattern']));
             }
@@ -1080,6 +1080,11 @@ class RuleCollection extends CommonDBTM {
                if (self::isCriteraADropdown($available_criteria,
                                             $criteria['condition'], $crit)) {
                   //escape pattern
+                  if (is_array($criteria['pattern'])
+                        && empty($criteria['pattern'])) {
+                     continue;
+                  }
+
                   $criteria['pattern'] = $DB->escape(Html::entity_decode_deep($criteria['pattern']));
                   $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                   $item     = new $itemtype();
@@ -1121,6 +1126,10 @@ class RuleCollection extends CommonDBTM {
                   }
 
                   //escape value
+                  if (is_array($action['value'])
+                        && empty($action['value'])) {
+                     continue;
+                  }
                   $action['value'] = $DB->escape(Html::entity_decode_deep($action['value']));
                   $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                   $item     = new $itemtype();
