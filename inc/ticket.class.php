@@ -1770,26 +1770,24 @@ class Ticket extends CommonITILObject {
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
       // Do not force status if status has been set by rules
-      if (
-            (
-               $this->isSomeoneAssigned($input, '_users_id_assign')
-               ||
-               $this->isSomeoneAssigned($input, '_groups_id_assign')
-               ||
-               $this->isSomeoneAssigned($input, '_suppliers_id_assign')
-               ||
-               $this->isSomeoneAssigned($input, '_additional_assigns')
-               ||
-               $this->isSomeoneAssigned($input, '_additional_groups_assigns')
-               ||
-               $this->isSomeoneAssigned($input, '_additional_suppliers_assigns')
-            )
-            &&
-            (
-               in_array($input['status'], $this->getNewStatusArray())
-            )
-            && !$this->isStatusComputationBlocked($input)
-         ) {
+      if ((
+            $this->isSomeoneAssigned($input, '_users_id_assign')
+            ||
+            $this->isSomeoneAssigned($input, '_groups_id_assign')
+            ||
+            $this->isSomeoneAssigned($input, '_suppliers_id_assign')
+            ||
+            $this->isSomeoneAssigned($input, '_additional_assigns')
+            ||
+            $this->isSomeoneAssigned($input, '_additional_groups_assigns')
+            ||
+            $this->isSomeoneAssigned($input, '_additional_suppliers_assigns')
+         )
+         &&
+         (
+            in_array($input['status'], $this->getNewStatusArray())
+         )
+         && !$this->isStatusComputationBlocked($input)) {
          $input["status"] = self::ASSIGNED;
       }
 
@@ -7457,7 +7455,7 @@ class Ticket extends CommonITILObject {
     *
     * @return boolean
     */
-    private function isSomeoneAssigned(array $input, $key) {
+   private function isSomeoneAssigned(array $input, $key) {
       return (
          isset($input[$key])
          &&
