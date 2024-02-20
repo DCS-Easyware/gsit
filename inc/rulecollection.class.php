@@ -911,7 +911,7 @@ class RuleCollection extends CommonDBTM {
             $available_criteria = $rule->getCriterias();
             $crit               = $criteria['criteria'];
             if (self::isCriteraADropdown($available_criteria, $criteria['condition'], $crit)) {
-               $criteria['pattern'] 
+               $criteria['pattern']
                   = Html::clean(Dropdown::getDropdownName($available_criteria[$crit]['table'],
                                                           $criteria['pattern']));
             }
