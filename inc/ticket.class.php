@@ -1770,17 +1770,24 @@ class Ticket extends CommonITILObject {
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
       // Do not force status if status has been set by rules
-      if (((isset($input["_users_id_assign"])
-           && ((!is_array($input['_users_id_assign']) &&  $input["_users_id_assign"] > 0)
-               || is_array($input['_users_id_assign']) && count($input['_users_id_assign']) > 0))
-           || (isset($input["_groups_id_assign"])
-           && ((!is_array($input['_groups_id_assign']) && $input["_groups_id_assign"] > 0)
-               || is_array($input['_groups_id_assign']) && count($input['_groups_id_assign']) > 0))
-           || (isset($input["_suppliers_id_assign"])
-           && ((!is_array($input['_suppliers_id_assign']) && $input["_suppliers_id_assign"] > 0)
-               || is_array($input['_suppliers_id_assign']) && count($input['_suppliers_id_assign']) > 0)))
-          && (in_array($input['status'], $this->getNewStatusArray()))
-          && !$this->isStatusComputationBlocked($input)) {
+      if ((
+            $this->isSomeoneAssigned($input, '_users_id_assign')
+            ||
+            $this->isSomeoneAssigned($input, '_groups_id_assign')
+            ||
+            $this->isSomeoneAssigned($input, '_suppliers_id_assign')
+            ||
+            $this->isSomeoneAssigned($input, '_additional_assigns')
+            ||
+            $this->isSomeoneAssigned($input, '_additional_groups_assigns')
+            ||
+            $this->isSomeoneAssigned($input, '_additional_suppliers_assigns')
+         )
+         &&
+         (
+            in_array($input['status'], $this->getNewStatusArray())
+         )
+         && !$this->isStatusComputationBlocked($input)) {
          $input["status"] = self::ASSIGNED;
       }
 
@@ -7440,4 +7447,30 @@ class Ticket extends CommonITILObject {
    public static function getItemLinkClass(): string {
       return Item_Ticket::class;
    }
+
+   /**
+    * Check if input contains a person or a group assigned.
+    *
+    * @param array $input
+    *
+    * @return boolean
+    */
+   private function isSomeoneAssigned(array $input, $key) {
+      return (
+         isset($input[$key])
+         &&
+         (
+            (
+               !is_array($input[$key])
+               && $input[$key] > 0
+            )
+            ||
+            (
+               is_array($input[$key])
+               && count($input[$key]) > 0
+            )
+         )
+      );
+   }
+
 }

@@ -2502,6 +2502,27 @@ class Ticket extends DbTestCase {
             ],
             'expected' => \CommonITILObject::WAITING, // status not changed as not "new"
          ],
+         [
+            'input'    => [
+               '_additional_assigns' => ['4'], // "tech"
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as actors are set
+         ],
+         [
+            'input'    => [
+               '_additional_groups_assigns' => [$group_id], // "group"
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as groups are set
+         ],
+         [
+            'input'    => [
+               '_additional_suppliers_assigns' => ['1'], // "supplier"
+               'status' => \CommonITILObject::INCOMING,
+            ],
+            'expected' => \CommonITILObject::ASSIGNED, // incoming changed to assign as suppliers are set
+         ],
       ];
    }
 
