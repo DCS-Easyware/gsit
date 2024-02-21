@@ -31,7 +31,7 @@
 */
 
 // Current version of GLPI
-define('GLPI_VERSION', '9.5.11');
+define('GLPI_VERSION', '9.5.12');
 if (substr(GLPI_VERSION, -4) === '-dev') {
    //for dev version
    define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
@@ -44,7 +44,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    define("GLPI_SCHEMA_VERSION", '9.5.8');
 }
 define('GLPI_MIN_PHP', '7.2.0'); // Must also be changed in top of index.php
-define('GLPI_YEAR', '2022');
+define('GLPI_YEAR', '2024');
 
 //Define a global recipient address for email notifications
 //define('GLPI_FORCE_MAIL', 'me@localhost');
