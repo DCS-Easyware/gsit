@@ -36,49 +36,58 @@ Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 
-if (empty($_GET["date1"]) && empty($_GET["date2"])) {
-   $year          = date("Y")-1;
-   $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
-   $_GET["date2"] = date("Y-m-d");
+// init variables && filter data
+$dateRegex = ['options' => ['regexp' => '/^\d{4}-\d{2}-\d{2}$/']];
+$itemtypeRegex  = ['options' => ['regexp' => '/^\w+$/']];
+$year      = date('Y') - 1;
+
+$date1     = filter_input(INPUT_GET, 'date1', FILTER_VALIDATE_REGEXP, $dateRegex);
+$date2     = filter_input(INPUT_GET, 'date2', FILTER_VALIDATE_REGEXP, $dateRegex);
+$itemtype  = filter_input(INPUT_GET, 'itemtype', FILTER_VALIDATE_REGEXP, $itemtypeRegex);
+
+if (is_null($date1) || !$date1) {
+   $date1 = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
 }
 
-if (!empty($_GET["date1"])
-    && !empty($_GET["date2"])
-    && (strcmp($_GET["date2"], $_GET["date1"]) < 0)) {
+if (is_null($date2) || !$date2) {
+   $date2 = date("Y-m-d");
+}
 
-   $tmp           = $_GET["date1"];
-   $_GET["date1"] = $_GET["date2"];
-   $_GET["date2"] = $tmp;
+if (strcmp($date2, $date1) < 0) {
+   $tmp   = $date1;
+   $date1 = $date2;
+   $date2 = $tmp;
 }
 
 Stat::title();
 
-if (!$item = getItemForItemtype($_GET['itemtype'])) {
+if (is_null($itemtype) || !$itemtype) {
+   exit;
+}
+
+$item = getItemForItemtype($itemtype);
+if (!$item) {
    exit;
 }
 
 $stat = new Stat();
 
 $stat->displaySearchForm(
-   $_GET['itemtype'],
-   $_GET['date1'],
-   $_GET['date2']
+   $itemtype,
+   $date1,
+   $date2
 );
 
 ///////// Stats nombre intervention
 $values = [];
 // Total des interventions
-$values['total']   = Stat::constructEntryValues($_GET['itemtype'], "inter_total", $_GET["date1"],
-                                                $_GET["date2"]);
+$values['total']  = Stat::constructEntryValues($itemtype, 'inter_total', $date1, $date2);
 // Total des interventions résolues
-$values['solved']  = Stat::constructEntryValues($_GET['itemtype'], "inter_solved", $_GET["date1"],
-                                                $_GET["date2"]);
+$values['solved'] = Stat::constructEntryValues($itemtype, 'inter_solved', $date1, $date2);
 // Total des interventions closes
-$values['closed']  = Stat::constructEntryValues($_GET['itemtype'], "inter_closed", $_GET["date1"],
-                                                $_GET["date2"]);
+$values['closed'] = Stat::constructEntryValues($itemtype, 'inter_closed', $date1, $date2);
 // Total des interventions closes
-$values['late']    = Stat::constructEntryValues($_GET['itemtype'], "inter_solved_late",
-                                                $_GET["date1"], $_GET["date2"]);
+$values['late']   = Stat::constructEntryValues($itemtype, 'inter_solved_late', $date1, $date2);
 
 $stat->displayLineGraph(
    _x('Quantity', 'Number') . " - " . $item->getTypeName(Session::getPluralNumber()),
@@ -101,23 +110,20 @@ $stat->displayLineGraph(
 
 $values = [];
 //Temps moyen de resolution d'intervention
-$values['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgsolvedtime",
-                                                   $_GET["date1"], $_GET["date2"]);
+$values['avgsolved'] = Stat::constructEntryValues($itemtype, 'inter_avgsolvedtime', $date1, $date2);
 // Pass to hour values
 foreach ($values['avgsolved'] as &$val) {
    $val = round($val / HOUR_TIMESTAMP, 2);
 }
 
 //Temps moyen de cloture d'intervention
-$values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgclosedtime",
-                                                   $_GET["date1"], $_GET["date2"]);
+$values['avgclosed'] = Stat::constructEntryValues($itemtype, 'inter_avgclosedtime', $date1, $date2);
 // Pass to hour values
 foreach ($values['avgclosed'] as &$val) {
    $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen d'intervention reel
-$values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgactiontime",
-                                                       $_GET["date1"], $_GET["date2"]);
+$values['avgactiontime'] = Stat::constructEntryValues($itemtype, 'inter_avgactiontime', $date1, $date2);
 
 // Pass to hour values
 foreach ($values['avgactiontime'] as &$val) {
@@ -140,17 +146,12 @@ $stat->displayLineGraph(
    ]
 );
 
-if ($_GET['itemtype'] == 'Ticket') {
+if ($itemtype == 'Ticket') {
 
    ///////// Satisfaction
    $values = [];
-   $values['opensatisfaction']   = Stat::constructEntryValues($_GET['itemtype'],
-                                                              "inter_opensatisfaction",
-                                                              $_GET["date1"], $_GET["date2"]);
-
-   $values['answersatisfaction'] = Stat::constructEntryValues($_GET['itemtype'],
-                                                              "inter_answersatisfaction",
-                                                              $_GET["date1"], $_GET["date2"]);
+   $values['opensatisfaction']   = Stat::constructEntryValues('Ticket', 'inter_opensatisfaction', $date1, $date2);
+   $values['answersatisfaction'] = Stat::constructEntryValues('Ticket', 'inter_answersatisfaction', $date1, $date2);
 
    $stat->displayLineGraph(
       __('Satisfaction survey') . " - " .  __('Tickets'),
@@ -166,9 +167,7 @@ if ($_GET['itemtype'] == 'Ticket') {
    );
 
    $values = [];
-   $values['avgsatisfaction'] = Stat::constructEntryValues($_GET['itemtype'],
-                                                           "inter_avgsatisfaction",
-                                                           $_GET["date1"], $_GET["date2"]);
+   $values['avgsatisfaction'] = Stat::constructEntryValues('Ticket', 'inter_avgsatisfaction', $date1, $date2);
 
    $stat->displayLineGraph(
       __('Satisfaction'),
@@ -180,6 +179,5 @@ if ($_GET['itemtype'] == 'Ticket') {
       ]
    );
 }
-
 
 Html::footer();

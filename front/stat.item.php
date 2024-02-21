@@ -36,47 +36,48 @@ Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 
-if (isset($_GET["date1"])) {
-   $_POST["date1"] = $_GET["date1"];
-}
-if (isset($_GET["date2"])) {
-   $_POST["date2"] = $_GET["date2"];
-}
+// init variables && filter data
+$dateRegex     = ['options' => ['regexp' => '/^\d{4}-\d{2}-\d{2}$/']];
+$idRegex       = ['options' => ['regexp' => '/^\d+$/']];
+$year          = date('Y') - 1;
 
-if (empty($_POST["date1"]) && empty($_POST["date2"])) {
-   $year           = date("Y")-1;
-   $_POST["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
-   $_POST["date2"] = date("Y-m-d");
-}
+$date1 = filter_input(INPUT_GET, 'date1', FILTER_VALIDATE_REGEXP, $dateRegex);
+$date2 = filter_input(INPUT_GET, 'date2', FILTER_VALIDATE_REGEXP, $dateRegex);
+$start = filter_input(INPUT_GET, 'start', FILTER_VALIDATE_REGEXP, $idRegex);
 
-if (!empty($_POST["date1"])
-    && !empty($_POST["date2"])
-    && (strcmp($_POST["date2"], $_POST["date1"]) < 0)) {
-
-   $tmp            = $_POST["date1"];
-   $_POST["date1"] = $_POST["date2"];
-   $_POST["date2"] = $tmp;
+if (is_null($date1) || !$date1) {
+   $date1 = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
 }
 
-if (!isset($_GET["start"])) {
-   $_GET["start"] = 0;
+if (is_null($date2) || !$date2) {
+   $date2 = date("Y-m-d");
+}
+
+if (strcmp($date2, $date1) < 0) {
+   $tmp   = $date1;
+   $date1 = $date2;
+   $date2 = $tmp;
+}
+
+if (is_null($start) || !$start) {
+   $start = 0;
 }
 
 Stat::title();
 
-echo "<div class='center'><form method='post' name='form' action='stat.item.php'>";
+echo "<div class='center'><form method='get' name='form' action='stat.item.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateField("date1", ['value' => $_POST["date1"]]);
+Html::showDateField("date1", ['value' => $date1]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='submit' class='submit' name='submit' value='".__s('Display report')."'></td></tr>";
+echo "<input type='submit' class='submit' value='".__s('Display report')."'></td></tr>";
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateField("date2", ['value' => $_POST["date2"]]);
+Html::showDateField("date2", ['value' => $date2]);
 echo "</td></tr>";
 echo "</table>";
 Html::closeForm();
 echo "</div>";
 
-Stat::showItems($_SERVER['PHP_SELF'], $_POST["date1"], $_POST["date2"], $_GET['start']);
+Stat::showItems($_SERVER['PHP_SELF'], $date1, $date2, $start);
 
 Html::footer();
