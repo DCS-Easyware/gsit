@@ -1355,15 +1355,15 @@ class Stat extends CommonGLPI {
       if (empty($date2)) {
          $date2 = date("Y-m-d");
       }
-      $date2 .= " 23:59:59";
+      $date2SQL = $date2 . " 23:59:59";
 
       // 1 an par defaut
       if (empty($date1)) {
          $date1 = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y")-1));
       }
-      $date1 .= " 00:00:00";
+      $date1SQL = $date1 . " 00:00:00";
 
-      $iterator = $DB->request([
+      $query = [
          'SELECT' => [
             'glpi_items_tickets.itemtype',
             'glpi_items_tickets.items_id',
@@ -1379,8 +1379,8 @@ class Stat extends CommonGLPI {
             ]
          ],
          'WHERE'  => [
-            'date'                        => ['<=', $date2],
-            'glpi_tickets.date'           => ['>=', $date1],
+            'date'                        => ['<=', $date2SQL],
+            'glpi_tickets.date'           => ['>=', $date1SQL],
             'glpi_items_tickets.itemtype' => ['<>', ''],
             'glpi_items_tickets.items_id' => ['>', 0]
          ] + getEntitiesRestrictCriteria('glpi_tickets'),
@@ -1389,14 +1389,21 @@ class Stat extends CommonGLPI {
             'glpi_items_tickets.items_id'
          ],
          'ORDER'  => 'NB DESC'
-      ]);
+      ];
+
+      $iterator = $DB->request($query);
       $numrows = count($iterator);
+
+      $query['START'] = $start;
+      $query['LIMIT'] = $_SESSION['glpilist_limit'];
+
+      $iteratorLimit = $DB->request($query);
 
       if ($numrows > 0) {
          if ($output_type == Search::HTML_OUTPUT) {
             Html::printPager($start, $numrows, $target,
                              "date1=".$date1."&amp;date2=".$date2.
-                                 "&amp;type=hardwares&amp;start=$start",
+                                 "&amp;type=hardwares",
                              'Stat');
             echo "<div class='center'>";
          }
@@ -1423,7 +1430,7 @@ class Stat extends CommonGLPI {
          for ($i=$start; ($i<$numrows) && ($i<$end_display); $i++) {
             $item_num = 1;
             // Get data and increment loop variables
-            $data = $iterator->next();
+            $data = $iteratorLimit->next();
             if (!($item = getItemForItemtype($data["itemtype"]))) {
                continue;
             }

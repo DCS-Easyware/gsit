@@ -36,27 +36,49 @@ Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 
-if (!$item = getItemForItemtype($_GET['itemtype'])) {
+// init variables && filter data
+$dateRegex     = ['options' => ['regexp' => '/^\d{4}-\d{2}-\d{2}$/']];
+$itemtypeRegex = ['options' => ['regexp' => '/^(Ticket|Problem|Change)$/']];
+$typeRegex     = ['options' => ['regexp' => '/^\w+$/']];
+$idRegex       = ['options' => ['regexp' => '/^\d+$/']];
+$year          = date('Y') - 1;
+
+$date1     = filter_input(INPUT_GET, 'date1', FILTER_VALIDATE_REGEXP, $dateRegex);
+$date2     = filter_input(INPUT_GET, 'date2', FILTER_VALIDATE_REGEXP, $dateRegex);
+$itemtype  = filter_input(INPUT_GET, 'itemtype', FILTER_VALIDATE_REGEXP, $itemtypeRegex);
+$type      = filter_input(INPUT_GET, 'type', FILTER_VALIDATE_REGEXP, $typeRegex);
+$id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_REGEXP, $idRegex);
+$champ     = filter_input(INPUT_GET, 'champ', FILTER_VALIDATE_REGEXP, $idRegex);
+
+if (is_null($itemtype) || !$itemtype) {
+   exit;
+}
+if (is_null($type) || !$type) {
+   exit;
+}
+if (is_null($id) || !$id) {
    exit;
 }
 
-if (empty($_POST["date1"]) && empty($_POST["date2"])) {
-   if (isset($_GET["date1"])) {
-      $_POST["date1"] = $_GET["date1"];
-   }
-   if (isset($_GET["date2"])) {
-      $_POST["date2"] = $_GET["date2"];
-   }
+if (is_null($date1) || !$date1) {
+   $date1 = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
 }
 
-if (!empty($_POST["date1"])
-    && !empty($_POST["date2"])
-    && (strcmp($_POST["date2"], $_POST["date1"]) < 0)) {
-
-   $tmp            = $_POST["date1"];
-   $_POST["date1"] = $_POST["date2"];
-   $_POST["date2"] = $tmp;
+if (is_null($date2) || !$date2) {
+   $date2 = date("Y-m-d");
 }
+
+if (strcmp($date2, $date1) < 0) {
+   $tmp   = $date1;
+   $date1 = $date2;
+   $date2 = $tmp;
+}
+
+if (!getItemForItemtype($itemtype)) {
+   exit;
+}
+
+$item = new $itemtype();
 
 $cleantarget = preg_replace("/[&]date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
 $cleantarget = preg_replace("/[&]*id=([0-9]+[&]{0,1})/", "", $cleantarget);
@@ -64,7 +86,7 @@ $cleantarget = preg_replace("/&/", "&amp;", $cleantarget);
 
 $next    = 0;
 $prev    = 0;
-$title   = "";
+$title   = '';
 $parent  = 0;
 
 $showuserlink = 0;
@@ -72,166 +94,171 @@ if (Session::haveRight('user', READ)) {
    $showuserlink = 1;
 }
 
-switch ($_GET["type"]) {
+switch ($type) {
    case "technicien" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
       $title   = sprintf(__('%1$s: %2$s'), __('Technician'),
-                         $item->getAssignName($_GET["id"], 'User', $showuserlink));
+                        $item->getAssignName($id, 'User', $showuserlink));
       break;
 
    case "technicien_followup" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
       $title   = sprintf(__('%1$s: %2$s'), __('Technician'),
-                         $item->getAssignName($_GET["id"], 'User', $showuserlink));
+                        $item->getAssignName($id, 'User', $showuserlink));
       break;
 
    case "suppliers_id_assign" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
       $title   = sprintf(__('%1$s: %2$s'), Supplier::getTypeName(1),
-                         $item->getAssignName($_GET["id"], 'Supplier', $showuserlink));
+                        $item->getAssignName($id, 'Supplier', $showuserlink));
       break;
 
    case "user" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($_GET["id"], $showuserlink));
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
+      $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($id, $showuserlink));
       break;
 
    case "users_id_recipient" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($_GET["id"], $showuserlink));
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
+      $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($id, $showuserlink));
       break;
 
    case "itilcategories_tree" :
-      $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
+      if (!is_null($champ) && $champ) {
+         $parent = $champ;
+      }
       // nobreak;
 
    case "itilcategories_id" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"],
-                                $parent);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type, $parent);
       $title   = sprintf(__('%1$s: %2$s'), __('Category'),
-                         Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"]));
+                        Dropdown::getDropdownName("glpi_itilcategories", $id));
       break;
 
    case 'locations_tree' :
-      $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
+      if (!is_null($champ) && $champ) {
+         $parent = $champ;
+      }
       // nobreak;
 
    case 'locations_id' :
-      $val1    = $_GET['id'];
+      $val1    = $id;
       $val2    = '';
-      $values  = Stat::getItems($_GET['itemtype'], $_POST['date1'], $_POST['date2'], $_GET['type'],
-                                $parent);
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type, $parent);
       $title   = sprintf(__('%1$s: %2$s'), Location::getTypeName(1),
-                         Dropdown::getDropdownName('glpi_locations', $_GET['id']));
+                        Dropdown::getDropdownName('glpi_locations', $id));
       break;
 
    case "type" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), _n('Type', 'Types', 1), Ticket::getTicketTypeName($_GET["id"]));
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
+      $title   = sprintf(__('%1$s: %2$s'), _n('Type', 'Types', 1), Ticket::getTicketTypeName($id));
       break;
 
    case 'group_tree' :
    case 'groups_tree_assign' :
-      $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
+      if (!is_null($champ) && $champ) {
+         $parent = $champ;
+      }
       // nobreak;
 
    case "group" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"],
-                                $parent);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type, $parent);
       $title   = sprintf(__('%1$s: %2$s'), Group::getTypeName(1),
-                         Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
+                        Dropdown::getDropdownName('glpi_groups', $id));
       break;
 
    case "groups_id_assign" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
       $title   = sprintf(__('%1$s: %2$s'), Group::getTypeName(1),
-                         Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
+                        Dropdown::getDropdownName("glpi_groups", $id));
       break;
 
    case "priority" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Priority'), $item->getPriorityName($_GET["id"]));
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
+      $title   = sprintf(__('%1$s: %2$s'), __('Priority'), $item->getPriorityName($id));
       break;
 
    case "urgency" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Urgency'), $item->getUrgencyName($_GET["id"]));
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
+      $title   = sprintf(__('%1$s: %2$s'), __('Urgency'), $item->getUrgencyName($id));
       break;
 
    case "impact" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"]));
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
+      $title   = sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($id));
       break;
 
    case "usertitles_id" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
       $title   = sprintf(__('%1$s: %2$s'), _x('person', 'Title'),
-                         Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
+                        Dropdown::getDropdownName("glpi_usertitles", $id));
       break;
 
    case "solutiontypes_id" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
       $title   = sprintf(__('%1$s: %2$s'), SolutionType::getTypeName(1),
-                         Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"]));
+                        Dropdown::getDropdownName("glpi_solutiontypes", $id));
       break;
 
    case "usercategories_id" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
       $title   = sprintf(__('%1$s: %2$s'), __('Category'),
-                         Dropdown::getDropdownName("glpi_usercategories", $_GET["id"]));
+                        Dropdown::getDropdownName("glpi_usercategories", $id));
       break;
 
    case "requesttypes_id" :
-      $val1    = $_GET["id"];
-      $val2    = "";
-      $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+      $val1    = $id;
+      $val2    = '';
+      $values  = Stat::getItems($itemtype, $date1, $date2, $type);
       $title   = sprintf(__('%1$s: %2$s'), RequestType::getTypeName(1),
-                         Dropdown::getDropdownName("glpi_requesttypes", $_GET["id"]));
+                        Dropdown::getDropdownName("glpi_requesttypes", $id));
       break;
 
    case "device" :
-      $val1 = $_GET["id"];
-      $val2 = $_GET["champ"];
-      if ($item = getItemForItemtype($_GET["champ"])) {
+      $val1 = $id;
+      $val2 = '';
+      if (!is_null($champ) && $champ) {
+         $val2 = $champ;
+      }
+      if ($item = getItemForItemtype($champ)) {
          $device_table = $item->getTable();
-         $values       = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"],
-                                        $_GET["champ"]);
+         $values       = Stat::getItems($itemtype, $date1, $date2, $champ);
 
          $iterator = $DB->request([
             'SELECT' => ['designation'],
             'FROM'   => $device_table,
             'WHERE'  => [
-               'id' => $_GET['id']
+               'id' => $id
             ]
          ]);
          $current = $iterator->next();
@@ -242,22 +269,28 @@ switch ($_GET["type"]) {
       break;
 
    case "comp_champ" :
-      $val1  = $_GET["id"];
-      $val2  = $_GET["champ"];
-      if ($item = getItemForItemtype($_GET["champ"])) {
-         $table  = $item->getTable();
-         $values = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"],
-                                  $_GET["champ"]);
-         $title  = sprintf(__('%1$s: %2$s'),
-                           $item->getTypeName(), Dropdown::getDropdownName($table, $_GET["id"]));
+      $val1  = $id;
+      $val2 = '';
+      if (!is_null($champ) && $champ) {
+         $val2 = $champ;
+         if ($item = getItemForItemtype($champ)) {
+            $table  = $item->getTable();
+            $values = Stat::getItems($itemtype, $date1, $date2, $champ);
+            $title  = sprintf(__('%1$s: %2$s'),
+                              $item->getTypeName(), Dropdown::getDropdownName($table, $id));
+         }
       }
       break;
+
+   default:
+      exit;
 }
+
 
 // Found next and prev items
 $foundkey = -1;
 foreach ($values as $key => $val) {
-   if ($val['id'] == $_GET["id"]) {
+   if ($val['id'] == $id) {
       $foundkey = $key;
    }
 }
@@ -277,8 +310,8 @@ echo "<div class='center'>";
 echo "<table class='tab_cadre'>";
 echo "<tr><td>";
 if ($prev > 0) {
-   echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
-          $_POST["date2"]."&amp;id=$prev\">
+   echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$date1."&amp;date2=".
+          $date2."&amp;id=$prev\">
           <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous')."\"
            title=\"".__s('Previous')."\"></a>";
 }
@@ -287,8 +320,8 @@ echo "</td>";
 echo "<td width='400' class='center b'>$title</td>";
 echo "<td>";
 if ($next > 0) {
-   echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
-          $_POST["date2"]."&amp;id=$next\">
+   echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$date1."&amp;date2=".
+          $date2."&amp;id=$next\">
           <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next')."\"
            title=\"".__s('Next')."\"></a>";
 }
@@ -298,16 +331,18 @@ echo "</table></div><br>";
 
 $target = preg_replace("/&/", "&amp;", $_SERVER["REQUEST_URI"]);
 
-echo "<form method='post' name='form' action='$target'><div class='center'>";
+echo "<form method='get' name='form' action='$target'><div class='center'>";
 echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
-Html::showDateField("date1", ['value' => $_POST["date1"]]);
+Html::showDateField("date1", ['value' => $date1]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='hidden' name='itemtype' value=\"".$_GET['itemtype']."\">";
+echo "<input type='hidden' name='itemtype' value=\"".$itemtype."\">";
+echo "<input type='hidden' name='type' value=\"".$type."\">";
+echo "<input type='hidden' name='id' value=\"".$id."\">";
 echo "<input type='submit' class='submit' value=\"".__s('Display report')."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateField("date2", ['value' => $_POST["date2"]]);
+Html::showDateField("date2", ['value' => $date2]);
 echo "</td></tr>";
 echo "</table></div>";
 
@@ -317,18 +352,13 @@ Html::closeForm();
 
 ///////// Stats nombre intervention
 // Total des interventions
-$values['total']  = Stat::constructEntryValues($_GET['itemtype'], "inter_total", $_POST["date1"],
-                                               $_POST["date2"], $_GET["type"], $val1, $val2);
-// Total des interventions r??solues
-$values['solved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_solved", $_POST["date1"],
-                                               $_POST["date2"], $_GET["type"], $val1, $val2);
+$values['total']  = Stat::constructEntryValues($itemtype, 'inter_total', $date1, $date2, $type, $val1, $val2);
+// Total des interventions résolues
+$values['solved'] = Stat::constructEntryValues($itemtype, 'inter_solved', $date1, $date2, $type, $val1, $val2);
 // Total des interventions closes
-$values['closed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_closed", $_POST["date1"],
-                                               $_POST["date2"], $_GET["type"], $val1, $val2);
+$values['closed'] = Stat::constructEntryValues($itemtype, 'inter_closed', $date1, $date2, $type, $val1, $val2);
 // Total des interventions closes
-$values['late']   = Stat::constructEntryValues($_GET['itemtype'], "inter_solved_late",
-                                               $_POST["date1"], $_POST["date2"], $_GET["type"],
-                                               $val1, $val2);
+$values['late']   = Stat::constructEntryValues($itemtype, 'inter_solved_late', $date1, $date2, $type, $val1, $val2);
 
 
 $stat->displayLineGraph(
@@ -352,25 +382,19 @@ $stat->displayLineGraph(
 
 $values = [];
 //Temps moyen de resolution d'intervention
-$values['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgsolvedtime",
-                                                   $_POST["date1"], $_POST["date2"],
-                                                   $_GET["type"], $val1, $val2);
+$values['avgsolved'] = Stat::constructEntryValues($itemtype, 'inter_avgsolvedtime', $date1, $date2, $type, $val1, $val2);
 // Pass to hour values
 foreach ($values['avgsolved'] as $key => &$val) {
    $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen de cloture d'intervention
-$values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgclosedtime",
-                                                   $_POST["date1"], $_POST["date2"],
-                                                   $_GET["type"], $val1, $val2);
+$values['avgclosed'] = Stat::constructEntryValues($itemtype, 'inter_avgclosedtime', $date1, $date2, $type, $val1, $val2);
 // Pass to hour values
 foreach ($values['avgclosed'] as $key => &$val) {
    $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen d'intervention reel
-$values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgactiontime",
-                                                       $_POST["date1"], $_POST["date2"],
-                                                       $_GET["type"], $val1, $val2);
+$values['avgactiontime'] = Stat::constructEntryValues($itemtype, 'inter_avgactiontime', $date1, $date2, $type, $val1, $val2);
 // Pass to hour values
 foreach ($values['avgactiontime'] as $key => &$val) {
    $val = round($val / HOUR_TIMESTAMP, 2);
@@ -389,11 +413,9 @@ $series = [
    ]
 ];
 
-if ($_GET['itemtype'] == 'Ticket') {
+if ($itemtype == 'Ticket') {
    //Temps moyen de prise en compte de l'intervention
-   $values['avgtaketime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgtakeaccount",
-                                                        $_POST["date1"], $_POST["date2"],
-                                                        $_GET["type"], $val1, $val2);
+   $values['avgtaketime'] = Stat::constructEntryValues($itemtype, 'inter_avgtakeaccount', $date1, $date2, $type, $val1, $val2);
    // Pass to hour values
    foreach ($values['avgtaketime'] as $key => &$val) {
       $val = round($val / HOUR_TIMESTAMP, 2);
@@ -411,18 +433,12 @@ $stat->displayLineGraph(
    $series
 );
 
-if ($_GET['itemtype'] == 'Ticket') {
+if ($itemtype == 'Ticket') {
    $values = [];
    ///////// Satisfaction
-   $values['opensatisfaction']   = Stat::constructEntryValues($_GET['itemtype'],
-                                                              "inter_opensatisfaction",
-                                                              $_POST["date1"], $_POST["date2"],
-                                                              $_GET["type"], $val1, $val2);
+   $values['opensatisfaction']   = Stat::constructEntryValues($itemtype, 'inter_opensatisfaction', $date1, $date2, $type, $val1, $val2);
 
-   $values['answersatisfaction'] = Stat::constructEntryValues($_GET['itemtype'],
-                                                              "inter_answersatisfaction",
-                                                              $_POST["date1"], $_POST["date2"],
-                                                              $_GET["type"], $val1, $val2);
+   $values['answersatisfaction'] = Stat::constructEntryValues($itemtype, 'inter_answersatisfaction', $date1, $date2, $type, $val1, $val2);
 
    $stat->displayLineGraph(
       __('Satisfaction survey') . " - " .  __('Tickets'),
@@ -438,10 +454,7 @@ if ($_GET['itemtype'] == 'Ticket') {
    );
 
    $values = [];
-   $values['avgsatisfaction'] = Stat::constructEntryValues($_GET['itemtype'],
-                                                           "inter_avgsatisfaction",
-                                                           $_POST["date1"], $_POST["date2"],
-                                                           $_GET["type"], $val1, $val2);
+   $values['avgsatisfaction'] = Stat::constructEntryValues($itemtype, 'inter_avgsatisfaction', $date1, $date2, $type, $val1, $val2);
 
    $stat->displayLineGraph(
       __('Satisfaction'),

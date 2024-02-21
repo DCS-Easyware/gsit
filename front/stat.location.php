@@ -36,40 +36,54 @@ Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 
+// init variables && filter data
+$dateRegex      = ['options' => ['regexp' => '/^\d{4}-\d{2}-\d{2}$/']];
+$itemtypeRegex  = ['options' => ['regexp' => '/^\w+$/']];
+$idRegex        = ['options' => ['regexp' => '/^\d+$/']];
+$showgraphRegex = ['options' => ['regexp' => '/^(0|1)$/']];
+$year           = date('Y') - 1;
 
-if (empty($_GET["showgraph"])) {
-   $_GET["showgraph"] = 0;
+$date1     = filter_input(INPUT_GET, 'date1', FILTER_VALIDATE_REGEXP, $dateRegex);
+$date2     = filter_input(INPUT_GET, 'date2', FILTER_VALIDATE_REGEXP, $dateRegex);
+$showgraph = filter_input(INPUT_GET, 'showgraph', FILTER_VALIDATE_REGEXP, $showgraphRegex);
+$start     = filter_input(INPUT_GET, 'start', FILTER_VALIDATE_REGEXP, $idRegex);
+$dropdown  = filter_input(INPUT_GET, 'dropdown', FILTER_VALIDATE_REGEXP, $itemtypeRegex);
+$itemtype  = filter_input(INPUT_GET, 'itemtype', FILTER_VALIDATE_REGEXP, $itemtypeRegex);
+
+if (is_null($showgraph) || $showgraph === false) {
+   $showgraph = 0;
 }
 
-if (empty($_GET["date1"]) && empty($_GET["date2"])) {
-   $year          = date("Y")-1;
-   $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
-   $_GET["date2"] = date("Y-m-d");
+if (is_null($date1) || !$date1) {
+   $date1 = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
 }
 
-if (!empty($_GET["date1"])
-    && !empty($_GET["date2"])
-    && (strcmp($_GET["date2"], $_GET["date1"]) < 0)) {
-
-   $tmp           = $_GET["date1"];
-   $_GET["date1"] = $_GET["date2"];
-   $_GET["date2"] = $tmp;
+if (is_null($date2) || !$date2) {
+   $date2 = date("Y-m-d");
 }
 
-if (!isset($_GET["start"])) {
-   $_GET["start"] = 0;
-}
-// Why this test ?? For me it's doing nothing
-if (isset($_GET["dropdown"])) {
-   $_GET["dropdown"] = $_GET["dropdown"];
+if (strcmp($date2, $date1) < 0) {
+   $tmp   = $date1;
+   $date1 = $date2;
+   $date2 = $tmp;
 }
 
-if (empty($_GET["dropdown"])) {
-   $_GET["dropdown"] = "ComputerType";
+if (is_null($start) || !$start) {
+   $start = 0;
 }
 
-if (!isset($_GET['itemtype'])) {
-   $_GET['itemtype'] = 'Ticket';
+if (is_null($dropdown) || !$dropdown) {
+   $dropdown = 'ComputerType';
+}
+
+if (is_null($itemtype) || !$itemtype) {
+   $itemtype = 'Ticket';
+}
+
+// Check if the dropdown and the itemtype are GLPI classes
+$item = getItemForItemtype($dropdown);
+if (!$item || !getItemForItemtype($itemtype)) {
+   exit;
 }
 
 $stat = new Stat();
@@ -77,7 +91,7 @@ Stat::title();
 
 echo "<form method='get' name='form' action='stat.location.php'>";
 // keep it first param
-echo "<input type='hidden' name='itemtype' value='". $_GET['itemtype'] ."'>";
+echo "<input type='hidden' name='itemtype' value='". $itemtype ."'>";
 
 echo "<table class='tab_cadre_fixe' ><tr class='tab_bg_2'><td rowspan='2' width='30%'>";
 $values = [_n('Dropdown', 'Dropdowns', Session::getPluralNumber()) => ['ComputerType'    => _n('Type', 'Types', 1),
@@ -92,69 +106,59 @@ foreach ($devices as $label => $dp) {
    }
 }
 
-Dropdown::showFromArray('dropdown', $values, ['value' => $_GET["dropdown"]]);
+Dropdown::showFromArray('dropdown', $values, ['value' => $dropdown]);
 
 echo "</td>";
 
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateField("date1", ['value' => $_GET["date1"]]);
+Html::showDateField("date1", ['value' => $date1]);
 echo "</td>";
 echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
-echo "<input type='submit' class='submit' name='submit' value='".__s('Display report')."'></td></tr>";
+echo "<input type='submit' class='submit' value='".__s('Display report')."'></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateField("date2", ['value' => $_GET["date2"]]);
+Html::showDateField("date2", ['value' => $date2]);
 echo "</td><td class='center'>";
-Dropdown::showYesNo('showgraph', $_GET['showgraph']);
+Dropdown::showYesNo('showgraph', $showgraph);
 echo "</td>";
 echo "</tr>";
 echo "</table>";
 // form using GET method : CRSF not needed
 echo "</form>";
 
-if (empty($_GET["dropdown"])
-    || !($item = getItemForItemtype($_GET["dropdown"]))) {
-   // Do nothing
-   Html::footer();
-   exit();
-}
-
-
 if (!($item instanceof CommonDevice)) {
    // echo "Dropdown";
    $type = "comp_champ";
 
-   $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
+   $val = Stat::getItems($itemtype, $date1, $date2, $dropdown);
    $params = ['type'     => $type,
-                   'dropdown' => $_GET["dropdown"],
-                   'date1'    => $_GET["date1"],
-                   'date2'    => $_GET["date2"],
-                   'start'    => $_GET["start"]];
+              'dropdown' => $dropdown,
+              'date1'    => $date1,
+              'date2'    => $date2,
+              'start'    => $start];
 
 } else {
    //   echo "Device";
    $type  = "device";
 
-   $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
+   $val = Stat::getItems($itemtype, $date1, $date2, $dropdown);
    $params = ['type'     => $type,
-                   'dropdown' => $_GET["dropdown"],
-                   'date1'    => $_GET["date1"],
-                   'date2'    => $_GET["date2"],
-                   'start'    => $_GET["start"]];
+              'dropdown' => $dropdown,
+              'date1'    => $date1,
+              'date2'    => $date2,
+              'start'    => $start];
 }
 
-Html::printPager($_GET['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.location.php',
-                 "date1=".$_GET["date1"]."&amp;date2=".$_GET["date2"].
-                     "&amp;itemtype=".$_GET['itemtype']."&amp;dropdown=".$_GET["dropdown"],
-                 'Stat', $params);
+if (!$showgraph) {
+   Html::printPager($start, count($val), $CFG_GLPI['root_doc'].'/front/stat.location.php',
+   "date1=".$date1."&amp;date2=".$date2.
+       "&amp;itemtype=".$itemtype."&amp;dropdown=".$dropdown,
+   'Stat', $params);
 
-if (!$_GET['showgraph']) {
-   Stat::showTable($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"], $_GET['start'], $val,
-                   $_GET["dropdown"]);
+   Stat::showTable($itemtype, $type, $date1, $date2, $start, $val, $dropdown);
 } else {
-   $data = Stat::getData($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"], $_GET['start'],
-                          $val, $_GET["dropdown"]);
+   $data = Stat::getData($itemtype, $type, $date1, $date2, $start, $val, $dropdown);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       $count = 0;
