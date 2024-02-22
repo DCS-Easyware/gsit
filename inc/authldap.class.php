@@ -2950,8 +2950,9 @@ class AuthLDAP extends CommonDBTM {
       $filter_value = $values['user_params']['value'];
       if ($values['login_field'] == 'objectguid' && self::isValidGuid($filter_value)) {
          $filter_value = self::guidToHex($filter_value);
+      } else {
+         $filter_value = Toolbox::clean_LDAP_filter($filter_value);
       }
-      $filter_value = Toolbox::clean_LDAP_filter($filter_value);
       $filter = "(".$values['login_field']."=".$filter_value.")";
       if (!empty($values['condition'])) {
          $filter = "(& $filter ".$values['condition'].")";
