@@ -568,7 +568,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
 
                   if ($data['itemtype'] == 'Ticket') {
-                     if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
+                     if ($data['id_search_option'] && !is_null($data['id_search_option'])) { // Recent record - see CommonITILObject::getSearchOptionsActors()
                         $as = $SEARCHOPTION[$data['id_search_option']]['name'];
                      } else { // Old record
                         switch ($data['itemtype_link']) {

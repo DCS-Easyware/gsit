@@ -1423,7 +1423,7 @@ final class DbUtils {
          $id_visible = $_SESSION["glpiis_ids_visible"];
       }
 
-      if (strlen($realname) > 0) {
+      if (!is_null($realname) && strlen($realname) > 0) {
          $formatted = $realname;
 
          if (strlen($firstname) > 0) {

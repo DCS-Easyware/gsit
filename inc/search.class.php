@@ -1199,6 +1199,11 @@ class Search {
       }
 
       $DBread->execution_time = true;
+// echo "<pre>";
+// print_r($data);
+// echo "</pre>";
+
+//      echo $data['sql']['search'];
       $result = $DBread->query($data['sql']['search']);
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
@@ -1384,11 +1389,11 @@ class Search {
                   }
 
                   // No Group_concat case
-                  if ($fieldname == 'content' || strpos($val, self::LONGSEP) === false) {
+                  if ($fieldname == 'content' || (is_null($val) || strpos($val, self::LONGSEP) === false)) {
                      $newrow[$j]['count'] = 1;
 
                      $handled = false;
-                     if ($fieldname != 'content' && strpos($val, self::SHORTSEP) !== false) {
+                     if ($fieldname != 'content' && !is_null($val) && strpos($val, self::SHORTSEP) !== false) {
                         $split2                    = self::explodeWithID(self::SHORTSEP, $val);
                         if (is_numeric($split2[1])) {
                            $newrow[$j][0][$fieldname] = $split2[0];
@@ -6563,7 +6568,7 @@ JAVASCRIPT;
          $separate = self::LBHR;
       }
       for ($k=0; $k<$data[$ID]['count']; $k++) {
-         if (strlen(trim($data[$ID][$k]['name'])) > 0) {
+         if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
             if ($count_display) {
                $out .= $separate;
             }
