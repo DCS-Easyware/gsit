@@ -56,9 +56,9 @@ class NetworkPortInstantiation extends CommonDBChild {
    public $auto_message_on_action   = false;
 
    // From CommonDBChild
-   static public $itemtype       = 'NetworkPort';
-   static public $items_id       = 'networkports_id';
-   public $dohistory             = false;
+   protected $itemtype     = 'NetworkPort';
+   static public $items_id = 'networkports_id';
+   public $dohistory       = false;
 
    // Instantiation properties
    public $canHaveVLAN           = true;
@@ -753,6 +753,10 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 
 
+   /**
+    *
+    * @return boolean
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == "NetworkPort") {
@@ -761,6 +765,7 @@ class NetworkPortInstantiation extends CommonDBChild {
             return Log::displayTabContentForItem($instantiation, $tabnum, $withtemplate);
          }
       }
+      return false;
    }
 
 

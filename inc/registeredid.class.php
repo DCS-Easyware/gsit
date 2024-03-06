@@ -44,7 +44,7 @@ class RegisteredID  extends CommonDBChild {
    public $auto_message_on_action = false;
 
    // From CommonDBChild
-   static public $itemtype        = 'itemtype';
+   protected $itemtype            = 'itemtype';
    static public $items_id        = 'items_id';
    public $dohistory              = true;
 

@@ -61,8 +61,8 @@ class Item_OperatingSystem extends CommonDBRelation {
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
       self::showForItem($item, $withtemplate);
+      return true;
    }
 
    /**

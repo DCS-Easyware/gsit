@@ -94,21 +94,24 @@ class XHProf {
 
    function stop() {
 
-      if (self::$run) {
+      if (self::$run && function_exists('xhprof_disable')) {
          $data = xhprof_disable();
 
          $incl = (defined('XHPROF_PATH') ? XHPROF_PATH : self::XHPROF_PATH);
-         include_once $incl.'/utils/xhprof_lib.php';
-         include_once $incl.'/utils/xhprof_runs.php';
+         if (is_dir(XHPROF_PATH)) {
+            include_once $incl.'/utils/xhprof_lib.php';
+            include_once $incl.'/utils/xhprof_runs.php';
 
-         $runs = new XHProfRuns_Default();
-         $id   = $runs->save_run($data, 'glpi');
+            if (class_exists('XHProfRuns_Default')) {
+               $runs = new XHProfRuns_Default();
+               $id   = $runs->save_run($data, 'glpi');
 
-         $url  = (defined('XHPROF_URL') ? XHPROF_URL : self::XHPROF_URL);
-         $host = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
-         $link = "http://".$host."$url/index.php?run=$id&source=glpi";
-         Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
-
+               $url  = (defined('XHPROF_URL') ? XHPROF_URL : self::XHPROF_URL);
+               $host = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
+               $link = "http://".$host."$url/index.php?run=$id&source=glpi";
+               Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
+            }
+         }
          self::$run = false;
       }
    }

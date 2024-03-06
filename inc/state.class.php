@@ -39,9 +39,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class State extends CommonTreeDropdown {
 
-   public $can_be_translated       = true;
-
-   static $rightname               = 'state';
+   public $can_be_translated = true;
+   protected $rightname      = 'state';
 
 
 
@@ -244,6 +243,7 @@ class State extends CommonTreeDropdown {
       foreach ($this->getvisibilityFields() as $type => $field) {
          $this->fields[$field] = 1;
       }
+      return true;
    }
 
 

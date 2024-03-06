@@ -39,12 +39,11 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPortMigration extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype        = 'itemtype';
+   protected $itemtype            = 'itemtype';
    static public $items_id        = 'items_id';
    static public $mustBeAttached  = true;
 
-   static $rightname              = 'networking';
-
+   protected $rightname           = 'networking';
 
 
    static function getTypeName($nb = 0) {
@@ -52,7 +51,7 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
       return false;
    }
 
@@ -116,7 +115,7 @@ class NetworkPortMigration extends CommonDBChild {
    function showForm($ID, $options = []) {
       global $DB;
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
@@ -149,6 +148,7 @@ class NetworkPortMigration extends CommonDBChild {
       $address_cell   = "td";
       $network_cell   = "td";
       $gateway_cell   = "td";
+      $network        = null;
 
       $address = new IPAddress();
       $netmask = new IPNetmask();
@@ -202,7 +202,7 @@ class NetworkPortMigration extends CommonDBChild {
          $network_cell = "th";
          $address_cell = "th";
          echo "<tr class='tab_bg_1'><th>" .$motives['invalid_network'] ."</th>\n<td colspan=3>";
-         if (isset($network)) {
+         if (!is_null($network)) {
             printf(__('Network port information conflicting with %s'), $network->getLink());
          } else {
             if (!isset($address) || !isset($netmask)) {
@@ -220,7 +220,7 @@ class NetworkPortMigration extends CommonDBChild {
          $number_real_errors ++;
          $gateway_cell = "th";
          echo "<tr class='tab_bg_1'><th>" . $motives['invalid_gateway'] ."</th>\n<td colspan=3>";
-         if (isset($network)) {
+         if (!is_null($network)) {
             printf(__('Append a correct gateway to the network %s'), $network->getLink());
          } else {
             printf(__('%1$s: %2$s'), __('Unknown network'),
@@ -309,7 +309,7 @@ class NetworkPortMigration extends CommonDBChild {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'transform_to']

@@ -41,9 +41,9 @@ class DCRoom extends CommonDBTM {
    use Glpi\Features\DCBreadcrumb;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   protected $usenotepad               = true;
-   static $rightname                   = 'datacenter';
+   public $dohistory     = true;
+   protected $usenotepad = true;
+   protected $rightname  = 'datacenter';
 
    static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
@@ -326,10 +326,12 @@ class DCRoom extends CommonDBTM {
             );
             break;
       }
+      return false;
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       self::showForDatacenter($item);
+      return false;
    }
 
    /**

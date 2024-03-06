@@ -50,7 +50,7 @@ class Ticket extends CommonITILObject {
    public $grouplinkclass              = 'Group_Ticket';
    public $supplierlinkclass           = 'Supplier_Ticket';
 
-   static $rightname                   = 'ticket';
+   protected $rightname = 'ticket';
 
    protected $userentity_oncreate      = true;
 
@@ -89,7 +89,7 @@ class Ticket extends CommonITILObject {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
 
-      if (!Session::haveRightsOr(self::$rightname, [DELETE, PURGE])) {
+      if (!Session::haveRightsOr($this->rightname, [DELETE, PURGE])) {
          $forbidden[] = 'delete';
          $forbidden[] = 'purge';
          $forbidden[] = 'restore';
@@ -109,9 +109,9 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function getAdditionalMenuContent() {
+   function getAdditionalMenuContent() {
 
-      if (static::canCreate()) {
+      if ($this->canCreate()) {
          $menu = [
             'create_ticket' => [
                'title' => __('Create ticket'),
@@ -121,12 +121,12 @@ class Ticket extends CommonITILObject {
          ];
          return $menu;
       } else {
-         return self::getAdditionalMenuOptions();
+         return $this->getAdditionalMenuOptions();
       }
    }
 
 
-   static function getAdditionalMenuLinks() {
+   function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
       $links = parent::getAdditionalMenuLinks();
@@ -175,7 +175,7 @@ class Ticket extends CommonITILObject {
       ) {
          return false;
       }
-      return Session::haveRight(static::$rightname, self::ASSIGN);
+      return Session::haveRight($this->rightname, self::ASSIGN);
    }
 
 
@@ -186,20 +186,20 @@ class Ticket extends CommonITILObject {
       ) {
          return false;
       }
-      return (Session::haveRight(self::$rightname, self::STEAL)
-              || (Session::haveRight(self::$rightname, self::OWN)
+      return (Session::haveRight($this->rightname, self::STEAL)
+              || (Session::haveRight($this->rightname, self::OWN)
                   && ($this->countUsers(CommonITILActor::ASSIGN) == 0)));
    }
 
 
-   static function canUpdate() {
+   function canUpdate() {
 
       // To allow update of urgency and category for post-only
       if (Session::getCurrentInterface() == "helpdesk") {
-         return Session::haveRight(self::$rightname, CREATE);
+         return Session::haveRight($this->rightname, CREATE);
       }
 
-      return Session::haveRightsOr(self::$rightname,
+      return Session::haveRightsOr($this->rightname,
                                    [UPDATE,
                                          self::ASSIGN,
                                          self::STEAL,
@@ -208,8 +208,8 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function canView() {
-      return (Session::haveRightsOr(self::$rightname,
+   function canView() {
+      return (Session::haveRightsOr($this->rightname,
                                     [self::READALL, self::READMY, UPDATE, self::READASSIGN,
                                           self::READGROUP, self::OWN])
               || Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights()));
@@ -226,20 +226,20 @@ class Ticket extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return (Session::haveRight(self::$rightname, self::READALL)
-              || (Session::haveRight(self::$rightname, self::READMY)
+      return (Session::haveRight($this->rightname, self::READALL)
+              || (Session::haveRight($this->rightname, self::READMY)
                   && (($this->fields["users_id_recipient"] === Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())))
-              || (Session::haveRight(self::$rightname, self::READGROUP)
+              || (Session::haveRight($this->rightname, self::READGROUP)
                   && isset($_SESSION["glpigroups"])
                   && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
                       || $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION["glpigroups"])))
-              || (Session::haveRight(self::$rightname, self::READASSIGN)
+              || (Session::haveRight($this->rightname, self::READASSIGN)
                   && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))
-                      || (Session::haveRight(self::$rightname, self::ASSIGN)
+                      || (Session::haveRight($this->rightname, self::ASSIGN)
                           && ($this->fields["status"] == self::INCOMING))))
               || (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
                   && TicketValidation::canValidate($this->fields["id"])));
@@ -463,7 +463,7 @@ class Ticket extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return self::canCreate();
+      return $this->canCreate();
    }
 
 
@@ -489,7 +489,7 @@ class Ticket extends CommonITILObject {
       }
 
       // if we don't have global UPDATE right, maybe we can own the current ticket
-      if (!Session::haveRight(self::$rightname, UPDATE)
+      if (!Session::haveRight($this->rightname, UPDATE)
           && !$this->ownItem()) {
          //we always return false, as ownItem() = true is managed by below self::canUpdate
          return false;
@@ -519,7 +519,7 @@ class Ticket extends CommonITILObject {
     * @return boolean
     */
    function ownItem() {
-      return Session::haveRight(self::$rightname, self::OWN)
+      return Session::haveRight($this->rightname, self::OWN)
              && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID());
    }
 
@@ -527,13 +527,13 @@ class Ticket extends CommonITILObject {
    /**
     * @since 0.85
    **/
-   static function canDelete() {
+   function canDelete() {
 
       // to allow delete for self-service only if no action on the ticket
       if (Session::getCurrentInterface() == "helpdesk") {
-         return Session::haveRight(self::$rightname, CREATE);
+         return Session::haveRight($this->rightname, CREATE);
       }
-      return Session::haveRight(self::$rightname, DELETE);
+      return Session::haveRight($this->rightname, DELETE);
    }
 
    /**
@@ -570,7 +570,7 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      return static::canDelete();
+      return $this->canDelete();
    }
 
    /**
@@ -579,13 +579,13 @@ class Ticket extends CommonITILObject {
    function getDefaultActor($type) {
 
       if ($type == CommonITILActor::ASSIGN) {
-         if (Session::haveRight(self::$rightname, self::OWN)
+         if (Session::haveRight($this->rightname, self::OWN)
              && $_SESSION['glpiset_default_tech']) {
             return Session::getLoginUserID();
          }
       }
       if ($type == CommonITILActor::REQUESTER) {
-         if (Session::haveRight(self::$rightname, CREATE)
+         if (Session::haveRight($this->rightname, CREATE)
              && $_SESSION['glpiset_default_requester']) {
             return Session::getLoginUserID();
          }
@@ -602,7 +602,7 @@ class Ticket extends CommonITILObject {
       $right = "all";
       if ($type == CommonITILActor::ASSIGN) {
          $right = "own_ticket";
-         if (!Session::haveRight(self::$rightname, self::ASSIGN)) {
+         if (!Session::haveRight($this->rightname, self::ASSIGN)) {
             $right = 'id';
          }
       }
@@ -622,7 +622,7 @@ class Ticket extends CommonITILObject {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          $nb    = 0;
          $title = self::getTypeName(Session::getPluralNumber());
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -916,7 +916,7 @@ class Ticket extends CommonITILObject {
       }
 
       // automatic recalculate if user changes urgence or technician change impact
-      $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
+      $canpriority               = Session::haveRight($this->rightname, self::CHANGEPRIORITY);
       if ((isset($input['urgency']) && $input['urgency'] != $this->fields['urgency'])
          || (isset($input['impact']) && $input['impact'] != $this->fields['impact'])
          && ($canpriority && !isset($input['priority']) || !$canpriority)
@@ -932,14 +932,14 @@ class Ticket extends CommonITILObject {
 
       // Security checks
       if (!Session::isCron()
-          && !Session::haveRight(self::$rightname, self::ASSIGN)) {
+          && !Session::haveRight($this->rightname, self::ASSIGN)) {
          if (isset($input["_itil_assign"])
              && isset($input['_itil_assign']['_type'])
              && ($input['_itil_assign']['_type'] == 'user')) {
 
             // must own_ticket to grab a non assign ticket
             if ($this->countUsers(CommonITILActor::ASSIGN) == 0) {
-               if ((!Session::haveRightsOr(self::$rightname, [self::STEAL, self::OWN]))
+               if ((!Session::haveRightsOr($this->rightname, [self::STEAL, self::OWN]))
                    || !isset($input["_itil_assign"]['users_id'])
                    || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
@@ -947,7 +947,7 @@ class Ticket extends CommonITILObject {
 
             } else {
                // Can not steal or can steal and not assign to me
-               if (!Session::haveRight(self::$rightname, self::STEAL)
+               if (!Session::haveRight($this->rightname, self::STEAL)
                    || !isset($input["_itil_assign"]['users_id'])
                    || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
@@ -1560,7 +1560,7 @@ class Ticket extends CommonITILObject {
       // This to avoid plugins having their process broken.
       if (isset($input['check_delegatee'])
           && $input['check_delegatee']
-          && !self::canDelegateeCreateTicket($input['_users_id_requester'], ($input['entities_id'] ?? -2))) {
+          && !$this->canDelegateeCreateTicket($input['_users_id_requester'], ($input['entities_id'] ?? -2))) {
          Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
          return false;
       }
@@ -2380,7 +2380,7 @@ class Ticket extends CommonITILObject {
       // (like STEAL or OWN),
       // we specify only the rights needed for this action
       return $this->checkEntity()
-             && (Session::haveRight(self::$rightname, UPDATE)
+             && (Session::haveRight($this->rightname, UPDATE)
                  || $this->canRequesterUpdateItem());
    }
 
@@ -2403,7 +2403,8 @@ class Ticket extends CommonITILObject {
          $user_groups_ids[] = $user_group['id'];
       }
 
-      $rightname = ITILFollowup::$rightname;
+      $itilFollowup = new ITILFollowup();
+      $rightname = $itilFollowup->getRightname();
 
       return (
             Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDMYTICKET, $entity_id)
@@ -2435,7 +2436,7 @@ class Ticket extends CommonITILObject {
     *
     * @return bool
     */
-   public static function canDelegateeCreateTicket(int $requester_id, ?int $entity_restrict = null):bool {
+   public function canDelegateeCreateTicket(int $requester_id, ?int $entity_restrict = null):bool {
       // if the user is a technician, no need to check delegates
       if (Session::getCurrentInterface() == "central") {
          return true;
@@ -2480,8 +2481,8 @@ class Ticket extends CommonITILObject {
                                                      'value'      => 'notclosed']],
                       'sort'     => 19,
                       'order'    => 'DESC'];
-
-      if (Session::haveRight(self::$rightname, self::READALL)) {
+      $ticket = new Ticket();
+      if (Session::haveRight($ticket->getRightname(), self::READALL)) {
          $search['criteria'][0]['value'] = 'notold';
       }
       return $search;
@@ -2496,42 +2497,42 @@ class Ticket extends CommonITILObject {
       $actions = [];
 
       if (Session::getCurrentInterface() == 'central') {
-         if (Ticket::canUpdate() && Ticket::canDelete()) {
+         if (ProfileRight::checkPermission('update', 'Ticket') && ProfileRight::checkPermission('delete', 'Ticket')) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
                = "<i class='ma-icon fas fa-code-branch'></i>".
                  __('Merge as Followup');
          }
 
-         if (Item_Ticket::canCreate()) {
+         if (ProfileRight::checkPermission('create', 'Item_Ticket')) {
             $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item']
                = "<i class='ma-icon fas fa-plus'></i>".
                  _x('button', 'Add an item');
          }
 
-         if (ITILFollowup::canCreate()) {
+         if (ProfileRight::checkPermission('create', 'ITILFollowup')) {
             $actions['ITILFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup']
                = "<i class='ma-icon far fa-comment'></i>".
                  __('Add a new followup');
          }
 
-         if (TicketTask::canCreate()) {
+         if (ProfileRight::checkPermission('create', 'TicketTask')) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task']
                = "<i class='ma-icon far fa-check-square'></i>".
                  __('Add a new task');
          }
 
-         if (TicketValidation::canCreate()) {
+         if (ProfileRight::checkPermission('create', 'TicketValidation')) {
             $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation']
                = "<i class='ma-icon fas fa-check'></i>".
                  __('Approval request');
          }
 
-         if (Item_Ticket::canDelete()) {
+         if (ProfileRight::checkPermission('delete', 'Item_Ticket')) {
             $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete_item']
                = _x('button', 'Remove an item');
          }
 
-         if (Session::haveRight(self::$rightname, UPDATE)) {
+         if (Session::haveRight($this->rightname, UPDATE)) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
                = "<i class='ma-icon fas fa-user'></i>".
                  __('Add an actor');
@@ -3063,7 +3064,7 @@ class Ticket extends CommonITILObject {
          'massiveaction'      => false
       ];
 
-      if (Session::haveRightsOr(self::$rightname,
+      if (Session::haveRightsOr($this->rightname,
                                 [self::READALL, self::READASSIGN, self::OWN])) {
          $tab[] = [
             'id'                 => 'linktickets',
@@ -3486,7 +3487,7 @@ class Ticket extends CommonITILObject {
    function showFormHelpdesk($ID, $ticket_template = false) {
       global $CFG_GLPI;
 
-      if (!self::canCreate()) {
+      if (!$this->canCreate()) {
          return false;
       }
 
@@ -4051,14 +4052,15 @@ class Ticket extends CommonITILObject {
    static function getDefaultValues($entity = 0) {
       global $CFG_GLPI;
 
+      $item = new static();
       if (is_numeric(Session::getLoginUserID(false))) {
          $users_id_requester = Session::getLoginUserID();
          $users_id_assign    = Session::getLoginUserID();
          // No default requester if own ticket right = tech and update_ticket right to update requester
-         if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
+         if (Session::haveRightsOr($item->getRightname(), [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
             $users_id_requester = 0;
          }
-         if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['glpiset_default_tech']) {
+         if (!Session::haveRight($item->getRightname(), self::OWN) || !$_SESSION['glpiset_default_tech']) {
             $users_id_assign = 0;
          }
          $entity      = $_SESSION['glpiactive_entity'];
@@ -4369,7 +4371,7 @@ class Ticket extends CommonITILObject {
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
       $can_requester = $this->canRequesterUpdateItem();
-      $canpriority   = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
+      $canpriority   = Session::haveRight($this->rightname, self::CHANGEPRIORITY);
       $canassign     = $this->canAssign();
       $canassigntome = $this->canAssignTome();
 
@@ -4969,7 +4971,7 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             echo "<div class='center'>";
             if ($this->fields["is_deleted"] == 1) {
-               if (self::canDelete()) {
+               if ($this->canDelete()) {
                   echo "<input type='submit' class='submit' name='restore' value='".
                          _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                }
@@ -4980,7 +4982,7 @@ class Ticket extends CommonITILObject {
                }
             }
             if ($this->fields["is_deleted"] == 1) {
-               if (self::canPurge()) {
+               if ($this->canPurge()) {
                   echo "<input type='submit' class='submit' name='purge' value='".
                          _sx('button', 'Delete permanently')."' ".
                          Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
@@ -5051,10 +5053,10 @@ class Ticket extends CommonITILObject {
     * @param string  $status             (default ''process)
     * @param boolean $showgrouptickets   (true by default)
     */
-   static function showCentralList($start, $status = "process", $showgrouptickets = true) {
+   function showCentralList($start, $status = "process", $showgrouptickets = true) {
       global $DB;
 
-      if (!Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
+      if (!Session::haveRightsOr($this->rightname, [CREATE, self::READALL, self::READASSIGN])
           && !Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
 
          return false;
@@ -5087,7 +5089,7 @@ class Ticket extends CommonITILObject {
                'glpi_groups_tickets.type'       => CommonITILActor::ASSIGN
             ];
 
-            if (Session::haveRight(self::$rightname, self::READGROUP)) {
+            if (Session::haveRight($this->rightname, self::READGROUP)) {
                $search_users_id = [
                   'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
                   'glpi_groups_tickets.type'      => CommonITILActor::REQUESTER
@@ -5620,14 +5622,14 @@ class Ticket extends CommonITILObject {
     *
     * @param boolean $foruser  Only for current login user as requester (false by default)
    **/
-   static function showCentralCount($foruser = false) {
+   function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
-      if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
+      if (!Session::haveRight($this->rightname, self::READALL) && !$this->canCreate()) {
          return false;
       }
-      if (!Session::haveRight(self::$rightname, self::READALL)) {
+      if (!Session::haveRight($this->rightname, self::READALL)) {
          $foruser = true;
       }
 
@@ -5662,7 +5664,7 @@ class Ticket extends CommonITILObject {
             ]
          ];
 
-         if (Session::haveRight(self::$rightname, self::READGROUP)
+         if (Session::haveRight($this->rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
             $criteria['LEFT JOIN']['glpi_groups_tickets'] = [
@@ -5683,7 +5685,7 @@ class Ticket extends CommonITILObject {
             'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
          ]];
 
-         if (Session::haveRight(self::$rightname, self::READGROUP)
+         if (Session::haveRight($this->rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
             $ORWHERE['OR']['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
@@ -5779,7 +5781,8 @@ class Ticket extends CommonITILObject {
    static function showCentralNewList() {
       global $DB;
 
-      if (!Session::haveRight(self::$rightname, self::READALL)) {
+      $item = new static();
+      if (!Session::haveRight($item->getRightname(), self::READALL)) {
          return false;
       }
 
@@ -5841,7 +5844,8 @@ class Ticket extends CommonITILObject {
    static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
-      if (!Session::haveRightsOr(self::$rightname,
+      $ticket = new static();
+      if (!Session::haveRightsOr($ticket->getRightname(),
                                   [self::READALL, self::READMY, self::READASSIGN, CREATE])) {
          return false;
       }
@@ -5937,7 +5941,7 @@ class Ticket extends CommonITILObject {
             $restrict['glpi_items_tickets.itemtype'] = $item->getType();
 
             // you can only see your tickets
-            if (!Session::haveRight(self::$rightname, self::READALL)) {
+            if (!Session::haveRight($ticket->getRightname(), self::READALL)) {
                $or = [
                   'glpi_tickets.users_id_recipient'   => Session::getLoginUserID(),
                   [
@@ -5983,7 +5987,7 @@ class Ticket extends CommonITILObject {
       if ($item->getID()
           && !$item->isDeleted()
           && Ticket::isPossibleToAssignType($item->getType())
-          && self::canCreate()
+          && $ticket->canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))) {
          echo "<div class='firstbloc'>";
@@ -5996,7 +6000,7 @@ class Ticket extends CommonITILObject {
 
       if ($item->getID()
           && ($item->getType() == 'User')
-          && self::canCreate()
+          && $ticket->canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='firstbloc'>";
          Html::showSimpleForm(Ticket::getFormURL(),
@@ -6009,7 +6013,7 @@ class Ticket extends CommonITILObject {
 
       if ($number > 0) {
          echo "<table class='tab_cadre_fixehov'>";
-         if (Session::haveRight(self::$rightname, self::READALL)) {
+         if (Session::haveRight($ticket->getRightname(), self::READALL)) {
             Session::initNavigateListItems('Ticket',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                            sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
@@ -6055,7 +6059,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (count($restrict)
-          && Session::haveRight(self::$rightname, self::READALL)) {
+          && Session::haveRight($ticket->getRightname(), self::READALL)) {
          $criteria = self::getCommonCriteria();
          $criteria['WHERE'] = ['OR' => $restrict]
              + getEntitiesRestrictCriteria(self::getTable());

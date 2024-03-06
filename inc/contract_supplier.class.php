@@ -59,7 +59,7 @@ class Contract_Supplier extends CommonDBRelation {
          $nb = 0;
          switch ($item->getType()) {
             case 'Supplier' :
-               if (Contract::canView()) {
+               if (ProfileRight::checkPermission('view', 'Contract')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb =  self::countForItem($item);
                   }
@@ -109,7 +109,7 @@ class Contract_Supplier extends CommonDBRelation {
    static function showForSupplier(Supplier $supplier) {
 
       $ID = $supplier->fields['id'];
-      if (!Contract::canView()
+      if (!ProfileRight::checkPermission('view', 'Contract')
           || !$supplier->can($ID, READ)) {
          return;
       }

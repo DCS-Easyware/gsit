@@ -1436,4 +1436,3 @@ function compDpd2Device($devtype, $devname, $dpdname, $compDpdName, $specif = ''
       $DB->queryOrDie($query);
    }
 }
-

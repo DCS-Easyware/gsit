@@ -44,9 +44,9 @@ if (!defined('GLPI_ROOT')) {
 class OlaLevelCriteria extends RuleCriteria {
 
 
-   static public $itemtype  = 'OlaLevel';
-   static public $items_id  = 'olalevels_id';
-   public $dohistory        = true;
+   protected $itemtype     = 'OlaLevel';
+   static public $items_id = 'olalevels_id';
+   public $dohistory       = true;
 
 
    /**
@@ -55,6 +55,7 @@ class OlaLevelCriteria extends RuleCriteria {
    function __construct() {
       // Override in order not to use glpi_rules table.
    }
+
 
    function rawSearchOptions() {
       // RuleCriteria search options requires value of rules_id field which does not exists here

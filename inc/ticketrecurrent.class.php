@@ -50,7 +50,7 @@ class TicketRecurrent extends CommonDropdown {
 
    public $display_dropdowntitle  = false;
 
-   static $rightname              = 'ticketrecurrent';
+   protected $rightname           = 'ticketrecurrent';
 
    public $can_be_translated      = false;
 
@@ -334,7 +334,10 @@ class TicketRecurrent extends CommonDropdown {
          return 'NULL';
       }
 
-      $has_end_date = false !== DateTime::createFromFormat('Y-m-d H:i:s', $end_date);
+      $has_end_date = false;
+      if (!is_null($end_date)) {
+         $has_end_date = DateTime::createFromFormat('Y-m-d H:i:s', $end_date);
+      }
       if ($has_end_date && strtotime($end_date) < $now) {
          // End date is in past.
          return 'NULL';
@@ -372,7 +375,7 @@ class TicketRecurrent extends CommonDropdown {
       }
 
       $calendar = new Calendar();
-      $is_calendar_valid = $calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay();
+      $is_calendar_valid = !is_null($calendars_id) && $calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay();
 
       if (!$is_calendar_valid || $periodicity_in_seconds >= DAY_TIMESTAMP) {
          // Compute next occurence without using the calendar if calendar is not valid

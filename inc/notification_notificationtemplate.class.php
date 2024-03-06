@@ -65,7 +65,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (!$withtemplate && Notification::canView()) {
+      if (!$withtemplate && ProfileRight::checkPermission('view', 'Notification')) {
          $nb = 0;
          switch ($item->getType()) {
             case Notification::class:
@@ -464,7 +464,7 @@ class Notification_NotificationTemplate extends CommonDBRelation {
     *
     * @param array $options array of options
     *
-    * @return void
+    * @return integer|string
     */
    static function dropdownMode($options) {
       $p['name']     = 'modes';

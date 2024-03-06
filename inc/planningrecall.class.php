@@ -39,15 +39,15 @@ if (!defined('GLPI_ROOT')) {
 class PlanningRecall extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype        = 'itemtype';
-   static public $items_id        = 'items_id';
+   protected $itemtype     = 'itemtype';
+   static public $items_id = 'items_id';
 
    static function getTypeName($nb = 0) {
       return _n('Planning reminder', 'Planning reminders', $nb);
    }
 
 
-   static function canCreate() {
+   function canCreate() {
       return true;
    }
 

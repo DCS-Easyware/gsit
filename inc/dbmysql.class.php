@@ -158,7 +158,8 @@ class DBmysql {
    function connect($choice = null) {
       $this->connected = false;
       $this->dbh = @new mysqli();
-      $this->dbh->init();
+      // added in 9.5.13 (compat PHP 8.1, to keep compatibility with PHP 7.4 and 8.0
+      mysqli_report(MYSQLI_REPORT_OFF);
       if ($this->dbssl) {
           mysqli_ssl_set(
              $this->dbh,
@@ -270,6 +271,9 @@ class DBmysql {
     * @return string escaped string
     */
    function escape($string) {
+      if (is_null($string)) {
+         return null;
+      }
       return $this->dbh->real_escape_string($string);
    }
 
@@ -509,7 +513,7 @@ class DBmysql {
     */
    function fetch_object($result) {
       Toolbox::deprecated('Use DBmysql::fetchObject()');
-      return $this->fetchObject();
+      return $this->fetchObject($result);
    }
 
    /**

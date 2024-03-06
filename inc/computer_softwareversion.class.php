@@ -49,7 +49,7 @@ class Computer_SoftwareVersion extends Item_SoftwareVersion {
       if (isset($input['computers_id'])) {
          $input['items_id'] = $input['computers_id'];
       }
-      parent::prepareInputForAdd($input);
+      return parent::prepareInputForAdd($input);
    }
 
    public function prepareInputForUpdate($input) {
@@ -58,7 +58,7 @@ class Computer_SoftwareVersion extends Item_SoftwareVersion {
       if (isset($input['computers_id'])) {
          $input['items_id'] = $input['computers_id'];
       }
-      parent::prepareInputForUpdate($input);
+      return parent::prepareInputForUpdate($input);
    }
 
    public function post_getFromDB() {

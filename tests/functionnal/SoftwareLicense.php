@@ -101,7 +101,7 @@ class SoftwareLicense extends DbTestCase {
       $this->login();
 
       $license = new \SoftwareLicense();
-      $input = [ 'name' => 'not_inserted_software_license_child'];
+      $input = [ 'name' => 'not_inserted_software_license_child' ];
 
       $this->boolean($license->add($input))->isFalse();
       $this->hasSessionMessages(ERROR, ['Please select a software for this license']);

@@ -39,7 +39,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
    // Mapping between DB fields
    // * definition
-   static public $itemtype; // Class name or field name (start with itemtype) for link to Parent
    static public $items_id; // Field name
    // * rights
    static public $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
@@ -54,7 +53,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * Get request cirteria to search for an item
+    * Get request criteria to search for an item
     *
     * @since 9.4
     *
@@ -64,6 +63,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return array|null
    **/
    static function getSQLCriteriaToSearchForItem($itemtype, $items_id) {
+      $item = getItemForItemtype(get_called_class());
+      if (!$item) {
+         return null;
+      }
       $criteria = [
          'SELECT' => [
             static::getIndexName(),
@@ -77,14 +80,14 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       // Check item 1 type
       $request = false;
-      if (preg_match('/^itemtype/', static::$itemtype)) {
-         $criteria['SELECT'][] = static::$itemtype . ' AS itemtype';
-         $criteria['WHERE'][static::$itemtype] = $itemtype;
+      if (preg_match('/^itemtype/', $item->getItemtype())) {
+         $criteria['SELECT'][] = $item->getItemtype() . ' AS itemtype';
+         $criteria['WHERE'][$item->getItemtype()] = $itemtype;
          $request = true;
       } else {
-         $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype . "' AS itemtype");
-         if (($itemtype ==  static::$itemtype)
-             || is_subclass_of($itemtype, static::$itemtype)) {
+         $criteria['SELECT'][] = new \QueryExpression("'" . $item->getItemtype() . "' AS itemtype");
+         if (($itemtype ==  $item->getItemtype())
+             || is_subclass_of($itemtype, $item->getItemtype())) {
             $request = true;
          }
       }
@@ -98,56 +101,55 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * @since 0.84
    **/
-   static function canCreate() {
-
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, CREATE))) {
+   function canCreate() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, CREATE))) {
          return false;
       }
-      return static::canChild('canUpdate');
+      return $this->canChild('canUpdate');
    }
 
 
    /**
     * @since 0.84
    **/
-   static function canView() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
+   function canView() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, READ))) {
          return false;
       }
-      return static::canChild('canView');
+      return $this->canChild('canView');
    }
 
 
    /**
     * @since 0.84
    **/
-   static function canUpdate() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
+   function canUpdate() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, UPDATE))) {
          return false;
       }
-      return static::canChild('canUpdate');
+      return $this->canChild('canUpdate');
    }
 
 
    /**
     * @since 0.84
    **/
-   static function canDelete() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
+   function canDelete() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, DELETE))) {
          return false;
       }
-      return static::canChild('canUpdate');
+      return $this->canChild('canUpdate');
    }
 
 
    /**
     * @since 0.85
     **/
-   static function canPurge() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
+   function canPurge() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, PURGE))) {
          return false;
       }
-      return static::canChild('canUpdate');
+      return $this->canChild('canUpdate');
    }
 
 
@@ -188,9 +190,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @param $method
    **/
-   static function canChild($method) {
+   function canChild($method) {
 
-      return static::canConnexity($method, static::$checkParentRights, static::$itemtype,
+      return static::canConnexity($method, static::$checkParentRights, $this->itemtype,
                                   static::$items_id);
    }
 
@@ -207,7 +209,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       try {
          return $this->canConnexityItem($methodItem, $methodNotItem, static::$checkParentRights,
-                                         static::$itemtype, static::$items_id);
+                                         $this->itemtype, static::$items_id);
       } catch (CommonDBConnexityItemNotFound $e) {
          return !static::$mustBeAttached;
       }
@@ -226,7 +228,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function getItem($getFromDB = true, $getEmpty = true) {
 
-      return $this->getConnexityItem(static::$itemtype, static::$items_id,
+      return $this->getConnexityItem($this->itemtype, static::$items_id,
                                      $getFromDB, $getEmpty);
    }
 
@@ -376,7 +378,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          // Merge both arrays to ensure all the fields are defined for the following checks
          $completeinput = array_merge($this->fields, $input);
          // Set the item to allow parent::prepareinputforadd to get the right item ...
-         if ($itemToGetEntity = static::getItemFromArray(static::$itemtype, static::$items_id,
+         if ($itemToGetEntity = static::getItemFromArray($this->itemtype, static::$items_id,
                                                          $completeinput)) {
             if (($itemToGetEntity instanceof CommonDBTM)
                 && $itemToGetEntity->isEntityForwardTo(get_called_class())) {
@@ -403,7 +405,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       // Check item exists
       if (static::$mustBeAttached
-          && !$this->getItemFromArray(static::$itemtype, static::$items_id, $input)) {
+          && !$this->getItemFromArray($this->itemtype, static::$items_id, $input)) {
          return false;
       }
 
@@ -418,8 +420,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       // True if item changed
-      if (!$this->checkAttachedItemChangesAllowed($input, [static::$itemtype,
-                                                                 static::$items_id])) {
+      if (!$this->checkAttachedItemChangesAllowed($input, [$this->itemtype, static::$items_id])) {
          return false;
       }
 
@@ -464,9 +465,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return;
       }
 
-      if (in_array(static::class, $CFG_GLPI["infocom_types"], true) && in_array(static::$itemtype, $CFG_GLPI["infocom_types"], true)) {
+      if (in_array(static::class, $CFG_GLPI["infocom_types"], true) && in_array($this->itemtype, $CFG_GLPI["infocom_types"], true)) {
          // inherit infocom
-         $infocoms = Infocom::getItemsAssociatedTo(static::$itemtype::getType(), $this->fields[static::$itemtype::getForeignKeyField()]);
+         $infocoms = Infocom::getItemsAssociatedTo($this->itemtype::getType(), $this->fields[$this->itemtype::getForeignKeyField()]);
          if (count($infocoms)) {
             $infocom = reset($infocoms);
             $infocom->clone([
@@ -504,11 +505,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return;
       }
 
-      $items_for_log = $this->getItemsForLog(static::$itemtype, static::$items_id);
+      $items_for_log = $this->getItemsForLog($this->itemtype, static::$items_id);
 
       // Whatever case : we log the changes
       $oldvalues = $this->oldvalues;
-      unset($oldvalues[static::$itemtype]);
+      unset($oldvalues[$this->itemtype]);
       unset($oldvalues[static::$items_id]);
       $item      = $items_for_log['new'];
       if (($item !== false)
@@ -777,6 +778,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       global $DB;
 
       $items_id = $item->getID();
+      $thisclass = new static();
 
       if (is_null($canedit)) {
          if ($item->isNewItem()) {
@@ -808,7 +810,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          ]
       ];
 
-      if (preg_match('/^itemtype/', static::$itemtype)) {
+      if (preg_match('/^itemtype/', $thisclass->getItemtype())) {
          $query['WHERE']['itemtype'] = $item->getType();
       }
 
@@ -859,14 +861,15 @@ abstract class CommonDBChild extends CommonDBConnexity {
       $input = [static::getIndexName() => $id,
                      static::$items_id      => $items_id];
 
-      if (preg_match('/^itemtype/', static::$itemtype)) {
-         $input[static::$itemtype] = $itemtype;
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         $input[$this->itemtype] = $itemtype;
       }
 
       return $this->update($input);
    }
 
    public static final function getItemField($itemtype): string {
+      $thisclass = new static();
       if (is_subclass_of($itemtype, 'Rule')) {
          $itemtype = 'Rule';
       }
@@ -875,7 +878,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          return static::$items_id;
       }
 
-      if (isset (static::$itemtype) && preg_match('/^itemtype/', static::$itemtype)) {
+      if (method_exists($thisclass, 'getItemtype') && preg_match('/^itemtype/', $thisclass->getItemtype())) {
          return static::$items_id;
       }
 

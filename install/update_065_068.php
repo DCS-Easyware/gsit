@@ -1065,4 +1065,3 @@ function split_text($text, $start, $end) {
 
    return [$inside, $outside];
 }
-

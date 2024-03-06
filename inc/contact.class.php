@@ -42,10 +42,10 @@ use Sabre\VObject;
 class Contact extends CommonDBTM{
 
    // From CommonDBTM
-   public $dohistory           = true;
+   public $dohistory     = true;
 
-   static $rightname           = 'contact_enterprise';
-   protected $usenotepad       = true;
+   protected $rightname  = 'contact_enterprise';
+   protected $usenotepad = true;
 
 
 
@@ -112,6 +112,7 @@ class Contact extends CommonDBTM{
       if ($data = $iterator->next()) {
          return $data;
       }
+      return "";
    }
 
 
@@ -248,7 +249,7 @@ class Contact extends CommonDBTM{
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

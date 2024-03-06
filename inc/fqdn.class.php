@@ -40,7 +40,7 @@ class FQDN extends CommonDropdown {
 
    public $dohistory = true;
 
-   static $rightname = 'internet';
+   protected $rightname = 'internet';
 
    public $can_be_translated = false;
 

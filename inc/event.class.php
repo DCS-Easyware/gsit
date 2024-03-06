@@ -51,7 +51,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Event extends CommonDBTM {
 
-   static $rightname = 'logs';
+   protected $rightname = 'logs';
 
 
 

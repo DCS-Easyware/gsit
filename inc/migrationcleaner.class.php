@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class MigrationCleaner extends CommonGLPI {
 
-   static $rightname = 'networking';
+   protected $rightname = 'networking';
 
 
    static function getTypeName($nb = 0) {
@@ -51,9 +51,9 @@ class MigrationCleaner extends CommonGLPI {
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
    **/
-   static function getAdditionalMenuOptions() {
+   function getAdditionalMenuOptions() {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          $options['networkportmigration']['title']  = NetworkPortMigration::getTypeName(Session::getPluralNumber());
          $options['networkportmigration']['page']   = NetworkPortMigration::getSearchURL(false);
          $options['networkportmigration']['search'] = NetworkPortMigration::getSearchURL(false);
@@ -64,7 +64,7 @@ class MigrationCleaner extends CommonGLPI {
    }
 
 
-   static function canView() {
+   function canView() {
       global $DB;
 
       if (!isset($_SESSION['glpishowmigrationcleaner'])) {

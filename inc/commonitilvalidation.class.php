@@ -92,8 +92,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-      return Session::haveRightsOr(static::$rightname, static::getCreateRights());
+   function canCreate() {
+      return Session::haveRightsOr($this->rightname, static::getCreateRights());
    }
 
 
@@ -105,25 +105,25 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function canCreateItem() {
 
       if (($this->fields["users_id"] == Session::getLoginUserID())
-          || Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
+          || Session::haveRightsOr($this->rightname, static::getCreateRights())) {
          return true;
       }
       return false;
    }
 
 
-   static function canView() {
+   function canView() {
 
-      return Session::haveRightsOr(static::$rightname,
+      return Session::haveRightsOr($this->rightname,
                                    array_merge(static::getCreateRights(),
                                                static::getValidateRights(),
                                                static::getPurgeRights()));
    }
 
 
-   static function canUpdate() {
+   function canUpdate() {
 
-      return Session::haveRightsOr(static::$rightname,
+      return Session::haveRightsOr($this->rightname,
                                    array_merge(static::getCreateRights(),
                                                static::getValidateRights()));
    }
@@ -137,7 +137,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function canDeleteItem() {
 
       if (($this->fields["users_id"] == Session::getLoginUserID())
-          || Session::haveRight(static::$rightname, DELETE)) {
+          || Session::haveRight($this->rightname, DELETE)) {
          return true;
       }
       return false;
@@ -151,7 +151,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     */
    function canUpdateItem() {
 
-      if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())
+      if (!Session::haveRightsOr($this->rightname, static::getCreateRights())
           && ($this->fields["users_id_validate"] != Session::getLoginUserID())) {
          return false;
       }
@@ -187,12 +187,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $hidetab = false;
       // Hide if no rights on validations
-      if (!static::canView()) {
+      if (!$this->canView()) {
          $hidetab = true;
       }
       // No right to create and no validation for current object
       if (!$hidetab
-          && !Session::haveRightsOr(static::$rightname, static::getCreateRights())
+          && !Session::haveRightsOr($this->rightname, static::getCreateRights())
           && !static::canValidate($item->getID())) {
          $hidetab = true;
       }
@@ -202,7 +202,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = [static::$items_id => $item->getID()];
             // No rights for create only count asign ones
-            if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
+            if (!Session::haveRightsOr($this->rightname, static::getCreateRights())) {
                $restrict['users_id_validate'] = Session::getLoginUserID();
             }
             $nb = countElementsInTable(static::getTable(), $restrict);
@@ -245,7 +245,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          return false;
       }
 
-      $itemtype = static::$itemtype;
+      $itemtype = $this->itemtype;
       $input['timeline_position'] = $itemtype::getTimelinePosition($input[static::$items_id], $this->getType(), $input["users_id"]);
 
       return parent::prepareInputForAdd($input);
@@ -255,7 +255,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function post_addItem() {
       global $CFG_GLPI;
 
-      $item     = new static::$itemtype();
+      $itemtype = $this->itemtype;
+      $item     = new $itemtype();
       $mailsend = false;
       if ($item->getFromDB($this->fields[static::$items_id])) {
 
@@ -330,7 +331,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'users_id_validate',
                                 'comment_submission', 'submission_date', 'is_recursive'];
 
-      } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
+      } else if (Session::haveRightsOr($this->rightname, $this->getCreateRights())) { // Update validation request
          $forbid_fields = ['entities_id', static::$items_id, 'status', 'comment_validation',
                                 'validation_date', 'is_recursive'];
       }
@@ -350,7 +351,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
-      $item    = new static::$itemtype();
+      $itemtype = $this->itemtype;
+      $item    = new $itemtype();
       $donotif = $CFG_GLPI["use_notifications"];
       if (isset($this->input['_disablenotif'])) {
          $donotif = false;
@@ -376,8 +378,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
    function pre_deleteItem() {
-
-      $item    = new static::$itemtype();
+      $itemtype = $this->itemtype;
+      $item    = new $itemtype();
       if ($item->getFromDB($this->fields[static::$items_id])) {
          if (($item->fields['global_validation'] == self::WAITING)) {
 
@@ -712,7 +714,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function showSummary(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRightsOr(static::$rightname,
+      if (!Session::haveRightsOr($this->rightname,
                                  array_merge(static::getCreateRights(),
                                              static::getValidateRights(),
                                              static::getPurgeRights()))) {
@@ -726,7 +728,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $rand   = mt_rand();
 
       if ($canadd) {
-         $itemtype = static::$itemtype;
+         $itemtype = $this->itemtype;
          echo "<form method='post' name=form action='".$itemtype::getFormURL()."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
@@ -737,7 +739,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Global approval status')."</td>";
       echo "<td colspan='2'>";
-      if (Session::haveRightsOr(static::$rightname, TicketValidation::getValidateRights())) {
+      if (Session::haveRightsOr($this->rightname, TicketValidation::getValidateRights())) {
          self::dropdownStatus("global_validation",
                               ['value'    => $item->fields["global_validation"]]);
       } else {
@@ -782,7 +784,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddValidation" . $tID . "$rand() {\n";
          $params = ['type'             => $this->getType(),
-                         'parenttype'       => static::$itemtype,
+                         'parenttype'       => $this->itemtype,
                          static::$items_id  => $tID,
                          'id'               => -1];
          Ajax::updateItemJsCode("viewvalidation" . $tID . "$rand",
@@ -844,7 +846,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditValidation" .$item->fields['id']. $row["id"]. "$rand() {\n";
                $params = ['type'             => $this->getType(),
-                               'parenttype'       => static::$itemtype,
+                               'parenttype'       => $this->itemtype,
                                static::$items_id  => $this->fields[static::$items_id],
                                'id'               => $row["id"]];
                Ajax::updateItemJsCode("viewvalidation" . $item->fields['id'] . "$rand",
@@ -891,7 +893,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       // No update validation is answer set
       $validation_admin   = (($this->fields["users_id"] == Session::getLoginUserID())
-                             && static::canCreate()
+                             && $this->canCreate()
                              && ($this->fields['status'] == self::WAITING));
 
       $validator          = ($this->fields["users_id_validate"] == Session::getLoginUserID());
@@ -1077,6 +1079,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
    static function rawSearchOptionsToAdd() {
       $tab = [];
+      $item = new static();
+      $itemTable = getTableForItemType($item->getItemtype());
 
       $tab[] = [
          'id'                 => 'validation',
@@ -1085,7 +1089,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '51',
-         'table'              => getTableForItemType(static::$itemtype),
+         'table'              => $itemTable,
          'field'              => 'validation_percent',
          'name'               => __('Minimum validation required'),
          'datatype'           => 'number',
@@ -1097,7 +1101,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '52',
-         'table'              => getTableForItemType(static::$itemtype),
+         'table'              => $itemTable,
          'field'              => 'global_validation',
          'name'               => CommonITILValidation::getTypeName(1),
          'searchtype'         => 'equals',
@@ -1176,7 +1180,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'field'              => 'name',
          'name'               => _n('Requester', 'Requesters', 1),
          'datatype'           => 'itemlink',
-         'right'              => (static::$itemtype == 'Ticket' ? 'create_ticket_validate' : 'create_validate'),
+         'right'              => ($item->getItemtype() == 'Ticket' ? 'create_ticket_validate' : 'create_validate'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -1196,7 +1200,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          'linkfield'          => 'users_id_validate',
          'name'               => __('Approver'),
          'datatype'           => 'itemlink',
-         'right'              => (static::$itemtype == 'Ticket' ?
+         'right'              => ($item->getItemtype() == 'Ticket' ?
             ['validate_request', 'validate_incident'] :
             'validate'
          ),
@@ -1344,7 +1348,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $params = [
          'entity' => $_SESSION['glpiactive_entity'],
       ];
-      if (static::$itemtype == 'Ticket') {
+      $thisclass = new static();
+      if ($thisclass->getItemtype() == 'Ticket') {
          $params['right']  = ['validate_request', 'validate_incident'];
       } else {
          $params['right']  = ['validate'];

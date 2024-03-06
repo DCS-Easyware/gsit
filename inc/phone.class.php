@@ -47,7 +47,7 @@ class Phone extends CommonDBTM {
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
                                           'Item_OperatingSystem', 'Item_Disk'];
 
-   static $rightname                   = 'phone';
+   protected $rightname                = 'phone';
    protected $usenotepad               = true;
 
    public function getCloneRelations() :array {
@@ -345,7 +345,7 @@ class Phone extends CommonDBTM {
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if (static::canUpdate()) {
+      if ($this->canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          $actions += [
             'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'

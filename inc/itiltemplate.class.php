@@ -49,9 +49,9 @@ abstract class ITILTemplate extends CommonDropdown {
 
    public $display_dropdowntitle     = false;
 
-   static $rightname                 = 'itiltemplate';
+   protected $rightname              = 'itiltemplate';
 
-   public $can_be_translated            = false;
+   public $can_be_translated         = false;
 
    // Specific fields
    /// Mandatory Fields
@@ -151,6 +151,13 @@ abstract class ITILTemplate extends CommonDropdown {
    static function getAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
 
       static $allowed_fields = [];
+      static $classname = '';
+
+      // Because of static variable when called for 2 different classes in same execution code, we reset it
+      if ($classname !== get_called_class()) {
+         $allowed_fields = [];
+         $classname = get_called_class();
+      }
 
       // For integer value for index
       if ($withtypeandcategory) {
@@ -229,7 +236,6 @@ abstract class ITILTemplate extends CommonDropdown {
          //add specific itil type fields
          $allowed_fields[$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
       }
-
       return $allowed_fields[$withtypeandcategory][$withitemtype];
    }
 
@@ -331,7 +337,7 @@ abstract class ITILTemplate extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (Session::haveRight(static::$rightname, READ)) {
+      if (Session::haveRight($this->rightname, READ)) {
          switch ($item->getType()) {
             case 'TicketTemplate':
                return [
@@ -540,7 +546,7 @@ abstract class ITILTemplate extends CommonDropdown {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin

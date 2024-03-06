@@ -46,6 +46,7 @@ class HTMLTableGroup extends HTMLTableBase {
    private $table;
    private $rows = [];
 
+   protected $ordered_headers = [];
 
    /**
     * @param $table     HTMLTableMain object
@@ -94,7 +95,7 @@ class HTMLTableGroup extends HTMLTableBase {
 
    function tryAddHeader() {
 
-      if (isset($this->ordered_headers)) {
+      if (!empty($this->ordered_headers)) {
          throw new Exception('Implementation error: must define all headers before any row');
       }
    }
@@ -102,7 +103,7 @@ class HTMLTableGroup extends HTMLTableBase {
 
    private function completeHeaders() {
 
-      if (!isset($this->ordered_headers)) {
+      if (!empty($this->ordered_headers)) {
          $this->ordered_headers = [];
 
          foreach ($this->table->getHeaderOrder() as $header_name) {

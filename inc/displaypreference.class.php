@@ -46,7 +46,7 @@ class DisplayPreference extends CommonDBTM {
    protected $displaylist          = false;
 
 
-   static $rightname = 'search_config';
+   protected $rightname = 'search_config';
 
    const PERSONAL = 1024;
    const GENERAL  = 2048;
@@ -147,7 +147,7 @@ class DisplayPreference extends CommonDBTM {
    function activatePerso(array $input) {
       global $DB;
 
-      if (!Session::haveRight(self::$rightname, self::PERSONAL)) {
+      if (!Session::haveRight($this->rightname, self::PERSONAL)) {
          return false;
       }
 
@@ -292,7 +292,7 @@ class DisplayPreference extends CommonDBTM {
       $numrows = count($iterator);
 
       if ($numrows == 0) {
-         Session::checkRight(self::$rightname, self::PERSONAL);
+         Session::checkRight($this->rightname, self::PERSONAL);
          echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
          echo "<form method='post' action='$target'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -450,7 +450,7 @@ class DisplayPreference extends CommonDBTM {
          $item = getItemForItemtype($itemtype);
       }
 
-      $global_write = Session::haveRight(self::$rightname, self::GENERAL);
+      $global_write = Session::haveRight($this->rightname, self::GENERAL);
 
       echo "<div class='center' id='tabsbody' >";
       // Defined items
@@ -679,7 +679,7 @@ class DisplayPreference extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'Preference' :
-            if (Session::haveRight(self::$rightname, self::PERSONAL)) {
+            if (Session::haveRight($this->rightname, self::PERSONAL)) {
                return __('Personal View');
             }
             break;
@@ -687,7 +687,7 @@ class DisplayPreference extends CommonDBTM {
          case __CLASS__:
             $ong = [];
             $ong[1] = __('Global View');
-            if (Session::haveRight(self::$rightname, self::PERSONAL)) {
+            if (Session::haveRight($this->rightname, self::PERSONAL)) {
                $ong[2] = __('Personal View');
             }
             return $ong;
@@ -710,7 +710,8 @@ class DisplayPreference extends CommonDBTM {
                   return true;
 
                case 2 :
-                  Session::checkRight(self::$rightname, self::PERSONAL);
+                  $thisclass = new static();
+                  Session::checkRight($thisclass->getRightname(), self::PERSONAL);
                   $item->showFormPerso(Toolbox::cleanTarget($_GET['_target']), $_GET["displaytype"]);
                   return true;
             }

@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class DomainRecordType extends CommonDropdown
 {
-   static $rightname = 'dropdown';
+   protected $rightname = 'dropdown';
 
    static public $knowtypes = [
       [

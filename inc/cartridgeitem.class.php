@@ -47,7 +47,7 @@ class CartridgeItem extends CommonDBTM {
    public $dohistory                   = true;
    protected $usenotepad               = true;
 
-   static $rightname                   = 'cartridge';
+   protected $rightname                = 'cartridge';
 
    static function getTypeName($nb = 0) {
       return _n('Cartridge model', 'Cartridge models', $nb);

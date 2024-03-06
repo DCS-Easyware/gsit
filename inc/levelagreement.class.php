@@ -42,11 +42,17 @@ if (!defined('GLPI_ROOT')) {
 abstract class LevelAgreement extends CommonDBChild {
    // From CommonDBTM
    var $dohistory          = true;
-   static $rightname       = 'slm';
+   protected $rightname    = 'slm';
 
    // From CommonDBChild
-   static public $itemtype = 'SLM';
+   protected $itemtype     = 'SLM';
    static public $items_id = 'slms_id';
+
+   static protected $prefix            = '';
+   static protected $prefixticket      = '';
+   static protected $levelclass        = '';
+   static protected $levelticketclass  = '';
+   static protected $forward_entity_to = [];
 
 
    /**
@@ -157,7 +163,7 @@ abstract class LevelAgreement extends CommonDBChild {
          $options[static::$items_id] = $slm->getField('id');
 
          //force itemtype of parent
-         static::$itemtype = get_class($slm);
+         $this->itemtype = get_class($slm);
 
          $this->check(-1, CREATE, $options);
       }
@@ -526,7 +532,7 @@ abstract class LevelAgreement extends CommonDBChild {
       $fk      = static::getFieldNames($this->fields['type'])[1];
       $rule    = new RuleTicket;
       $rand    = mt_rand();
-      $canedit = self::canUpdate();
+      $canedit = $this->canUpdate();
 
       $rules_id_list = iterator_to_array($DB->request([
          'SELECT'          => 'rules_id',

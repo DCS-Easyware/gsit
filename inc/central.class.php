@@ -106,20 +106,22 @@ class Central extends CommonGLPI {
 
       $showticket  = Session::haveRight("ticket", Ticket::READALL);
       $showproblem = Session::haveRight("problem", Problem::READALL);
+      $ticket = new Ticket();
+      $problem = new Problem();
 
       echo "<table class='tab_cadre_central'><tr class='noHover'>";
       echo "<td class='top' width='50%'>";
       echo "<table class='central'>";
       echo "<tr class='noHover'><td>";
       if ($showticket) {
-         Ticket::showCentralCount();
+         $ticket->showCentralCount();
       } else {
-         Ticket::showCentralCount(true);
+         $ticket->showCentralCount(true);
       }
       if ($showproblem) {
-         Problem::showCentralCount();
+         $problem->showCentralCount();
       }
-      if (Contract::canView()) {
+      if (ProfileRight::checkPermission('view', 'Contract')) {
          Contract::showCentral();
       }
       echo "</td></tr>";
@@ -157,27 +159,28 @@ class Central extends CommonGLPI {
       echo "<tr><th colspan='2'>";
       self::showMessages();
       echo "</th></tr>";
+      $ticket = new Ticket();
 
       echo "<tr class='noHover'><td class='top' width='50%'><table class='central'>";
       echo "<tr class='noHover'><td>";
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
-         Ticket::showCentralList(0, "tovalidate", false);
+         $ticket->showCentralList(0, "tovalidate", false);
       }
       if ($showticket) {
 
          if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
-            Ticket::showCentralList(0, "toapprove", false);
+            $ticket->showCentralList(0, "toapprove", false);
          }
 
-         Ticket::showCentralList(0, "survey", false);
+         $ticket->showCentralList(0, "survey", false);
 
-         Ticket::showCentralList(0, "validation.rejected", false);
-         Ticket::showCentralList(0, "solution.rejected", false);
-         Ticket::showCentralList(0, "requestbyself", false);
-         Ticket::showCentralList(0, "observed", false);
+         $ticket->showCentralList(0, "validation.rejected", false);
+         $ticket->showCentralList(0, "solution.rejected", false);
+         $ticket->showCentralList(0, "requestbyself", false);
+         $ticket->showCentralList(0, "observed", false);
 
-         Ticket::showCentralList(0, "process", false);
-         Ticket::showCentralList(0, "waiting", false);
+         $ticket->showCentralList(0, "process", false);
+         $ticket->showCentralList(0, "waiting", false);
 
          TicketTask::showCentralList(0, "todo", false);
 
@@ -212,7 +215,7 @@ class Central extends CommonGLPI {
       echo "<tr class='noHover'><td class='top' width='50%'>";
       RSSFeed::showListForCentral();
       echo "</td><td class='top' width='50%'>";
-      if (RSSFeed::canView()) {
+      if (ProfileRight::checkPermission('view', 'RSSFeed')) {
          RSSFeed::showListForCentral(false);
       } else {
          echo "&nbsp;";
@@ -234,12 +237,13 @@ class Central extends CommonGLPI {
       echo "<table class='tab_cadre_central'>";
       echo "<tr class='noHover'><td class='top' width='50%'><table class='central'>";
       echo "<tr class='noHover'><td>";
+      $ticket = new Ticket();
       if ($showticket) {
-         Ticket::showCentralList(0, "process", true);
+         $ticket->showCentralList(0, "process", true);
          TicketTask::showCentralList(0, "todo", true);
       }
       if (Session::haveRight('ticket', Ticket::READGROUP)) {
-         Ticket::showCentralList(0, "waiting", true);
+         $ticket->showCentralList(0, "waiting", true);
       }
       if ($showproblem) {
          Problem::showCentralList(0, "process", true);
@@ -251,11 +255,11 @@ class Central extends CommonGLPI {
       echo "<td class='top' width='50%'><table class='central'>";
       echo "<tr class='noHover'><td>";
       if (Session::haveRight('ticket', Ticket::READGROUP)) {
-         Ticket::showCentralList(0, "observed", true);
-         Ticket::showCentralList(0, "toapprove", true);
-         Ticket::showCentralList(0, "requestbyself", true);
+         $ticket->showCentralList(0, "observed", true);
+         $ticket->showCentralList(0, "toapprove", true);
+         $ticket->showCentralList(0, "requestbyself", true);
       } else {
-         Ticket::showCentralList(0, "waiting", true);
+         $ticket->showCentralList(0, "waiting", true);
       }
       echo "</td></tr>";
       echo "</table></td></tr></table>";
@@ -336,4 +340,27 @@ class Central extends CommonGLPI {
       }
    }
 
+   /**
+    * Display item with tabs
+    *
+    * @param array $options Options
+    *
+    * @return void
+   **/
+   function display($options = []) {
+      global $CFG_GLPI;
+
+      // try to lock object
+      // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+      ObjectLock::manageObjectLock(get_class($this), $options);
+
+      if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
+
+         if (!isset($options['id'])) {
+            $options['id'] = 0;
+         }
+         $this->showPrimaryForm($options);
+      }
+      $this->showTabsContent($options);
+   }
 }

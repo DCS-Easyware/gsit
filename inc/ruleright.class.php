@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleRight extends Rule {
 
    // From Rule
-   static $rightname           = 'rule_ldap';
+   protected $rightname        = 'rule_ldap';
    public $orderby             = "name";
    public $specific_parameters = true;
 
@@ -301,11 +301,15 @@ class RuleRight extends Rule {
    }
 
 
+   /**
+    * @return string|false
+    */
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
       $crit = $this->getCriteria($ID);
       if (count($crit) && $crit['field'] == 'type') {
          return Auth::getMethodName($pattern, 0);
       }
+      return false;
    }
 
 

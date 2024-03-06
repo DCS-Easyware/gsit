@@ -38,9 +38,10 @@ if (!defined('GLPI_ROOT')) {
 
 //!  Consumable Class
 /**
-  This class is used to manage the consumables.
-  @see ConsumableItem
-  @author Julien Dombre
+ * This class is used to manage the consumables.
+ * @see ConsumableItem
+ * @author Julien Dombre
+ *
 **/
 class Consumable extends CommonDBChild {
    use Glpi\Features\Clonable;
@@ -49,10 +50,10 @@ class Consumable extends CommonDBChild {
    static protected $forward_entity_to = ['Infocom'];
    public $no_form_page                = true;
 
-   static $rightname                   = 'consumable';
+   protected $rightname                = 'consumable';
 
    // From CommonDBChild
-   static public $itemtype             = 'ConsumableItem';
+   protected $itemtype                 = 'ConsumableItem';
    static public $items_id             = 'consumableitems_id';
 
    public function getCloneRelations() :array {
@@ -397,13 +398,13 @@ class Consumable extends CommonDBChild {
     * @return string
    **/
    static function getStatus($cID) {
-
       if (self::isNew($cID)) {
          return _nx('consumable', 'New', 'New', 1);
 
       } else if (self::isOld($cID)) {
          return _nx('consumable', 'Used', 'Used', 1);
       }
+      return "";
    }
 
 
@@ -596,7 +597,7 @@ class Consumable extends CommonDBChild {
    static function showSummary() {
       global $DB;
 
-      if (!Consumable::canView()) {
+      if (!ProfileRight::checkPermission('view', 'Consumable')) {
          return;
       }
 
@@ -726,7 +727,7 @@ class Consumable extends CommonDBChild {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (!$withtemplate && Consumable::canView()) {
+      if (!$withtemplate && ProfileRight::checkPermission('view', 'Consumable')) {
          $nb = 0;
          switch ($item->getType()) {
             case 'ConsumableItem' :
@@ -752,7 +753,6 @@ class Consumable extends CommonDBChild {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
       switch ($item->getType()) {
          case 'ConsumableItem' :
             self::showAddForm($item);
@@ -760,6 +760,7 @@ class Consumable extends CommonDBChild {
             self::showForConsumableItem($item, 1);
             return true;
       }
+      return false;
    }
 
    function getRights($interface = 'central') {

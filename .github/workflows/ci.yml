@@ -1,4 +1,4 @@
-name: "GLPI CI"
+name: "GSIT CI"
 
 on:
   # Runs test suite when a new commit is pushed on "master" and "*/bugfixes" branches
@@ -21,40 +21,76 @@ on:
   workflow_dispatch:
 
 jobs:
+  check_code:
+
+    runs-on: 'ubuntu-latest'
+
+    strategy:
+      matrix:
+        php-versions: ['8.1']
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        tools: phpstan, cs2pr, phpcs
+        extensions: xmlrpc
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: create config_db.php used for PHPStan
+      run: echo -en "<?php\nclass DB extends DBmysql {\n   public \$dbhost     = '127.0.0.1';\n   public \$dbuser     = 'gsit';\n   public \$dbpassword = 'gsit';\n   public \$dbdefault  = 'gsit';\n}" > config/config_db.php
+
+    - name: create config_db_slave.php used for PHPStan
+      run: echo -en "<?php\nclass DBSlave extends DBmysql {\n   public \$dbhost     = '127.0.0.1';\n   public \$dbuser     = 'gsit';\n   public \$dbpassword = 'gsit';\n   public \$dbdefault  = 'gsit';\n}" > config/config_db_slave.php
+
+    - name: Run PHPStan
+      run: phpstan analyse -l 0 ajax front inc install config
+
   lint:
     # Do not run scheduled lint on tier repositories
-    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
-    name: "Lint on PHP ${{ matrix.php-version }}"
+    if: github.repository == 'DCS-Easyware/gsit' || github.event_name != 'schedule'
     runs-on: "${{ 'ubuntu-latest' }}"
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - {php-version: "7.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
-          - {php-version: "8.0"} # Lint on higher PHP version to detected deprecated elements usage
-    env:
-      COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
-      APPLICATION_ROOT: "${{ github.workspace }}"
-      PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
-      UPDATE_FILES_ACL: true
+        php-versions: ['8.1']
     steps:
       - name: "Cancel previous runs"
         uses: "styfle/cancel-workflow-action@0.5.0"
         with:
           access_token: "${{ github.token }}"
-      - name: "Clean workspace"
-        run: |
-          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
-          rm -rf "${{ env.APPLICATION_ROOT }}/*"
-          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          tools: phpstan, cs2pr, phpcs
+          extensions: xmlrpc
       - name: "Checkout"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v4"
       - name: "Restore dependencies cache"
         uses: actions/cache@v2
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
-            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
+            composer/cache/
+            .npm/_cacache/
           key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
             app_home_deps-${{ matrix.php-version }}-
@@ -63,94 +99,85 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
+            phpcs.cache
           key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
           restore-keys: |
             app_home_lint-${{ matrix.php-version }}
             app_home_lint-
-      - name: "Initialize containers"
-        run: |
-          .github/actions/init_containers-start.sh
-      - name: "Show versions"
-        run: |
-          .github/actions/init_show-versions.sh
       - name: "Install dependencies"
         run: |
-          docker-compose exec -T app .github/actions/init_install-dependencies.sh
+          .github/actions/init_install-dependencies.sh
       - name: "PHP lint"
         run: |
-          docker-compose exec -T app .github/actions/lint_php-lint.sh
+          .github/actions/lint_php-lint.sh
       - name: "JS lint"
         run: |
-          docker-compose exec -T app .github/actions/lint_js-lint.sh
+          .github/actions/lint_js-lint.sh
       - name: "Misc lint"
         run: |
-          docker-compose exec -T app .github/actions/lint_misc-lint.sh
-      - name: "Cleanup containers"
-        if: always()
-        run: |
-          .github/actions/teardown_containers-cleanup.sh
+          .github/actions/lint_misc-lint.sh
 
   tests:
     # Do not run scheduled tests on tier repositories
-    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
-    name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
-    runs-on: "${{ 'ubuntu-latest' }}"
+    if: github.repository == 'DCS-Easyware/gsit' || github.event_name != 'schedule'
+
+    runs-on: 'ubuntu-latest'
+
     strategy:
       fail-fast: false
       matrix:
-        include:
-          # test higher PHP version with higher MariaDB and MySQL versions
-          - {php-version: "8.0", db-image: "mariadb:10.6", always: true}
-          - {php-version: "8.0", db-image: "mysql:8.0", always: true}
-          # test other PHP versions
-          - {php-version: "7.2", db-image: "mariadb:10.6", always: false}
-          - {php-version: "7.3", db-image: "mariadb:10.6", always: false}
-          - {php-version: "7.4", db-image: "mariadb:10.6", always: false}
-          # test other DB servers/versions
-          - {php-version: "8.0", db-image: "mariadb:10.1", always: false}
-          - {php-version: "8.0", db-image: "mysql:5.6", always: false}
-          - {php-version: "8.0", db-image: "percona:5.6", always: false}
-          - {php-version: "8.0", db-image: "percona:8.0", always: false}
-    env:
-      # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
-      # No jobs will be skipped on nightly build, manual dispatch or push on main branches (master and */bugfixes) or tags.
-      # skip: ${{ matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || !(github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master' || endsWith(github.ref, '/bugfixes') || startsWith(github.ref, 'refs/tags'))) }}
-      COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
-      APPLICATION_ROOT: "${{ github.workspace }}"
-      DB_IMAGE: "githubactions-${{ matrix.db-image }}"
-      PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
-      UPDATE_FILES_ACL: true
+        php-versions: ['8.1']
+        mariadb-versions: ['10.5', '10.6', '10.11', '11.4']
+    services:
+      mariadb:
+        image: mariadb:${{ matrix.mariadb-versions }}
+        ports:
+          - 3306:3306 
+        env:
+          MARIADB_DATABASE: gsit
+          MARIADB_USER: gsit
+          MARIADB_PASSWORD: gsitpassword
+          MARIADB_ROOT_PASSWORD: rootpassword
     steps:
       - name: "Cancel previous runs"
         if: env.skip != 'true'
         uses: "styfle/cancel-workflow-action@0.5.0"
         with:
           access_token: "${{ github.token }}"
-      - name: "Clean workspace"
-        if: env.skip != 'true'
+      - name: "install openldap"
         run: |
-          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
-          rm -rf "${{ env.APPLICATION_ROOT }}/*"
-          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
+          docker run -v /data/ldap:/var/lib/ldap \
+            -v /data/ldapconfig:/etc/ldap/slapd.d \
+            -e LDAP_DOMAIN=glpi.org \
+            -e LDAP_ROOTPASS=insecure \
+            -p 389:389 \
+            -d nickstenning/slapd
+          sudo apt install ldap-utils
+      - name: "install dovecot"
+        run: |
+          sudo apt install dovecot-imapd dovecot-pop3d getmail6
+          echo "mail_location = maildir:/home/%d/%n" | sudo tee -a /etc/dovecot/conf.d/10-mail.conf
+          sudo systemctl restart dovecot
+          sudo useradd testuser -m -s /bin/bash --password "$y$j9T$U0lMQidDDVLEs9I6B6aku0$bnLxoOX9hU5bWHT5YALVuLkATAg6EMs8ztYkLlzopd4"
       - name: "Checkout"
         if: env.skip != 'true'
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v4"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: xmlrpc
       - name: "Restore dependencies cache"
         if: env.skip != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
-            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
+            .composer/cache/
+            .npm/_cacache/
           key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
             app_home_deps-${{ matrix.php-version }}-
             app_home_deps-
-      - name: "Initialize containers"
-        if: env.skip != 'true'
-        run: |
-          .github/actions/init_containers-start.sh
       - name: "Show versions"
         if: env.skip != 'true'
         run: |
@@ -158,39 +185,43 @@ jobs:
       - name: "Install dependencies"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/init_install-dependencies.sh
+          .github/actions/init_install-dependencies.sh
+      - name: "check requirements"
+        run: |
+          php bin/console glpi:system:check_requirements
       - name: "Install DB tests"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/test_install.sh
+          .github/actions/test_install.sh
+      - name: "import timezone"
+        run: mariadb-tzinfo-to-sql /usr/share/zoneinfo | mysql -h 127.0.0.1 -u root -prootpassword mysql
+
       - name: "Update DB tests"
         if: env.skip != 'true'
         run: |
+          mysql -h 127.0.0.1 -u root -prootpassword -e "CREATE DATABASE glpitest0723;GRANT ALL ON glpitest0723.* TO 'gsit'@'%';FLUSH PRIVILEGES;"
+          mysql -h 127.0.0.1 -u root -prootpassword -e "GRANT SELECT ON mysql.time_zone_name TO 'gsit'@'%';FLUSH PRIVILEGES;"
           .github/actions/init_initialize-old-dbs.sh
-          docker-compose exec -T app .github/actions/test_update-from-older-version.sh
+          .github/actions/test_update-from-older-version.sh
       - name: "Unit tests"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/test_tests-units.sh
+          .github/actions/test_tests-units.sh
       - name: "Functionnal tests"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/test_tests-functionnal.sh
+          .github/actions/test_tests-functionnal.sh
       - name: "LDAP tests"
         if: env.skip != 'true'
         run: |
           .github/actions/init_initialize-ldap-fixtures.sh
-          docker-compose exec -T app .github/actions/test_tests-ldap.sh
+          .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         if: env.skip != 'true'
         run: |
           .github/actions/init_initialize-imap-fixtures.sh
-          docker-compose exec -T app .github/actions/test_tests-imap.sh
+          .github/actions/test_tests-imap.sh
       - name: "WEB tests"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/test_tests-web.sh
-      - name: "Cleanup containers"
-        if: env.skip != 'true' && always()
-        run: |
-          .github/actions/teardown_containers-cleanup.sh
+          .github/actions/test_tests-web.sh

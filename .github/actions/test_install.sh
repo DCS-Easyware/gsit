@@ -6,7 +6,7 @@ mkdir -p $(dirname "$LOG_FILE")
 # Execute install
 bin/console glpi:database:install \
   --config-dir=./tests/config --ansi --no-interaction \
-  --reconfigure --db-name=glpi --db-host=db --db-user=root --force
+  --reconfigure --db-host=127.0.0.1 --db-name=gsit --db-user=gsit --db-password=gsitpassword --force
 
 # Execute update
 ## Should do nothing.

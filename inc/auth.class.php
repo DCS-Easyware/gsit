@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
  */
 class Auth extends CommonGLPI {
 
-   static $rightname = 'config';
+   protected $rightname = 'config';
 
    /** @var array Array of errors */
    private $errors = [];
@@ -73,7 +73,6 @@ class Auth extends CommonGLPI {
    const MAIL     = 2;
    const LDAP     = 3;
    const EXTERNAL = 4;
-   const CAS      = 5;
    const X509     = 6;
    const API      = 7;
    const COOKIE   = 8;
@@ -93,10 +92,10 @@ class Auth extends CommonGLPI {
    }
 
 
-   static function getMenuContent() {
+   function getMenuContent() {
 
       $menu = [];
-      if (Config::canUpdate()) {
+      if (ProfileRight::checkPermission('update', 'Config')) {
             $menu['title']                              = __('Authentication');
             $menu['page']                               = '/front/setup.auth.php';
             $menu['icon']                               = self::getIcon();
@@ -477,29 +476,6 @@ class Auth extends CommonGLPI {
       global $CFG_GLPI;
 
       switch ($authtype) {
-         case self::CAS :
-            if (!Toolbox::canUseCAS()) {
-               Toolbox::logError("CAS lib not installed");
-               return false;
-            }
-
-            phpCAS::client(constant($CFG_GLPI["cas_version"]), $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
-                           $CFG_GLPI["cas_uri"], false);
-
-            // no SSL validation for the CAS server
-            phpCAS::setNoCasServerValidation();
-
-            // force CAS authentication
-            phpCAS::forceAuthentication();
-            $this->user->fields['name'] = phpCAS::getUser();
-
-            // extract e-mail information
-            if (phpCAS::hasAttribute("mail")) {
-                $this->user->fields['_useremails'] = [phpCAS::getAttribute("mail")];
-            }
-
-            return true;
-
          case self::EXTERNAL :
             $ssovariable = Dropdown::getDropdownName('glpi_ssovariables',
                                                      $CFG_GLPI["ssovariables_id"]);
@@ -843,7 +819,6 @@ class Auth extends CommonGLPI {
             // Try to connect LDAP user if not yet authenticated
             if (!$this->auth_succeded) {
                if (empty($login_auth)
-                     || $this->user->fields["authtype"] == $this::CAS
                      || $this->user->fields["authtype"] == $this::EXTERNAL
                      || $this->user->fields["authtype"] == $this::LDAP) {
 
@@ -1052,19 +1027,6 @@ class Auth extends CommonGLPI {
    }
 
    /**
-   * Builds CAS versions dropdown
-   * @param string $value (default 'CAS_VERSION_2_0')
-   *
-   * @return string
-   */
-   static function dropdownCasVersion($value = 'CAS_VERSION_2_0') {
-      $options['CAS_VERSION_1_0'] = __('Version 1');
-      $options['CAS_VERSION_2_0'] = __('Version 2');
-      $options['CAS_VERSION_3_0'] = __('Version 3+');
-      return Dropdown::showFromArray('cas_version', $options, ['value' => $value]);
-   }
-
-   /**
     * Get name of an authentication method
     *
     * @param integer $authtype Authentication method
@@ -1092,18 +1054,6 @@ class Auth extends CommonGLPI {
                return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $auth->getLink());
             }
             return sprintf(__('%1$s: %2$s'), __('Email server'), $name);
-
-         case self::CAS :
-            if ($auths_id > 0) {
-               $auth = new AuthLDAP();
-               if ($auth->getFromDB($auths_id)) {
-                  return sprintf(__('%1$s: %2$s'),
-                                 sprintf(__('%1$s + %2$s'),
-                                         __('CAS'), AuthLDAP::getTypeName(1)),
-                                 $auth->getLink());
-               }
-            }
-            return __('CAS');
 
          case self::X509 :
             if ($auths_id > 0) {
@@ -1156,7 +1106,6 @@ class Auth extends CommonGLPI {
       switch ($authtype) {
          case self::X509 :
          case self::EXTERNAL :
-         case self::CAS :
          case self::LDAP :
             $auth = new AuthLDAP();
             if ($auths_id>0 && $auth->getFromDB($auths_id)) {
@@ -1201,11 +1150,6 @@ class Auth extends CommonGLPI {
          return true;
       }
 
-      // Using CAS server
-      if (!empty($CFG_GLPI["cas_host"])) {
-         return true;
-      }
-
       // Using API login with personnal token
       if (!empty($_REQUEST['user_token'])) {
          return true;
@@ -1222,7 +1166,7 @@ class Auth extends CommonGLPI {
     * @return boolean
     */
    static function isAlternateAuth($authtype) {
-      return in_array($authtype, [self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE]);
+      return in_array($authtype, [self::X509, self::EXTERNAL, self::API, self::COOKIE]);
    }
 
    /**
@@ -1273,15 +1217,6 @@ class Auth extends CommonGLPI {
       // using user token for api login
       if (!empty($_REQUEST['user_token'])) {
          return self::API;
-      }
-
-      // Using CAS server
-      if (!empty($CFG_GLPI["cas_host"])) {
-         if ($redirect) {
-            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
-         } else {
-            return self::CAS;
-         }
       }
 
       $cookie_name = session_name() . '_rememberme';
@@ -1357,7 +1292,6 @@ class Auth extends CommonGLPI {
          echo "<div class='firstbloc'>";
 
          switch ($user->getField('authtype')) {
-            case self::CAS :
             case self::EXTERNAL :
             case self::X509 :
             case self::LDAP :
@@ -1411,7 +1345,10 @@ class Auth extends CommonGLPI {
     * @return boolean
     */
    static function isValidLogin($login) {
-      return preg_match( "/^[[:alnum:]'@.\-_ ]+$/iu", $login);
+      if (is_null($login)) {
+         return false;
+      }
+      return boolval(preg_match( "/^[[:alnum:]'@.\-_ ]+$/iu", $login));
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -1455,56 +1392,13 @@ class Auth extends CommonGLPI {
    static function showOtherAuthList() {
       global $CFG_GLPI;
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
       echo "<form name=cas action='".$CFG_GLPI['root_doc']."/front/auth.others.php' method='post'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      // CAS config
-      echo "<tr><th>" . __('CAS authentication').'</th><th>';
-      if (!empty($CFG_GLPI["cas_host"])) {
-         echo _x('authentication', 'Enabled');
-      }
-      echo "</th></tr>\n";
-
-      if (function_exists('curl_init')
-          && Toolbox::canUseCAS()) {
-
-         //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Host') . "</td>";
-         echo "<td><input type='text' name='cas_host' value=\"".$CFG_GLPI["cas_host"]."\"></td></tr>\n";
-         //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Version') . "</td>";
-         echo "<td>";
-         Auth::dropdownCasVersion($CFG_GLPI["cas_version"]);
-         echo "</td>";
-         echo "</tr>\n";
-         //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . _n('Port', 'Ports', 1) . "</td>";
-         echo "<td><input type='text' name='cas_port' value=\"".$CFG_GLPI["cas_port"]."\"></td></tr>\n";
-         //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)')."</td>";
-         echo "<td><input type='text' name='cas_uri' value=\"".$CFG_GLPI["cas_uri"]."\"></td></tr>\n";
-         //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('Log out fallback URL') . "</td>";
-         echo "<td><input type='text' name='cas_logout' value=\"".$CFG_GLPI["cas_logout"]."\"></td>".
-              "</tr>\n";
-      } else {
-         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         if (!function_exists('curl_init')) {
-            echo "<p class='red'>".__("The CURL extension for your PHP parser isn't installed");
-            echo "</p>";
-         }
-         if (!Toolbox::canUseCAS()) {
-            echo "<p class='red'>".__("The CAS lib isn't available, GLPI doesn't package it anymore for license compatibility issue.");
-            echo "</p>";
-         }
-         echo "<p>" .__('Impossible to use CAS as external source of connection')."</p>";
-
-         echo "</td></tr>\n";
-      }
       // X509 config
       echo "<tr><th>" . __('x509 certificate authentication')."</th><th>";
       if (!empty($CFG_GLPI["x509_email_field"])) {

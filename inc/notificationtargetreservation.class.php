@@ -193,7 +193,7 @@ class NotificationTargetReservation extends NotificationTarget {
     *
     * @param string $event (default '')
     *
-    * @return the object associated with the itemtype
+    * @return void
    **/
    function getObjectItem($event = '') {
 
@@ -211,6 +211,4 @@ class NotificationTargetReservation extends NotificationTarget {
          }
       }
    }
-
-
 }

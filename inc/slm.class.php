@@ -48,7 +48,7 @@ class SLM extends CommonDBTM {
 
    static protected $forward_entity_to = ['SLA', 'OLA'];
 
-   static $rightname                   = 'slm';
+   protected $rightname                = 'slm';
 
    const TTR = 0; // Time to resolve
    const TTO = 1; // Time to own
@@ -177,15 +177,15 @@ class SLM extends CommonDBTM {
    }
 
 
-   static function getMenuContent() {
+   function getMenuContent() {
 
       $menu = [];
-      if (static::canView()) {
+      if ($this->canView()) {
          $menu['title']           = self::getTypeName(2);
          $menu['page']            = static::getSearchURL(false);
          $menu['icon']            = static::getIcon();
          $menu['links']['search'] = static::getSearchURL(false);
-         if (static::canCreate()) {
+         if ($this->canCreate()) {
             $menu['links']['add'] = SLM::getFormURL(false);
          }
 

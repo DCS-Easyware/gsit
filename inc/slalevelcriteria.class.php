@@ -42,9 +42,9 @@ if (!defined('GLPI_ROOT')) {
 class SlaLevelCriteria extends RuleCriteria {
 
 
-   static public $itemtype  = 'SlaLevel';
-   static public $items_id  = 'slalevels_id';
-   public $dohistory        = true;
+   protected $itemtype     = 'SlaLevel';
+   static public $items_id = 'slalevels_id';
+   public $dohistory       = true;
 
 
    /**

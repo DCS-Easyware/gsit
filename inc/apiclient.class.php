@@ -40,7 +40,7 @@ class APIClient extends CommonDBTM {
    const DOLOG_LOGS       = 1;
    const DOLOG_HISTORICAL = 2;
 
-   static $rightname = 'config';
+   protected $rightname = 'config';
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -49,12 +49,12 @@ class APIClient extends CommonDBTM {
       'app_token'
    ];
 
-   static function canCreate() {
-      return Session::haveRight(static::$rightname, UPDATE);
+   function canCreate() {
+      return Session::haveRight($this->rightname, UPDATE);
    }
 
-   static function canPurge() {
-      return Session::haveRight(static::$rightname, UPDATE);
+   function canPurge() {
+      return Session::haveRight($this->rightname, UPDATE);
    }
 
    static function getTypeName($nb = 0) {

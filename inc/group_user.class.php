@@ -164,7 +164,7 @@ class Group_User extends CommonDBRelation{
       global $CFG_GLPI;
 
       $ID = $user->fields['id'];
-      if (!Group::canView()
+      if (!ProfileRight::checkPermission('view', 'Group')
           || !$user->can($ID, READ)) {
          return false;
       }
@@ -445,13 +445,13 @@ class Group_User extends CommonDBRelation{
       global $CFG_GLPI;
 
       $ID = $group->getID();
-      if (!User::canView()
+      if (!ProfileRight::checkPermission('view', 'User')
           || !$group->can($ID, READ)) {
          return false;
       }
 
       // Have right to manage members
-      $canedit = self::canUpdate();
+      $canedit = ProfileRight::checkPermission('update', 'Group_User');
       $rand    = mt_rand();
       $user    = new User();
       $crit    = Session::getSavedOption(__CLASS__, 'criterion', '');
@@ -728,7 +728,7 @@ class Group_User extends CommonDBRelation{
          $nb = 0;
          switch ($item->getType()) {
             case 'User' :
-               if (Group::canView()) {
+               if (ProfileRight::checkPermission('view', 'Group')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = self::countForItem($item);
                   }
@@ -737,7 +737,7 @@ class Group_User extends CommonDBRelation{
                break;
 
             case 'Group' :
-               if (User::canView()) {
+               if (ProfileRight::checkPermission('view', 'User')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = self::countForItem($item);
                   }

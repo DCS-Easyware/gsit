@@ -104,7 +104,7 @@ class DeviceSoundCard extends CommonDevice {
             $base->addHeader('devicesoundcard_type', _n('Type', 'Types', 1), $super, $father);
             break;
       }
-
+      return $column;
    }
 
 

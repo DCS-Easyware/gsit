@@ -41,7 +41,7 @@ class NotificationSettingConfig extends CommonDBTM {
 
    public $table           = 'glpi_configs';
    protected $displaylist  = false;
-   static $rightname       = 'config';
+   protected $rightname    = 'config';
 
    public function update(array $input, $history = 1, $options = []) {
       if (isset($input['use_notifications'])) {
@@ -61,15 +61,20 @@ class NotificationSettingConfig extends CommonDBTM {
       }
 
       $config = new Config();
+      $error = false;
       foreach ($input as $k => $v) {
          if (substr($k, 0, strlen('notifications_')) === 'notifications_') {
             $tmp = [
                'id'  => 1,
                $k    => $v
             ];
-            $config->update($tmp);
+            $ret = $config->update($tmp);
+            if (!$ret) {
+               $error = true;
+            }
          }
       }
+      return !$error;
    }
 
    /**

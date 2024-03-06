@@ -81,8 +81,8 @@ class Acl extends Plugin {
          'privilege' => '{DAV:}read',
          'protected' => true,
       ];
-
-      if ($node instanceof Calendar && Session::haveRight(PlanningExternalEvent::$rightname, UPDATE)) {
+      $planningExternalEvent = new PlanningExternalEvent();
+      if ($node instanceof Calendar && Session::haveRight($planningExternalEvent->getRightname(), UPDATE)) {
          // If user can update external events, then he is able to write on calendar to create new events.
          $acl[] = [
             'principal' => '{DAV:}authenticated',

@@ -41,14 +41,14 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    public $dohistory          = true;
    public $can_be_translated  = true;
 
-   static $rightname          = 'knowbasecategory';
+   protected $rightname       = 'knowbasecategory';
 
 
    static function getTypeName($nb = 0) {
       return _n('Knowledge base category', 'Knowledge base categories', $nb);
    }
 
-   public static function canView() {
+   public function canView() {
       if (Session::getCurrentInterface() == "helpdesk") {
          return true;
       }

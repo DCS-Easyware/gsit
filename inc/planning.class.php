@@ -48,7 +48,7 @@ use Sabre\VObject\Property\ICalendar\Recur;
 **/
 class Planning extends CommonGLPI {
 
-   static $rightname = 'planning';
+   protected $rightname = 'planning';
 
    static $palette_bg = ['#FFEEC4', '#D4EDFB', '#E1D0E1', '#CDD7A9', '#F8C8D2',
                               '#D6CACA', '#D3D6ED', '#C8E5E3', '#FBD5BF', '#E9EBA2',
@@ -82,10 +82,10 @@ class Planning extends CommonGLPI {
    }
 
 
-   static function getMenuContent() {
+   function getMenuContent() {
       $menu = [];
 
-      if (Planning::canView()) {
+      if ($this->canView()) {
          $menu = [
             'title'    => static::getMenuName(),
             'shortcut' => static::getMenuShorcut(),
@@ -93,11 +93,11 @@ class Planning extends CommonGLPI {
             'icon'     => static::getIcon(),
          ];
 
-         if ($data = static::getAdditionalMenuLinks()) {
+         if ($data = $this->getAdditionalMenuLinks()) {
             $menu['links'] = $data;
          }
 
-         if ($options = static::getAdditionalMenuOptions()) {
+         if ($options = $this->getAdditionalMenuOptions()) {
             $menu['options'] = $options;
          }
       }
@@ -106,12 +106,12 @@ class Planning extends CommonGLPI {
    }
 
 
-   static function getAdditionalMenuLinks() {
+   function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
       $links = [];
 
-      if (Planning::canView()) {
+      if ($this->canView()) {
          $title     = Planning::getTypeName(Session::getPluralNumber());
          $planning  = "<i class='fa far fa-calendar-alt pointer' title='$title'>
                         <span class='sr-only'>$title</span>
@@ -120,7 +120,7 @@ class Planning extends CommonGLPI {
          $links[$planning] = Planning::getSearchURL(false);
       }
 
-      if (PlanningExternalEvent::canView()) {
+      if (ProfileRight::checkPermission('view', 'PlanningExternalEvent')) {
          $ext_title = PlanningExternalEvent::getTypeName(Session::getPluralNumber());
          $external  = "<i class='fa fas fa-calendar-week pointer' title='$ext_title'>
                         <span class='sr-only'>$ext_title</span>
@@ -141,9 +141,13 @@ class Planning extends CommonGLPI {
       return $links;
    }
 
-
-   static function getAdditionalMenuOptions() {
-      if (PlanningExternalEvent::canView()) {
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @since 0.85
+   **/
+   function getAdditionalMenuOptions() {
+      if (ProfileRight::checkPermission('view', 'PlanningExternalEvent')) {
          return [
             'external' => [
                'title' => PlanningExternalEvent::getTypeName(Session::getPluralNumber()),
@@ -151,10 +155,11 @@ class Planning extends CommonGLPI {
                'links' => [
                   'add'    => '/front/planningexternalevent.form.php',
                   'search' => '/front/planningexternalevent.php',
-               ] + static::getAdditionalMenuLinks()
+               ] + $this->getAdditionalMenuLinks()
             ]
          ];
       }
+      return [];
    }
 
 
@@ -171,9 +176,9 @@ class Planning extends CommonGLPI {
    /**
     * @since 0.85
    **/
-   static function canView() {
+   function canView() {
 
-      return Session::haveRightsOr(self::$rightname, [self::READMY, self::READGROUP,
+      return Session::haveRightsOr($this->rightname, [self::READMY, self::READGROUP,
                                                            self::READALL]);
    }
 
@@ -594,7 +599,7 @@ class Planning extends CommonGLPI {
     * @return void
    **/
    static function showPlanning($fullview = true) {
-      if (!static::canView()) {
+      if (!ProfileRight::checkPermission('view', get_called_class())) {
          return false;
       }
 
@@ -779,7 +784,7 @@ class Planning extends CommonGLPI {
       $filters = &$_SESSION['glpi_plannings']['filters'];
       $index_color = 0;
       foreach (self::getPlanningTypes() as $planning_type) {
-         if (in_array($planning_type, ['NotPlanned', 'OnlyBgEvents']) || $planning_type::canView()) {
+         if (in_array($planning_type, ['NotPlanned', 'OnlyBgEvents']) || ProfileRight::checkPermission('view', $planning_type)) {
             if (!isset($filters[$planning_type])) {
                $filters[$planning_type] = [
                   'color'   => self::getPaletteColor('ev', $index_color),
@@ -907,7 +912,7 @@ class Planning extends CommonGLPI {
          } else {
             if (!getItemForItemtype($filter_key)) {
                return false;
-            } else if (!$filter_key::canView()) {
+            } else if (!ProfileRight::checkPermission('view', $filter_key)) {
                return false;
             }
             $title = $filter_key::getTypeName();
@@ -1750,7 +1755,7 @@ class Planning extends CommonGLPI {
       $raw_events = [];
       $not_planned = [];
       foreach ($CFG_GLPI['planning_types'] as $planning_type) {
-         if (!$planning_type::canView()) {
+         if (!ProfileRight::checkPermission('view', $planning_type)) {
             continue;
          }
          if ($_SESSION['glpi_plannings']['filters'][$planning_type]['display']) {
@@ -2227,6 +2232,7 @@ class Planning extends CommonGLPI {
             }
          }
       }
+      return false;
    }
 
    /**
@@ -2297,7 +2303,8 @@ class Planning extends CommonGLPI {
    static function showCentral($who) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight(self::$rightname, self::READMY)
+      $planning = new Planning();
+      if (!Session::haveRight($planning->getRightname(), self::READMY)
           || ($who <= 0)) {
          return false;
       }
@@ -2327,7 +2334,7 @@ class Planning extends CommonGLPI {
     * @param $whogroup        group ID
     * @param $limititemtype   itemtype only display this itemtype (default '')
     *
-    * @return icalendar string
+    * @return void
    **/
    static function generateIcal($who, $whogroup, $limititemtype = '') {
       global $CFG_GLPI;

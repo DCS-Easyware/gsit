@@ -1604,7 +1604,7 @@ function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
 **/
 function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_itemtype,
                                    $entities_id, $IP) {
-   global $migration;
+   global $DB, $migration;
 
    // Using gethostbyaddr() allows us to define its reald internet name according to its IP.
    //   But each gethostbyaddr() may reach several milliseconds. With very large number of
@@ -2352,16 +2352,17 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             $port_input['mac']          = strtolower ($equipment['mac']);
 
             $networkports_id = $migration->insertInTable('glpi_networkports', $port_input);
+            if ($networkports_id !== false) {
+               $aggregate_input                         = [];
+               $aggregate_input['networkports_id']      = $networkports_id;
+               $aggregate_input['networkports_id_list'] = exportArrayToDB($both);
 
-            $aggregate_input                         = [];
-            $aggregate_input['networkports_id']      = $networkports_id;
-            $aggregate_input['networkports_id_list'] = exportArrayToDB($both);
+               $migration->insertInTable('glpi_networkportaggregates', $aggregate_input);
 
-            $migration->insertInTable('glpi_networkportaggregates', $aggregate_input);
-
-            createNetworkNameFromItem('NetworkPort', $networkports_id, $equipment['id'],
-                                      'NetworkEquipment', $equipment['entities_id'],
-                                      $equipment['ip']);
+               createNetworkNameFromItem('NetworkPort', $networkports_id, $equipment['id'],
+                                       'NetworkEquipment', $equipment['entities_id'],
+                                       $equipment['ip']);
+            }
 
             foreach ($both as $aggregated_networkports_id) {
                $query = "DELETE
@@ -2494,4 +2495,3 @@ function migrateComputerDevice($deviceType, $new_specif = null, $new_specif_type
    }
    $migration->migrationOneTable($table);
 }
-

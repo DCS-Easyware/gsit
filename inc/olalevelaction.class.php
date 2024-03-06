@@ -44,13 +44,13 @@ if (!defined('GLPI_ROOT')) {
 class OlaLevelAction extends RuleAction {
 
 
-   static public $itemtype  = 'OlaLevel';
-   static public $items_id  = 'olalevels_id';
+   protected $itemtype     = 'OlaLevel';
+   static public $items_id = 'olalevels_id';
    public $dohistory = true;
 
    /**
-   * Constructor
-   **/
+    * Constructor
+    **/
    function __construct() {
       // Override in order not to use glpi_rules table.
    }

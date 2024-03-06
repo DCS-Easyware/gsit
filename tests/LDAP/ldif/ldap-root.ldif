@@ -1,0 +1,6 @@
+dn: dc=glpi,dc=org
+dc: glpi
+description: Tree root
+objectClass: dcObject
+objectClass: organization
+o: glpi.org

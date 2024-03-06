@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 class ComputerVirtualMachine extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype = 'Computer';
+   protected $itemtype = 'Computer';
    static public $items_id = 'computers_id';
    public $dohistory       = true;
 
@@ -60,7 +60,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       if (!$withtemplate
           && ($item->getType() == 'Computer')
-          && Computer::canView()) {
+          && ProfileRight::checkPermission('view', 'Computer')) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable(self::getTable(),

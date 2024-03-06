@@ -1,0 +1,12 @@
+diff --git a/server/php/UploadHandler.php b/server/php/UploadHandler.php
+index 856e81b..843e043 100755
+--- a/server/php/UploadHandler.php
++++ b/server/php/UploadHandler.php
+@@ -1475,6 +1475,6 @@ class UploadHandler
+ 
+     protected function basename($filepath, $suffix = null) {
+         $splited = preg_split('/\//', rtrim ($filepath, '/ '));
+-        return substr(basename('X'.$splited[count($splited)-1], $suffix), 1);
++        return substr(basename('X'.$splited[count($splited)-1], $suffix ?? ''), 1);
+     }
+ }

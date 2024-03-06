@@ -53,7 +53,8 @@ class NotificationEventAjax extends DbTestCase {
    }
 
    public function testCanCron() {
-      $this->boolean(\NotificationEventAjax::canCron())->isFalse();
+      $notif = new \NotificationEventAjax();
+      $this->boolean($notif->canCron())->isFalse();
    }
 
    public function testGetAdminData() {

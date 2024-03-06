@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 class LineOperator extends CommonDropdown {
 
-   static $rightname = 'lineoperator';
+   protected $rightname = 'lineoperator';
 
    public $can_be_translated = false;
 

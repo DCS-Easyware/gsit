@@ -50,7 +50,7 @@ class Transfer extends CommonDBTM {
    /// type of initial item transfered
    public $inittype              = 0;
 
-   static $rightname = 'transfer';
+   protected $rightname = 'transfer';
 
    function maxActionsCount() {
       return 0;
@@ -3616,6 +3616,7 @@ class Transfer extends CommonDBTM {
          echo "</table></div>";
          Html::closeForm();
       }
+      return true;
    }
 
 

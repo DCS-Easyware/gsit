@@ -39,10 +39,10 @@ if (!defined('GLPI_ROOT')) {
 /// Class Domain
 class Domain extends CommonDropdown {
 
-   static $rightname = 'domain';
+   protected $rightname        = 'domain';
    static protected $forward_entity_to = ['DomainRecord'];
 
-   public $can_be_translated = false;
+   public $can_be_translated   = false;
 
    public    $dohistory        = true;
    protected $usenotepadrights = true;
@@ -435,7 +435,7 @@ class Domain extends CommonDropdown {
    }
 
    function getSpecificMassiveActions($checkitem = null) {
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
@@ -668,7 +668,7 @@ class Domain extends CommonDropdown {
                      $task->log(Dropdown::getDropdownName("glpi_entities", $entity) . ":  $message\n");
                      $task->addVolume(1);
                   } else {
-                     Toolbox::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity) . ":  $message");
+                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity) . ":  $message");
                   }
                } else {
                   $message = sprintf(
@@ -678,7 +678,7 @@ class Domain extends CommonDropdown {
                   if ($task) {
                      $task->log($message . "\n");
                   } else {
-                     Toolbox::addMessageAfterRedirect($message, false, ERROR);
+                     Session::addMessageAfterRedirect($message, false, ERROR);
                   }
                }
             }
@@ -748,9 +748,9 @@ class Domain extends CommonDropdown {
       return $used;
    }
 
-   static function getAdditionalMenuLinks() {
+   function getAdditionalMenuLinks() {
       $links = [];
-      if (static::canView()) {
+      if ($this->canView()) {
          $rooms = "<i class=\"fa fa-clipboard-list pointer\" title=\"" . DomainRecord::getTypeName(Session::getPluralNumber()) .
             "\"></i><span class=\"sr-only\">" . DomainRecord::getTypeName(Session::getPluralNumber()). "</span>";
          $links[$rooms] = DomainRecord::getSearchURL(false);
@@ -762,8 +762,8 @@ class Domain extends CommonDropdown {
       return false;
    }
 
-   static function getAdditionalMenuOptions() {
-      if (static::canView()) {
+   function getAdditionalMenuOptions() {
+      if ($this->canView()) {
          return [
             'domainrecord' => [
                'title' => DomainRecord::getTypeName(Session::getPluralNumber()),
@@ -775,6 +775,7 @@ class Domain extends CommonDropdown {
             ]
          ];
       }
+      return [];
    }
 
    public function getCanonicalName() {

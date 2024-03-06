@@ -263,7 +263,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             );
             // Translations :
             if (Session::haveTranslations($this->getType(), 'completename')) {
-                DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
+               DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
             }
 
             $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
@@ -487,7 +487,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $entity_assign = $this->isEntityAssign();
 
       // Minimal form for quick input.
-      if (static::canCreate()) {
+      if ($this->canCreate()) {
          $link = $this->getFormURL();
          echo "<div class='firstbloc'>";
          echo "<form action='".$link."' method='post'>";
@@ -590,7 +590,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
@@ -660,7 +660,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                }
             } else {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-               $ma->addMessage($parent->getErrorMessage(ERROR_COMPAT));
+               $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
             }
             return;
       }

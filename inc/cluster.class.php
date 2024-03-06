@@ -41,8 +41,8 @@ class Cluster extends CommonDBTM {
    use Glpi\Features\Clonable;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'cluster';
+   public $dohistory    = true;
+   protected $rightname = 'cluster';
 
    public function getCloneRelations() :array {
       return [

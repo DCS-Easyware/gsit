@@ -72,7 +72,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
    protected $profiles  = [];
    protected $entities  = [];
 
-   static $rightname    = 'rssfeed_public';
+   protected $rightname = 'rssfeed_public';
 
 
 
@@ -85,14 +85,14 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
 
-      return (Session::haveRight(self::$rightname, CREATE)
+      return (Session::haveRight($this->rightname, CREATE)
               || Session::getCurrentInterface() != 'helpdesk');
    }
 
 
-   static function canView() {
+   function canView() {
 
       return (Session::haveRight('rssfeed_public', READ)
               || Session::getCurrentInterface() != 'helpdesk');
@@ -126,7 +126,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @since 0.85
     * for personal rss feed
    **/
-   static function canUpdate() {
+   function canUpdate() {
       return (Session::getCurrentInterface() != 'helpdesk');
    }
 
@@ -135,7 +135,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @since 0.85
     * for personal rss feed
    **/
-   static function canPurge() {
+   function canPurge() {
       return (Session::getCurrentInterface() != 'helpdesk');
    }
 
@@ -148,7 +148,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
    function canPurgeItem() {
 
       return (($this->fields['users_id'] == Session::getLoginUserID())
-              || (Session::haveRight(self::$rightname, PURGE)
+              || (Session::haveRight($this->rightname, PURGE)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -185,7 +185,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
    }
 
    public function haveVisibilityAccess() {
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
@@ -254,7 +254,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       $where = [self::getTable() . '.users_id' => Session::getLoginUserID()];
       $join = [];
 
-      if (!self::canView()) {
+      if (!ProfileRight::checkPermission('view', get_called_class())) {
          return [
             'LEFT JOIN' => $join,
             'WHERE'     => $where
@@ -523,7 +523,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (self::canView()) {
+      if ($this->canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'RSSFeed' :
@@ -849,7 +849,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
    /**
     * Show discovered feeds
     *
-    * @return nothin
+    * @return void
     **/
    function showDiscoveredFeeds() {
       if (!Toolbox::isUrlSafe($this->fields['url'])) {
@@ -864,7 +864,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       $feed->handle_content_type();
 
       if ($feed->error()) {
-         return false;
+         return;
       }
 
       foreach ($feed->get_all_discovered_feeds() as $f) {
@@ -970,7 +970,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
 
       } else {
          // Show public rssfeeds / not mines : need to have access to public rssfeeds
-         if (!self::canView()) {
+         if (!ProfileRight::checkPermission('view', get_called_class())) {
             return false;
          }
 
@@ -1009,7 +1009,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr class='noHover'><th colspan='2'><div class='relative'><span>$titre</span>";
 
-      if (($personal && self::canCreate())
+      if (($personal && ProfileRight::checkPermission('create', get_called_class()))
             || (!$personal && Session::haveRight('rssfeed_public', CREATE))) {
          echo "<span class='floatright'>";
          echo "<a href='".RSSFeed::getFormURL()."'>";

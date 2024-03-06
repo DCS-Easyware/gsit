@@ -41,11 +41,12 @@ if (empty($itemtype) || empty($items_id)) {
    die();
 }
 
+$item = new $itemtype();
+
 // Check right
-Session::checkRight($itemtype::$rightname, READ);
+Session::checkRight($item->getRightname(), READ);
 
 // Load item
-$item = new $itemtype();
 $item->getFromDB($items_id);
 
 // Load graph and impactitem

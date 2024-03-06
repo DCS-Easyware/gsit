@@ -147,7 +147,7 @@ class Impact extends CommonGLPI {
 
       // Check READ rights
       $itemtype = $item->getType();
-      if (!$itemtype::canView()) {
+      if (!$item->canView()) {
          return false;
       }
 
@@ -891,7 +891,11 @@ class Impact extends CommonGLPI {
       }
 
       // Return empty result if the user doesn't have READ rights
-      if (!Session::haveRight($itemtype::$rightname, READ)) {
+      $item = getItemForItemtype($itemtype);
+      if ($item === false) {
+         return [];
+      }
+      if (!Session::haveRight($item->getRightname(), READ)) {
          return [
             "items" => [],
             "total" => 0
@@ -1297,7 +1301,7 @@ class Impact extends CommonGLPI {
       ];
 
       // Only set GOTO link if the user have READ rights
-      if ($item::canView()) {
+      if ($item->canView()) {
          $new_node['link'] = $item->getLinkURL();
       }
 
@@ -1404,6 +1408,7 @@ class Impact extends CommonGLPI {
          'target' => $to,
          'flag'   => $direction
       ];
+      return false;
    }
 
    /**

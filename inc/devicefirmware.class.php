@@ -127,6 +127,7 @@ class DeviceFirmware extends CommonDevice {
          $base->addHeader('version', _n('Version', 'Versions', 1), $super, $father);
          $base->addHeader('date', __('Installation date'), $super, $father);
       }
+      return $column;
    }
 
    function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,

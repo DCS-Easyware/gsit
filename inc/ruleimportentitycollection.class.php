@@ -39,7 +39,7 @@ class RuleImportEntityCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = true;
-   static $rightname           = 'rule_import';
+   protected $rightname        = 'rule_import';
    public $menu_option         = 'importentity';
 
 
@@ -48,7 +48,7 @@ class RuleImportEntityCollection extends RuleCollection {
    **/
    function canList() {
       if (Plugin::haveImport()) {
-         return static::canView();
+         return $this->canView();
       }
       return false;
    }

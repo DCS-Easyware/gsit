@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Stat extends CommonGLPI {
 
-   static $rightname = 'statistic';
+   protected $rightname = 'statistic';
 
 
    static function getTypeName($nb = 0) {
@@ -1479,7 +1479,7 @@ class Stat extends CommonGLPI {
       $stat_list["Ticket"]["Ticket_Item"]["name"]     = __('By hardware');
       $stat_list["Ticket"]["Ticket_Item"]["file"]     = "stat.item.php";
 
-      if (Problem::canView()) {
+      if (ProfileRight::checkPermission('view', 'Problem')) {
          $opt_list["Problem"]                               = Problem::getTypeName(Session::getPluralNumber());
 
          $stat_list["Problem"]["Problem_Global"]["name"]    = __('Global');
@@ -1488,7 +1488,7 @@ class Stat extends CommonGLPI {
          $stat_list["Problem"]["Problem_Problem"]["file"]   = "stat.tracking.php?itemtype=Problem";
       }
 
-      if (Change::canView()) {
+      if (ProfileRight::checkPermission('view', 'Change')) {
          $opt_list["Change"]                             = _n('Change', 'Changes', Session::getPluralNumber());
 
          $stat_list["Change"]["Change_Global"]["name"]   = __('Global');

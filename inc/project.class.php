@@ -46,7 +46,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    // From CommonDBTM
    public $dohistory                   = true;
    static protected $forward_entity_to = ['ProjectCost', 'ProjectTask'];
-   static $rightname                   = 'project';
+   protected $rightname                = 'project';
    protected $usenotepad               = true;
 
    const READMY                        = 1;
@@ -77,8 +77,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
 
-   static function canView() {
-      return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
+   function canView() {
+      return Session::haveRightsOr($this->rightname, [self::READALL, self::READMY]);
    }
 
 
@@ -92,8 +92,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       if (!parent::canViewItem()) {
          return false;
       }
-      return (Session::haveRight(self::$rightname, self::READALL)
-              || (Session::haveRight(self::$rightname, self::READMY)
+      return (Session::haveRight($this->rightname, self::READALL)
+              || (Session::haveRight($this->rightname, self::READMY)
                   && (($this->fields["users_id"] === Session::getLoginUserID())
                       || $this->isInTheManagerGroup()
                       || $this->isInTheTeam()
@@ -112,7 +112,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return Session::haveRight(self::$rightname, CREATE);
+      return Session::haveRight($this->rightname, CREATE);
    }
 
 
@@ -135,7 +135,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (static::canView() && !$withtemplate) {
+      if ($this->canView() && !$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
@@ -204,10 +204,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
 
-   static function getAdditionalMenuContent() {
+   function getAdditionalMenuContent() {
 
       // No view to project by right on tasks add it
-      if (!static::canView()
+      if (!$this->canView()
           && Session::haveRight('projecttask', ProjectTask::READMY)) {
          $menu['project']['title'] = Project::getTypeName(Session::getPluralNumber());
          $menu['project']['page']  = ProjectTask::getSearchURL(false);
@@ -218,7 +218,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    }
 
 
-   static function getAdditionalMenuOptions() {
+   function getAdditionalMenuOptions() {
       return [
          'task' => [
             'title' => __('My tasks'),
@@ -234,11 +234,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
    **/
-   static function getAdditionalMenuLinks() {
+   function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
       $links = [];
-      if (static::canView()
+      if ($this->canView()
           || Session::haveRight('projecttask', ProjectTask::READMY)) {
          $pic_validate = "<img title=\"".__s('My tasks')."\" alt=\"".__('My tasks')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
@@ -320,7 +320,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       $this->fields['percent_done'] = 0;
 
       // Set as manager to be able to see it after creation
-      if (!Session::haveRight(self::$rightname, self::READALL)) {
+      if (!Session::haveRight($this->rightname, self::READALL)) {
          $this->fields['users_id'] = Session::getLoginUserID();
       }
    }
@@ -1172,8 +1172,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
       // Make new job object and fill it from database, if success, print it
       $item        = new static();
 
-      $candelete   = static::canDelete();
-      $canupdate   = Session::haveRight(static::$rightname, UPDATE);
+      $candelete   = ProfileRight::checkPermission('delete', get_called_class());
+      $canupdate   = Session::haveRight($item->getRightname(), UPDATE);
       $align       = "class='center";
       $align_desc  = "class='left";
 
@@ -2147,7 +2147,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          }
 
          $project->fields = $subproject;
-         $item['_readonly'] = !Project::canUpdate() || !$project->canUpdateItem();
+         $item['_readonly'] = !ProfileRight::checkPermission('update', 'Project') || !$project->canUpdateItem();
 
          $subproject_teams = array_filter($projectteams, function($e) use ($subproject) {
             return $e['projects_id'] == $subproject['id'];
@@ -2195,7 +2195,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          }
 
          $projecttask->fields = $subtask;
-         $item['_readonly'] = !ProjectTask::canUpdate() || !$projecttask->canUpdateItem();
+         $item['_readonly'] = !ProfileRight::checkPermission('update', 'ProjectTask') || !$projecttask->canUpdateItem();
 
          $subtask_teams = array_filter($projecttaskteams, function ($e) use ($subtask) {
             return $e['projecttasks_id'] == $subtask['id'];
@@ -2360,13 +2360,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
     */
    static function showKanban($ID) {
       $project = new Project();
-      if (($ID <= 0 && !Project::canView()) ||
+      if (($ID <= 0 && !ProfileRight::checkPermission('view', 'Project')) ||
          ($ID > 0 && (!$project->getFromDB($ID) || !$project->canView()))) {
          return false;
       }
 
       $supported_itemtypes = [];
-      if (Project::canCreate()) {
+      if (ProfileRight::checkPermission('create', 'Project')) {
          $supported_itemtypes['Project'] = [
             'name' => Project::getTypeName(1),
             'fields' => [
@@ -2397,7 +2397,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
          ];
       }
 
-      if (ProjectTask::canCreate()) {
+      if (ProfileRight::checkPermission('create', 'ProjectTask')) {
          $supported_itemtypes['ProjectTask'] = [
             'name' => ProjectTask::getTypeName(1),
             'fields' => [
@@ -2450,9 +2450,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria {
 
       echo "<div id='kanban' class='kanban'></div>";
       $darkmode = ($_SESSION['glpipalette'] === 'darker') ? 'true' : 'false';
-      $canadd_item = json_encode($ID > 0 ? $project->canEdit($ID) && $project->can($ID, UPDATE) : self::canCreate() || ProjectTask::canCreate());
+      $canadd_item = json_encode($ID > 0 ? $project->canEdit($ID) && $project->can($ID, UPDATE) : $project->canCreate() || ProfileRight::checkPermission('create', 'ProjectTask'));
       $canmodify_view = json_encode(($ID == 0 || $project->canModifyGlobalState()));
-      $cancreate_column = json_encode((bool)ProjectState::canCreate());
+      $cancreate_column = json_encode((bool)ProfileRight::checkPermission('create', 'ProjectState'));
       $limit_addcard_columns = $canmodify_view !== 'false' ? '[]' : json_encode([0]);
       $can_order_item = json_encode((bool)$project->canOrderKanbanCard($ID));
 

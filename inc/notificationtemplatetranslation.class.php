@@ -40,8 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTemplateTranslation extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype  = 'NotificationTemplate';
-   static public $items_id  = 'notificationtemplates_id';
+   protected $itemtype     = 'NotificationTemplate';
+   static public $items_id = 'notificationtemplates_id';
 
    public $dohistory = true;
 
@@ -85,10 +85,10 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
       $notificationtemplates_id = -1;
@@ -170,7 +170,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $nID     = $template->getField('id');
-      $canedit = Config::canUpdate();
+      $canedit = ProfileRight::checkPermission('update', 'Config');
 
       if ($canedit) {
          echo "<div class='center'>".

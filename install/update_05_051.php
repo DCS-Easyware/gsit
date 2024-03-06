@@ -99,6 +99,4 @@ function update05to051() {
                 ) TYPE=MyISAM";
       $DB->queryOrDie($query, "0.51 add state field");
    }
-
 }
-

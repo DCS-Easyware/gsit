@@ -44,17 +44,12 @@ use CommonDevice;
 use CommonGLPI;
 use CommonITILObject;
 use Config;
-use Contract;
-use Document;
 use Dropdown;
-use Glpi\Exception\ForgetPasswordException;
-use Glpi\Exception\PasswordTooWeakException;
 use Html;
 use Infocom;
 use Item_Devices;
 use Log;
 use Michelf\MarkdownExtra;
-use NetworkEquipment;
 use NetworkPort;
 use Notepad;
 use Problem;
@@ -62,7 +57,6 @@ use QueryExpression;
 use SavedSearch;
 use Search;
 use Session;
-use Software;
 use Ticket;
 use Toolbox;
 use User;
@@ -80,6 +74,8 @@ abstract class API extends CommonGLPI {
    protected $app_tokens    = [];
    protected $apiclients_id = 0;
    protected $deprecated_item = null;
+   protected $verb          = "";
+   protected $parameters;
 
    /**
     * First function used on api call
@@ -300,7 +296,8 @@ abstract class API extends CommonGLPI {
    protected function killSession() {
 
       $this->initEndpoint(false, __FUNCTION__);
-      return Session::destroy();
+      Session::destroy();
+      return true;
    }
 
 
@@ -447,10 +444,12 @@ abstract class API extends CommonGLPI {
 
       $profiles_id = intval($params['profiles_id']);
       if (isset($_SESSION['glpiprofiles'][$profiles_id])) {
-         return Session::changeProfile($profiles_id);
+         Session::changeProfile($profiles_id);
+         return true;
       }
 
       $this->messageNotfoundError();
+      return false;
    }
 
 
@@ -653,7 +652,7 @@ abstract class API extends CommonGLPI {
             && $params['with_softwares']
             && in_array($itemtype, $CFG_GLPI['software_types'])) {
          $fields['_softwares'] = [];
-         if (!Software::canView()) {
+         if (!\ProfileRight::checkPermission('view', 'Software')) {
             $fields['_softwares'] = $this->arrayRightError();
          } else {
             $soft_iterator = $DB->request([
@@ -740,7 +739,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_networkports'])
           && $params['with_networkports']) {
          $fields['_networkports'] = [];
-         if (!NetworkEquipment::canView()) {
+         if (!\ProfileRight::checkPermission('view', 'NetworkEquipment')) {
             $fields['_networkports'] = $this->arrayRightError();
          } else {
             foreach (NetworkPort::getNetworkPortInstantiations() as $networkport_type) {
@@ -904,7 +903,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_infocoms'])
           && $params['with_infocoms']) {
          $fields['_infocoms'] = [];
-         if (!Infocom::canView()) {
+         if (!\ProfileRight::checkPermission('view', 'Infocom')) {
             $fields['_infocoms'] = $this->arrayRightError();
          } else {
             $ic = new Infocom();
@@ -918,7 +917,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_contracts'])
           && $params['with_contracts']) {
          $fields['_contracts'] = [];
-         if (!Contract::canView()) {
+         if (!\ProfileRight::checkPermission('view', 'Contract')) {
             $fields['_contracts'] = $this->arrayRightError();
          } else {
             $iterator = $DB->request([
@@ -957,7 +956,7 @@ abstract class API extends CommonGLPI {
          if (!($item instanceof CommonITILObject)
              && $itemtype != 'KnowbaseItem'
              && $itemtype != 'Reminder'
-             && !Document::canView()) {
+             && !\ProfileRight::checkPermission('view', 'Document')) {
             $fields['_documents'] = $this->arrayRightError();
          } else {
             $doc_criteria = [
@@ -1012,7 +1011,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_tickets'])
           && $params['with_tickets']) {
          $fields['_tickets'] = [];
-         if (!Ticket::canView()) {
+         if (!\ProfileRight::checkPermission('view', 'Ticket')) {
             $fields['_tickets'] = $this->arrayRightError();
          } else {
             $criteria = Ticket::getCommonCriteria();
@@ -1031,7 +1030,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_problems'])
           && $params['with_problems']) {
          $fields['_problems'] = [];
-         if (!Problem::canView()) {
+         if (!\ProfileRight::checkPermission('view', 'Problem')) {
             $fields['_problems'] = $this->arrayRightError();
          } else {
             $criteria = Problem::getCommonCriteria();
@@ -1050,7 +1049,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_changes'])
           && $params['with_changes']) {
          $fields['_changes'] = [];
-         if (!Change::canView()) {
+         if (!\ProfileRight::checkPermission('view', 'Change')) {
             $fields['_changes'] = $this->arrayRightError();
          } else {
             $criteria = Change::getCommonCriteria();
@@ -1069,7 +1068,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_notes'])
           && $params['with_notes']) {
          $fields['_notes'] = [];
-         if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
+         if (!Session::haveRight($item->getRightname(), READNOTE)) {
             $fields['_notes'] = $this->arrayRightError();
          } else {
             $fields['_notes'] = Notepad::getAllForItem($item);
@@ -1080,7 +1079,7 @@ abstract class API extends CommonGLPI {
       if (isset($params['with_logs'])
           && $params['with_logs']) {
          $fields['_logs'] = [];
-         if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
+         if (!Session::haveRight($item->getRightname(), READNOTE)) {
             $fields['_logs'] = $this->arrayRightError();
          } else {
             $fields['_logs'] = getAllDataFromTable(
@@ -1186,7 +1185,7 @@ abstract class API extends CommonGLPI {
       ];
       $params = array_merge($default, $params);
 
-      if (!$itemtype::canView()) {
+      if (!\ProfileRight::checkPermission('view', $itemtype)) {
          return $this->messageRightError();
       }
 
@@ -1612,7 +1611,7 @@ abstract class API extends CommonGLPI {
 
       // check rights
       if ($itemtype != 'AllAssets'
-          && !$itemtype::canView()) {
+          && !\ProfileRight::checkPermission('view', $itemtype)) {
          return $this->messageRightError();
       }
 
@@ -1915,6 +1914,7 @@ abstract class API extends CommonGLPI {
 
       } else {
          $this->messageBadArrayError();
+         return [];
       }
    }
 
@@ -2043,6 +2043,7 @@ abstract class API extends CommonGLPI {
 
       } else {
          $this->messageBadArrayError();
+         return [];
       }
    }
 
@@ -2150,10 +2151,15 @@ abstract class API extends CommonGLPI {
 
       } else {
          $this->messageBadArrayError();
+         return false;
       }
    }
 
 
+   /**
+    *
+    * @return array
+    */
    protected function lostPassword($params = []) {
       global $CFG_GLPI;
 
@@ -2174,12 +2180,13 @@ abstract class API extends CommonGLPI {
          $email = Toolbox::addslashes_deep($params['email']);
          try {
             $user->forgetPassword($email);
-         } catch (ForgetPasswordException $e) {
+         } catch (\Glpi\Exception\ForgetPasswordException $e) {
             return $this->returnError($e->getMessage());
          }
-         return $this->returnResponse([
+         $this->returnResponse([
             __("An email has been sent to your email address. The email contains information for reset your password.")
          ]);
+         return [];
       } else {
          $password = isset($params['password']) ? $params['password'] : '';
          $input = [
@@ -2190,14 +2197,16 @@ abstract class API extends CommonGLPI {
          ];
          try {
             $user->updateForgottenPassword($input);
-            return $this->returnResponse([__("Reset password successful.")]);
-         } catch (ForgetPasswordException $e) {
+            $this->returnResponse([__("Reset password successful.")]);
+            return [];
+         } catch (\Glpi\Exception\ForgetPasswordException $e) {
             return $this->returnError($e->getMessage());
-         } catch (PasswordTooWeakException $e) {
+         } catch (\Glpi\Exception\PasswordTooWeakException $e) {
             implode('\n', $e->getMessages());
             return $this->returnError(implode('\n', $e->getMessages()));
          }
       }
+      return [];
    }
 
 
@@ -2309,6 +2318,7 @@ abstract class API extends CommonGLPI {
           || !isset($_SESSION['glpiID'])) {
          return $this->messageSessionError();
       }
+      return false;
    }
 
 
@@ -2353,7 +2363,8 @@ abstract class API extends CommonGLPI {
 
       // get sql errors
       if (count($all_messages) <= 0
-          && $DEBUG_SQL['errors'] !== null) {
+         && isset($DEBUG_SQL['errors'])
+         && $DEBUG_SQL['errors'] !== null) {
          $all_messages = $DEBUG_SQL['errors'];
       }
 
@@ -2615,11 +2626,11 @@ abstract class API extends CommonGLPI {
     *
     * @param boolean $return_error (default true)
     *
-    * @return void
+    * @return array
     */
    public function messageNotfoundError($return_error = true) {
 
-      $this->returnError(__("Item not found"),
+      return $this->returnError(__("Item not found"),
                          404,
                          "ERROR_ITEM_NOT_FOUND",
                          false,
@@ -2632,11 +2643,11 @@ abstract class API extends CommonGLPI {
     *
     * @param boolean $return_error (default true)
     *
-    * @return void
+    * @return array
     */
    public function messageBadArrayError($return_error = true) {
 
-      $this->returnError(__("input parameter must be an array of objects"),
+      return $this->returnError(__("input parameter must be an array of objects"),
                          400,
                          "ERROR_BAD_ARRAY",
                          true,
@@ -2649,11 +2660,11 @@ abstract class API extends CommonGLPI {
     *
     * @param boolean $return_error (default true)
     *
-    * @return void
+    * @return array
     */
    public function messageLostError($return_error = true) {
 
-      $this->returnError(__("Method Not Allowed"),
+      return $this->returnError(__("Method Not Allowed"),
                          405,
                          "ERROR_METHOD_NOT_ALLOWED",
                          true,
@@ -2666,11 +2677,11 @@ abstract class API extends CommonGLPI {
     *
     * @param boolean $return_error (default true)
     *
-    * @return void
+    * @return array
     */
    public function messageRightError($return_error = true) {
 
-      $this->returnError(__("You don't have permission to perform this action."),
+      return $this->returnError(__("You don't have permission to perform this action."),
                          403,
                          "ERROR_RIGHT_MISSING",
                          false,
@@ -2683,10 +2694,10 @@ abstract class API extends CommonGLPI {
     *
     * @param boolean $return_error (default true)
     *
-    * @return void
+    * @return array
     */
    public function messageSessionError($return_error = true) {
-      $this->returnError(__("session_token seems invalid"),
+      return $this->returnError(__("session_token seems invalid"),
                          401,
                          "ERROR_SESSION_TOKEN_INVALID",
                          false,
@@ -2699,11 +2710,11 @@ abstract class API extends CommonGLPI {
     *
     * @param boolean $return_error (default true)
     *
-    * @return void
+    * @return array
     */
    public function messageSessionTokenMissing($return_error = true) {
 
-      $this->returnError(__("parameter session_token is missing or empty"),
+      return $this->returnError(__("parameter session_token is missing or empty"),
                          400,
                          "ERROR_SESSION_TOKEN_MISSING",
                          true,
@@ -2743,7 +2754,8 @@ abstract class API extends CommonGLPI {
                                   self::$api_url."/#$statuscode");
       }
       if ($return_response) {
-         return $this->returnResponse([$statuscode, $message], $httpcode);
+         $this->returnResponse([$statuscode, $message], $httpcode);
+         return [];
       }
       return [$statuscode, $message];
    }

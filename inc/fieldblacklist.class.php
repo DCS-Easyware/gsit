@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Fieldblacklist extends CommonDropdown {
 
-   static $rightname         = 'config';
+   protected $rightname      = 'config';
 
    public $can_be_translated = false;
 
@@ -49,15 +49,15 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
-   static function canCreate() {
-      return static::canUpdate();
+   function canCreate() {
+      return $this->canUpdate();
    }
 
    /**
     * @since 0.85
    **/
-   static function canPurge() {
-      return static::canUpdate();
+   function canPurge() {
+      return $this->canUpdate();
    }
 
 

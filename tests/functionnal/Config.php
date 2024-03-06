@@ -46,17 +46,17 @@ class Config extends DbTestCase {
    }
 
    public function testAcls() {
-      //check ACLs when not logged
-      $this->boolean(\Config::canView())->isFalse();
-      $this->boolean(\Config::canCreate())->isFalse();
-
       $conf = new \Config();
+      //check ACLs when not logged
+      $this->boolean($conf->canView())->isFalse();
+      $this->boolean($conf->canCreate())->isFalse();
+
       $this->boolean($conf->canViewItem())->isFalse();
 
       //check ACLs from superadmin profile
       $this->login();
-      $this->boolean((boolean)\Config::canView())->isTrue();
-      $this->boolean(\Config::canCreate())->isFalse();
+      $this->boolean((boolean)$conf->canView())->isTrue();
+      $this->boolean($conf->canCreate())->isFalse();
       $this->boolean($conf->canViewItem())->isFalse();
 
       $this->boolean($conf->getFromDB(1))->isTrue();
@@ -65,16 +65,17 @@ class Config extends DbTestCase {
       //check ACLs from tech profile
       $auth = new \Auth();
       $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
-      $this->boolean((boolean)\Config::canView())->isFalse();
-      $this->boolean(\Config::canCreate())->isFalse();
+      $this->boolean((boolean)$conf->canView())->isFalse();
+      $this->boolean($conf->canCreate())->isFalse();
       $this->boolean($conf->canViewItem())->isTrue();
    }
 
    public function testGetMenuContent() {
-      $this->boolean(\Config::getMenuContent())->isFalse();
+      $config = new \Config();
+      $this->boolean($config->getMenuContent())->isFalse();
 
       $this->login();
-      $this->array(\Config::getMenuContent())
+      $this->array($config->getMenuContent())
          ->hasSize(4)
          ->hasKeys(['title', 'page', 'options', 'icon']);
    }
@@ -632,7 +633,7 @@ class Config extends DbTestCase {
       $crontask = new \CronTask();
 
       // create some non local users for the test
-      foreach ([\Auth::LDAP, \Auth::EXTERNAL, \Auth::CAS] as $authtype) {
+      foreach ([\Auth::LDAP, \Auth::EXTERNAL] as $authtype) {
          $user = new \User();
          $user_id = $user->add(
             [

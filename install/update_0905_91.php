@@ -172,7 +172,8 @@ function update0905to91() {
 
       // updates rights for Super-Admin profile
       foreach ($CFG_GLPI['lock_lockable_objects'] as $itemtype) {
-         $rightnames[] = $itemtype::$rightname;
+         $item = getItemForItemtype($itemtype);
+         $rightnames[] = $item->getRightname();
       }
 
       $DB->updateOrDie("glpi_profilerights", [

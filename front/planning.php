@@ -88,13 +88,14 @@ if (isset($_GET['checkavailability'])) {
          if ($user->getID() == $_GET["uID"]) {
             $ismine = true;
          }
+         $planning = new Planning();
          // Check groups if have right to see
          if (!$ismine && ($_GET["gID"] !== 0)) {
             if ($_GET["gID"] === 'mine') {
                $ismine = true;
             } else {
                $entities = Profile_User::getUserEntitiesForRight($user->getID(),
-                                                                 Planning::$rightname,
+                                                                 $planning->getRightname(),
                                                                  Planning::READGROUP);
                $groups   = Group_User::getUserGroups($user->getID());
                foreach ($groups as $group) {
@@ -111,7 +112,7 @@ if (isset($_GET['checkavailability'])) {
          if (!$ismine) {
             // First check user
             $entities = Profile_User::getUserEntitiesForRight($user->getID(),
-                                                              Planning::$rightname,
+                                                              $planning->getRightname(),
                                                               Planning::READALL);
             if ($_GET["uID"]) {
                $userentities = Profile_User::getUserEntities($user->getID());
@@ -142,8 +143,10 @@ if (isset($_GET['checkavailability'])) {
 
    Session::checkRightsOr('planning', [Planning::READALL, Planning::READMY]);
 
+   $datetime = new DateTime();
+
    if (!isset($_GET["date"]) || empty($_GET["date"])) {
-      $_GET["date"] = strftime("%Y-%m-%d");
+      $_GET["date"] = $datetime->format("Y-m-d");
    }
    if (!isset($_GET["type"])) {
       $_GET["type"] = "week";

@@ -68,7 +68,7 @@ class Rule extends CommonDBTM {
    public $regex_results         = [];
    public $criterias_results     = [];
 
-   static $rightname             = 'config';
+   protected $rightname          = 'config';
 
    const RULE_NOT_IN_CACHE       = -1;
    const RULE_WILDCARD           = '*';
@@ -199,7 +199,7 @@ class Rule extends CommonDBTM {
     *
     *  @since 0.85
    **/
-   static function getMenuContent() {
+   function getMenuContent() {
       global $CFG_GLPI;
 
       $menu = [];
@@ -231,8 +231,8 @@ class Rule extends CommonDBTM {
             }
          }
       }
-
-      if (Transfer::canView()
+      $ruleDictionnaryDropdown = new RuleDictionnaryDropdown();
+      if (ProfileRight::checkPermission('view', 'Transfer')
           && Session::isMultiEntitiesMode()) {
 
          $menu['rule']['title'] = static::getTypeName(Session::getPluralNumber());
@@ -266,7 +266,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['manufacturers']['links']['search']
                            = '/front/ruledictionnarymanufacturer.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['manufacturers']['links']['add']
                               = '/front/ruledictionnarymanufacturer.form.php';
          }
@@ -278,7 +278,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['software']['links']['search']
                            = '/front/ruledictionnarysoftware.php';
 
-         if (RuleDictionnarySoftware::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['software']['links']['add']
                               = '/front/ruledictionnarysoftware.form.php';
          }
@@ -290,7 +290,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.computer']['links']['search']
                            = '/front/ruledictionnarycomputermodel.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['model.computer']['links']['add']
                               = '/front/ruledictionnarycomputermodel.form.php';
          }
@@ -302,7 +302,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.monitor']['links']['search']
                            = '/front/ruledictionnarymonitormodel.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['model.monitor']['links']['add']
                               = '/front/ruledictionnarymonitormodel.form.php';
          }
@@ -314,7 +314,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.printer']['links']['search']
                            = '/front/ruledictionnaryprintermodel.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['model.printer']['links']['add']
                               = '/front/ruledictionnaryprintermodel.form.php';
          }
@@ -326,7 +326,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.peripheral']['links']['search']
                            = '/front/ruledictionnaryperipheralmodel.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['model.peripheral']['links']['add']
                               = '/front/ruledictionnaryperipheralmodel.form.php';
          }
@@ -338,7 +338,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.networking']['links']['search']
                            = '/front/ruledictionnarynetworkequipmentmodel.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['model.networking']['links']['add']
                               = '/front/ruledictionnarynetworkequipmentmodel.form.php';
          }
@@ -350,7 +350,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.phone']['links']['search']
                            = '/front/ruledictionnaryphonemodel.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['model.phone']['links']['add']
                               = '/front/ruledictionnaryphonemodel.form.php';
          }
@@ -362,7 +362,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.computer']['links']['search']
                            = '/front/ruledictionnarycomputertype.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['type.computer']['links']['add']
                               = '/front/ruledictionnarycomputertype.form.php';
          }
@@ -374,7 +374,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.monitor']['links']['search']
                            = '/front/ruledictionnarymonitortype.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['type.monitor']['links']['add']
                               = '/front/ruledictionnarymonitortype.form.php';
          }
@@ -386,7 +386,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.printer']['links']['search']
                            = '/front/ruledictionnaryprintertype.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['type.printer']['links']['add']
                               = '/front/ruledictionnaryprintertype.form.php';
          }
@@ -398,7 +398,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.peripheral']['links']['search']
                            = '/front/ruledictionnaryperipheraltype.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['type.peripheral']['links']['add']
                               = '/front/ruledictionnaryperipheraltype.form.php';
          }
@@ -410,7 +410,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.networking']['links']['search']
                            = '/front/ruledictionnarynetworkequipmenttype.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['type.networking']['links']['add']
                               = '/front/ruledictionnarynetworkequipmenttype.form.php';
          }
@@ -422,7 +422,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.phone']['links']['search']
                            = '/front/ruledictionnaryphonetype.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['type.phone']['links']['add']
                               = '/front/ruledictionnaryphonetype.form.php';
          }
@@ -434,7 +434,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['os']['links']['search']
                            = '/front/ruledictionnaryoperatingsystem.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['os']['links']['add']
                               = '/front/ruledictionnaryoperatingsystem.form.php';
          }
@@ -446,7 +446,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['os_sp']['links']['search']
                            = '/front/ruledictionnaryoperatingsystemservicepack.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['os_sp']['links']['add']
                               = '/front/ruledictionnaryoperatingsystemservicepack.form.php';
          }
@@ -458,7 +458,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['os_version']['links']['search']
                            = '/front/ruledictionnaryoperatingsystemversion.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['os_version']['links']['add']
                               = '/front/ruledictionnaryoperatingsystemversion.form.php';
          }
@@ -470,7 +470,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['os_arch']['links']['search']
                            = '/front/ruledictionnaryoperatingsystemarchitecture.php';
 
-         if (RuleDictionnaryDropdown::canCreate()) {
+         if ($ruleDictionnaryDropdown->canCreate()) {
             $menu['dictionnary']['options']['os_arch']['links']['add']
                               = '/front/ruledictionnaryoperatingsystemarchitecture.form.php';
          }
@@ -482,7 +482,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['printer']['links']['search']
                            = '/front/ruledictionnaryprinter.php';
 
-         if (RuleDictionnaryPrinter::canCreate()) {
+         if (ProfileRight::checkPermission('create', 'RuleDictionnaryPrinter')) {
             $menu['dictionnary']['options']['printer']['links']['add']
                               = '/front/ruledictionnaryprinter.form.php';
          }
@@ -556,7 +556,7 @@ class Rule extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       $collectiontype = $this->getCollectionClassName();
@@ -839,7 +839,7 @@ class Rule extends CommonDBTM {
          $this->checkGlobal(UPDATE);
       }
 
-      $canedit = $this->canEdit(static::$rightname);
+      $canedit = $this->canEdit($this->rightname);
       $rand = mt_rand();
       $this->showFormHeader($options);
 
@@ -1404,8 +1404,7 @@ class Rule extends CommonDBTM {
     * @param &options   array options:
     *                     - only_criteria : only react on specific criteria
     *
-    * @return the output array updated by actions.
-    *         If rule matched add field _rule_process to return value
+    * @return void
    **/
    function process(&$input, &$output, &$params, &$options = []) {
 
@@ -1440,7 +1439,7 @@ class Rule extends CommonDBTM {
     * @param $refoutput   the initial output array used to be manipulate by actions
     * @param $newoutput   the output array after actions process
     *
-    * @return the options array updated.
+    * @return void
    **/
    function updateOnlyCriteria(&$options, $refoutput, $newoutput) {
 
@@ -1559,7 +1558,7 @@ class Rule extends CommonDBTM {
     * @param array $input          the input data used to check criteria
     * @param array &$check_results
     *
-    * @return boolean if criteria match
+    * @return void
    **/
    function testCriterias($input, &$check_results) {
 
@@ -1844,7 +1843,7 @@ class Rule extends CommonDBTM {
    function showMinimalForm($target, $first = false, $last = false, $display_entities = false, $active_condition = 0) {
       global $CFG_GLPI;
 
-      $canedit = (self::canUpdate() && !$display_entities);
+      $canedit = ($this->canUpdate() && !$display_entities);
       echo "<tr class='tab_bg_1'>";
 
       if ($canedit) {
@@ -2244,7 +2243,7 @@ class Rule extends CommonDBTM {
     * @param $condition condition used
     * @param $pattern   the pattern
     *
-    * @return a value associated with the criteria, or false otherwise
+    * @return string|false a value associated with the criteria, or false otherwise
    **/
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
       return false;
@@ -2309,11 +2308,6 @@ class Rule extends CommonDBTM {
 
             case "dropdown_assets_itemtype" :
                Dropdown::showItemTypes($name, $CFG_GLPI['asset_types'], ['value' => $value]);
-               $display = true;
-               break;
-
-            case "dropdown_import_type" :
-               RuleAsset::dropdownImportType($name, $value);
                $display = true;
                break;
 
@@ -2791,7 +2785,7 @@ class Rule extends CommonDBTM {
    function showAndAddRuleForm($item) {
 
       $rand    = mt_rand();
-      $canedit = self::canUpdate();
+      $canedit = $this->canUpdate();
 
       if ($canedit
           && ($item->getType() == 'Entity')) {
@@ -3162,12 +3156,12 @@ class Rule extends CommonDBTM {
       echo "</div>";
    }
 
-   public static function canCreate() {
-      return static::canUpdate();
+   public function canCreate() {
+      return $this->canUpdate();
    }
 
-   public static function canPurge() {
-      return static::canUpdate();
+   public function canPurge() {
+      return $this->canUpdate();
    }
 
    static function getIcon() {

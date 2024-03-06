@@ -411,9 +411,7 @@ function update92to921() {
          'operatingsystemeditions_id'        => "0",
          'OR' => [
             ['license_number' => null],
-            ['license_number' => ""]
-         ],
-         'OR' => [
+            ['license_number' => ""],
             ['license_id' => null],
             ['license_id' => ""]
          ]

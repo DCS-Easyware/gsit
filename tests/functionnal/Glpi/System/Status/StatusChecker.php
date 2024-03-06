@@ -51,7 +51,7 @@ class StatusChecker extends DbTestCase {
    public function testDefaultStatus() {
       $status = GlpiStatusChecker::getFullStatus(true);
 
-      $known_services = ['db', 'cas', 'ldap', 'imap', 'mail_collectors', 'crontasks', 'filesystem', 'glpi', 'plugins'];
+      $known_services = ['db', 'ldap', 'imap', 'mail_collectors', 'crontasks', 'filesystem', 'glpi', 'plugins'];
       // Check we are getting all of the expected services
       $this->array($status)->hasKeys($known_services);
 
@@ -78,8 +78,6 @@ class StatusChecker extends DbTestCase {
       $this->string($status['db']['master']['status'])->isEqualTo(GlpiStatusChecker::STATUS_OK);
       // We have no DB slaves. Verify the status is NO_DATA
       $this->string($status['db']['slaves']['status'])->isEqualTo(GlpiStatusChecker::STATUS_NO_DATA);
-      // We have no CAS. Verify the status is NO_DATA
-      $this->string($status['cas']['status'])->isEqualTo(GlpiStatusChecker::STATUS_NO_DATA);
       // We have no LDAP servers. Verify the status is NO_DATA
       $this->string($status['ldap']['status'])->isEqualTo(GlpiStatusChecker::STATUS_NO_DATA);
       // We have no IMAP servers. Verify the status is NO_DATA
@@ -121,7 +119,7 @@ class StatusChecker extends DbTestCase {
          'name'            => 'testldap',
          'host'            => 'localhost',
          'is_active'       => 1,
-         'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+         'rootdn'          => 'cn=admin,dc=glpi,dc=org',
          'rootdn_passwd'   => md5(mt_rand())
       ]);
       $this->integer($authlap_id)->isGreaterThan(0);

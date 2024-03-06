@@ -120,7 +120,7 @@ class DeviceDrive extends CommonDevice {
             InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
       }
-
+      return $column;
    }
 
 

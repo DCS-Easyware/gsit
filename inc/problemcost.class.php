@@ -42,22 +42,21 @@ if (!defined('GLPI_ROOT')) {
 class ProblemCost extends CommonITILCost {
 
    // From CommonDBChild
-   static public $itemtype  = 'Problem';
-   static public $items_id  = 'problems_id';
+   protected $itemtype     = 'Problem';
+   static public $items_id = 'problems_id';
 
 
-   static function canCreate() {
+   function canCreate() {
       return Session::haveRight('problem', UPDATE);
    }
 
 
-   static function canView() {
+   function canView() {
       return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
    }
 
 
-   static function canUpdate() {
+   function canUpdate() {
       return Session::haveRight('problem', UPDATE);
    }
-
 }

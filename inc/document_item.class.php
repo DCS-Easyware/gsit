@@ -260,7 +260,7 @@ class Document_Item extends CommonDBRelation{
 
          default :
             // Can exist for template
-            if (Document::canView()
+            if (ProfileRight::checkPermission('view', 'Document')
                 || ($item->getType() == 'Ticket')
                 || ($item->getType() == 'Reminder')
                 || ($item->getType() == 'KnowbaseItem')) {
@@ -294,6 +294,7 @@ class Document_Item extends CommonDBRelation{
          default :
             self::showForitem($item, $withtemplate);
       }
+      return false;
    }
 
 
@@ -528,7 +529,7 @@ class Document_Item extends CommonDBRelation{
       if (($item->getType() != 'Ticket')
           && ($item->getType() != 'KnowbaseItem')
           && ($item->getType() != 'Reminder')
-          && !Document::canView()) {
+          && !ProfileRight::checkPermission('view', 'Document')) {
          return false;
       }
 
@@ -674,7 +675,7 @@ class Document_Item extends CommonDBRelation{
          echo "</table>";
          Html::closeForm();
 
-         if (Document::canView()
+         if (ProfileRight::checkPermission('view', 'Document')
              && ($nb > count($used))) {
             echo "<form name='document_form".$params['rand']."' id='document_form".$params['rand'].
                   "' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -702,6 +703,7 @@ class Document_Item extends CommonDBRelation{
 
          echo "</div>";
       }
+      return true;
    }
 
 
@@ -724,7 +726,7 @@ class Document_Item extends CommonDBRelation{
          }
       }
 
-      $canedit = $item->canAddItem('Document') && Document::canView();
+      $canedit = $item->canAddItem('Document') && ProfileRight::checkPermission('view', 'Document');
 
       $columns = [
          'name'      => __('Name'),

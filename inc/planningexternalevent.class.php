@@ -46,7 +46,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
    use VobjectConverterTrait;
 
    public $dohistory = true;
-   static $rightname = 'externalevent';
+   protected $rightname = 'externalevent';
 
    const MANAGE_BG_EVENTS =   1024;
 
@@ -63,10 +63,10 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
       return $ong;
    }
 
-   static function canUpdate() {
+   function canUpdate() {
       // we permits globally to update this object,
       // as users can update their onw items
-      return Session::haveRightsOr(self::$rightname, [
+      return Session::haveRightsOr($this->rightname, [
          CREATE,
          UPDATE,
          self::MANAGE_BG_EVENTS
@@ -81,7 +81,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
       // the current user can update only this own events without UPDATE right
       // but not bg one, see above
       if ($this->fields['users_id'] != Session::getLoginUserID()
-          && !Session::haveRight(self::$rightname, UPDATE)) {
+          && !Session::haveRight($this->rightname, UPDATE)) {
          return false;
       }
 
@@ -97,7 +97,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
       // the current user can update only this own events without PURGE right
       // but not bg one, see above
       if ($this->fields['users_id'] != Session::getLoginUserID()
-          && !Session::haveRight(self::$rightname, PURGE)) {
+          && !Session::haveRight($this->rightname, PURGE)) {
          return false;
       }
 
@@ -111,7 +111,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     */
    function canUpdateBGEvents() {
       if ($this->fields["background"]
-          && !Session::haveRight(self::$rightname, self::MANAGE_BG_EVENTS)) {
+          && !Session::haveRight($this->rightname, self::MANAGE_BG_EVENTS)) {
          return false;
       }
 

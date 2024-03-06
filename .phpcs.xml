@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<ruleset name="glpi">
+  <description>GLPI Coding standard</description>
+
+  <config name="installed_paths" value="vendor/slevomat/coding-standard" />
+
+  <!-- use http://edorian.github.io/php-coding-standard-generator/#phpcs -->
+
+  <!-- white spaces at end of line or empty line have spaces -->
+  <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
+
+  <!-- else if instead of elseif -->
+  <rule ref="Squiz.ControlStructures.ElseIfDeclaration" />
+
+  <!-- No tab in indent -->
+  <rule ref="Generic.WhiteSpace.DisallowTabIndent" />
+
+  <!-- Indent 3 -->
+  <rule ref="Generic.WhiteSpace.ScopeIndent">
+    <properties>
+      <property name="indent" value="3"/>
+    </properties>
+  </rule>
+
+  <!-- Remove closingTag -->
+  <rule ref="Zend.Files.ClosingTag" />
+
+  <!-- White space after comma in function call -->
+  <rule ref="Generic.Functions.FunctionCallArgumentSpacing" />
+
+  <!--  Disallows the use of any deprecated functions -->
+  <rule ref="Generic.PHP.DeprecatedFunctions"/>
+
+  <!--  Makes sure that shorthand PHP open tags are not used. -->
+  <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+
+  <!-- No white spaces after opening bracket and before closing bracket in IF -->
+  <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
+
+  <!-- Empty statement -->
+  <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
+
+  <!-- inline control structure forbidden because it's hard to read the code -->
+  <rule ref="Generic.ControlStructures.InlineControlStructure"/>
+
+  <!-- Open Brace on the same line as the function -->
+  <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+
+  <!-- Ensure that parameters defined for a function that have a default value come at the end of the function signature -->
+  <rule ref="PEAR.Functions.ValidDefaultValue"/>
+
+  <!-- Ensures that there is no whitespace before a semicolon -->
+  <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
+
+  <!-- Ensures that $this is not used in static methods -->
+  <rule ref="Squiz.Scope.StaticThisUsage"/>
+
+  <!-- TODO disallow the direct usage of $_REQUEST, $_GET, $_POST and $_FILES -->
+  <!-- <rule ref="MySource.PHP.GetRequestData"/> -->
+
+  <!-- White space after IF, ELSE, FOREACH, SWITCH keyword -->
+  <rule ref="Squiz.ControlStructures.ControlSignature" />
+
+  <!--rule ref="PEAR.Commenting.FunctionComment">
+     <exclude name="PEAR.Commenting.FunctionComment.Missing"/>
+  </rule-->
+
+  <!-- end of line should be \n -->
+  <rule ref="Generic.Files.LineEndings">
+    <properties>
+      <property name="eolChar" value="\n"/>
+    </properties>
+  </rule>
+
+  <!-- file must end by a new line -->
+  <rule ref="PSR2.Files.EndFileNewline" />
+
+  <!-- No long array syntax (PHP >= 5.4) -->
+  <rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+
+  <!-- Lower case true, false and null -->
+  <rule ref="Generic.PHP.LowerCaseConstant" />
+
+  <!-- Method signature spacing -->
+  <rule ref="Squiz.Functions.FunctionDeclarationArgumentSpacing">
+    <properties>
+      <property name="equalsSpacing" value="1"/>
+    </properties>
+  </rule>
+
+  <!-- cameCase format for methods and functions names -->
+  <!--rule ref="Generic.NamingConventions.CamelCapsFunctionName" /-->
+
+  <!-- Namespace/use directives rules -->
+  <!-- <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses" />
+  <rule ref="SlevomatCodingStandard.Namespaces.DisallowGroupUse" />
+  <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions" />
+  <rule ref="SlevomatCodingStandard.Namespaces.MultipleUsesPerLine" />
+  <rule ref="SlevomatCodingStandard.Namespaces.NamespaceDeclaration" />
+  <rule ref="SlevomatCodingStandard.Namespaces.NamespaceSpacing" /> -->
+  <!-- This would be usable only if all GLPI classes becomes namespaced
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly" />
+  -->
+  <!-- <rule ref="SlevomatCodingStandard.Namespaces.RequireOneNamespaceInFile" />
+  <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+    <properties>
+      <property name="searchAnnotations" value="1"/>
+    </properties>
+  </rule>
+  <rule ref="SlevomatCodingStandard.Namespaces.UseDoesNotStartWithBackslash" />
+  <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace" />
+  <rule ref="SlevomatCodingStandard.Namespaces.UselessAlias" />
+  <rule ref="SlevomatCodingStandard.Namespaces.UseSpacing" /> -->
+</ruleset>
+

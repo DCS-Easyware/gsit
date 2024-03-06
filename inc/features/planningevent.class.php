@@ -330,7 +330,7 @@ trait PlanningEvent {
       // avoid checking availability, will be done after when updating new dates
       $fields['_no_check_plan'] = true;
 
-      $instance = new self;
+      $instance = new static();
       $new_id = $instance->add($fields);
       $instance->getFromDB($new_id);
 
@@ -368,7 +368,7 @@ trait PlanningEvent {
       $options = array_merge($default_options, $options);
 
       $events    = [];
-      $event_obj = new static;
+      $event_obj = new static();
       $itemtype  = $event_obj->getType();
       $item_fk   = getForeignKeyFieldForItemType($itemtype);
       $table     = self::getTable();
@@ -385,11 +385,11 @@ trait PlanningEvent {
       $end        = $options['end'];
 
       if ($options['genical']) {
-         $_SESSION["glpiactiveprofile"][static::$rightname] = READ;
+         $_SESSION["glpiactiveprofile"][$event_obj->getRightname()] = READ;
       }
       $visibility_criteria = [];
       if ($event_obj instanceof CommonDBVisible) {
-         $visibility_criteria = self::getVisibilityCriteria(true);
+         $visibility_criteria = $event_obj->getVisibilityCriteria(true);
       }
       $nreadpub  = [];
       $nreadpriv = [];
@@ -397,11 +397,13 @@ trait PlanningEvent {
       // See public event ?
       if (!$options['genical']
          && (Session::getLoginUserID() !== false && $who == Session::getLoginUserID())
-         && self::canView()
+         && $event_obj->canView()
          && isset($visibility_criteria['WHERE'])) {
          $nreadpub = $visibility_criteria['WHERE'];
       }
-      unset($visibility_criteria['WHERE']);
+      if (isset($visibility_criteria['WHERE'])) {
+         unset($visibility_criteria['WHERE']);
+      }
 
       if ($whogroup === "mine") {
          if (isset($_SESSION['glpigroups'])) {
@@ -829,6 +831,7 @@ trait PlanningEvent {
 
          return $out;
       }
+      return '';
    }
 
    /**

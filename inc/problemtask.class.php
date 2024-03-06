@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class ProblemTask extends CommonITILTask {
 
-   static $rightname = 'task';
+   protected $rightname = 'task';
 
 
    static function getTypeName($nb = 0) {
@@ -44,24 +44,24 @@ class ProblemTask extends CommonITILTask {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
       return Session::haveRight('problem', UPDATE)
-          || Session::haveRight(self::$rightname, parent::ADDALLITEM);
+          || Session::haveRight($this->rightname, parent::ADDALLITEM);
    }
 
 
-   static function canView() {
+   function canView() {
       return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
    }
 
 
-   static function canUpdate() {
+   function canUpdate() {
       return Session::haveRight('problem', UPDATE)
-          || Session::haveRight(self::$rightname, parent::UPDATEALL);
+          || Session::haveRight($this->rightname, parent::UPDATEALL);
    }
 
 
-   static function canPurge() {
+   function canPurge() {
       return Session::haveRight('problem', UPDATE);
    }
 
@@ -98,7 +98,7 @@ class ProblemTask extends CommonITILTask {
 
       $problem = new Problem();
       if ($problem->getFromDB($this->fields['problems_id'])) {
-         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+         return (Session::haveRight($this->rightname, parent::ADDALLITEM)
                  || Session::haveRight('problem', UPDATE)
                  || (Session::haveRight('problem', Problem::READMY)
                      && ($problem->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -123,7 +123,7 @@ class ProblemTask extends CommonITILTask {
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
           && !Session::haveRight('problem', UPDATE)
-          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
+          && !Session::haveRight($this->rightname, parent::UPDATEALL)) {
          return false;
       }
 

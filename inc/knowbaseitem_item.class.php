@@ -59,7 +59,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             if ($item->getType() == KnowbaseItem::getType()) {

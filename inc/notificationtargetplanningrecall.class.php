@@ -253,7 +253,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
     *
     * @param $event  (default '')
     *
-    * @return the object associated with the itemtype
+    * @return void
    **/
    function getObjectItem($event = '') {
 

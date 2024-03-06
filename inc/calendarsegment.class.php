@@ -43,7 +43,7 @@ class CalendarSegment extends CommonDBChild {
    public $dohistory       = true;
 
    // From CommonDBChild
-   static public $itemtype = 'Calendar';
+   protected $itemtype = 'Calendar';
    static public $items_id = 'calendars_id';
 
 

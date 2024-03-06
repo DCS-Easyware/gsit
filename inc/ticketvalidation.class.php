@@ -40,16 +40,14 @@ if (!defined('GLPI_ROOT')) {
 class TicketValidation  extends CommonITILValidation {
 
    // From CommonDBChild
-   static public $itemtype           = 'Ticket';
-   static public $items_id           = 'tickets_id';
+   protected $itemtype     = 'Ticket';
+   static public $items_id = 'tickets_id';
+   protected $rightname    = 'ticketvalidation';
 
-   static $rightname                 = 'ticketvalidation';
-
-   const CREATEREQUEST               = 1024;
-   const CREATEINCIDENT              = 2048;
-   const VALIDATEREQUEST             = 4096;
-   const VALIDATEINCIDENT            = 8192;
-
+   const CREATEREQUEST     = 1024;
+   const CREATEINCIDENT    = 2048;
+   const VALIDATEREQUEST   = 4096;
+   const VALIDATEINCIDENT  = 8192;
 
 
    static function getCreateRights() {
@@ -66,7 +64,6 @@ class TicketValidation  extends CommonITILValidation {
     * @since 0.85
    **/
    function canCreateItem() {
-
       if ($this->canChildItem('canViewItem', 'canView')) {
          $ticket = new Ticket();
          if ($ticket->getFromDB($this->fields['tickets_id'])) {
@@ -76,13 +73,14 @@ class TicketValidation  extends CommonITILValidation {
             }
 
             if ($ticket->fields['type'] == Ticket::INCIDENT_TYPE) {
-               return Session::haveRight(self::$rightname, self::CREATEINCIDENT);
+               return Session::haveRight($this->rightname, self::CREATEINCIDENT);
             }
             if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
-               return Session::haveRight(self::$rightname, self::CREATEREQUEST);
+               return Session::haveRight($this->rightname, self::CREATEREQUEST);
             }
          }
       }
+      return false;
    }
 
    /**

@@ -60,8 +60,8 @@ abstract class CommonITILCost extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
-      if (($item->getType() == static::$itemtype)
-          && static::canView()) {
+      if (($item->getType() == $this->itemtype)
+          && $this->canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),
@@ -302,8 +302,8 @@ abstract class CommonITILCost extends CommonDBChild {
     * Init cost for creation based on previous cost
    **/
    function initBasedOnPrevious() {
-
-      $item = new static::$itemtype();
+      $itemtype = $this->itemtype;
+      $item = new $itemtype();
       if (!isset($this->fields[static::$items_id])
           || !$item->getFromDB($this->fields[static::$items_id])) {
          return false;
@@ -380,7 +380,6 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $options   array    options used
    **/
    function showForm($ID, $options = []) {
-
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
       }
@@ -400,7 +399,8 @@ abstract class CommonITILCost extends CommonDBChild {
          $items_id = $options['parent']->fields["id"];
       }
 
-      $item = new static::$itemtype();
+      $itemtype = $this->itemtype;
+      $item = new $itemtype();
       if (!$item->getFromDB($items_id)) {
          return false;
       }
@@ -480,6 +480,7 @@ abstract class CommonITILCost extends CommonDBChild {
    static function showForObject($item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
+      $thisclass = new static();
       $forproject = false;
       if (is_a($item, 'Project', true)) {
          $forproject = true;
@@ -489,7 +490,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       if (!$item->getFromDB($ID)
           || !$item->canViewItem()
-          || !static::canView()) {
+          || !ProfileRight::checkPermission('view', get_called_class())) {
          return false;
       }
       $canedit = false;
@@ -521,14 +522,14 @@ abstract class CommonITILCost extends CommonDBChild {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCost".$ID."_$rand() {\n";
          $params = ['type'             => static::getType(),
-                         'parenttype'       => static::$itemtype,
+                         'parenttype'       => $thisclass->getItemtype(),
                          static::$items_id  => $ID,
                          'id'               => -1];
          Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
-         if (static::canCreate()) {
+         if (ProfileRight::checkPermission('create', get_called_class())) {
             echo "<div class='center firstbloc'>".
                    "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
             echo __('Add a new cost')."</a></div>\n";
@@ -595,7 +596,7 @@ abstract class CommonITILCost extends CommonDBChild {
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditCost" .$data[static::$items_id]."_". $data["id"]. "_$rand() {\n";
                $params = ['type'            => static::getType(),
-                              'parenttype'       => static::$itemtype,
+                              'parenttype'       => $thisclass->getItemtype(),
                               static::$items_id  => $data[static::$items_id],
                               'id'               => $data["id"]];
                Ajax::updateItemJsCode("viewcost".$ID."_$rand",

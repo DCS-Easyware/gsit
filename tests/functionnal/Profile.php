@@ -44,6 +44,9 @@ class Profile extends DbTestCase {
     * @return array
     */
    protected function haveUserRightProvider() {
+      $computer = new \Computer();
+      $ticket = new \Ticket();
+      $itilFollowup = new \ITILFollowup();
 
       return [
          [
@@ -52,12 +55,12 @@ class Profile extends DbTestCase {
                'password' => 'postonly',
             ],
             'rightset' => [
-               ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => false],
-               ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => false],
-               ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => false],
+               ['name' => $computer->getRightname(), 'value' => CREATE, 'expected' => false],
+               ['name' => $computer->getRightname(), 'value' => DELETE, 'expected' => false],
+               ['name' => $ticket->getRightname(), 'value' => CREATE, 'expected' => true],
+               ['name' => $ticket->getRightname(), 'value' => DELETE, 'expected' => false],
+               ['name' => $itilFollowup->getRightname(), 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
+               ['name' => $itilFollowup->getRightname(), 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => false],
             ],
          ],
          [
@@ -66,12 +69,12 @@ class Profile extends DbTestCase {
                'password' => 'glpi',
             ],
             'rightset' => [
-               ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => true],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
+               ['name' => $computer->getRightname(), 'value' => CREATE, 'expected' => true],
+               ['name' => $computer->getRightname(), 'value' => DELETE, 'expected' => true],
+               ['name' => $ticket->getRightname(), 'value' => CREATE, 'expected' => true],
+               ['name' => $ticket->getRightname(), 'value' => DELETE, 'expected' => true],
+               ['name' => $itilFollowup->getRightname(), 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
+               ['name' => $itilFollowup->getRightname(), 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
             ],
          ],
          [
@@ -80,12 +83,12 @@ class Profile extends DbTestCase {
                'password' => 'tech',
             ],
             'rightset' => [
-               ['name' => \Computer::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
-               ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-               ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
+               ['name' => $computer->getRightname(), 'value' => CREATE, 'expected' => true],
+               ['name' => $computer->getRightname(), 'value' => DELETE, 'expected' => true],
+               ['name' => $ticket->getRightname(), 'value' => CREATE, 'expected' => true],
+               ['name' => $ticket->getRightname(), 'value' => DELETE, 'expected' => false],
+               ['name' => $itilFollowup->getRightname(), 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
+               ['name' => $itilFollowup->getRightname(), 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
             ],
          ],
       ];

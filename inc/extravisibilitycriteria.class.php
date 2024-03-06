@@ -45,5 +45,5 @@ interface ExtraVisibilityCriteria
     *
     * @return array
     */
-   public static function getVisibilityCriteria(bool $forceall = false): array;
+   static public function getVisibilityCriteria(bool $forceall = false): array;
 }

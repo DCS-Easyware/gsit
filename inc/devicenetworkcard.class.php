@@ -167,6 +167,7 @@ class DeviceNetworkCard extends CommonDevice {
          Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
          $base->addHeader('devicenetworkcard_bandwidth', __('Flow'), $super, $father);
       }
+      return $column;
    }
 
 

@@ -58,7 +58,7 @@ class Config extends CommonDBTM {
    public $auto_message_on_action = false;
    public $showdebug              = true;
 
-   static $rightname              = 'config';
+   protected $rightname           = 'config';
 
    static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
    static $saferUndisclosedFields = ['admin_email', 'admin_reply'];
@@ -68,9 +68,9 @@ class Config extends CommonDBTM {
    }
 
 
-   static function getMenuContent() {
+   function getMenuContent() {
       $menu = [];
-      if (static::canView()) {
+      if ($this->canView()) {
          $menu['title']   = _x('setup', 'General');
          $menu['page']    = Config::getFormURL(false);
          $menu['icon']    = Config::getIcon();
@@ -87,7 +87,7 @@ class Config extends CommonDBTM {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
       return false;
    }
 
@@ -283,12 +283,12 @@ class Config extends CommonDBTM {
    function showFormDisplay() {
       global $CFG_GLPI;
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return;
       }
 
       $rand = mt_rand();
-      $canedit = Session::haveRight(self::$rightname, UPDATE);
+      $canedit = Session::haveRight($this->rightname, UPDATE);
 
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
@@ -490,12 +490,12 @@ class Config extends CommonDBTM {
    function showFormInventory() {
       global $CFG_GLPI;
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return;
       }
 
       $rand = mt_rand();
-      $canedit = Config::canUpdate();
+      $canedit = ProfileRight::checkPermission('update', 'Config');
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       }
@@ -670,7 +670,7 @@ class Config extends CommonDBTM {
    function showFormAuthentication() {
       global $CFG_GLPI;
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return;
       }
 
@@ -714,7 +714,7 @@ class Config extends CommonDBTM {
    function showFormDBSlave() {
       global $DB, $CFG_GLPI, $DBslave;
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return;
       }
 
@@ -733,7 +733,7 @@ class Config extends CommonDBTM {
          $host = $DBslave->dbhost;
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('SQL server (MariaDB or MySQL)') . "</td>";
+      echo "<td>" . __('SQL server (MariaDB)') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
       echo "<td>" . __('Database') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBslave->dbdefault."'>";
@@ -783,14 +783,14 @@ class Config extends CommonDBTM {
    function showFormAPI() {
       global $CFG_GLPI;
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return;
       }
 
       echo "<div class='center spaced' id='tabsbody'>";
 
       $rand = mt_rand();
-      $canedit = Config::canUpdate();
+      $canedit = ProfileRight::checkPermission('update', 'Config');
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       }
@@ -866,12 +866,12 @@ class Config extends CommonDBTM {
    function showFormHelpdesk() {
       global $CFG_GLPI;
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return;
       }
 
       $rand = mt_rand();
-      $canedit = Config::canUpdate();
+      $canedit = ProfileRight::checkPermission('update', 'Config');
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post' data-track-changes='true'>";
       }
@@ -1031,7 +1031,7 @@ class Config extends CommonDBTM {
       $url       = Toolbox::getItemTypeFormURL(__CLASS__);
       $rand      = mt_rand();
 
-      $canedit = Config::canUpdate();
+      $canedit = ProfileRight::checkPermission('update', 'Config');
       $canedituser = Session::haveRight('personalization', UPDATE);
       if (array_key_exists('last_login', $data)) {
          $userpref = true;
@@ -1058,7 +1058,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td width='30%'><label for='dropdown_language$rand'>" . ($userpref?__('Language'):__('Default language')) . "</label></td>";
       echo "<td width='20%'>";
-      if (Config::canUpdate()
+      if (ProfileRight::checkPermission('update', 'Config')
           || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", ['value' => $data["language"], 'rand' => $rand]);
       } else {
@@ -1582,7 +1582,7 @@ class Config extends CommonDBTM {
    function showPerformanceInformations() {
       $GLPI_CACHE = self::getCache('cache_db', 'core', false);
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
 
@@ -1668,7 +1668,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
       $ext = strtolower(get_class($GLPI_CACHE));
       $ext = substr($ext, strrpos($ext, '\\')+1);
-      if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
+      if (in_array($ext, ['apcu', 'memcache', 'memcached', 'redis'])) {
          $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
       } else {
          $msg = sprintf(__s('"%s" cache system is used'), $ext);
@@ -1742,7 +1742,7 @@ class Config extends CommonDBTM {
    function showSystemInformations() {
       global $DB, $CFG_GLPI;
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
 
@@ -2023,6 +2023,14 @@ class Config extends CommonDBTM {
                  'check'   => 'Sabre\\VObject\\Component' ],
                [ 'name'    => 'laminas/laminas-cache',
                  'check'   => 'Laminas\\Cache\\Module' ],
+               [ 'name'    => 'laminas/laminas-cache-storage-adapter-apcu',
+                 'check'   => 'Laminas\\Cache\\Module' ],
+               [ 'name'    => 'laminas/laminas-cache-storage-adapter-filesystem',
+                 'check'   => 'Laminas\\Cache\\Module' ],
+               [ 'name'    => 'laminas/laminas-cache-storage-adapter-memory',
+                 'check'   => 'Laminas\\Cache\\Module' ],
+               [ 'name'    => 'laminas/laminas-cache-storage-deprecated-factory',
+                 'check'   => 'Laminas\\Cache\\Module' ],
                [ 'name'    => 'laminas/laminas-i18n',
                  'check'   => 'Laminas\\I18n\\Module' ],
                [ 'name'    => 'laminas/laminas-serializer',
@@ -2064,13 +2072,6 @@ class Config extends CommonDBTM {
                [ 'name'    => 'enshrined/svg-sanitize',
                  'check'   => 'enshrined\\svgSanitize\\Sanitizer'],
       ];
-      if (Toolbox::canUseCAS()) {
-         $deps[] = [
-            'name'    => 'phpCas',
-            'version' => phpCAS::getVersion(),
-            'check'   => 'phpCAS'
-         ];
-      }
       return $deps;
    }
 
@@ -2225,7 +2226,7 @@ class Config extends CommonDBTM {
             return __('Personalization');
 
          case 'User' :
-            if (User::canUpdate()
+            if (ProfileRight::checkPermission('update', 'User')
                 && $item->currentUserHaveMoreRightThan($item->getID())) {
                return __('Settings');
             }
@@ -2238,7 +2239,7 @@ class Config extends CommonDBTM {
                3 => __('Assets'),
                4 => __('Assistance'),
             ];
-            if (Config::canUpdate()) {
+            if (ProfileRight::checkPermission('update', 'Config')) {
                $tabs[9]  = __('Logs purge');
                $tabs[5]  = __('System');
                $tabs[10] = __('Security');
@@ -2248,7 +2249,7 @@ class Config extends CommonDBTM {
             }
 
             if (DBConnection::isDBSlaveActive()
-                && Config::canUpdate()) {
+                && ProfileRight::checkPermission('update', 'Config')) {
                $tabs[6]  = _n('SQL replica', 'SQL replicas', Session::getPluralNumber());  // Slave
             }
             return $tabs;
@@ -2523,11 +2524,6 @@ class Config extends CommonDBTM {
             //for XMLRPC API
             'xmlrpc'     => [
                'required'  => false
-            ],
-            //for CAS lib
-            'CAS'     => [
-               'required' => false,
-               'class'    => 'phpCAS'
             ],
             'exif' => [
                'required'  => false
@@ -3071,7 +3067,7 @@ class Config extends CommonDBTM {
     *
     * @param boolean $bg Display a background
     *
-    * @return void
+    * @return string
     */
    public static function agreeDevMessage($bg = false) {
       $msg = '<p class="'.($bg ? 'mig' : '') .'red"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
@@ -3111,7 +3107,6 @@ class Config extends CommonDBTM {
        * - {"adapter":"dba","options":{"pathname":"trans.db","handler":"flatfile"},"plugins":["serializer"]}
        * - {"adapter":"memcache","options":{"servers":["127.0.0.1"]}}
        * - {"adapter":"memcached","options":{"servers":["127.0.0.1"]}}
-       * - {"adapter":"wincache"}
        *
        */
       // Read configuration
@@ -3131,7 +3126,7 @@ class Config extends CommonDBTM {
       }
 
       if (!isset($opt['options']['namespace'])) {
-         $namespace = "glpi_${optname}_" . GLPI_VERSION;
+         $namespace = "glpi_" . $optname . "_" . GLPI_VERSION;
          if ($DB) {
             $namespace .= md5(
                (is_array($DB->dbhost) ? implode(' ', $DB->dbhost) : $DB->dbhost) . $DB->dbdefault
@@ -3141,9 +3136,7 @@ class Config extends CommonDBTM {
       }
       if (!isset($opt['adapter'])) {
          if (function_exists('apcu_fetch')) {
-            $opt['adapter'] = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         } else if (function_exists('wincache_ucache_add')) {
-            $opt['adapter'] = 'wincache';
+            $opt['adapter'] = 'apcu';
          } else {
             $opt['adapter'] = 'filesystem';
          }
@@ -3177,11 +3170,6 @@ class Config extends CommonDBTM {
             case 'apcu':
             case 'memory':
             case 'session':
-
-               // wincache activation uses different configuration variable for CLI and web server
-               // so it may not be available for all contexts
-            case 'win_cache':
-            case 'wincache':
 
                // zend server adapters are not available for CLI context
             case 'zend_server_disk':
@@ -3310,7 +3298,7 @@ class Config extends CommonDBTM {
    function showFormLogs() {
       global $CFG_GLPI;
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
 
@@ -3516,7 +3504,7 @@ class Config extends CommonDBTM {
    function showFormSecurity() {
       global $CFG_GLPI;
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
 

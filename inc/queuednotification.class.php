@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class QueuedNotification extends CommonDBTM {
 
-   static $rightname = 'queuednotification';
+   protected $rightname = 'queuednotification';
 
 
    static function getTypeName($nb = 0) {
@@ -49,7 +49,7 @@ class QueuedNotification extends CommonDBTM {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
       // Everybody can create : human and cron
       return Session::getLoginUserID(false);
    }
@@ -73,7 +73,7 @@ class QueuedNotification extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem = null, $is_deleted = false) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin && !$is_deleted) {
@@ -508,10 +508,10 @@ class QueuedNotification extends CommonDBTM {
          if ($conf['from'] != 'core') {
             $eventclass = 'Plugin' . ucfirst($conf['from']) . $eventclass;
          }
-
+         $ev = new $eventclass();
          if ($limit_modes !== null && !in_array($mode, $limit_modes)
             || !$CFG_GLPI['notifications_' . $mode]
-            || !$eventclass::canCron()
+            || !$ev->canCron()
          ) {
             //mode is not in limits, is disabled, or cannot be called from cron, passing
             continue;

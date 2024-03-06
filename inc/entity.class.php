@@ -49,7 +49,7 @@ class Entity extends CommonTreeDropdown {
    public $first_level_menu             = "admin";
    public $second_level_menu            = "entity";
 
-   static $rightname                    = 'entity';
+   protected $rightname                 = 'entity';
    protected $usenotepad                = true;
 
    const READHELPDESK                   = 1024;
@@ -165,9 +165,9 @@ class Entity extends CommonTreeDropdown {
    /**
    * @since 0.84
    **/
-   static function canUpdate() {
+   function canUpdate() {
 
-      return (Session::haveRightsOr(self::$rightname, [UPDATE, self::UPDATEHELPDESK])
+      return (Session::haveRightsOr($this->rightname, [UPDATE, self::UPDATEHELPDESK])
               || Session::haveRight('notification', UPDATE));
    }
 
@@ -219,7 +219,7 @@ class Entity extends CommonTreeDropdown {
       foreach (self::$field_right as $right => $fields) {
 
          if ($right == 'entity_helpdesk') {
-            if (Session::haveRight(self::$rightname, self::UPDATEHELPDESK )) {
+            if (Session::haveRight($this->rightname, self::UPDATEHELPDESK )) {
                foreach ($fields as $field) {
                   if (isset($input[$field])) {
                      $tmp[$field] = $input[$field];
@@ -341,15 +341,16 @@ class Entity extends CommonTreeDropdown {
                $ong[1] = $this->getTypeName(Session::getPluralNumber());
                $ong[2] = __('Address');
                $ong[3] = __('Advanced information');
-               if (Notification::canView()) {
+               if (ProfileRight::checkPermission('view', 'Notification')) {
                   $ong[4] = _n('Notification', 'Notifications', Session::getPluralNumber());
                }
-               if (Session::haveRightsOr(self::$rightname,
+               if (Session::haveRightsOr($this->rightname,
                                          [self::READHELPDESK, self::UPDATEHELPDESK])) {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
-               if (Session::haveRight(Config::$rightname, UPDATE)) {
+               $config = new Config();
+               if (Session::haveRight($config->getRightname(), UPDATE)) {
                   $ong[7] = __('UI customization');
                }
 
@@ -1496,6 +1497,7 @@ class Entity extends CommonTreeDropdown {
    static function showAdvancedOptions(Entity $entity) {
       $con_spotted = false;
       $ID          = $entity->getField('id');
+      $options = [];
       if (!$entity->can($ID, READ)) {
          return false;
       }
@@ -1509,7 +1511,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => &$options]);
 
       echo "<tr><th colspan='2'>".__('Values for the generic rules for assignment to entities').
            "</th></tr>";
@@ -1587,7 +1589,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       // Notification right applied
-      $canedit = (Infocom::canUpdate() && Session::haveAccessToEntity($ID));
+      $canedit = (ProfileRight::checkPermission('update', 'Infocom') && Session::haveAccessToEntity($ID));
 
       echo "<div class='spaced'>";
       if ($canedit) {
@@ -1764,12 +1766,12 @@ class Entity extends CommonTreeDropdown {
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)
-          || !Notification::canView()) {
+          || !ProfileRight::checkPermission('view', 'Notification')) {
          return false;
       }
 
       // Notification right applied
-      $canedit = (Notification::canUpdate()
+      $canedit = (ProfileRight::checkPermission('update', 'Notification')
                   && Session::haveAccessToEntity($ID));
 
       echo "<div class='spaced'>";
@@ -2162,7 +2164,7 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook("post_item_form", ['item' => $entity]);
 
       echo "</table>";
 
@@ -2191,7 +2193,8 @@ class Entity extends CommonTreeDropdown {
       global $CFG_GLPI;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
+      $config = new Config();
+      if (!$entity->can($ID, READ) || !Session::haveRight($config->getRightname(), UPDATE)) {
          return false;
       }
 
@@ -2200,7 +2203,7 @@ class Entity extends CommonTreeDropdown {
       echo Html::script("public/lib/codemirror.js");
 
       // Notification right applied
-      $canedit = Session::haveRight(Config::$rightname, UPDATE)
+      $canedit = Session::haveRight($config->getRightname(), UPDATE)
          && Session::haveAccessToEntity($ID);
 
       echo "<div class='spaced'>";
@@ -2261,7 +2264,7 @@ class Entity extends CommonTreeDropdown {
          ]
       );
 
-      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+      Plugin::doHook("post_item_form", ['item' => $entity]);
 
       echo "</table>";
 
@@ -2398,13 +2401,14 @@ class Entity extends CommonTreeDropdown {
    static function showHelpdeskOptions(Entity $entity) {
       global $CFG_GLPI;
 
+      $thisclass = new static();
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)
-          || !Session::haveRightsOr(self::$rightname,
+          || !Session::haveRightsOr($thisclass->getRightname(),
                                     [self::READHELPDESK, self::UPDATEHELPDESK])) {
          return false;
       }
-      $canedit = (Session::haveRight(self::$rightname, self::UPDATEHELPDESK)
+      $canedit = (Session::haveRight($thisclass->getRightname(), self::UPDATEHELPDESK)
                   && Session::haveAccessToEntity($ID));
 
       echo "<div class='spaced'>";

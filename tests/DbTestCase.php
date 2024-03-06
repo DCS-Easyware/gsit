@@ -52,7 +52,7 @@ class DbTestCase extends \GLPITestCase {
     *
     * @param string $user_name User name (defaults to TU_USER)
     * @param string $user_pass user password (defaults to TU_PASS)
-    * @param bool $noauto disable autologin (from CAS by example)
+    * @param bool $noauto disable autologin
     * @param bool $expected bool result expected from login return
     *
     * @return \Auth

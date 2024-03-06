@@ -68,10 +68,11 @@ class Profile extends CommonDBTM {
    /// Common fields used for all profiles type
    static public $common_fields  = ['id', 'interface', 'is_default', 'name'];
 
-   public $dohistory             = true;
+   public $dohistory    = true;
 
-   static $rightname             = 'profile';
+   protected $rightname    = 'profile';
 
+   public $profileRight = [];
 
 
    function getForbiddenStandardMassiveAction() {
@@ -506,7 +507,7 @@ class Profile extends CommonDBTM {
       }
 
       // Profile right : may modify profile so can attach all profile
-      if (Profile::canCreate()) {
+      if (ProfileRight::checkPermission('create', 'Profile')) {
          return [1];
       }
 
@@ -687,12 +688,12 @@ class Profile extends CommonDBTM {
     * @since 0.85
    **/
    function showFormTrackingHelpdesk() {
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
-      if ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE])) {
+      if ($canedit = Session::haveRightsOr($this->rightname, [CREATE, UPDATE, PURGE])) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
 
@@ -809,12 +810,12 @@ class Profile extends CommonDBTM {
     * @since 0.85
    **/
    function showFormToolsHelpdesk() {
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
-      if ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE])) {
+      if ($canedit = Session::haveRightsOr($this->rightname, [CREATE, UPDATE, PURGE])) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
 
@@ -860,12 +861,12 @@ class Profile extends CommonDBTM {
    **/
    function showFormAsset($openform = true, $closeform = true) {
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
-      if (($canedit = Session::haveRightsOr(self::$rightname, [UPDATE, CREATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [UPDATE, CREATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -933,13 +934,13 @@ class Profile extends CommonDBTM {
    **/
    function showFormManagement($openform = true, $closeform = true) {
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
 
-      if (($canedit = Session::haveRightsOr(self::$rightname, [UPDATE, CREATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [UPDATE, CREATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -1029,13 +1030,13 @@ class Profile extends CommonDBTM {
    **/
    function showFormTools($openform = true, $closeform = true) {
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
 
-      if (($canedit = Session::haveRightsOr(self::$rightname, [UPDATE, CREATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [UPDATE, CREATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -1092,12 +1093,12 @@ class Profile extends CommonDBTM {
     * @param $closeform    boolean  close the form (true by default)
    **/
    function showFormTracking($openform = true, $closeform = true) {
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
-      if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [CREATE, UPDATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -1306,13 +1307,13 @@ class Profile extends CommonDBTM {
    **/
    function showFormLifeCycle($openform = true, $closeform = true) {
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
 
-      if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [CREATE, UPDATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -1407,13 +1408,13 @@ class Profile extends CommonDBTM {
    **/
    function showFormLifeCycleHelpdesk($openform = true, $closeform = true) {
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
 
-      if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [CREATE, UPDATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -1440,13 +1441,13 @@ class Profile extends CommonDBTM {
     * @param $closeform    boolean  close the form (true by default)
    **/
    function showFormAdmin($openform = true, $closeform = true) {
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
 
-      if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [CREATE, UPDATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -1535,12 +1536,12 @@ class Profile extends CommonDBTM {
    **/
    function showFormSetup($openform = true, $closeform = true) {
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
-      if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [CREATE, UPDATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -1677,12 +1678,12 @@ class Profile extends CommonDBTM {
    **/
    function showFormSetupHelpdesk($openform = true, $closeform = true) {
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
       echo "<div class='spaced'>";
-      if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
+      if (($canedit = Session::haveRightsOr($this->rightname, [CREATE, UPDATE, PURGE]))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."' data-track-changes='true'>";
       }
@@ -3030,15 +3031,14 @@ class Profile extends CommonDBTM {
     * @param $itemtype   string   itemtype
     * @param $interface  string   (default 'central')
     *
-    * @return rights
+    * @return array array of rights to display
    **/
    static function getRightsFor($itemtype, $interface = 'central') {
-
       if (class_exists($itemtype)) {
          $item = new $itemtype();
          return $item->getRights($interface);
       }
-
+      return [];
    }
 
 
@@ -3192,7 +3192,7 @@ class Profile extends CommonDBTM {
     *             'display'
     *             'check_method'  method used to check the right
     *
-    * @return content if !display
+    * @return string|true content if !display
    **/
    static function getLinearRightChoice(array $elements, array $options = []) {
 
@@ -3275,6 +3275,7 @@ class Profile extends CommonDBTM {
       }
 
       echo $out;
+      return true;
    }
 
 

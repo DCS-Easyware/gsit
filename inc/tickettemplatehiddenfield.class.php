@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class TicketTemplateHiddenField extends ITILTemplateHiddenField {
 
    // From CommonDBChild
-   static public $itemtype  = 'TicketTemplate';
-   static public $items_id  = 'tickettemplates_id';
+   protected $itemtype     = 'TicketTemplate';
+   static public $items_id = 'tickettemplates_id';
    static public $itiltype = 'Ticket';
 }

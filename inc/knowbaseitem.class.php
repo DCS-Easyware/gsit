@@ -51,13 +51,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
    protected $profiles  = [];
    protected $entities  = [];
    protected $items     = [];
+   protected $knowbase_items = [];
 
    const KNOWBASEADMIN = 1024;
    const READFAQ       = 2048;
    const PUBLISHFAQ    = 4096;
    const COMMENTS      = 8192;
 
-   static $rightname   = 'knowbase';
+   protected $rightname   = 'knowbase';
 
 
    static function getTypeName($nb = 0) {
@@ -98,24 +99,24 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
 
-      return Session::haveRightsOr(self::$rightname, [CREATE, self::PUBLISHFAQ]);
+      return Session::haveRightsOr($this->rightname, [CREATE, self::PUBLISHFAQ]);
    }
 
 
    /**
     * @since 0.85
    **/
-   static function canUpdate() {
-      return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
+   function canUpdate() {
+      return Session::haveRightsOr($this->rightname, [UPDATE, self::KNOWBASEADMIN]);
    }
 
 
-   static function canView() {
+   function canView() {
       global $CFG_GLPI;
 
-      return (Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
+      return (Session::haveRightsOr($this->rightname, [READ, self::READFAQ])
               || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
    }
 
@@ -124,27 +125,27 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
-      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+      if (Session::haveRight($this->rightname, self::KNOWBASEADMIN)) {
          return true;
       }
 
       if ($this->fields["is_faq"]) {
-         return ((Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
+         return ((Session::haveRightsOr($this->rightname, [READ, self::READFAQ])
                   && $this->haveVisibilityAccess())
                  || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
       }
-      return (Session::haveRight(self::$rightname, READ) && $this->haveVisibilityAccess());
+      return (Session::haveRight($this->rightname, READ) && $this->haveVisibilityAccess());
    }
 
 
    function canUpdateItem() {
       // Personal knowbase or visibility and write access
-      return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
+      return (Session::haveRight($this->rightname, self::KNOWBASEADMIN)
               || (Session::getCurrentInterface() == "central"
                   && $this->fields['users_id'] == Session::getLoginUserID())
-              || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
+              || ((($this->fields["is_faq"] && Session::haveRight($this->rightname, self::PUBLISHFAQ))
                    || (!$this->fields["is_faq"]
-                       && Session::haveRight(self::$rightname, UPDATE)))
+                       && Session::haveRight($this->rightname, UPDATE)))
                   && $this->haveVisibilityAccess()));
    }
 
@@ -154,7 +155,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @return boolean
     */
    public function canComment() {
-      return $this->canViewItem() && Session::haveRight(self::$rightname, self::COMMENTS);
+      return $this->canViewItem() && Session::haveRight($this->rightname, self::COMMENTS);
    }
 
    /**
@@ -257,7 +258,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
    **/
    function post_getEmpty() {
 
-      if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)
+      if (Session::haveRight($this->rightname, self::PUBLISHFAQ)
           && !Session::haveRight("knowbase", UPDATE)) {
          $this->fields["is_faq"] = 1;
       }
@@ -410,12 +411,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
    public function haveVisibilityAccess() {
       // No public knowbaseitem right : no visibility check
-      if (!Session::haveRightsOr(self::$rightname, [self::READFAQ, READ])) {
+      if (!Session::haveRightsOr($this->rightname, [self::READFAQ, READ])) {
          return false;
       }
 
       // KB Admin
-      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+      if (Session::haveRight($this->rightname, self::KNOWBASEADMIN)) {
          return true;
       }
 
@@ -538,8 +539,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
             ]
          ];
       }
-
-      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+      $knowbase_item = new KnowbaseItem();
+      if (Session::haveRight($knowbase_item->getRightname(), self::KNOWBASEADMIN)) {
          return [
             'LEFT JOIN' => $join,
             'WHERE' => [],
@@ -554,7 +555,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          ];
 
          // public faq
-         if (!Session::haveRight(self::$rightname, READ)) {
+         if (!Session::haveRight($knowbase_item->getRightname(), READ)) {
             $where['AND']['glpi_knowbaseitems.is_faq'] = 1;
          }
       } else if ($is_public_faq_context) {
@@ -633,12 +634,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
          $input["name"] = __('New item');
       }
 
-      if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)
-          && !Session::haveRight(self::$rightname, UPDATE)) {
+      if (Session::haveRight($this->rightname, self::PUBLISHFAQ)
+          && !Session::haveRight($this->rightname, UPDATE)) {
          $input["is_faq"] = 1;
       }
-      if (!Session::haveRight(self::$rightname, self::PUBLISHFAQ)
-          && Session::haveRight(self::$rightname, UPDATE)) {
+      if (!Session::haveRight($this->rightname, self::PUBLISHFAQ)
+          && Session::haveRight($this->rightname, UPDATE)) {
          $input["is_faq"] = 0;
       }
       return $input;
@@ -687,7 +688,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       global $CFG_GLPI;
 
       // show kb item form
-      if (!Session::haveRightsOr(self::$rightname,
+      if (!Session::haveRightsOr($this->rightname,
                                  [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])) {
          return false;
       }
@@ -747,7 +748,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)) {
+      if (Session::haveRight($this->rightname, self::PUBLISHFAQ)) {
          echo "<td>".__('Put this item in the FAQ')."</td>";
          echo "<td>";
          Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
@@ -925,7 +926,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       // show item : question and answer
       if (((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
           || (Session::getCurrentInterface() == "helpdesk")
-          || !User::canView()) {
+          || !ProfileRight::checkPermission('view', 'User')) {
          $linkusers_id = false;
       }
 
@@ -1018,7 +1019,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])) {
+          && !Session::haveRightsOr($this->rightname, [READ, self::READFAQ])) {
          return false;
       }
 
@@ -1065,7 +1066,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])) {
+          && !Session::haveRightsOr($this->rightname, [READ, self::READFAQ])) {
          return false;
       }
 
@@ -1077,7 +1078,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
             $params[$key] = $val;
          }
       }
-      $faq = !Session::haveRight(self::$rightname, READ);
+      $faq = !Session::haveRight($this->rightname, READ);
 
       // Category select not for anonymous FAQ
       if (Session::getLoginUserID()
@@ -1111,7 +1112,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @return void
    **/
    function showManageForm($options) {
-      if (!Session::haveRightsOr(self::$rightname,
+      if (!Session::haveRightsOr($this->rightname,
                                  [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])) {
          return false;
       }
@@ -1128,7 +1129,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       $values = ['myunpublished' => __('My unpublished articles'),
                       'allmy'         => __('All my articles')];
-      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+      if (Session::haveRight($this->rightname, self::KNOWBASEADMIN)) {
          $values['allunpublished'] = __('All unpublished articles');
          $values['allpublished'] = __('All published articles');
       }
@@ -1365,8 +1366,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
 
          case 'browse' :
             $criteria['WHERE']['glpi_knowbaseitems.knowbaseitemcategories_id'] = $params['knowbaseitemcategories_id'];
-
-            if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+            $knowbaseItem = new KnowbaseItem();
+            if (!Session::haveRight($knowbaseItem->getRightname(), self::KNOWBASEADMIN)) {
                // Add visibility date
                $criteria['WHERE'][] = [
                   'OR'  => [
@@ -1407,9 +1408,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       global $CFG_GLPI;
 
       $DBread = DBConnection::getReadConnection();
+      $knowbaseItem = new KnowbaseItem();
 
       // Default values of parameters
-      $params['faq']                       = !Session::haveRight(self::$rightname, READ);
+      $params['faq']                       = !Session::haveRight($knowbaseItem->getRightname(), READ);
       $params["start"]                     = "0";
       $params["knowbaseitemcategories_id"] = "0";
       $params["contains"]                  = "";
@@ -1423,13 +1425,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
       $ki = new self();
       switch ($type) {
          case 'myunpublished' :
-            if (!Session::haveRightsOr(self::$rightname, [UPDATE, self::PUBLISHFAQ])) {
+            if (!Session::haveRightsOr($knowbaseItem->getRightname(), [UPDATE, self::PUBLISHFAQ])) {
                return false;
             }
             break;
 
          case 'allunpublished' :
-            if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+            if (!Session::haveRight($knowbaseItem->getRightname(), self::KNOWBASEADMIN)) {
                return false;
             }
             break;
@@ -1692,7 +1694,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria {
    static function showRecentPopular($type) {
       global $DB;
 
-      $faq = !Session::haveRight(self::$rightname, READ);
+      $knowbaseItem = new KnowbaseItem();
+      $faq = !Session::haveRight($knowbaseItem->getRightname(), READ);
 
       $criteria = [
          'SELECT'    => ['glpi_knowbaseitems.*'],

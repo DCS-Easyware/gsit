@@ -40,10 +40,10 @@ if (!defined('GLPI_ROOT')) {
 
 class Line extends CommonDBTM {
    // From CommonDBTM
-   public $dohistory                   = true;
+   public $dohistory     = true;
 
-   static $rightname                   = 'line';
-   protected $usenotepad               = true;
+   protected $rightname  = 'line';
+   protected $usenotepad = true;
 
 
    static function getTypeName($nb = 0) {

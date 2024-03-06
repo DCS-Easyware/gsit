@@ -149,7 +149,7 @@ class DeviceMemory extends CommonDevice {
             $base->addHeader('devicememory_frequency', __('Frequency'), $super, $father);
             break;
       }
-
+      return $column;
    }
 
 

@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class ChangeTask extends CommonITILTask {
 
-   static $rightname = 'task';
+   protected $rightname = 'task';
 
 
    static function getTypeName($nb = 0) {
@@ -44,20 +44,20 @@ class ChangeTask extends CommonITILTask {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
       return Session::haveRight('change', UPDATE)
-          || Session::haveRight(self::$rightname, parent::ADDALLITEM);
+          || Session::haveRight($this->rightname, parent::ADDALLITEM);
    }
 
 
-   static function canView() {
+   function canView() {
       return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
    }
 
 
-   static function canUpdate() {
+   function canUpdate() {
       return Session::haveRight('change', UPDATE)
-          || Session::haveRight(self::$rightname, parent::UPDATEALL);
+          || Session::haveRight($this->rightname, parent::UPDATEALL);
    }
 
 
@@ -94,7 +94,7 @@ class ChangeTask extends CommonITILTask {
 
       $change = new Change();
       if ($change->getFromDB($this->fields['changes_id'])) {
-         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+         return (Session::haveRight($this->rightname, parent::ADDALLITEM)
                  || Session::haveRight('change', UPDATE)
                  || (Session::haveRight('change', Change::READMY)
                      && ($change->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -120,7 +120,7 @@ class ChangeTask extends CommonITILTask {
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
           && !Session::haveRight('change', UPDATE)
-          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
+          && !Session::haveRight($this->rightname, parent::UPDATEALL)) {
          return false;
       }
 

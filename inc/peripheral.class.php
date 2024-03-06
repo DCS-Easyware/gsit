@@ -48,7 +48,7 @@ class Peripheral extends CommonDBTM {
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
                                           'Item_OperatingSystem', 'Item_SoftwareVersion'];
 
-   static $rightname                   = 'peripheral';
+   protected $rightname                = 'peripheral';
    protected $usenotepad               = true;
 
    public function getCloneRelations() :array {
@@ -328,7 +328,7 @@ class Peripheral extends CommonDBTM {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if (static::canUpdate()) {
+      if ($this->canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          $actions += [
             'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'

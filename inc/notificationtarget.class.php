@@ -44,7 +44,7 @@ class NotificationTarget extends CommonDBChild {
 
    public $prefix                      = '';
    // From CommonDBChild
-   static public $itemtype             = 'Notification';
+   protected $itemtype                 = 'Notification';
    static public $items_id             = 'notifications_id';
    public $table                       = 'glpi_notificationtargets';
 
@@ -81,6 +81,8 @@ class NotificationTarget extends CommonDBChild {
    private $allow_response             = true;
    private $mode                       = null;
    private $event                      = null;
+
+   public $recipient_data              = [];
 
    const TAG_LANGUAGE               = 'lang';
    const TAG_VALUE                  = 'tag';
@@ -342,7 +344,7 @@ class NotificationTarget extends CommonDBChild {
     * @param $notification Notification object
    **/
    function showForNotification(Notification $notification) {
-      if (!Notification::canView()) {
+      if (!ProfileRight::checkPermission('view', 'Notification')) {
          return false;
       }
       if ($notification->getField('itemtype') != '') {
@@ -929,7 +931,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param $event  (default '')
     *
-    * @return the object associated with the itemtype
+    * @return void
    **/
    function getObjectItem($event = '') {
       $this->target_object[] = $this->obj;
@@ -1334,7 +1336,7 @@ class NotificationTarget extends CommonDBChild {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (!$withtemplate && Notification::canView()) {
+      if (!$withtemplate && ProfileRight::checkPermission('view', 'Notification')) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Group' :
@@ -1403,7 +1405,7 @@ class NotificationTarget extends CommonDBChild {
    static function showForGroup(Group $group) {
       global $DB;
 
-      if (!Notification::canView()) {
+      if (!ProfileRight::checkPermission('view', 'Notification')) {
          return false;
       }
 

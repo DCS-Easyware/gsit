@@ -40,6 +40,34 @@ if (!defined('GLPI_ROOT')) {
 abstract class CommonDBVisible extends CommonDBTM {
 
    /**
+    * list of groups
+    *
+    * @var mixed[]
+    */
+   protected $groups = [];
+
+   /**
+    * list of entities
+    *
+    * @var mixed[]
+    */
+   protected $entities = [];
+
+   /**
+    * list of users
+    *
+    * @var mixed[]
+    */
+   protected $users = [];
+
+   /**
+    * list of profiles
+    *
+    * @var mixed[]
+    */
+   protected $profiles = [];
+
+   /**
     * Is the login user have access to item based on visibility configuration
     *
     * @since 0.83

@@ -548,7 +548,7 @@ class Document extends DbTestCase {
 
       // post-only cannot see documents if not able to view ITIL (ITIL content)
       $this->login('post-only', 'postonly');
-      $_SESSION["glpiactiveprofile"][$item::$rightname] = READ; // force READ write for tested ITIL type
+      $_SESSION["glpiactiveprofile"][$item->getRightname()] = READ; // force READ write for tested ITIL type
       $this->boolean($basicDocument->canViewFile())->isFalse();
       $this->boolean($inlinedDocument->canViewFile())->isFalse();
       $this->boolean($basicDocument->canViewFile([$fkey => $item->getID()]))->isFalse();
@@ -664,7 +664,7 @@ class Document extends DbTestCase {
 
       // post-only cannot see documents if not able to view ITIL
       $this->login('post-only', 'postonly');
-      $_SESSION["glpiactiveprofile"][$itil::$rightname] = READ; // force READ write for tested ITIL type
+      $_SESSION["glpiactiveprofile"][$itil->getRightname()] = READ; // force READ write for tested ITIL type
       $this->boolean($inlinedDocument->canViewFile())->isFalse();
       $this->boolean($inlinedDocument->canViewFile([$fkey => $itil->getID()]))->isFalse();
 

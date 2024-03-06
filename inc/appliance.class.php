@@ -41,9 +41,9 @@ class Appliance extends CommonDBTM {
    use Glpi\Features\Clonable;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'appliance';
-   protected $usenotepad               = true;
+   public $dohistory     = true;
+   protected $rightname  = 'appliance';
+   protected $usenotepad = true;
 
    public function getCloneRelations() :array {
       return [
@@ -513,12 +513,12 @@ class Appliance extends CommonDBTM {
 
       $types = $CFG_GLPI['appliance_types'];
 
-      foreach ($types as $key => $type) {
-         if (!class_exists($type)) {
+      foreach ($types as $key => $itemtype) {
+         if (!class_exists($itemtype)) {
             continue;
          }
-
-         if ($all === false && !$type::canView()) {
+         $item = new $itemtype();
+         if ($all === false && !$item->canView()) {
             unset($types[$key]);
          }
       }
@@ -527,7 +527,7 @@ class Appliance extends CommonDBTM {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = ProfileRight::checkPermission('update', get_called_class());
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
@@ -548,7 +548,7 @@ class Appliance extends CommonDBTM {
       CommonDBTM $checkitem = null
    ) {
       if (in_array($itemtype, self::getTypes())) {
-         if (self::canUpdate()) {
+         if (ProfileRight::checkPermission('update', get_called_class())) {
             $action_prefix                    = 'Appliance_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$action_prefix.'add']    = "<i class='ma-icon fas fa-file-contract'></i>".
                                                 _x('button', 'Add to an appliance');

@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class Item_Disk extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype = 'itemtype';
+   protected $itemtype = 'itemtype';
    static public $items_id = 'items_id';
    public $dohistory       = true;
 
@@ -63,7 +63,7 @@ class Item_Disk extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
-      if ($item::canView()) {
+      if ($item->canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable(

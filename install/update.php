@@ -442,7 +442,6 @@ function changeVarcharToID($table1, $table2, $chps) {
          ['ID' => $line['row1']]
       );
    }
-   $DB->freeResult($result);
 
    $query = "ALTER TABLE `$table1`
              DROP `$chps`";

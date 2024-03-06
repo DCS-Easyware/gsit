@@ -42,8 +42,8 @@ class PDU extends CommonDBTM {
    use Glpi\Features\Clonable;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'datacenter';
+   public $dohistory    = true;
+   protected $rightname = 'datacenter';
 
    public function getCloneRelations() :array {
       return [

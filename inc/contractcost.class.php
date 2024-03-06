@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class ContractCost extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype = 'Contract';
+   protected $itemtype = 'Contract';
    static public $items_id = 'contracts_id';
    public $dohistory       = true;
 
@@ -81,7 +81,7 @@ class ContractCost extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'Contract')
-          && Contract::canView()) {
+          && ProfileRight::checkPermission('view', 'Contract')) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable('glpi_contractcosts', ['contracts_id' => $item->getID()]);

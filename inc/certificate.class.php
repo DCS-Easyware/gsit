@@ -45,7 +45,7 @@ class Certificate extends CommonDBTM {
    use Glpi\Features\Clonable;
 
    public $dohistory           = true;
-   static $rightname           = "certificate";
+   protected $rightname        = "certificate";
    protected $usenotepad       = true;
 
    public function getCloneRelations() :array {
@@ -350,7 +350,7 @@ class Certificate extends CommonDBTM {
       $tab = [];
       $name = static::getTypeName(Session::getPluralNumber());
 
-      if (!self::canView()) {
+      if (!ProfileRight::checkPermission('view', get_called_class())) {
          return $tab;
       }
 
@@ -664,7 +664,7 @@ class Certificate extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if (Session::getCurrentInterface() == 'central') {
-         if (self::canUpdate()) {
+         if ($this->canUpdate()) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
                = _x('button', 'Associate certificate');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
@@ -793,7 +793,7 @@ class Certificate extends CommonDBTM {
             continue;
          }
 
-         if (!$type::canView()) {
+         if (!ProfileRight::checkPermission('view', $type)) {
             unset($types[$key]);
          }
       }

@@ -51,7 +51,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField {
 
    protected function computeFriendlyName() {
 
-      $tt_class = static::$itemtype;
+      $tt_class = $this->itemtype;
       $tt     = new $tt_class;
       $fields = $tt->getAllowedFieldsNames(true, true);
 
@@ -149,7 +149,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField {
          'ORDER'  => 'id'
       ]);
 
-      $tt_class       = static::$itemtype;
+      $tt_class       = $this->itemtype;
       $tt             = new $tt_class;
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
       $fields         = [];

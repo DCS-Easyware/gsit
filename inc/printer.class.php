@@ -47,7 +47,7 @@ class Printer  extends CommonDBTM {
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
                                           'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion'];
 
-   static $rightname                   = 'printer';
+   protected $rightname                = 'printer';
    protected $usenotepad               = true;
 
    public function getCloneRelations() :array {
@@ -485,7 +485,7 @@ class Printer  extends CommonDBTM {
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if (static::canUpdate()) {
+      if ($this->canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          $actions += [
             'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'
@@ -870,7 +870,7 @@ class Printer  extends CommonDBTM {
          'WHERE'  => [
             'manufacturers_id'   => $manufacturer_id,
             'name'               => $name,
-         ] + getEntitiesRestrictCriteria(self::getTable, 'entities_id', $entity, true)
+         ] + getEntitiesRestrictCriteria(self::getTable(), 'entities_id', $entity, true)
       ]);
 
       if ($printer = $iterator->next()) {

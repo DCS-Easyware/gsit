@@ -61,7 +61,7 @@ class Reminder extends CommonDBVisible implements
    protected $profiles  = [];
    protected $entities  = [];
 
-   static $rightname    = 'reminder_public';
+   protected $rightname = 'reminder_public';
 
 
 
@@ -74,16 +74,16 @@ class Reminder extends CommonDBVisible implements
    }
 
 
-   static function canCreate() {
+   function canCreate() {
 
-      return (Session::haveRight(self::$rightname, CREATE)
+      return (Session::haveRight($this->rightname, CREATE)
               || Session::getCurrentInterface() != 'helpdesk');
    }
 
 
-   static function canView() {
+   function canView() {
 
-      return (Session::haveRight(self::$rightname, READ)
+      return (Session::haveRight($this->rightname, READ)
               || Session::getCurrentInterface() != 'helpdesk');
    }
 
@@ -92,7 +92,7 @@ class Reminder extends CommonDBVisible implements
 
       // Is my reminder or is in visibility
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight(self::$rightname, READ)
+              || (Session::haveRight($this->rightname, READ)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -106,7 +106,7 @@ class Reminder extends CommonDBVisible implements
    function canUpdateItem() {
 
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight(self::$rightname, UPDATE)
+              || (Session::haveRight($this->rightname, UPDATE)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -119,7 +119,7 @@ class Reminder extends CommonDBVisible implements
    function canPurgeItem() {
 
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight(self::$rightname, PURGE)
+              || (Session::haveRight($this->rightname, PURGE)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -128,7 +128,7 @@ class Reminder extends CommonDBVisible implements
     * @since 0.85
     * for personnal reminder
    **/
-   static function canUpdate() {
+   function canUpdate() {
       return (Session::getCurrentInterface() != 'helpdesk');
    }
 
@@ -137,7 +137,7 @@ class Reminder extends CommonDBVisible implements
     * @since 0.85
     * for personnal reminder
    **/
-   static function canPurge() {
+   function canPurge() {
       return (Session::getCurrentInterface() != 'helpdesk');
    }
 
@@ -179,7 +179,7 @@ class Reminder extends CommonDBVisible implements
    }
 
    public function haveVisibilityAccess() {
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
@@ -244,7 +244,8 @@ class Reminder extends CommonDBVisible implements
     * @return array
     */
    static public function getVisibilityCriteria(bool $forceall = false): array {
-      if (!Session::haveRight(self::$rightname, READ)) {
+      $thisclass = new static();
+      if (!Session::haveRight($thisclass->getRightname(), READ)) {
          return [
             'WHERE' => ['glpi_reminders.users_id' => Session::getLoginUserID()],
          ];
@@ -506,7 +507,7 @@ class Reminder extends CommonDBVisible implements
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (self::canView()) {
+      if ($this->canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Reminder' :
@@ -856,7 +857,7 @@ class Reminder extends CommonDBVisible implements
 
       } else {
          // Show public reminders / not mines : need to have access to public reminders
-         if (!self::canView()) {
+         if (!ProfileRight::checkPermission('view', get_called_class())) {
             return false;
          }
 
@@ -905,8 +906,9 @@ class Reminder extends CommonDBVisible implements
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
 
-      if (($personal && self::canCreate())
-        || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
+      $item = new static();
+      if (($personal && ProfileRight::checkPermission('create', get_called_class()))
+        || (!$personal && ProfileRight::checkPermission('create', $item->getRightname()))) {
          echo "<span class='floatright'>";
          echo "<a href='".Reminder::getFormURL()."'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'

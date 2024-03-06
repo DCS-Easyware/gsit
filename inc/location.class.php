@@ -43,8 +43,7 @@ class Location extends CommonTreeDropdown {
    public $dohistory          = true;
    public $can_be_translated  = true;
 
-   static $rightname          = 'location';
-
+   protected $rightname       = 'location';
 
 
    function getAdditionalFields() {

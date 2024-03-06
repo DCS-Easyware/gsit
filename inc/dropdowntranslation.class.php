@@ -41,10 +41,10 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DropdownTranslation extends CommonDBChild {
 
-   static public $itemtype = 'itemtype';
+   protected $itemtype     = 'itemtype';
    static public $items_id = 'items_id';
    public $dohistory       = true;
-   static $rightname       = 'dropdown';
+   protected $rightname    = 'dropdown';
 
 
    static function getTypeName($nb = 0) {
@@ -707,7 +707,7 @@ class DropdownTranslation extends CommonDBChild {
     * @param string  $itemtype    itemtype
     * @param integer $items_id    item ID
     *
-    * @return string the value translated if a translation is available, or the same value if not
+    * @return void
    **/
    static function regenerateAllCompletenameTranslationsFor($itemtype, $items_id) {
       foreach (self::getTranslationsForAnItem($itemtype, $items_id, 'completename') as $data) {

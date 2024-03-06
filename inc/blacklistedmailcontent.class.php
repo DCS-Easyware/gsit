@@ -44,7 +44,7 @@ class BlacklistedMailContent extends CommonDropdown {
    // From CommonDBTM
    public $dohistory       = false;
 
-   static $rightname       = 'config';
+   protected $rightname    = 'config';
 
    public $can_be_translated = false;
 
@@ -54,13 +54,13 @@ class BlacklistedMailContent extends CommonDropdown {
    }
 
 
-   static function canCreate() {
-      return static::canUpdate();
+   function canCreate() {
+      return $this->canUpdate();
    }
 
 
-   static function canPurge() {
-      return static::canUpdate();
+   function canPurge() {
+      return $this->canUpdate();
    }
 
 

@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
  * @since 9.5.0
 **/
 abstract class ITILTemplateField extends CommonDBChild {
-   static public $itemtype; //to be filled in subclass
+   protected $itemtype; //to be filled in subclass
    static public $items_id; //to be filled in subclass
    static public $itiltype; //to be filled in subclass
 
@@ -77,7 +77,7 @@ abstract class ITILTemplateField extends CommonDBChild {
 
 
    protected function computeFriendlyName() {
-      $tt_class = static::$itemtype;
+      $tt_class = $this->itemtype;
       $tt     = new $tt_class;
       $fields = $tt->getAllowedFieldsNames(true);
 
@@ -134,7 +134,7 @@ abstract class ITILTemplateField extends CommonDBChild {
 
 
    function getItem($getFromDB = true, $getEmpty = true) {
-      $item_class = static::$itemtype;
+      $item_class = $this->itemtype;
       if ($item_class == 'ITILTemplate') {
          if (isset($this->fields['itiltype'])) {
             $item_class = $this->fields['itiltype'] . 'Template';

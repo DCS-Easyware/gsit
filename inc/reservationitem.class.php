@@ -40,12 +40,12 @@ if (!defined('GLPI_ROOT')) {
 class ReservationItem extends CommonDBChild {
 
    /// From CommonDBChild
-   static public $itemtype          = 'itemtype';
-   static public $items_id          = 'items_id';
+   protected $itemtype     = 'itemtype';
+   static public $items_id = 'items_id';
 
    static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-   static $rightname                = 'reservation';
+   protected $rightname             = 'reservation';
 
    const RESERVEANITEM              = 1024;
 
@@ -56,8 +56,8 @@ class ReservationItem extends CommonDBChild {
    /**
     * @since 0.85
    **/
-   static function canView() {
-      return Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM]);
+   function canView() {
+      return Session::haveRightsOr($this->rightname, [READ, self::RESERVEANITEM]);
    }
 
 
@@ -91,9 +91,9 @@ class ReservationItem extends CommonDBChild {
     *
     * @since 0.85
    **/
-   static function getAdditionalMenuLinks() {
+   function getAdditionalMenuLinks() {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          return ['showall' => Reservation::getSearchURL(false)];
       }
       return false;
@@ -280,7 +280,7 @@ class ReservationItem extends CommonDBChild {
    **/
    static function showActivationFormForItem(CommonDBTM $item) {
 
-      if (!self::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', get_called_class())) {
          return false;
       }
       if ($item->getID()) {
@@ -337,7 +337,7 @@ class ReservationItem extends CommonDBChild {
 
    function showForm($ID, $options = []) {
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
@@ -383,7 +383,8 @@ class ReservationItem extends CommonDBChild {
    static function showListSimple() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight(self::$rightname, self::RESERVEANITEM)) {
+      $thisclass = new static();
+      if (!Session::haveRight($thisclass->getRightname(), self::RESERVEANITEM)) {
          return false;
       }
 

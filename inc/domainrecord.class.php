@@ -37,9 +37,9 @@ if (!defined('GLPI_ROOT')) {
 class DomainRecord extends CommonDBChild {
    const DEFAULT_TTL = 3600;
 
-   static $rightname              = 'domain';
+   protected $rightname           = 'domain';
    // From CommonDBChild
-   static public $itemtype        = 'Domain';
+   protected $itemtype            = 'Domain';
    static public $items_id        = 'domains_id';
    public $dohistory              = true;
 
@@ -163,14 +163,14 @@ class DomainRecord extends CommonDBChild {
       return $tab;
    }
 
-   static function canCreate() {
+   function canCreate() {
       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
          return true;
       }
       return parent::canCreate();
    }
 
-   static function canUpdate() {
+   function canUpdate() {
       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
          return true;
       }
@@ -178,7 +178,7 @@ class DomainRecord extends CommonDBChild {
    }
 
 
-   static function canDelete() {
+   function canDelete() {
       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
          return true;
       }
@@ -186,7 +186,7 @@ class DomainRecord extends CommonDBChild {
    }
 
 
-   static function canPurge() {
+   function canPurge() {
       if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
          return true;
       }

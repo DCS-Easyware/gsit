@@ -41,7 +41,7 @@ abstract class NotificationSetting extends CommonDBTM {
 
    public $table           = 'glpi_configs';
    protected $displaylist  = false;
-   static $rightname       = 'config';
+   protected $rightname    = 'config';
 
    static public function getTypeName($nb = 0) {
       throw new \RuntimeException('getTypeName must be implemented');

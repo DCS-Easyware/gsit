@@ -65,7 +65,7 @@ class Change_Ticket extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Change' :

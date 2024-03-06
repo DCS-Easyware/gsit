@@ -57,7 +57,7 @@ class Appliance_Item extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (!Appliance::canView()) {
+      if (!ProfileRight::checkPermission('view', 'Appliance')) {
          return '';
       }
 
@@ -76,6 +76,7 @@ class Appliance_Item extends CommonDBRelation {
          }
          return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb);
       }
+      return '';
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
@@ -237,7 +238,7 @@ class Appliance_Item extends CommonDBRelation {
       $itemtype = $item->getType();
       $ID       = $item->fields['id'];
 
-      if (!Appliance::canView()
+      if (!ProfileRight::checkPermission('view', 'Appliance')
           || !$item->can($ID, READ)) {
          return;
       }

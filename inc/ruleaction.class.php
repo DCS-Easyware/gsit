@@ -37,7 +37,6 @@ if (!defined('GLPI_ROOT')) {
 class RuleAction extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype        = "Rule";
    static public $items_id        = 'rules_id';
    public $dohistory              = true;
    public $auto_message_on_action = false;
@@ -57,7 +56,7 @@ class RuleAction extends CommonDBChild {
     * @param $rule_type
    **/
    function __construct($rule_type = 'Rule') {
-      static::$itemtype = $rule_type;
+      $this->itemtype = $rule_type;
    }
 
 
@@ -69,10 +68,10 @@ class RuleAction extends CommonDBChild {
    function post_getFromDB() {
 
       // Get correct itemtype if defult one is used
-      if (static::$itemtype == 'Rule') {
+      if ($this->itemtype == 'Rule') {
          $rule = new Rule();
          if ($rule->getFromDB($this->fields['rules_id'])) {
-            static::$itemtype = $rule->fields['sub_type'];
+            $this->itemtype = $rule->fields['sub_type'];
          }
       }
    }
@@ -91,7 +90,7 @@ class RuleAction extends CommonDBChild {
 
    protected function computeFriendlyName() {
 
-      if ($rule = getItemForItemtype(static::$itemtype)) {
+      if ($rule = getItemForItemtype($this->itemtype)) {
          return Html::clean($rule->getMinimalActionText($this->fields));
       }
       return '';
@@ -665,7 +664,7 @@ class RuleAction extends CommonDBChild {
          $options[static::$items_id] = $rule->getField('id');
 
          //force itemtype of parent
-         static::$itemtype = get_class($rule);
+         $this->itemtype = get_class($rule);
 
          $this->check(-1, CREATE, $options);
       }

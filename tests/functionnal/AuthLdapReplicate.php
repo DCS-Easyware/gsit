@@ -39,25 +39,27 @@ use \DbTestCase;
 class AuthLdapReplicate extends DbTestCase {
 
    public function testCanCreate() {
+      $auth = new \AuthLdapReplicate();
       $this->login();
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isTrue();
+      $this->boolean((boolean)$auth->canCreate())->isTrue();
 
       $_SESSION['glpiactiveprofile']['config'] = READ;
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isFalse();
+      $this->boolean((boolean)$auth->canCreate())->isFalse();
 
       $_SESSION['glpiactiveprofile']['config'] = 0;
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isFalse();
+      $this->boolean((boolean)$auth->canCreate())->isFalse();
    }
 
    public function testCanPurge() {
+      $auth = new \AuthLdapReplicate();
       $this->login();
-      $this->boolean((boolean)\AuthLdapReplicate::canPurge())->isTrue();
+      $this->boolean((boolean)$auth->canPurge())->isTrue();
 
       $_SESSION['glpiactiveprofile']['config'] = READ;
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isFalse();
+      $this->boolean((boolean)$auth->canCreate())->isFalse();
 
       $_SESSION['glpiactiveprofile']['config'] = 0;
-      $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isFalse();
+      $this->boolean((boolean)$auth->canCreate())->isFalse();
    }
 
    public function testGetForbiddenStandardMassiveAction() {

@@ -282,12 +282,6 @@ function glpi_autoload($classname) {
       return false;
    }
 
-   if ($classname === 'phpCAS'
-       && file_exists(stream_resolve_include_path("CAS.php"))) {
-      include_once('CAS.php');
-      return true;
-   }
-
    $dir = GLPI_ROOT . "/inc/";
 
    // Deprecation warn for Computer_Software* classes

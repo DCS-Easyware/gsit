@@ -53,7 +53,7 @@ class User extends CommonDBTM {
    const READAUTHENT         = 2048;
    const UPDATEAUTHENT       = 4096;
 
-   static $rightname = 'user';
+   protected $rightname = 'user';
 
    static $undisclosedFields = [
       'password',
@@ -73,7 +73,7 @@ class User extends CommonDBTM {
       return 'u';
    }
 
-   static function getAdditionalMenuOptions() {
+   function getAdditionalMenuOptions() {
 
       if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
          return [
@@ -274,6 +274,11 @@ class User extends CommonDBTM {
    }
 
 
+   /**
+    * Pre delete item
+    *
+    * @return bool
+    */
    function pre_deleteItem() {
       global $DB;
 
@@ -304,6 +309,7 @@ class User extends CommonDBTM {
          }
          return false;
       }
+      return true;
    }
 
 
@@ -1428,7 +1434,7 @@ class User extends CommonDBTM {
     * @param string   $userdn          Basedn of the user
     * @param string   $rawLogin        User login
     *
-    * @return string|boolean Basedn of the user / false if not found
+    * @return void
     */
    private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $rawLogin) {
       global $DB;
@@ -2035,7 +2041,7 @@ class User extends CommonDBTM {
       $buttons = [];
       $title   = self::getTypeName(Session::getPluralNumber());
 
-      if (static::canCreate()) {
+      if ($this->canCreate()) {
          $buttons["user.form.php"] = __('Add user...');
          $title                    = "";
 
@@ -2046,7 +2052,7 @@ class User extends CommonDBTM {
          }
       }
       if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
-         && (static::canCreate() || static::canUpdate())) {
+         && ($this->canCreate() || $this->canUpdate())) {
          if (AuthLDAP::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
@@ -2084,7 +2090,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI, $DB;
 
       // Affiche un formulaire User
-      if (($ID != Session::getLoginUserID()) && !self::canView()) {
+      if (($ID != Session::getLoginUserID()) && !$this->canView()) {
          return false;
       }
 
@@ -2177,7 +2183,7 @@ JAVASCRIPT;
             && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id'])) {
          $syncrand = mt_rand();
          echo "<tr class='tab_bg_1'><td><label for='textfield_sync_field$syncrand'>" . __('Synchronization field') . "</label></td><td>";
-         if (self::canUpdate()
+         if ($this->canUpdate()
              && (!$extauth || empty($ID))) {
                 Html::autocompletionTextField($this, "sync_field", ['rand' => $syncrand]);
          } else {
@@ -2203,7 +2209,7 @@ JAVASCRIPT;
       echo "</td></tr>";
 
       //do some rights verification
-      if (self::canUpdate()
+      if ($this->canUpdate()
           && (!$extauth || empty($ID))
           && $caneditpassword) {
          echo "<tr class='tab_bg_1'>";
@@ -2296,7 +2302,7 @@ JAVASCRIPT;
       //Authentications information : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
-         if (Session::haveRight(self::$rightname, self::READAUTHENT)) {
+         if (Session::haveRight($this->rightname, self::READAUTHENT)) {
             echo "<td>" . __('Authentication') . "</td><td>";
             echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
             if (!empty($this->fields["date_sync"])) {
@@ -2830,7 +2836,7 @@ JAVASCRIPT;
                              'rand'   => $locrand,
                              'entity' => $entities]);
 
-         if (Config::canUpdate()) {
+         if (ProfileRight::checkPermission('update', 'Config')) {
             $moderand = mt_rand();
             echo "<td><label for='dropdown_use_mode$moderand'>" . __('Use GLPI in mode') . "</label></td><td>";
             $modes = [
@@ -2986,7 +2992,7 @@ JAVASCRIPT;
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
@@ -3004,7 +3010,7 @@ JAVASCRIPT;
                                                            __("Move to group");
       }
 
-      if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
+      if (Session::haveRight($this->rightname, self::UPDATEAUTHENT)) {
          $prefix                                    = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$prefix.'change_authtype']        = "<i class='ma-icon fas fa-user-cog'></i>".
                                                       _x('button', 'Change the authentication method');
@@ -3034,7 +3040,7 @@ JAVASCRIPT;
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-
+      $thisclass = new static();
       switch ($ma->getAction()) {
          case 'force_user_ldap_update' :
             foreach ($ids as $id) {
@@ -3066,7 +3072,7 @@ JAVASCRIPT;
                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                return;
             }
-            if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
+            if (Session::haveRight($thisclass->getRightname(), self::UPDATEAUTHENT)) {
                if (User::changeAuthMethod($ids, $input["authtype"], $input["auths_id"])) {
                   $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
                } else {
@@ -3885,7 +3891,7 @@ JAVASCRIPT;
       }
 
       if (!$count) {
-         if ((strlen($search) > 0)) {
+         if (!is_null($search) && (strlen($search) > 0)) {
             $txt_search = Search::makeTextSearchValue($search);
 
             $firstname_field = $DB->quoteName(self::getTableField('firstname'));
@@ -4029,7 +4035,7 @@ JAVASCRIPT;
       // Make a select box with all glpi users
       $user = getUserName($p['value'], 2);
 
-      $view_users = self::canView();
+      $view_users = ProfileRight::checkPermission('view', get_called_class());
 
       if (!empty($p['value']) && ($p['value'] > 0)) {
           $default = $user["name"];
@@ -4189,7 +4195,8 @@ JAVASCRIPT;
    static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = -1) {
       global $DB;
 
-      if (!Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
+      $thisclass = new static();
+      if (!Session::haveRight($thisclass->getRightname(), self::UPDATEAUTHENT)) {
          return false;
       }
 
@@ -5654,10 +5661,10 @@ JAVASCRIPT;
       }
 
       $table  = self::getTable();
-      $first  = DB::quoteName("$table.$first");
-      $second = DB::quoteName("$table.$second");
-      $alias  = DB::quoteName($alias);
-      $name   = DB::quoteName(self::getNameField());
+      $first  = DBmysql::quoteName("$table.$first");
+      $second = DBmysql::quoteName("$table.$second");
+      $alias  = DBmysql::quoteName($alias);
+      $name   = DBmysql::quoteName(self::getNameField());
 
       return new QueryExpression("IF(
             $first <> '' && $second <> '',

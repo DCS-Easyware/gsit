@@ -46,7 +46,7 @@ class ConsumableItem extends CommonDBTM {
    public $dohistory                   = true;
    protected $usenotepad               = true;
 
-   static $rightname                   = 'consumable';
+   protected $rightname                = 'consumable';
 
 
    static function getTypeName($nb = 0) {
@@ -59,9 +59,9 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   static function getAdditionalMenuLinks() {
+   function getAdditionalMenuLinks() {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          return ['summary' => '/front/consumableitem.php?synthese=yes'];
       }
       return false;

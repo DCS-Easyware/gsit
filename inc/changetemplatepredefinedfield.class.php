@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 class ChangeTemplatePredefinedField extends ITILTemplatePredefinedField {
 
    // From CommonDBChild
-   static public $itemtype = 'ChangeTemplate';
+   protected $itemtype     = 'ChangeTemplate';
    static public $items_id = 'changetemplates_id';
    static public $itiltype = 'Change';
 

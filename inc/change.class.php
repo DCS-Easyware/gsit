@@ -48,7 +48,7 @@ class Change extends CommonITILObject {
    public $grouplinkclass              = 'Change_Group';
    public $supplierlinkclass           = 'Change_Supplier';
 
-   static $rightname                   = 'change';
+   protected $rightname                = 'change';
    protected $usenotepad               = true;
 
    const MATRIX_FIELD                  = 'priority_matrix';
@@ -68,12 +68,11 @@ class Change extends CommonITILObject {
 
 
    function canSolve() {
-
       return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
               && !in_array($this->fields['status'], $this->getClosedStatusArray())
-              && (Session::haveRight(self::$rightname, UPDATE)
-                  || (Session::haveRight(self::$rightname, self::READMY)
+              && (Session::haveRight($this->rightname, UPDATE)
+                  || (Session::haveRight($this->rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
                               && $this->haveAGroup(CommonITILActor::ASSIGN,
@@ -81,8 +80,8 @@ class Change extends CommonITILObject {
    }
 
 
-   static function canView() {
-      return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
+   function canView() {
+      return Session::haveRightsOr($this->rightname, [self::READALL, self::READMY]);
    }
 
 
@@ -96,8 +95,8 @@ class Change extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return (Session::haveRight(self::$rightname, self::READALL)
-              || (Session::haveRight(self::$rightname, self::READMY)
+      return (Session::haveRight($this->rightname, self::READALL)
+              || (Session::haveRight($this->rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -121,7 +120,7 @@ class Change extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return Session::haveRight(self::$rightname, CREATE);
+      return Session::haveRight($this->rightname, CREATE);
    }
 
 
@@ -165,7 +164,7 @@ class Change extends CommonITILObject {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
                $timeline    = $item->getTimelineItems();
@@ -615,7 +614,7 @@ class Change extends CommonITILObject {
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
-      if (!static::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
@@ -690,7 +689,7 @@ class Change extends CommonITILObject {
       $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
       $showuserlink = 0;
-      if (User::canView()) {
+      if (ProfileRight::checkPermission('view', 'User')) {
          $showuserlink = 1;
       }
 
@@ -1436,7 +1435,8 @@ class Change extends CommonITILObject {
    static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
-      if (!Session::haveRight(self::$rightname, self::READALL)) {
+      $change = new static();
+      if (!Session::haveRight($change->getRightname(), self::READALL)) {
          return false;
       }
 
@@ -1512,7 +1512,7 @@ class Change extends CommonITILObject {
       // Link to open a new change
       if ($item->getID()
           && Change::isPossibleToAssignType($item->getType())
-          && self::canCreate()
+          && $change->canCreate()
           && !(!empty($withtemplate) && $withtemplate == 2)
           && (!isset($item->fields['is_template']) || $item->fields['is_template'] == 0)) {
          echo "<div class='firstbloc'>";

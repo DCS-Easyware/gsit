@@ -43,7 +43,10 @@ if (!defined('GLPI_ROOT')) {
 **/
 abstract class LevelAgreementLevel extends RuleTicket {
 
-   static $rightname            = 'slm';
+   protected $rightname          = 'slm';
+
+   static protected $parentclass = '';
+   static protected $fkparent    = '';
 
    /**
     * Constructor
@@ -51,7 +54,6 @@ abstract class LevelAgreementLevel extends RuleTicket {
    function __construct() {
       // Override in order not to use glpi_rules table.
    }
-
 
    /**
     * @since 0.85
@@ -179,7 +181,8 @@ abstract class LevelAgreementLevel extends RuleTicket {
             return self::dropdownExecutionTime($name, $options);
 
          case 'match':
-            $level = new static();
+            $classname = get_called_class();
+            $level = new $classname();
             $options['value'] = $values[$field];
             return $level->dropdownRulesMatch($options);
       }
@@ -373,8 +376,11 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
+      $classname = get_called_class();
+      $level = new $classname();
+
       if ($item->getType() == static::$parentclass) {
-         $level = new static();
+         $level = new $level();
          $level->showForParent($item);
       }
       return true;
