@@ -549,10 +549,10 @@ function loadDataset() {
       ], 'AuthLDAP' => [
          [
             'name'            => '_local_ldap',
-            'host'            => 'openldap',
+            'host'            => '127.0.0.1',
             'basedn'          => 'dc=glpi,dc=org',
-            'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
-            'port'            => '3890',
+            'rootdn'          => 'cn=admin,dc=glpi,dc=org',
+            'port'            => '389',
             'condition'       => '(objectclass=inetOrgPerson)',
             'login_field'     => 'uid',
             'rootdn_passwd'   => 'insecure',

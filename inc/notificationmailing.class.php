@@ -61,6 +61,9 @@ class NotificationMailing implements NotificationInterface {
     * @return boolean
    **/
    static function isUserAddressValid($address, $options = ['checkdns'=>false]) {
+      if (is_null($address)) {
+         return false;
+      }
       //drop sanitize...
       $address = Toolbox::stripslashes_deep($address);
       $isValid = GLPIMailer::ValidateAddress($address);

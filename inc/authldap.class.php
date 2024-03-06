@@ -89,7 +89,7 @@ class AuthLDAP extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-   static $rightname = 'config';
+   protected $rightname = 'config';
 
    //connection caching stuff
    static $conn_cache = [];
@@ -102,12 +102,12 @@ class AuthLDAP extends CommonDBTM {
       return _n('LDAP directory', 'LDAP directories', $nb);
    }
 
-   static function canCreate() {
-      return static::canUpdate();
+   function canCreate() {
+      return $this->canUpdate();
    }
 
-   static function canPurge() {
-      return static::canUpdate();
+   function canPurge() {
+      return $this->canUpdate();
    }
 
    function post_getEmpty() {
@@ -331,7 +331,7 @@ class AuthLDAP extends CommonDBTM {
     */
    function showForm($ID, $options = []) {
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
       if (empty($ID)) {
@@ -1575,7 +1575,7 @@ class AuthLDAP extends CommonDBTM {
                   echo "<td>" . $userinfos['uid'] . "</td>";
                }
                echo "<td>";
-               if (isset($userinfos['id']) && User::canView()) {
+               if (isset($userinfos['id']) && ProfileRight::checkPermission('view', 'User')) {
                   echo "<a href='".$userinfos['link']."'>". $userinfos['name'] . "</a>";
                } else {
                   echo $userinfos['link'];
@@ -1738,10 +1738,6 @@ class AuthLDAP extends CommonDBTM {
          } else {
             return false;
          }
-         if (self::isLdapPageSizeAvailable($config_ldap) && version_compare(PHP_VERSION, '7.3') < 0) {
-            // phpcs:ignore Generic.PHP.DeprecatedFunctions
-            ldap_control_paged_result_response($ds, $sr, $cookie);
-         }
 
       } while (($cookie !== null) && ($cookie != ''));
       return true;
@@ -1842,7 +1838,7 @@ class AuthLDAP extends CommonDBTM {
 
       if ($values['mode'] != self::ACTION_IMPORT) {
          $select['WHERE'] = [
-            'authtype'  => [-1, Auth::NOT_YET_AUTHENTIFIED, Auth::LDAP, Auth::EXTERNAL, Auth::CAS],
+            'authtype'  => [-1, Auth::NOT_YET_AUTHENTIFIED, Auth::LDAP, Auth::EXTERNAL],
             'auths_id'  => $options['authldaps_id']
          ];
       }
@@ -2157,17 +2153,10 @@ class AuthLDAP extends CommonDBTM {
          }
 
          if ($order == 'DESC') {
-            function local_cmp($b, $a) {
-               return strcasecmp($a['cn'], $b['cn']);
-            }
-
+            usort($groups, [AuthLDAP::class, "local_cmp_desc"]);
          } else {
-            function local_cmp($a, $b) {
-               return strcasecmp($a['cn'], $b['cn']);
-            }
+            usort($groups, [AuthLDAP::class, "local_cmp_asc"]);
          }
-         usort($groups, 'local_cmp');
-
       }
       return $groups;
    }
@@ -2324,10 +2313,6 @@ class AuthLDAP extends CommonDBTM {
                   }
                }
             }
-         }
-         if (self::isLdapPageSizeAvailable($config_ldap) && version_compare(PHP_VERSION, '7.3') < 0) {
-            // phpcs:ignore Generic.PHP.DeprecatedFunctions
-            ldap_control_paged_result_response($ldap_connection, $sr, $cookie);
          }
       } while (($cookie !== null) && ($cookie != ''));
 
@@ -2541,9 +2526,8 @@ class AuthLDAP extends CommonDBTM {
             Toolbox::logError($e->getMessage());
             return false;
          }
-      } else {
-         return false;
       }
+      return false;
    }
 
 
@@ -3079,8 +3063,8 @@ class AuthLDAP extends CommonDBTM {
             $_SESSION['ldap_import']['authldaps_id'] = NOT_AVAILABLE;
          }
 
-         if ((!Config::canUpdate()
-              && !Entity::canUpdate())
+         if ((!ProfileRight::checkPermission('update', 'Config')
+              && !ProfileRight::checkPermission('update', 'Entity'))
              || (!isset($_SESSION['ldap_import']['interface'])
                 && !isset($options['interface']))) {
             $options['interface'] = self::SIMPLE_INTERFACE;
@@ -3194,8 +3178,8 @@ class AuthLDAP extends CommonDBTM {
 
       // Expert interface allow user to override configuration.
       // If not coming from the ticket form, then give expert/simple link
-      if ((Config::canUpdate()
-           || Entity::canUpdate())
+      if ((ProfileRight::checkPermission('update', 'Config')
+           || ProfileRight::checkPermission('update', 'Entity'))
           && (!isset($_SESSION['ldap_import']['no_expert_mode'])
               || $_SESSION['ldap_import']['no_expert_mode'] != 1)) {
 
@@ -3946,7 +3930,7 @@ class AuthLDAP extends CommonDBTM {
             continue;
          }
          $user_to_add['link'] = $userinfos["user"];
-         if (isset($userinfos['id']) && User::canView()) {
+         if (isset($userinfos['id']) && ProfileRight::checkPermission('view', 'User')) {
             $user_to_add['id']   = $userinfos['id'];
             $user_to_add['name'] = $user->fields['name'];
             $user_to_add['link'] = Toolbox::getItemTypeFormURL('User').'?id='.$userinfos['id'];
@@ -3971,5 +3955,13 @@ class AuthLDAP extends CommonDBTM {
       }
 
       return $users;
+   }
+
+   public static function local_cmp_desc($b, $a) {
+      return strcasecmp($a['cn'], $b['cn']);
+   }
+
+   public static function local_cmp_asc($a, $b) {
+      return strcasecmp($a['cn'], $b['cn']);
    }
 }

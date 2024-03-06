@@ -45,7 +45,7 @@ class RuleDictionnaryPrinter extends Rule {
    // From Rule
    public $can_sort  = true;
 
-   static $rightname = 'rule_dictionnary_printer';
+   protected $rightname = 'rule_dictionnary_printer';
 
 
    function getTitle() {

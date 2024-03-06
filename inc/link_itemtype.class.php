@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class Link_Itemtype extends CommonDBChild {
    // From CommonDbChild
-   static public $itemtype = 'Link';
+   protected $itemtype = 'Link';
    static public $items_id = 'links_id';
 
 
@@ -66,7 +66,7 @@ class Link_Itemtype extends CommonDBChild {
       $canedit  = $link->canEdit($links_id);
       $rand     = mt_rand();
 
-      if (!Link::canView()
+      if (!ProfileRight::checkPermission('view', 'Link')
           || !$link->can($links_id, READ)) {
          return false;
       }
@@ -196,5 +196,7 @@ class Link_Itemtype extends CommonDBChild {
       );
    }
 
+   function isEntityAssign() {
+      return false;
+   }
 }
-

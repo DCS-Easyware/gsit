@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /// LDAP criteria class
 class RuleRightParameter extends CommonDropdown {
 
-   static $rightname         = 'rule_ldap';
+   protected $rightname      = 'rule_ldap';
 
    public $can_be_translated = false;
 

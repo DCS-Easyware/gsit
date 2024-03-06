@@ -49,7 +49,7 @@ class Cartridge extends CommonDBChild {
    public $no_form_page                = true;
 
    // From CommonDBChild
-   static public $itemtype             = 'CartridgeItem';
+   protected $itemtype                 = 'CartridgeItem';
    static public $items_id             = 'cartridgeitems_id';
 
    public function getCloneRelations() :array {
@@ -94,7 +94,7 @@ class Cartridge extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
+      $item = static::getItemFromArray($this->itemtype, static::$items_id, $input);
       if ($item === false) {
          return false;
       }
@@ -315,6 +315,7 @@ class Cartridge extends CommonDBChild {
          }
          return false;
       }
+      return false;
    }
 
 
@@ -860,7 +861,7 @@ class Cartridge extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $instID = $printer->getField('id');
-      if (!self::canView()) {
+      if (!ProfileRight::checkPermission('view', get_called_class())) {
          return false;
       }
       $canedit = Session::haveRight("cartridge", UPDATE);
@@ -1201,7 +1202,7 @@ class Cartridge extends CommonDBChild {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (!$withtemplate && self::canView()) {
+      if (!$withtemplate && ProfileRight::checkPermission('view', get_called_class())) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Printer' :
@@ -1257,6 +1258,7 @@ class Cartridge extends CommonDBChild {
             self::showForCartridgeItem($item, 1);
             return true;
       }
+      return false;
    }
 
    function getRights($interface = 'central') {

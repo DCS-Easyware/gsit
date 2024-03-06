@@ -49,7 +49,6 @@ if (!defined('GLPI_ROOT')) {
 **/
 class ObjectLock extends CommonDBTM {
 
-   private $itemtype     = "";
    private $itemtypename = "";
    private $itemid       = 0;
 

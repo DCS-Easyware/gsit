@@ -46,7 +46,7 @@ class Calendar extends CommonDropdown {
 
    static protected $forward_entity_to = ['CalendarSegment'];
 
-   static $rightname = 'calendar';
+   protected $rightname = 'calendar';
 
 
    public function getCloneRelations() :array {
@@ -85,7 +85,7 @@ class Calendar extends CommonDropdown {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

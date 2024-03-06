@@ -92,6 +92,10 @@ function display_infocoms_report($itemtype, $begin, $end) {
    if ($DB->fieldExists($itemtable, "ticket_tco", false)) { // those are in the std infocom report
       return false;
    }
+   $item = getItemForItemtype($itemtype);
+   if (!$item) {
+      return false;
+   }
 
    $criteria = [
       'SELECT'       => 'glpi_infocoms.*',
@@ -124,7 +128,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
          break;
       default:
          if (is_a($itemtype, CommonDBChild::class, true)) {
-            $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static
+            $childitemtype = $item->getItemtype(); // acces to child via $itemtype static
             $criteria['INNER JOIN'][$childitemtype::getTable()] = [
                'ON'  => [
                   $itemtype::getTable() => $itemtype::$items_id,
@@ -154,9 +158,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
    }
    $iterator = $DB->request($criteria);
 
-   if (count($iterator)
-         && ($item = getItemForItemtype($itemtype))) {
-
+   if (count($iterator)) {
       echo "<h2>".$item->getTypeName(1)."</h2>";
       echo "<table class='tab_cadre'>";
 

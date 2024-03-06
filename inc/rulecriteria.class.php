@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleCriteria extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype        = 'Rule';
+   protected $itemtype            = 'Rule';
    static public $items_id        = 'rules_id';
    public $dohistory              = true;
    public $auto_message_on_action = false;
@@ -60,7 +60,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $rule_type (default 'Rule)
    **/
    function __construct($rule_type = 'Rule') {
-      static::$itemtype = $rule_type;
+      $this->itemtype = $rule_type;
    }
 
 
@@ -72,10 +72,10 @@ class RuleCriteria extends CommonDBChild {
    function post_getFromDB() {
 
       // Get correct itemtype if defult one is used
-      if (static::$itemtype == 'Rule') {
+      if ($this->itemtype == 'Rule') {
          $rule = new Rule();
          if ($rule->getFromDB($this->fields['rules_id'])) {
-            static::$itemtype = $rule->fields['sub_type'];
+            $this->itemtype = $rule->fields['sub_type'];
          }
       }
    }
@@ -94,7 +94,7 @@ class RuleCriteria extends CommonDBChild {
 
    protected function computeFriendlyName() {
 
-      if ($rule = getItemForItemtype(static::$itemtype)) {
+      if ($rule = getItemForItemtype($this->itemtype)) {
          return Html::clean($rule->getMinimalCriteriaText($this->fields));
       }
       return '';
@@ -272,9 +272,11 @@ class RuleCriteria extends CommonDBChild {
                if (isset($values['criteria']) && !empty($values['criteria'])) {
                   $options['criterion'] = $values['criteria'];
                }
-               $options['value'] = $values[$field];
-               $options['name']  = $name;
-               return $rule->dropdownConditions($generic_rule->fields["sub_type"], $options);
+               if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                  $options['value'] = $values[$field];
+                  $options['name']  = $name;
+                  return $rule->dropdownConditions($generic_rule->fields["sub_type"], $options);
+               }
             }
             break;
 
@@ -411,6 +413,9 @@ class RuleCriteria extends CommonDBChild {
             if (empty($pattern)) {
                return false;
             }
+            if (is_null($field)) {
+               return false;
+            }
             $value = mb_stripos($field, $pattern, 0, 'UTF-8');
             if (($value !== false) && ($value == 0)) {
                $criterias_results[$criteria] = $pattern;
@@ -420,6 +425,9 @@ class RuleCriteria extends CommonDBChild {
 
          case Rule::PATTERN_CONTAIN :
             if (empty($pattern)) {
+               return false;
+            }
+            if (is_null($field)) {
                return false;
             }
             $value = mb_stripos($field, $pattern, 0, 'UTF-8');
@@ -590,7 +598,7 @@ class RuleCriteria extends CommonDBChild {
          $options[static::$items_id] = $rule->getField('id');
 
          //force itemtype of parent
-         static::$itemtype = get_class($rule);
+         $this->itemtype = get_class($rule);
 
          $this->check(-1, CREATE, $options);
       }

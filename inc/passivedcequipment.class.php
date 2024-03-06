@@ -42,7 +42,7 @@ class PassiveDCEquipment extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   static $rightname = 'datacenter';
+   protected $rightname = 'datacenter';
 
    static function getTypeName($nb = 0) {
       return _n('Passive device', 'Passive devices', $nb);

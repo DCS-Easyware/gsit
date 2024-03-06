@@ -40,10 +40,10 @@ if (!defined('GLPI_ROOT')) {
 class Reservation extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype          = 'ReservationItem';
-   static public $items_id          = 'reservationitems_id';
+   protected $itemtype     = 'ReservationItem';
+   static public $items_id = 'reservationitems_id';
 
-   static $rightname                = 'reservation';
+   protected $rightname             = 'reservation';
    static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
@@ -301,24 +301,24 @@ class Reservation extends CommonDBChild {
    /**
     * @since 0.84
    **/
-   static function canCreate() {
-      return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+   function canCreate() {
+      return (Session::haveRight($this->rightname, ReservationItem::RESERVEANITEM));
    }
 
 
    /**
     * @since 0.84
    **/
-   static function canUpdate() {
-      return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+   function canUpdate() {
+      return (Session::haveRight($this->rightname, ReservationItem::RESERVEANITEM));
    }
 
 
    /**
     * @since 0.84
    **/
-   static function canDelete() {
-      return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+   function canDelete() {
+      return (Session::haveRight($this->rightname, ReservationItem::RESERVEANITEM));
    }
 
 
@@ -378,18 +378,20 @@ class Reservation extends CommonDBChild {
    static function showCalendar($ID = "") {
       global $CFG_GLPI;
 
+      $datetime = new DateTime();
+
       if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
          return false;
       }
 
       if (!isset($_GET["mois_courant"])) {
-         $mois_courant = intval(strftime("%m"));
+         $mois_courant = intval($datetime->format("m"));
       } else {
          $mois_courant = $_GET["mois_courant"];
       }
 
       if (!isset($_GET["annee_courante"])) {
-         $annee_courante = strftime("%Y");
+         $annee_courante = $datetime->format("Y");
       } else {
          $annee_courante = $_GET["annee_courante"];
       }
@@ -467,11 +469,11 @@ class Reservation extends CommonDBChild {
       $nb_jour = [31, $fev, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
       // Datas used to put right information in columns
-      $jour_debut_mois = strftime("%w", mktime(0, 0, 0, $mois_courant, 1, $annee_courante));
+      $jour_debut_mois = date("w", mktime(0, 0, 0, $mois_courant, 1, $annee_courante));
       if ($jour_debut_mois == 0) {
          $jour_debut_mois = 7;
       }
-      $jour_fin_mois = strftime("%w", mktime(0, 0, 0, $mois_courant, $nb_jour[$mois_courant-1],
+      $jour_fin_mois = date("w", mktime(0, 0, 0, $mois_courant, $nb_jour[$mois_courant-1],
                                              $annee_courante));
 
       echo "<div class='center'>";
@@ -760,10 +762,10 @@ class Reservation extends CommonDBChild {
 
       } else {
          if (($resa->fields["users_id"] == Session::getLoginUserID())
-             || Session::haveRightsOr(static::$rightname, [PURGE, UPDATE])) {
+             || Session::haveRightsOr($this->rightname, [PURGE, UPDATE])) {
             echo "<tr class='tab_bg_2'>";
             if (($resa->fields["users_id"] == Session::getLoginUserID())
-                || Session::haveRight(static::$rightname, PURGE)) {
+                || Session::haveRight($this->rightname, PURGE)) {
                echo "<td class='top center'>";
                echo "<input type='submit' name='purge' value=\""._sx('button', 'Delete permanently')."\"
                       class='submit'>";
@@ -774,7 +776,7 @@ class Reservation extends CommonDBChild {
                echo "</td>";
             }
             if (($resa->fields["users_id"] == Session::getLoginUserID())
-                || Session::haveRight(static::$rightname, UPDATE)) {
+                || Session::haveRight($this->rightname, UPDATE)) {
                echo "<td class='top center'>";
                echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
                      class='submit'>";

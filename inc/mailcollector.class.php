@@ -88,7 +88,7 @@ class MailCollector  extends CommonDBTM {
 
    public $dohistory       = true;
 
-   static $rightname       = 'config';
+   protected $rightname    = 'config';
 
    // Destination folder
    const REFUSED_FOLDER  = 'refused';
@@ -107,19 +107,19 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return static::canUpdate();
+   function canCreate() {
+      return $this->canUpdate();
    }
 
 
-   static function canPurge() {
-      return static::canUpdate();
+   function canPurge() {
+      return $this->canUpdate();
    }
 
 
-   static function getAdditionalMenuOptions() {
+   function getAdditionalMenuOptions() {
 
-      if (static::canView()) {
+      if (ProfileRight::checkPermission('view', get_called_class())) {
          $options['options']['notimportedemail']['links']['search']
                                           = '/front/notimportedemail.php';
          return $options;
@@ -826,7 +826,7 @@ class MailCollector  extends CommonDBTM {
 
                   if (!$CFG_GLPI["use_anonymous_helpdesk"]
                       && !Profile::haveUserRight($tkt['_users_id_requester'],
-                                                 Ticket::$rightname,
+                                                 $ticket->getRightname(),
                                                  CREATE,
                                                  $tkt['entities_id'])) {
                      $delete[$uid] =  self::REFUSED_FOLDER;
@@ -1088,6 +1088,7 @@ class MailCollector  extends CommonDBTM {
 
       // See in title
       if (!isset($tkt['tickets_id'])
+          && !is_null($subject)
           && preg_match('/\[.+#(\d+)\]/', $subject, $match)) {
          $tkt['tickets_id'] = intval($match[1]);
       }
@@ -1212,9 +1213,12 @@ class MailCollector  extends CommonDBTM {
             }
          }
       }
-
-      $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
-      $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
+      if (!is_null($tkt['content'])) {
+         $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
+      }
+      if (!is_null($tkt['name'])) {
+         $tkt['name'] = LitEmoji::encodeShortcode($tkt['name']);
+      }
 
       $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
@@ -1232,6 +1236,10 @@ class MailCollector  extends CommonDBTM {
    **/
    function cleanContent($string) {
       global $DB;
+
+      if (is_null($string)) {
+         return null;
+      }
 
       // Clean HTML
       $string = Html::clean(Html::entities_deep($string), false, 2);
@@ -1281,6 +1289,9 @@ class MailCollector  extends CommonDBTM {
     * @return string clean text
    **/
    function cleanSubject($text) {
+      if (is_null($text)) {
+         return null;
+      }
       $text = str_replace("=20", "\n", $text);
       $text =  Toolbox::clean_cross_side_scripting_deep($text);
       return $text;

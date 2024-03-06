@@ -40,8 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class Datacenter extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'datacenter';
+   public $dohistory    = true;
+   protected $rightname = 'datacenter';
 
    static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
@@ -165,9 +165,9 @@ class Datacenter extends CommonDBTM {
       ];
    }
 
-   static function getAdditionalMenuLinks() {
+   function getAdditionalMenuLinks() {
       $links = [];
-      if (static::canView()) {
+      if ($this->canView()) {
          $rooms = "<i class=\"fa fa-building pointer\" title=\"" . DCRoom::getTypeName(Session::getPluralNumber()) .
             "\"></i><span class=\"sr-only\">" . DCRoom::getTypeName(Session::getPluralNumber()). "</span>";
          $links[$rooms] = DCRoom::getSearchURL(false);
@@ -179,8 +179,8 @@ class Datacenter extends CommonDBTM {
       return false;
    }
 
-   static function getAdditionalMenuOptions() {
-      if (static::canView()) {
+   function getAdditionalMenuOptions() {
+      if ($this->canView()) {
          return [
             'dcroom' => [
                'title' => DCRoom::getTypeName(Session::getPluralNumber()),
@@ -192,6 +192,7 @@ class Datacenter extends CommonDBTM {
             ]
          ];
       }
+      return [];
    }
 
 

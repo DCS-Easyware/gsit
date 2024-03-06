@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
 
-   static $rightname               = 'bookmark_public';
+   protected $rightname = 'bookmark_public';
 
    const SEARCH = 1; //SEARCH SYSTEM bookmark
    const URI    = 2;
@@ -437,7 +437,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
       }
       if ($ID <= 0) { // add
          echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
-         if (!self::canCreate()) {
+         if (!$this->canCreate()) {
             echo Html::hidden('is_private', ['value' => 1]);
          }
       } else {
@@ -690,13 +690,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
    function unmarkDefaults(array $ids) {
       global $DB;
 
-      if (Session::haveRight('config', UPDATE)) {
+      if (Session::haveRight('config', UPDATE) !== false) {
          return $DB->delete(
             'glpi_savedsearches_users', [
                'savedsearches_id'   => $ids
             ]
          );
       }
+      return false;
    }
 
 
@@ -816,7 +817,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                   ) .
                   "<i class='toggle fa fa-chevron-circle-up' title='".__('Hide/Show elements')."'></i>" .
            "</th></tr></thead><tbody>";
-      echo $this->displaySavedSearchType($searches['private']);
+      $this->displaySavedSearchType($searches['private']);
       echo "</tbody>";
       if ($this->canView()) {
          echo "<thead><tr><th colspan='$colspan'>" .
@@ -826,7 +827,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
                      ) .
                      "<i class='toggle fa fa-chevron-circle-up' title='".__('Hide/Show elements')."'></i>" .
               "</th></tr></thead><tbody>";
-         echo $this->displaySavedSearchType($searches['public']);
+         $this->displaySavedSearchType($searches['public']);
          echo "</tbody>";
       }
       echo "</table></div>";
@@ -1392,14 +1393,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          if (!$params) {
             throw new \RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
          } else {
-            $data                   = $search->prepareDatasForSearch($this->getField('itemtype'),
-                                                                     $params);
+            $data = $search->prepareDatasForSearch($this->getField('itemtype'), $params);
             $data['search']['sort'] = null;
             $search->constructSQL($data);
             $search->constructData($data, true);
             return $data;
          }
       }
+      return [];
    }
 
 
@@ -1472,7 +1473,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria {
          self::getTable() . '.users_id'    => Session::getLoginUserID()
       ];
 
-      if (Session::haveRight(self::$rightname, READ)) {
+      $thisclass = new static();
+      if (Session::haveRight($thisclass->getRightname(), READ)) {
          $restrict = [
             'OR' => [
                $restrict,

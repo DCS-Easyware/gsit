@@ -123,7 +123,7 @@ class Profile_User extends CommonDBRelation {
          $canedit = false;
       }
 
-      $canshowentity = Entity::canView();
+      $canshowentity = ProfileRight::checkPermission('view', 'Entity');
       $rand          = mt_rand();
 
       if ($canedit) {
@@ -204,7 +204,7 @@ class Profile_User extends CommonDBRelation {
             echo $link.($canshowentity ? "</a>" : '');
             echo "</td>";
 
-            if (Profile::canView()) {
+            if (ProfileRight::checkPermission('view', 'Profile')) {
                $entname = "<a href='".Toolbox::getItemTypeFormURL('Profile')."?id=".$data["id"]."'>".
                             $data["name"]."</a>";
             } else {
@@ -260,7 +260,7 @@ class Profile_User extends CommonDBRelation {
       }
 
       $canedit     = $entity->canEdit($ID);
-      $canshowuser = User::canView();
+      $canshowuser = ProfileRight::checkPermission('view', 'User');
       $nb_per_line = 3;
       $rand        = mt_rand();
 

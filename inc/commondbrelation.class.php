@@ -71,6 +71,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $log_history_2_lock     = Log::HISTORY_LOCK_RELATION;
    static public $log_history_2_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
+   public $_force_log_option;
+
    // Relation between items to check
    /// If both items must be checked for rights (default is only one)
    static public $checkAlwaysBothItems   = false;
@@ -374,11 +376,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return boolean
    **/
-   static function canRelation($method, $forceCheckBoth = false) {
+   function canRelation($method, $forceCheckBoth = false) {
 
-      $can1 = static::canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
+      $can1 = $this->canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
                                    static::$items_id_1);
-      $can2 = static::canConnexity($method, static::$checkItem_2_Rights, static::$itemtype_2,
+      $can2 = $this->canConnexity($method, static::$checkItem_2_Rights, static::$itemtype_2,
                                    static::$items_id_2);
 
       /// Check only one if SAME RIGHT for both items and not force checkBoth
@@ -509,9 +511,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @since 0.84
    **/
-   static function canCreate() {
+   function canCreate() {
 
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, CREATE))) {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, CREATE))) {
          return false;
       }
       return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
@@ -521,8 +523,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @since 0.84
    **/
-   static function canView() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
+   function canView() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, READ))) {
          return false;
       }
       // Always both checks for view
@@ -533,8 +535,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @since 0.84
    **/
-   static function canUpdate() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
+   function canUpdate() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, UPDATE))) {
          return false;
       }
       return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
@@ -544,8 +546,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @since 0.84
    **/
-   static function canDelete() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
+   function canDelete() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, DELETE))) {
          return false;
       }
       return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
@@ -555,8 +557,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @since 0.85
     **/
-   static function canPurge() {
-      if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
+   function canPurge() {
+      if (($this->rightname) && (!Session::haveRight($this->rightname, PURGE))) {
          return false;
       }
       return static::canRelation('canUpdate', static::$checkAlwaysBothItems);

@@ -32,7 +32,7 @@
 
 class RuleDictionnaryDropdownCollection extends RuleCollection {
 
-   static $rightname = 'rule_dictionnary_dropdown';
+   protected $rightname = 'rule_dictionnary_dropdown';
 
    public $menu_type = 'dictionnary';
 

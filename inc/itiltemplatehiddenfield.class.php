@@ -113,7 +113,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField {
          'ORDER'  => 'id'
       ]);
 
-      $tt_class       = static::$itemtype;
+      $tt_class       = $this->itemtype;
       $tt             = new $tt_class;
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];

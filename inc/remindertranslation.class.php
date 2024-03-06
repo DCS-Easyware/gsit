@@ -44,12 +44,12 @@ if (!defined('GLPI_ROOT')) {
 **/
 class ReminderTranslation extends CommonDBChild {
 
-   static public $itemtype = 'Reminder';
+   protected $itemtype     = 'Reminder';
    static public $items_id = 'reminders_id';
    public $dohistory       = true;
    static public $logs_for_parent = false;
 
-   static $rightname       = 'reminder_public';
+   protected $rightname    = 'reminder_public';
 
 
 

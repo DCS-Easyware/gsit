@@ -291,7 +291,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
     *
     * @param KnowbaseItem $item Knowledge base item
     *
-    * @return boolean
+    * @return void
     */
    public function createNew(KnowbaseItem $item) {
       $this->getEmpty();
@@ -312,7 +312,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
     *
     * @param KnowbaseItemTranslation $item Knowledge base item translation
     *
-    * @return boolean
+    * @return void
     */
    public function createNewTranslated(KnowbaseItemTranslation $item) {
       $this->getEmpty();

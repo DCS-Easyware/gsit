@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class ProfileRight extends CommonDBChild {
 
    // From CommonDBChild:
-   static public $itemtype = 'Profile';
+   protected $itemtype     = 'Profile';
    static public $items_id = 'profiles_id'; // Field name
    public $dohistory       = true;
 
@@ -376,4 +376,40 @@ class ProfileRight extends CommonDBChild {
       return ['Profile', $this->fields['profiles_id']];
    }
 
+   /**
+    * Check the permission
+    *
+    * @param   $permission string   the permission like create, update...
+    * @param   $itemtype   string   the itemtype (name of the class)
+    *
+    * @return boolean true if allowed, otherwize false
+    */
+   static function checkPermission($permission, $itemtype) {
+      $dbu = new DbUtils();
+      $item = $dbu->getItemForItemtype($itemtype);
+      if ($item === false) {
+         return false;
+      }
+
+      switch ($permission) {
+         case 'view':
+            return $item->canView();
+
+         case 'create':
+            return $item->canCreate();
+
+         case 'update':
+            return $item->canUpdate();
+
+         case 'delete':
+            return $item->canDelete();
+
+         case 'purge':
+            return $item->canPurge();
+
+         default:
+            return false;
+      }
+      return false;
+   }
 }

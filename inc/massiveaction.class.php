@@ -50,6 +50,167 @@ class MassiveAction {
    const ACTION_KO               = 2;
    const ACTION_NORIGHT          = 3;
 
+   /**
+    * Number of items in massive actions.
+    *
+    * @var int
+    */
+   protected $nb_items = 0;
+
+   /**
+    * Identifier.
+    *
+    * @var int
+    */
+   protected $identifier = 0;
+
+   /**
+    * Items done.
+    *
+    * @var array
+    */
+   protected $done = [];
+
+   /**
+    * Number of items done.
+    *
+    * @var int
+    */
+   protected $nb_done = 0;
+
+   /**
+    * Name of the massive action.
+    *
+    * @var string
+    */
+   protected $action_name = "";
+
+   /**
+    * Results.
+    *
+    * @var array
+    */
+   protected $results = [];
+
+   /**
+    * Redirect link.
+    *
+    * @var string
+    */
+   protected $redirect = "";
+
+   /**
+    * Display or not the progress bars.
+    *
+    * @var boolean
+    */
+   protected $display_progress_bars = false;
+
+   /**
+    * Progress bar displayed?
+    *
+    * @var boolean
+    */
+   protected $progress_bar_displayed = false;
+
+
+   /**
+    * POST data.
+    *
+    * @var array
+    */
+   protected $POST = [];
+
+   /**
+    * Value of field.
+    *
+    * @var string
+    */
+   protected $field = "";
+
+   /**
+    * TODO.
+    *
+    * @var array
+    */
+   protected $items = [];
+
+   /**
+    * TODO.
+    *
+    * @var array
+    */
+   protected $remainings = [];
+
+   /**
+    * TODO.
+    *
+    * @var array
+    */
+   protected $action = [];
+
+   /**
+    * TODO.
+    *
+    * @var array
+    */
+   protected $processor = [];
+
+   /**
+    * The error message
+    *
+    * @var string
+    */
+   protected $error = "";
+
+   /**
+    * The error message
+    *
+    * @var string[]
+    */
+   protected $fields_to_remove_when_reload = [];
+
+   /**
+    * The timeout delay
+    *
+    * @var integer
+    */
+   protected $timeout_delay = 0;
+
+   /**
+    * The timer
+    *
+    * @var Timer
+    */
+   protected $timer;
+
+   /**
+    * message after redirect
+    *
+    * @var array
+    */
+   protected $messaget_after_redirect = [];
+
+   /**
+    * the item instance
+    *
+    * @var CommonDBTM|null
+    */
+   protected $check_item;
+
+   /**
+    * Hidden fields defined?
+    *
+    * @var boolean
+    */
+   protected $hidden_fields_defined;
+
+   /**
+    * The current itemtype managed
+    *
+    * @var string
+    */
+    protected $current_itemtype;
 
    /**
     * Constructor of massive actions.
@@ -224,10 +385,12 @@ class MassiveAction {
                   $this->done        = [];
                   $this->nb_done     = 0;
                   $this->action_name = $POST['action_name'];
-                  $this->results     = ['ok'      => 0,
-                                             'ko'      => 0,
-                                             'noright' => 0,
-                                             'messages' => []];
+                  $this->results     = [
+                     'ok'      => 0,
+                     'ko'      => 0,
+                     'noright' => 0,
+                     'messages' => []
+                  ];
                   foreach ($POST['items'] as $itemtype => $ids) {
                      $this->nb_items += count($ids);
                   }
@@ -513,9 +676,9 @@ class MassiveAction {
          $candelete = $checkitem->canDelete();
          $canpurge  = $checkitem->canPurge();
       } else {
-         $canupdate = $itemtype::canUpdate();
-         $candelete = $itemtype::canDelete();
-         $canpurge  = $itemtype::canPurge();
+         $canupdate = $item->canUpdate();
+         $candelete = $item->canDelete();
+         $canpurge  = $item->canPurge();
       }
 
       $actions   = [];
@@ -538,7 +701,7 @@ class MassiveAction {
          if (Session::getCurrentInterface() == 'central'
              && ($canupdate
                  || (Infocom::canApplyOn($itemtype)
-                     && Infocom::canUpdate()))) {
+                     && ProfileRight::checkPermission('update', 'Infocom')))) {
 
             //TRANS: select action 'update' (before doing it)
             $actions[$self_pref.'update'] = _x('button', 'Update');
@@ -582,7 +745,7 @@ class MassiveAction {
          }
 
          // Add a note for objects with the UPDATENOTE rights
-         if (Session::haveRight($item::$rightname, UPDATENOTE)) {
+         if (Session::haveRight($item->getRightname(), UPDATENOTE)) {
             $actions[$self_pref.'add_note'] = __("Add note");
          }
 
@@ -701,10 +864,10 @@ class MassiveAction {
                   $itemtable                   = getTableForItemType($itemtype);
 
                   if (Infocom::canApplyOn($itemtype)
-                      && (!$itemtype::canUpdate()
-                          || !Infocom::canUpdate())) {
+                      && (!ProfileRight::checkPermission('update', $itemtype)
+                          || !ProfileRight::checkPermission('update', 'Infocom'))) {
                      $show_all      = false;
-                     $show_infocoms = Infocom::canUpdate();
+                     $show_infocoms = ProfileRight::checkPermission('update', 'Infocom');
                   }
                   foreach (Search::getCleanedOptions($itemtype, UPDATE) as $index => $option) {
 
@@ -1087,7 +1250,7 @@ class MassiveAction {
 
    /**
     * Process the specific massive actions for severl itemtypes
-    * @return array of the results for the actions
+    * @return void
    **/
    function processForSeveralItemtypes() {
 
@@ -1401,7 +1564,7 @@ class MassiveAction {
 
          case 'add_note':
             // Check rights
-            if (!Session::haveRight($item::$rightname, UPDATENOTE)) {
+            if (!Session::haveRight($item->getRightname(), UPDATENOTE)) {
                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                break;
             }

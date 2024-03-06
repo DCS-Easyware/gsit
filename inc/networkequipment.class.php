@@ -47,7 +47,7 @@ class NetworkEquipment extends CommonDBTM {
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
                                           'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion'];
 
-   static $rightname                   = 'networking';
+   protected $rightname                = 'networking';
    protected $usenotepad               = true;
 
    /** RELATIONS */
@@ -80,9 +80,9 @@ class NetworkEquipment extends CommonDBTM {
     *
     * @since 0.85
    **/
-   static function getAdditionalMenuOptions() {
+   function getAdditionalMenuOptions() {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          $options = [
             'networkport' => [
                'title' => NetworkPort::getTypeName(Session::getPluralNumber()),
@@ -411,7 +411,7 @@ class NetworkEquipment extends CommonDBTM {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

@@ -85,6 +85,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          }
          return false;
       }
+      return false;
    }
 
 }

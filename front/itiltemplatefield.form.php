@@ -73,7 +73,7 @@ if (isset($_POST["add"]) || isset($_POST['massiveaction'])) {
 
       Event::log(
          $_POST[$item::$items_id],
-         strtolower($item::$itemtype),
+         strtolower($item->getItemtype()),
          4,
          "maintain",
          sprintf(

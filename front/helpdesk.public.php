@@ -88,9 +88,9 @@ if (!Session::haveRight('ticket', CREATE)
 Session::checkHelpdeskAccess();
 
 
+$ticket = new Ticket();
 if (isset($_GET['create_ticket'])) {
    Html::helpHeader(__('New ticket'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
-   $ticket = new Ticket();
    $ticket->showFormHelpdesk(Session::getLoginUserID());
 
 } else {
@@ -128,10 +128,10 @@ if (isset($_GET['create_ticket'])) {
    Plugin::doHook('display_central');
    if (Session::haveRight('ticket', CREATE)) {
       echo "<tr class='noHover'><td class='top'>";
-      Ticket::showCentralCount(true);
+      $ticket->showCentralCount(true);
       echo "</td></tr>";
       echo "<tr class='noHover'><td class='top'>";
-      Ticket::showCentralList(0, "survey", false);
+      $ticket->showCentralList(0, "survey", false);
       echo "</td></tr>";
    }
 
@@ -173,4 +173,3 @@ if (isset($_GET['create_ticket'])) {
 }
 
 Html::helpFooter();
-

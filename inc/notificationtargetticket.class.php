@@ -116,10 +116,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     *
     * @param $event  (default '')
     *
-    * @return the object associated with the itemtype
+    * @return void
    **/
    function getObjectItem($event = '') {
-
       if ($this->obj && isset($this->obj->fields['id']) && !empty($this->obj->fields['id'])) {
          $item_ticket = new Item_Ticket();
          $data = $item_ticket->find(['tickets_id' => $this->obj->fields['id']]);

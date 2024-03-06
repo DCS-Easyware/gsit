@@ -42,21 +42,20 @@ if (!defined('GLPI_ROOT')) {
 class ChangeCost extends CommonITILCost {
 
    // From CommonDBChild
-   static public $itemtype  = 'Change';
+   protected $itemtype  = 'Change';
    static public $items_id  = 'changes_id';
 
-
-   static function canCreate() {
+   function canCreate() {
       return Session::haveRight('change', UPDATE);
    }
 
 
-   static function canView() {
+   function canView() {
       return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
    }
 
 
-   static function canUpdate() {
+   function canUpdate() {
       return Session::haveRight('change', UPDATE);
    }
 }

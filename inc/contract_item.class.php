@@ -195,7 +195,7 @@ class Contract_Item extends CommonDBRelation{
       global $CFG_GLPI;
 
       // Can exists on template
-      if (Contract::canView()) {
+      if (ProfileRight::checkPermission('view', 'Contract')) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Contract' :
@@ -287,7 +287,7 @@ class Contract_Item extends CommonDBRelation{
       $itemtype = $item->getType();
       $ID       = $item->fields['id'];
 
-      if (!Contract::canView()
+      if (!ProfileRight::checkPermission('view', 'Contract')
           || !$item->can($ID, READ)) {
          return;
       }

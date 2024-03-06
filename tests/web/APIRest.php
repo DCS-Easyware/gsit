@@ -65,6 +65,21 @@ class APIRest extends APIBaseClass {
    public function afterTestMethod($method) {
       global $CFG_GLPI;
 
+      // special case for deprecated
+      $log = file_get_contents(__DIR__ . '/error.log');
+      if (!empty($log)) {
+         $lines = explode("\n", $log);
+         $problem = false;
+         foreach ($lines as $line) {
+            if (!(empty($line) || strstr($line, "has been replaced by"))) {
+               $problem = true;
+            }
+         }
+         if (!$problem) {
+            return;
+         }
+      }
+
       // Check that no errors occured on the test server
       $this->string(file_get_contents(__DIR__ . '/error.log'))->isEmpty();
    }

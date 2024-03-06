@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleSoftwareCategory extends Rule {
 
    // From Rule
-   static $rightname = 'rule_softwarecategories';
+   protected $rightname = 'rule_softwarecategories';
    public $can_sort  = true;
 
 

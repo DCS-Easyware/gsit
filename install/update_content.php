@@ -66,7 +66,6 @@ if ($max_time>5) {
 
 $DB = new DB();
 
-
 function init_time() {
    global $TPSDEB, $TPSCOUR;
 
@@ -242,7 +241,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
 
    if ($DB->error()) {
       echo "<hr>";
-      printf(__("SQL error starting from %s"), "[$formattedQuery]");
+      echo "SQL error";
       echo "<br>".$DB->error()."<hr>";
    }
 

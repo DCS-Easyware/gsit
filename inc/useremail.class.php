@@ -43,9 +43,9 @@ class UserEmail  extends CommonDBChild {
    public $auto_message_on_action = false;
 
    // From CommonDBChild
-   static public $itemtype        = 'User';
-   static public $items_id        = 'users_id';
-   public $dohistory              = true;
+   protected $itemtype     = 'User';
+   static public $items_id = 'users_id';
+   public $dohistory       = true;
 
 
    static function getTypeName($nb = 0) {

@@ -36,7 +36,7 @@ Session::checkRight("config", UPDATE);
 
 $config = new Config();
 
-//Update CAS configuration
+//Update configuration
 if (isset($_POST["update"])) {
    $_POST['id'] = 1;
    $config->update($_POST);

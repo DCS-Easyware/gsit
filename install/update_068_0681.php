@@ -46,12 +46,7 @@ class DBocs extends DBmysql {
          $this->dbuser     = $db->result($result, 0, "ocs_db_user");
          $this->dbpassword = $db->result($result, 0, "ocs_db_passwd");
          $this->dbdefault  = $db->result($result, 0, "ocs_db_name");
-         if (!($this->dbh = new mysqli($this->dbhost, $this->dbuser, $this->dbpassword))) {
-            $this->error = 1;
-         }
-         if (!$this->dbh->select_db($this->dbdefault)) {
-             $this->error = 1;
-         }
+         $this->connect();
       }
    }
 

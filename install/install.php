@@ -334,7 +334,6 @@ function step3($host, $user, $password, $update) {
    }
 }
 
-
 //Step 4 Create and fill database.
 function step4 ($databasename, $newdatabasename) {
 
@@ -344,29 +343,6 @@ function step4 ($databasename, $newdatabasename) {
 
    //display the form to return to the previous step.
    echo "<h3>".__('Initialization of the database')."</h3>";
-
-   function prev_form($host, $user, $password) {
-
-      echo "<br><form action='install.php' method='post'>";
-      echo "<input type='hidden' name='db_host' value='". $host ."'>";
-      echo "<input type='hidden' name='db_user' value='". $user ."'>";
-      echo " <input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
-      echo "<input type='hidden' name='update' value='no'>";
-      echo "<input type='hidden' name='install' value='Etape_2'>";
-      echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-            __s('Back')."'></p>";
-      Html::closeForm();
-   }
-
-   //Display the form to go to the next page
-   function next_form() {
-
-      echo "<br><form action='install.php' method='post'>";
-      echo "<input type='hidden' name='install' value='Etape_4'>";
-      echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-             __('Continue')."'></p>";
-      Html::closeForm();
-   }
 
    //create security key
    $glpikey = new GLPIKey();
@@ -564,7 +540,28 @@ function update1($DBname) {
    }
 }
 
+function prev_form($host, $user, $password) {
 
+   echo "<br><form action='install.php' method='post'>";
+   echo "<input type='hidden' name='db_host' value='". $host ."'>";
+   echo "<input type='hidden' name='db_user' value='". $user ."'>";
+   echo " <input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
+   echo "<input type='hidden' name='update' value='no'>";
+   echo "<input type='hidden' name='install' value='Etape_2'>";
+   echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
+         __s('Back')."'></p>";
+   Html::closeForm();
+}
+
+//Display the form to go to the next page
+function next_form() {
+
+   echo "<br><form action='install.php' method='post'>";
+   echo "<input type='hidden' name='install' value='Etape_4'>";
+   echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
+            __('Continue')."'></p>";
+   Html::closeForm();
+}
 
 //------------Start of install script---------------------------
 
@@ -587,6 +584,7 @@ Session::loadLanguage('', false);
  * @since 0.84.2
 **/
 function checkConfigFile() {
+   global $CFG_GLPI;
 
    if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Html::redirect($CFG_GLPI['root_doc'] ."/index.php");

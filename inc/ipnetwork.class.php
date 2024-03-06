@@ -47,9 +47,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    public $dohistory = true;
 
-   static $rightname = 'internet';
-
-
+   protected $rightname = 'internet';
+   protected $address = '';
+   protected $netmask = '';
+   protected $gateway = '';
+   protected $networkUpdate = '';
+   protected $data_for_implicit_update = '';
 
    static function getTypeName($nb = 0) {
       return _n('IP network', 'IP networks', $nb);

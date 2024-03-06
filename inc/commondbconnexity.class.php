@@ -334,14 +334,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return boolean true if we have absolute right to create the current connexity
    **/
-   static function canConnexity($method, $item_right, $itemtype, $items_id) {
-
+   function canConnexity($method, $item_right, $itemtype, $items_id) {
       if (($item_right != self::DONT_CHECK_ITEM_RIGHTS)
           && (!preg_match('/^itemtype/', $itemtype))) {
          if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
             $method = 'canView';
          }
-         if (!$itemtype::$method()) {
+         $item = new $itemtype();
+         if (!call_user_func_array([$item, $method], [])) {
             return false;
          }
       }
@@ -411,6 +411,9 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *         log for the given field
    **/
    function getHistoryChangeWhenUpdateField($field) {
+      if (is_null($this->oldvalues[$field])) {
+         return ['0', null, addslashes($this->fields[$field])];
+      }
 
       return ['0', addslashes($this->oldvalues[$field]), addslashes($this->fields[$field])];
    }
@@ -607,7 +610,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
                      $peertype = $itemtype::$itemtype_2;
                   }
                } else {
-                  $peertype = $itemtype::$itemtype;
+                  $myitem = getItemForItemtype($itemtype);
+                  $peertype = $myitem->getItemtype();
                }
                if (preg_match('/^itemtype/', $peertype)) {
                   $peertypes = array_merge($peertypes, $specificities['itemtypes']);
@@ -738,7 +742,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
                   $peers_id = $itemtype::$items_id_2;
                }
             } else {
-               $peertype = $itemtype::$itemtype;
+               $myitem = getItemForItemtype($itemtype);
+               $peertype = $myitem->getItemtype();
                $peers_id = $itemtype::$items_id;
             }
             $input2 = $itemtype::getConnexityInputForProcessingOfMassiveActions($action, $item,

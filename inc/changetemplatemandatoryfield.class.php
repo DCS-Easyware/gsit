@@ -39,8 +39,8 @@ if (!defined('GLPI_ROOT')) {
 class ChangeTemplateMandatoryField extends ITILTemplateMandatoryField {
 
    // From CommonDBChild
-   static public $itemtype  = 'ChangeTemplate';
-   static public $items_id  = 'changetemplates_id';
+   protected $itemtype     = 'ChangeTemplate';
+   static public $items_id = 'changetemplates_id';
    static public $itiltype = 'Change';
 
 }

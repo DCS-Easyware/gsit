@@ -41,8 +41,8 @@ class ITILFollowup  extends CommonDBChild {
 
    // From CommonDBTM
    public $auto_message_on_action = false;
-   static $rightname              = 'followup';
-   private $item                  = null;
+   protected $rightname = 'followup';
+   private $item        = null;
 
    static public $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
    static public $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
@@ -56,7 +56,7 @@ class ITILFollowup  extends CommonDBChild {
    const ADDALLTICKET    = 4096;
    const SEEPRIVATE      = 8192;
 
-   static public $itemtype = 'itemtype';
+   protected $itemtype     = 'itemtype';
    static public $items_id = 'items_id';
 
 
@@ -86,8 +86,8 @@ class ITILFollowup  extends CommonDBChild {
    }
 
 
-   static function canView() {
-      return (Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])
+   function canView() {
+      return (Session::haveRightsOr($this->rightname, [self::SEEPUBLIC, self::SEEPRIVATE])
               || Session::haveRight('ticket', Ticket::OWN))
               || Session::haveRight('ticket', READ)
               || Session::haveRight('change', READ)
@@ -95,10 +95,10 @@ class ITILFollowup  extends CommonDBChild {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
       return Session::haveRight('change', UPDATE)
              || Session::haveRight('problem', UPDATE)
-             || (Session::haveRightsOr(self::$rightname,
+             || (Session::haveRightsOr($this->rightname,
                     [self::ADDALLTICKET, self::ADDMYTICKET, self::ADDGROUPTICKET])
              || Session::haveRight('ticket', Ticket::OWN));
    }
@@ -110,11 +110,11 @@ class ITILFollowup  extends CommonDBChild {
       if (!$itilobject->can($this->getField('items_id'), READ)) {
          return false;
       }
-      if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
+      if (Session::haveRight($this->rightname, self::SEEPRIVATE)) {
          return true;
       }
       if (!$this->fields['is_private']
-          && Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
+          && Session::haveRight($this->rightname, self::SEEPUBLIC)) {
          return true;
       }
       if ($itilobject instanceof Ticket) {
@@ -154,7 +154,7 @@ class ITILFollowup  extends CommonDBChild {
          return false;
       }
 
-      if (Session::haveRight(self::$rightname, PURGE)) {
+      if (Session::haveRight($this->rightname, PURGE)) {
          return true;
       }
 
@@ -165,7 +165,7 @@ class ITILFollowup  extends CommonDBChild {
    function canUpdateItem() {
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight(self::$rightname, self::UPDATEALL)) {
+          && !Session::haveRight($this->rightname, self::UPDATEALL)) {
          return false;
       }
 
@@ -175,14 +175,14 @@ class ITILFollowup  extends CommonDBChild {
       }
 
       if ($this->fields["users_id"] === Session::getLoginUserID()) {
-         if (!Session::haveRight(self::$rightname, self::UPDATEMY)) {
+         if (!Session::haveRight($this->rightname, self::UPDATEMY)) {
             return false;
          }
          return true;
       }
 
       // Only the technician
-      return (Session::haveRight(self::$rightname, self::UPDATEALL)
+      return (Session::haveRight($this->rightname, self::UPDATEALL)
               || $itilobject->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $itilobject->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -781,7 +781,7 @@ class ITILFollowup  extends CommonDBChild {
          $options['items_id'] = $item->getField('id');
          $this->check(-1, CREATE, $options);
       }
-      $tech = (Session::haveRight(self::$rightname, self::ADDALLTICKET)
+      $tech = (Session::haveRight($this->rightname, self::ADDALLTICKET)
                || $item->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $item->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -1022,8 +1022,9 @@ JAVASCRIPT;
 
       global $DB, $CFG_GLPI;
 
+      $item = new static();
       // Print Followups for a job
-      $showprivate = Session::haveRight(self::$rightname, self::SEEPRIVATE);
+      $showprivate = Session::haveRight($item->getRightname(), self::SEEPRIVATE);
 
       $where = [
          'itemtype'  => $itemtype,
@@ -1201,8 +1202,8 @@ JAVASCRIPT;
             "'$itemtype' is not a CommonITILObject"
          );
       }
-
-      $rightname = $itemtype::$rightname;
+      $item = new $itemtype();
+      $rightname = $item->getRightname();
       // Can see all items, no need to go further
       if (Session::haveRight($rightname, $itemtype::READALL)) {
          return "(`$itilfup_table`.`itemtype` = '$itemtype') ";

@@ -52,7 +52,7 @@ class CronTask extends CommonDBTM{
    private $timer           = 0.0;
    private $startlog        = 0;
    private $volume          = 0;
-   static $rightname        = 'config';
+   protected $rightname     = 'config';
 
    // Class constant
    const STATE_DISABLE = 0;
@@ -95,7 +95,7 @@ class CronTask extends CommonDBTM{
    }
 
 
-   static function canDelete() {
+   function canDelete() {
       return false;
    }
 
@@ -541,7 +541,7 @@ class CronTask extends CommonDBTM{
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
-      if (!Config::canView() || !$this->getFromDB($ID)) {
+      if (!ProfileRight::checkPermission('view', 'Config') || !$this->getFromDB($ID)) {
          return false;
       }
       $options['candel'] = false;
@@ -1212,7 +1212,8 @@ class CronTask extends CommonDBTM{
       global $DB;
 
       if (isset($_GET["crontasklogs_id"]) && $_GET["crontasklogs_id"]) {
-         return $this->showHistoryDetail($_GET["crontasklogs_id"]);
+         $this->showHistoryDetail($_GET["crontasklogs_id"]);
+         return;
       }
 
       if (isset($_GET["start"])) {
@@ -1428,7 +1429,7 @@ class CronTask extends CommonDBTM{
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
@@ -1443,7 +1444,7 @@ class CronTask extends CommonDBTM{
 
       switch ($ma->getAction()) {
          case 'reset' :
-            if (Config::canUpdate()) {
+            if (ProfileRight::checkPermission('update', 'Config')) {
                foreach ($ids as $key) {
                   if ($item->getFromDB($key)) {
                      if ($item->resetDate()) {
@@ -1458,7 +1459,9 @@ class CronTask extends CommonDBTM{
                   }
                }
             } else {
-               $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+               foreach ($ids as $key) {
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+               }
                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
             }
             return;
@@ -1923,6 +1926,7 @@ class CronTask extends CommonDBTM{
             return ['description' => __("Archives log files and deletes aging ones"),
                          'parameter'   => __("Number of days to keep archived logs")];
       }
+      return [];
    }
 
 
@@ -1932,7 +1936,7 @@ class CronTask extends CommonDBTM{
     * @param string  $name   select name
     * @param integer $value  default value (default 0)
     *
-    * @return string|integer HTML output, or random part of dropdown ID.
+    * @return void
    **/
    function dropdownFrequency($name, $value = 0) {
 

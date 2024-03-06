@@ -43,7 +43,7 @@ class ITILCategory extends CommonTreeDropdown {
    public $dohistory          = true;
    public $can_be_translated  = true;
 
-   static $rightname          = 'itilcategory';
+   protected $rightname       = 'itilcategory';
 
    function getAdditionalFields() {
 
@@ -358,7 +358,7 @@ class ITILCategory extends CommonTreeDropdown {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (Session::haveRight(self::$rightname, READ)) {
+      if (Session::haveRight($this->rightname, READ)) {
          if ($item instanceof ITILTemplate) {
             $ong[1] = $this->getTypeName(Session::getPluralNumber());
             return $ong;

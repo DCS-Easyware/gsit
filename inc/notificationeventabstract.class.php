@@ -95,16 +95,14 @@ abstract class NotificationEventAbstract {
             $notificationtarget->addForTarget($target, $options);
 
             foreach ($notificationtarget->getTargets() as $users_infos) {
-               $key = $users_infos[static::getTargetFieldName()];
+               $key = (string) $users_infos[static::getTargetFieldName()];
                if ($label
                      || $notificationtarget->validateSendTo($event, $users_infos, $notify_me, $emitter)) {
                   //If the user have not yet been notified
                   if (!isset($processed[$users_infos['language']][$key])) {
                      //If ther user's language is the same as the template's one
-                     if (isset($notprocessed[$users_infos['language']]
-                                                   [$key])) {
-                        unset($notprocessed[$users_infos['language']]
-                                                   [$key]);
+                     if (isset($notprocessed[(string) $users_infos['language']][$key])) {
+                        ($notprocessed[(string) $users_infos['language']][$key]);
                      }
                      $options['item'] = $item;
 
@@ -175,5 +173,14 @@ abstract class NotificationEventAbstract {
     */
    static protected function extraRaise($params) {
       //does nothing; designed to be overriden
+   }
+
+   /**
+    * Get the field name
+    *
+    * @return string
+    */
+   static public function getTargetFieldName() {
+      return '';
    }
 }

@@ -52,7 +52,7 @@ class Computer extends CommonDBTM {
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
    public $devices                     = [];
 
-   static $rightname                   = 'computer';
+   protected $rightname                = 'computer';
    protected $usenotepad               = true;
 
    public function getCloneRelations() :array {
@@ -507,7 +507,7 @@ class Computer extends CommonDBTM {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

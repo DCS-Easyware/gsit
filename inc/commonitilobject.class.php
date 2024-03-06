@@ -148,7 +148,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1) {
          return false;
       }
-      return Session::haveRight(static::$rightname, UPDATE);
+      return Session::haveRight($this->rightname, UPDATE);
    }
 
 
@@ -163,7 +163,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ) {
          return false;
       }
-      return Session::haveRight(static::$rightname, UPDATE);
+      return Session::haveRight($this->rightname, UPDATE);
    }
 
 
@@ -178,7 +178,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ) {
          return false;
       }
-      return Session::haveRight(static::$rightname, UPDATE);
+      return Session::haveRight($this->rightname, UPDATE);
    }
 
 
@@ -265,7 +265,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function canSolve() {
 
-      return ((Session::haveRight(static::$rightname, UPDATE)
+      return ((Session::haveRight($this->rightname, UPDATE)
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
@@ -281,7 +281,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function maySolve() {
 
-      return ((Session::haveRight(static::$rightname, UPDATE)
+      return ((Session::haveRight($this->rightname, UPDATE)
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
@@ -745,7 +745,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $type = null;
       if (isset($input['type'])) {
          $type = $input['type'];
-      } else if (isset($this->field['type'])) {
+      } else if (isset($this->fields['type'])) {
          $type = $this->fields['type'];
       }
 
@@ -758,7 +758,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $check_allowed_fields_for_template = false;
       $allowed_fields                    = [];
       if (!Session::isCron()
-          && (!Session::haveRight(static::$rightname, UPDATE)
+          && (!Session::haveRight($this->rightname, UPDATE)
             // Closed tickets
             || in_array($this->fields['status'], $this->getClosedStatusArray()))
          ) {
@@ -784,13 +784,13 @@ abstract class CommonITILObject extends CommonDBTM {
             $validation_class = static::getType() . 'Validation';
             if (class_exists($validation_class)) {
                if ($validation_class::canValidate($this->fields['id'])
-                  || $validation_class::canCreate()
+                  || ProfileRight::checkPermission('create', $validation_class)
                   || isset($input["_rule_process"])) {
                   $allowed_fields[] = 'global_validation';
                }
             }
             // Manage assign and steal right
-            if (static::getType() === Ticket::getType() && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
+            if (static::getType() === Ticket::getType() && Session::haveRightsOr($this->rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
                 $allowed_fields[] = '_itil_assign';
             }
 
@@ -1192,18 +1192,22 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if ((($key=array_search('closedate', $this->updates)) !== false)
+          && !is_null($this->fields["closedate"]) && !is_null($this->oldvalues['closedate'])
           && (substr($this->fields["closedate"], 0, 16) == substr($this->oldvalues['closedate'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['closedate']);
       }
 
       if ((($key=array_search('time_to_resolve', $this->updates)) !== false)
+          && !is_null($this->fields["time_to_resolve"]) && !is_null($this->oldvalues['time_to_resolve'])
           && (substr($this->fields["time_to_resolve"], 0, 16) == substr($this->oldvalues['time_to_resolve'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['time_to_resolve']);
       }
 
       if ((($key=array_search('solvedate', $this->updates)) !== false)
+          && !is_null($this->fields["solvedate"]) && isset($this->oldvalues['time_to_resolve'])
+          && !is_null($this->oldvalues['time_to_resolve'])
           && (substr($this->fields["solvedate"], 0, 16) == substr($this->oldvalues['solvedate'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['solvedate']);
@@ -1583,6 +1587,10 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
+      if (is_null($input["name"])) {
+         $input['name'] = '';
+      }
+
       // save value before clean;
       $title = ltrim($input['name']);
 
@@ -1602,7 +1610,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $canpriority = true;
       if ($this->getType() == 'Ticket') {
-         $canpriority = Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY);
+         $canpriority = Session::haveRight($this->rightname, Ticket::CHANGEPRIORITY);
       }
 
       if ($canpriority && !isset($input["priority"]) || !$canpriority) {
@@ -1635,6 +1643,9 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // No name set name
+      if (is_null($input["content"])) {
+         $input['content'] = '';
+      }
       $input["name"]    = ltrim($input["name"]);
       $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
@@ -4126,7 +4137,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showuserlink = 0;
-      if (User::canView()) {
+      if (ProfileRight::checkPermission('view', 'User')) {
          $showuserlink = 2;
       }
       $usericon  = static::getActorIcon('user', $type);
@@ -5845,7 +5856,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $linkclass = new $this->userlinkclass();
       $linktable = $linkclass->getTable();
-      $showlink = User::canView();
+      $showlink = ProfileRight::checkPermission('view', 'User');
 
       $ctable = $this->getTable();
       $criteria = [
@@ -5918,7 +5929,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $linktable = getTableForItemType($this->getType().'Task');
-      $showlink = User::canView();
+      $showlink = ProfileRight::checkPermission('view', 'User');
 
       $ctable = $this->getTable();
       $criteria = [
@@ -6180,8 +6191,8 @@ abstract class CommonITILObject extends CommonDBTM {
       // Make new job object and fill it from database, if success, print it
       $item         = new static();
 
-      $candelete   = static::canDelete();
-      $canupdate   = Session::haveRight(static::$rightname, UPDATE);
+      $candelete   = ProfileRight::checkPermission('delete', get_called_class());
+      $canupdate   = Session::haveRight($item->getRightname(), UPDATE);
       $showprivate = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
       $align       = "class='left'";
       $align_desc  = "class='left";
@@ -6691,7 +6702,7 @@ abstract class CommonITILObject extends CommonDBTM {
                          array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_document = $canadd_fup || $this->canAddItem('Document') && !in_array($this->fields["status"],
                          array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
-      $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
+      $canadd_solution = ProfileRight::checkPermission('update', $objType) && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
 
       $validation_class = $objType.'Validation';
       $canadd_validation = false;
@@ -6896,7 +6907,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $document_item_obj     = new Document_Item();
       if ($supportsValidation) {
          $validation_class    = $objType."Validation";
-         $valitation_obj     = new $validation_class;
+         $valitation_obj      = new $validation_class;
       }
 
       //checks rights
@@ -6991,7 +7002,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'date'               => $solution_item['date_creation'],
                'users_id'           => $solution_item['users_id'],
                'solutiontypes_id'   => $solution_item['solutiontypes_id'],
-               'can_edit'           => $objType::canUpdate() && $this->canSolve(),
+               'can_edit'           => ProfileRight::checkPermission('update', $objType) && $this->canSolve(),
                'timeline_position'  => self::TIMELINE_RIGHT,
                'users_id_editor'    => $solution_item['users_id_editor'],
                'date_mod'           => $solution_item['date_mod'],
@@ -7002,45 +7013,47 @@ abstract class CommonITILObject extends CommonDBTM {
          ];
       }
 
-      if ($supportsValidation and $validation_class::canView()) {
-         $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
-         foreach ($validations as $validations_id => $validation) {
-            $canedit = $valitation_obj->can($validations_id, UPDATE);
-            $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
-               $validation['status'] == CommonITILValidation::WAITING);
-            $user->getFromDB($validation['users_id_validate']);
-            $timeline[$validation['submission_date']."_validation_".$validations_id] = [
-               'type' => $validation_class,
-               'item' => [
-                  'id'        => $validations_id,
-                  'date'      => $validation['submission_date'],
-                  'content'   => __('Validation request')." => ".$user->getlink().
-                                                 "<br>".$validation['comment_submission'],
-                  'users_id'  => $validation['users_id'],
-                  'can_edit'  => $canedit,
-                  'can_answer'   => $cananswer,
-                  'users_id_validate'  => $validation['users_id_validate'],
-                  'timeline_position' => $validation['timeline_position']
-               ],
-               'itiltype' => 'Validation'
-            ];
-
-            if (!empty($validation['validation_date'])) {
-               $timeline[$validation['validation_date']."_validation_".$validations_id] = [
+      if ($supportsValidation) {
+         if ($valitation_obj->canView()) {
+            $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
+            foreach ($validations as $validations_id => $validation) {
+               $canedit = $valitation_obj->can($validations_id, UPDATE);
+               $cananswer = ($validation['users_id_validate'] === Session::getLoginUserID() &&
+                  $validation['status'] == CommonITILValidation::WAITING);
+               $user->getFromDB($validation['users_id_validate']);
+               $timeline[$validation['submission_date']."_validation_".$validations_id] = [
                   'type' => $validation_class,
                   'item' => [
                      'id'        => $validations_id,
-                     'date'      => $validation['validation_date'],
-                     'content'   => __('Validation request answer')." : ". _sx('status',
-                                                 ucfirst($validation_class::getStatus($validation['status'])))
-                                                   ."<br>".$validation['comment_validation'],
-                     'users_id'  => $validation['users_id_validate'],
-                     'status'    => "status_".$validation['status'],
+                     'date'      => $validation['submission_date'],
+                     'content'   => __('Validation request')." => ".$user->getlink().
+                                                   "<br>".$validation['comment_submission'],
+                     'users_id'  => $validation['users_id'],
                      'can_edit'  => $canedit,
+                     'can_answer'   => $cananswer,
+                     'users_id_validate'  => $validation['users_id_validate'],
                      'timeline_position' => $validation['timeline_position']
                   ],
                   'itiltype' => 'Validation'
                ];
+
+               if (!empty($validation['validation_date'])) {
+                  $timeline[$validation['validation_date']."_validation_".$validations_id] = [
+                     'type' => $validation_class,
+                     'item' => [
+                        'id'        => $validations_id,
+                        'date'      => $validation['validation_date'],
+                        'content'   => __('Validation request answer')." : ". _sx('status',
+                                                   ucfirst($validation_class::getStatus($validation['status'])))
+                                                      ."<br>".$validation['comment_validation'],
+                        'users_id'  => $validation['users_id_validate'],
+                        'status'    => "status_".$validation['status'],
+                        'can_edit'  => $canedit,
+                        'timeline_position' => $validation['timeline_position']
+                     ],
+                     'itiltype' => 'Validation'
+                  ];
+               }
             }
          }
       }
@@ -7160,16 +7173,25 @@ abstract class CommonITILObject extends CommonDBTM {
                echo "<span class='h_user_name'>";
                $userdata = getUserName($item_i['users_id'], 2);
                $entity = $this->getEntityID();
+
+               $itilFollowup = ITILFollowup::getById($item_i['id']);
+               $document_item = null;
+               if (isset($item_i['documents_item_id'])) {
+                  $documentItem = Document_Item::getById($item_i['documents_item_id']);
+               }
+
                if (Entity::getUsedConfig('anonymize_support_agents', $entity)
                   && Session::getCurrentInterface() == 'helpdesk'
                   && (
                      $item['type'] == "Solution"
                      || is_subclass_of($item['type'], "CommonITILTask")
                      || ($item['type'] == "ITILFollowup"
-                        && ITILFollowup::getById($item_i['id'])->isFromSupportAgent()
+                        && is_object($itilFollowup)
+                        && $itilFollowup->isFromSupportAgent()
                      )
                      || ($item['type'] == "Document_Item"
-                        && Document_Item::getById($item_i['documents_item_id'])->isFromSupportAgent()
+                        && is_object($documentItem)
+                        && $documentItem->isFromSupportAgent()
                      )
                   )
                ) {
@@ -7878,13 +7900,15 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //timeline first, then main, then the rest?
       $local_tabs = $this->getTabNameForItem($this, $withtemplate);
-      foreach ($local_tabs as $key => $val) {
-         if (!empty($val)) {
-            $tab[static::class . '$' . $key] = $val;
-         }
+      if (is_array($local_tabs)) {
+         foreach ($local_tabs as $key => $val) {
+            if (!empty($val)) {
+               $tab[static::class . '$' . $key] = $val;
+            }
 
-         if (1 === count($tab)) {
-            $tab[$this->getType().'$main'] = $this->getTypeName(1);
+            if (1 === count($tab)) {
+               $tab[$this->getType().'$main'] = $this->getTypeName(1);
+            }
          }
       }
 
@@ -7897,9 +7921,9 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since 0.85
    **/
-   static function getAdditionalMenuOptions() {
+   function getAdditionalMenuOptions() {
       $tplclass = self::getTemplateClass();
-      if ($tplclass::canView()) {
+      if (ProfileRight::checkPermission('view', $tplclass)) {
          $menu = [
             $tplclass => [
                'title' => $tplclass::getTypeName(Session::getPluralNumber()),
@@ -7911,7 +7935,7 @@ abstract class CommonITILObject extends CommonDBTM {
             ],
          ];
 
-         if ($tplclass::canCreate()) {
+         if (ProfileRight::checkPermission('create', $tplclass)) {
             $menu[$tplclass]['links']['add'] = $tplclass::getFormURL(false);
          }
          return $menu;
@@ -7925,11 +7949,11 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since 9.5.0
    **/
-   static function getAdditionalMenuLinks() {
+   function getAdditionalMenuLinks() {
       $links = [];
       $tplclass = self::getTemplateClass();
-      if ($tplclass::canView()) {
-         $links['template'] = $tplclass::getSearchURL(false);
+      if (ProfileRight::checkPermission('view', $tplclass)) {
+         $links['template'] = $this->getSearchURL(false);
       }
 
       return $links;
@@ -8219,12 +8243,13 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       // documents associated to followups
-      if ($bypass_rights || ITILFollowup::canView()) {
+      if ($bypass_rights || ProfileRight::checkPermission('view', 'ITILFollowup')) {
          $fup_crits = [
             ITILFollowup::getTableField('itemtype') => $this->getType(),
             ITILFollowup::getTableField('items_id') => $this->getID(),
          ];
-         if (!$bypass_rights && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
+         $itilFollowup = new ITILFollowup();
+         if (!$bypass_rights && !Session::haveRight($itilFollowup->getRightname(), ITILFollowup::SEEPRIVATE)) {
             $fup_crits[] = [
                'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
             ];
@@ -8242,7 +8267,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // documents associated to solutions
-      if (ITILSolution::canView()) {
+      if (ProfileRight::checkPermission('view', 'ITILSolution')) {
          $or_crits[] = [
             Document_Item::getTableField('itemtype') => ITILSolution::getType(),
             Document_Item::getTableField('items_id') => new QuerySubQuery(
@@ -8259,11 +8284,12 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // documents associated to tasks
-      if ($bypass_rights || $task_class::canView()) {
+      $task = new $task_class();
+      if ($bypass_rights || $task->canView()) {
          $tasks_crit = [
             $this->getForeignKeyField() => $this->getID(),
          ];
-         if (!$bypass_rights && !Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
+         if (!$bypass_rights && !Session::haveRight($task->getRightname(), CommonITILTask::SEEPRIVATE)) {
             $tasks_crit[] = [
                'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
             ];
@@ -8467,4 +8493,9 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</tr>";
       }
    }
+
+   function canReopen() {
+      return false;
+   }
+
 }

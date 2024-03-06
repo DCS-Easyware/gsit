@@ -287,7 +287,7 @@ class MassiveAction extends DbTestCase {
 
       // Init vars
       $new_note_content = "Test add note";
-      $old_session = $_SESSION['glpiactiveprofile'][$item::$rightname] ?? 0;
+      $old_session = $_SESSION['glpiactiveprofile'][$item->getRightname()] ?? 0;
       $note_search = [
          'items_id' => $item->fields['id'],
          'itemtype' => $item->getType(),
@@ -295,12 +295,12 @@ class MassiveAction extends DbTestCase {
       ];
 
       if ($has_right) {
-         $_SESSION['glpiactiveprofile'][$item::$rightname] = UPDATENOTE;
+         $_SESSION['glpiactiveprofile'][$item->getRightname()] = UPDATENOTE;
       }
 
       // Check expected rights
       $this
-         ->boolean(boolval(Session::haveRight($item::$rightname, UPDATENOTE)))
+         ->boolean(boolval(Session::haveRight($item->getRightname(), UPDATENOTE)))
          ->isIdenticalTo($has_right);
 
       if ($has_right) {
@@ -331,6 +331,6 @@ class MassiveAction extends DbTestCase {
          $this->integer($new_count)->isIdenticalTo($count_notes + 1);
       }
 
-      $_SESSION['glpiactiveprofile'][$item::$rightname] = $old_session;
+      $_SESSION['glpiactiveprofile'][$item->getRightname()] = $old_session;
    }
 }

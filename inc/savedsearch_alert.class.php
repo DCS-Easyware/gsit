@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class SavedSearch_Alert extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype = 'SavedSearch';
+   protected $itemtype     = 'SavedSearch';
    static public $items_id = 'savedsearches_id';
    public $dohistory       = true;
    protected $displaylist  = false;
@@ -61,7 +61,7 @@ class SavedSearch_Alert extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'SavedSearch')
-          && SavedSearch::canView()) {
+          && $this->canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),

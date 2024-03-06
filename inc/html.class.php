@@ -55,6 +55,9 @@ class Html {
     * @return string
    **/
    static function clean($value, $striptags = true, $keep_bad = 2) {
+      if (is_null($value)) {
+         return $value;
+      }
       $value = Html::entity_decode_deep($value);
 
       // Change <email@domain> to email@domain so it is not removed by htmLawed
@@ -125,7 +128,9 @@ class Html {
     * @return string|array
    **/
    static function entity_decode_deep($value) {
-
+      if (is_null($value)) {
+         return $value;
+      }
       return (is_array($value) ? array_map([__CLASS__, 'entity_decode_deep'], $value)
                                : html_entity_decode($value, ENT_QUOTES, "UTF-8"));
    }
@@ -139,7 +144,9 @@ class Html {
     * @return string|array
    **/
    static function entities_deep($value) {
-
+      if (is_null($value)) {
+         return $value;
+      }
       return (is_array($value) ? array_map([__CLASS__, 'entities_deep'], $value)
                                : htmlentities($value, ENT_QUOTES, "UTF-8"));
    }
@@ -222,6 +229,9 @@ class Html {
     * @return string
    **/
    static function cleanInputText($string) {
+      if (is_null($string)) {
+         return $string;
+      }
       return preg_replace( '/\'/', '&apos;', preg_replace('/\"/', '&quot;', $string));
    }
 
@@ -234,6 +244,9 @@ class Html {
     * @return string
    **/
    static function cleanParametersURL($url) {
+      if (is_null($url)) {
+         return $url;
+      }
 
       $url = preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/", "$1", $url);
       return preg_replace("/\?.*/", "", $url);
@@ -248,7 +261,9 @@ class Html {
     * @return string|array
    **/
    static function nl2br_deep($value) {
-
+      if (is_null($value)) {
+         return $value;
+      }
       return (is_array($value) ? array_map([__CLASS__, 'nl2br_deep'], $value)
                                : nl2br($value));
    }
@@ -263,7 +278,9 @@ class Html {
     * @return string
    **/
    static function resume_text($string, $length = 255) {
-
+      if (is_null($string)) {
+         return $string;
+      }
       if (Toolbox::strlen($string) > $length) {
          $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
       }
@@ -281,7 +298,9 @@ class Html {
     * @return string
     **/
    static function resume_name($string, $length = 255) {
-
+      if (is_null($string)) {
+         return $string;
+      }
       if (strlen($string) > $length) {
          $string = Toolbox::substr($string, 0, $length)."...";
       }
@@ -298,7 +317,9 @@ class Html {
     * @return string
    **/
    static function cleanPostForTextArea($value) {
-
+      if (is_null($value)) {
+         return $value;
+      }
       if (is_array($value)) {
          return array_map([__CLASS__, __METHOD__], $value);
       }
@@ -1590,7 +1611,12 @@ JAVASCRIPT;
          foreach ($menu as $category => $entries) {
             if (isset($entries['types']) && count($entries['types'])) {
                foreach ($entries['types'] as $type) {
-                  if ($data = $type::getMenuContent()) {
+                  $class = new ReflectionClass($type);
+                  if ($class->isAbstract()) {
+                     continue;
+                  }
+                  $ctype = getItemForItemtype($type);
+                  if ($data = $ctype->getMenuContent()) {
                      // Multi menu entries management
                      if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
                         if (!isset($menu[$category]['content'])) {
@@ -3524,7 +3550,7 @@ JS;
     *      - add_now, boolean to precise if we need to add to dates array, an entry for now time
     *        (with now class)
     *
-    * @return array of posible values
+    * @return string|true
     *
     * @see self::showGenericDateTimeSearch()
    **/
@@ -3573,6 +3599,7 @@ JS;
 
       if ($options['display']) {
          echo $out;
+         return true;
       } else {
          return $out;
       }
@@ -4188,7 +4215,7 @@ JS;
                      } else {
                         echo "(object) " . get_class($val);
                      }
-                  } else {
+                  } else if (!is_null($val)) {
                      echo htmlentities($val, ENT_COMPAT);
                   }
                }
@@ -5575,7 +5602,7 @@ JAVASCRIPT;
     *
     * @param  array $options theses following keys:
     *                          - editor_id the dom id of the tinymce editor
-    * @return string The Html
+    * @return string|true The Html
     */
    static function fileForRichText($options = []) {
       $p['editor_id']     = '';
@@ -5615,6 +5642,7 @@ JAVASCRIPT;
 
       if ($p['display']) {
          echo $display;
+         return true;
       } else {
          return $display;
       }
@@ -6918,7 +6946,7 @@ JAVASCRIPT;
       }
       echo "</a></li>";
 
-      if (Config::canUpdate()) {
+      if (ProfileRight::checkPermission('update', 'Config')) {
          $is_debug_active = $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
          $class = 'debug' . ($is_debug_active ? 'on' : 'off');
          $title = sprintf(

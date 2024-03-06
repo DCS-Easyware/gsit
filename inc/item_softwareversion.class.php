@@ -441,7 +441,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
    private static function showInstallations($searchID, $crit) {
       global $DB, $CFG_GLPI;
 
-      if (!Software::canView() || !$searchID) {
+      if (!ProfileRight::checkPermission('view', 'Software') || !$searchID) {
          return;
       }
 
@@ -512,7 +512,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
       $queries = [];
       foreach ($CFG_GLPI['software_types'] as $itemtype) {
-         $canshowitems[$itemtype] = $itemtype::canView();
+         $canshowitems[$itemtype] = ProfileRight::checkPermission('view', $itemtype);
          $itemtable = $itemtype::getTable();
          $query = [
             'SELECT' => [
@@ -656,7 +656,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
          $softwares_id  = $data['sID'];
          $soft          = new Software();
          $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-         $linkUser      = User::canView();
+         $linkUser      = ProfileRight::checkPermission('view', 'User');
          $title         = $soft->fields["name"];
 
          if ($crit == "id") {
@@ -817,7 +817,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
       $softwareversions_id = $version->getField('id');
 
-      if (!Software::canView() || !$softwareversions_id) {
+      if (!ProfileRight::checkPermission('view', 'Software') || !$softwareversions_id) {
          return;
       }
 
@@ -954,7 +954,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
-      if (!Software::canView()) {
+      if (!ProfileRight::checkPermission('view', 'Software')) {
          return;
       }
 
@@ -1169,7 +1169,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
             $actions = ['Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
                               'install' => _x('button', 'Install')];
-            if (SoftwareLicense::canUpdate()) {
+            if (ProfileRight::checkPermission('update', 'SoftwareLicense')) {
                $actions['purge'] = _x('button', 'Delete permanently');
             }
 
@@ -1371,7 +1371,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
 
       Toolbox::deprecated('Use displaySoftwareByLicense()');
-      return self::displaySoftwareByLicense($data, $withtemplate, $canedit);
+      self::displaySoftwareByLicense($data, $withtemplate, $canedit);
    }
 
 
@@ -1526,7 +1526,7 @@ class Item_SoftwareVersion extends CommonDBRelation {
 
          default:
             // Installation allowed for template
-            if (Software::canView()) {
+            if (ProfileRight::checkPermission('view', 'Software')) {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForItem($item);
                }

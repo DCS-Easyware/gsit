@@ -154,6 +154,7 @@ class DeviceGraphicCard extends CommonDevice {
             $base->addHeader('devicegraphiccard_chipset', __('Chipset'), $super, $father);
             break;
       }
+      return $column;
    }
 
 

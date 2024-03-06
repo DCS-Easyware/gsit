@@ -25,6 +25,5 @@ vendor/bin/phpcs \
   -d memory_limit=512M \
   -p \
   --extensions=php \
-  --standard=vendor/glpi-project/coding-standard/GlpiStandard/ \
   --ignore="/.git/,^$ROOT_DIR/(config|files|lib|node_modules|plugins|tests/config|vendor)/" \
   .

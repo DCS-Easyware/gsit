@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class ProjectCost extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype = 'Project';
+   protected $itemtype     = 'Project';
    static public $items_id = 'projects_id';
    public $dohistory       = true;
 
@@ -87,7 +87,7 @@ class ProjectCost extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
-      if (($item->getType() == 'Project') && Project::canView()) {
+      if (($item->getType() == 'Project') && ProfileRight::checkPermission('view', 'Project')) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable('glpi_projectcosts', ['projects_id' => $item->getID()]);

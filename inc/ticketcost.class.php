@@ -42,9 +42,8 @@ if (!defined('GLPI_ROOT')) {
 class TicketCost extends CommonITILCost {
 
    // From CommonDBChild
-   static public $itemtype  = 'Ticket';
-   static public $items_id  = 'tickets_id';
-
-   static $rightname        = 'ticketcost';
+   protected $itemtype     = 'Ticket';
+   static public $items_id = 'tickets_id';
+   protected $rightname    = 'ticketcost';
 
 }

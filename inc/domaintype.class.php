@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class DomainType extends CommonDropdown
 {
-   static $rightname = 'dropdown';
+   protected $rightname = 'dropdown';
 
    static function getTypeName($nb = 0) {
       return _n('Domain type', 'Domain types', $nb);

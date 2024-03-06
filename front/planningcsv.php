@@ -59,11 +59,12 @@ if ($user->getID() == $users_id) {
    $ismine = true;
 }
 
+$planning = new Planning();
 // Check groups if have right to see
 if (!$ismine && $groups_id !== 0) {
    $entities = Profile_User::getUserEntitiesForRight(
       $user->getID(),
-      Planning::$rightname,
+      $planning->getRightname(),
       Planning::READGROUP
    );
    $groups   = Group_User::getUserGroups($user->getID());
@@ -81,8 +82,8 @@ $canview = false;
 if (!$ismine) {
    // First check user
    $entities = Profile_User::getUserEntitiesForRight($user->getID(),
-                                                      Planning::$rightname,
-                                                      Planning::READALL);
+                                                     $planning->getRightname(),
+                                                     Planning::READALL);
    if ($users_id) {
       $userentities = Profile_User::getUserEntities($user->getID());
       $intersect    = array_intersect($entities, $userentities);

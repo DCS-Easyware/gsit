@@ -44,12 +44,13 @@ class Contract extends CommonDBTM {
    public $dohistory                   = true;
    static protected $forward_entity_to = ['ContractCost'];
 
-   static $rightname                   = 'contract';
+   protected $rightname                = 'contract';
    protected $usenotepad               = true;
 
    const RENEWAL_NEVER = 0;
    const RENEWAL_TACIT = 1;
    const RENEWAL_EXPRESS = 2;
+
 
    public function getCloneRelations() :array {
       return [
@@ -592,7 +593,7 @@ class Contract extends CommonDBTM {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
@@ -1041,7 +1042,7 @@ class Contract extends CommonDBTM {
    static function showCentral() {
       global $DB,$CFG_GLPI;
 
-      if (!Contract::canView()) {
+      if (!ProfileRight::checkPermission('view', 'Contract')) {
          return;
       }
 
@@ -1788,7 +1789,7 @@ class Contract extends CommonDBTM {
       global $CFG_GLPI;
 
       if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
-         if (self::canUpdate()) {
+         if (ProfileRight::checkPermission('update', 'Contract')) {
             $action_prefix                    = 'Contract_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$action_prefix.'add']    = "<i class='ma-icon fas fa-file-contract'></i>".
                                                 _x('button', 'Add a contract');

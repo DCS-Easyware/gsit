@@ -46,7 +46,7 @@ class Monitor extends CommonDBTM {
    static protected $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem', 'NetworkPort',
                                           'Item_SoftwareVersion'];
 
-   static $rightname                   = 'monitor';
+   protected $rightname                = 'monitor';
    protected $usenotepad               = true;
 
    public function getCloneRelations() :array {
@@ -349,7 +349,7 @@ class Monitor extends CommonDBTM {
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if (static::canUpdate()) {
+      if ($this->canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          $actions += [
             'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'

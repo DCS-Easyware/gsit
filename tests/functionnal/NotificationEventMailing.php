@@ -69,7 +69,8 @@ class NotificationEventMailing extends DbTestCase {
    }
 
    public function testCanCron() {
-      $this->boolean(\NotificationEventMailing::canCron())->isTrue();
+      $notif = new \NotificationEventMailing();
+      $this->boolean($notif->canCron())->isTrue();
    }
 
    public function testGetAdminData() {

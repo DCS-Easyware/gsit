@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class TicketSatisfaction extends CommonDBTM {
 
-   static $rightname = 'ticket';
+   protected $rightname = 'ticket';
 
    public $dohistory         = true;
    public $history_blacklist = ['date_answered'];
@@ -60,7 +60,7 @@ class TicketSatisfaction extends CommonDBTM {
    }
 
 
-   static function canUpdate() {
+   function canUpdate() {
       return (Session::haveRight('ticket', READ));
    }
 
@@ -96,7 +96,7 @@ class TicketSatisfaction extends CommonDBTM {
    /**
     * form for satisfaction
     *
-    * @param $ticket Object : the ticket
+    * @param object $ticket   the ticket
    **/
    function showForm($ticket) {
 

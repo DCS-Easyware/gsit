@@ -44,7 +44,7 @@ class Software extends CommonDBTM {
 
    static protected $forward_entity_to = ['Infocom', 'ReservationItem', 'SoftwareVersion'];
 
-   static $rightname                   = 'software';
+   protected $rightname                = 'software';
    protected $usenotepad               = true;
 
    public function getCloneRelations() :array {
@@ -304,9 +304,11 @@ class Software extends CommonDBTM {
 
    function getEmpty() {
       global $CFG_GLPI;
+
       parent::getEmpty();
 
       $this->fields["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
+      return true;
    }
 
 
@@ -315,7 +317,7 @@ class Software extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin
           && (countElementsInTable("glpi_rules", ['sub_type'=>'RuleSoftwareCategory']) > 0)) {

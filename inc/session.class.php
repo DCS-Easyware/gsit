@@ -76,7 +76,7 @@ class Session {
 
       if ($auth->auth_succeded) {
          // Restart GLPI session : complete destroy to prevent lost datas
-         $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
+         $tosave = ['glpi_plugins', 'glpicookietest', 'glpicsrftokens',
                          'glpiskipMaintenance'];
          $save   = [];
          foreach ($tosave as $t) {
@@ -111,12 +111,7 @@ class Session {
                $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
                $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
                $_SESSION["glpiextauth"]         = $auth->extauth;
-               if (isset($_SESSION['phpCAS']['user'])) {
-                  $_SESSION["glpiauthtype"]     = Auth::CAS;
-                  $_SESSION["glpiextauth"]      = 0;
-               } else {
-                  $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
-               }
+               $_SESSION["glpiauthtype"]        = $auth->user->fields['authtype'];
                $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
@@ -1080,7 +1075,7 @@ class Session {
     * @param string  $module Module to check
     * @param integer $right  Right to check
     *
-    * @return boolean
+    * @return integer|false
    **/
    static function haveRight($module, $right) {
       global $DB;
@@ -1520,8 +1515,8 @@ class Session {
 
       // For now we do not check more than config update right, but we may
       // implement more fine checks in the future.
-
-      return self::haveRight(Config::$rightname, UPDATE);
+      $config = new Config();
+      return self::haveRight($config->getRightname(), UPDATE);
    }
 
    /**

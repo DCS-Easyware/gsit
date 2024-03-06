@@ -85,7 +85,7 @@ class Plugin extends CommonDBTM {
     */
    const NOTUPDATED     = 6;
 
-   static $rightname = 'config';
+   protected $rightname = 'config';
 
    /**
     * Plugin init state.
@@ -118,10 +118,10 @@ class Plugin extends CommonDBTM {
    }
 
 
-   static function getMenuContent() {
+   function getMenuContent() {
       $menu = parent::getMenuContent() ?: [];
 
-      if (static::canView()) {
+      if ($this->canView()) {
 
          $menu['title'] = self::getMenuName();
          $menu['page']  = '/front/plugin.php';
@@ -134,8 +134,8 @@ class Plugin extends CommonDBTM {
    }
 
 
-   static function getAdditionalMenuLinks() {
-      if (!static::canView()) {
+   function getAdditionalMenuLinks() {
+      if (!ProfileRight::checkPermission('view', get_called_class())) {
          return false;
       }
       $cl_icon     = Plugin::getIcon();
@@ -2428,6 +2428,7 @@ class Plugin extends CommonDBTM {
             return Dropdown::showFromArray($name, $tab, $options);
             break;
       }
+      return '';
    }
 
    function getForbiddenStandardMassiveAction() {

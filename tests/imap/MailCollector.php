@@ -402,7 +402,7 @@ class MailCollector extends DbTestCase {
          'login'                 => 'testuser',
          'is_active'             => true,
          'passwd'                => 'applesauce',
-         'mail_server'           => 'dovecot',
+         'mail_server'           => '127.0.0.1',
          'server_type'           => '/imap',
          'server_port'           => 143,
          'server_ssl'            => '',
@@ -415,7 +415,7 @@ class MailCollector extends DbTestCase {
       $this->integer($this->mailgate_id)->isGreaterThan(0);
 
       $this->boolean($collector->getFromDB($this->mailgate_id))->isTrue();
-      $this->string($collector->fields['host'])->isIdenticalTo('{dovecot:143/imap/novalidate-cert}');
+      $this->string($collector->fields['host'])->isIdenticalTo('{127.0.0.1:143/imap/novalidate-cert}');
       $collector->connect();
       $this->variable($collector->fields['errors'])->isEqualTo(0);
    }
@@ -620,8 +620,7 @@ class MailCollector extends DbTestCase {
       // Check creation of expected documents
       $expected_docs = [
          '00-logoteclib.png',
-         // Space is missing between "France" and "très" due to a bug in laminas-mail
-         '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
+         '01-screenshot-2018-4-12-observatoire-france-tres-haut-debit.png',
          '01-test.JPG',
          '15-image001.png',
          '18-blank.gif',
@@ -749,7 +748,7 @@ class MailCollector extends DbTestCase {
       }
 
       $params = [
-         'host'     => 'dovecot',
+         'host'     => '127.0.0.1',
          'user'     => 'testuser',
          'password' => 'applesauce',
       ];
@@ -909,7 +908,7 @@ CLASS
       $storage   = null;
       $getStorage = function () use ($type, &$storage) {
          $params = [
-            'host'     => 'dovecot',
+            'host'     => '127.0.0.1',
             'user'     => 'testuser',
             'password' => 'applesauce',
          ];

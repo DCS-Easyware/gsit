@@ -42,7 +42,7 @@ class Netpoint extends CommonDropdown {
    // From CommonDBTM
    public $dohistory          = true;
 
-   static $rightname          = 'netpoint';
+   protected $rightname       = 'netpoint';
 
    public $can_be_translated  = false;
 

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleImportEntity extends Rule {
 
    // From Rule
-   static $rightname = 'rule_import';
+   protected $rightname = 'rule_import';
    public $can_sort  = true;
 
 
@@ -148,6 +148,7 @@ class RuleImportEntity extends Rule {
          }
          return $name;
       }
+      return false;
    }
 
 

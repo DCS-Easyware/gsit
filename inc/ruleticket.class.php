@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicket extends Rule {
 
    // From Rule
-   static $rightname = 'rule_ticket';
+   protected $rightname = 'rule_ticket';
    public $can_sort  = true;
 
    const PARENT  = 1024;

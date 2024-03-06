@@ -372,9 +372,8 @@ class PurgeLogs extends CommonDBTM {
          return ['date_mod' => ['<=', new QueryExpression("DATE_ADD(NOW(), INTERVAL -$month MONTH)")]];
       } else if ($month == Config::DELETE_ALL) {
          return [1 => 1];
-      } else if ($month == Config::KEEP_ALL) {
-         return false;
       }
+      return false;
    }
 
    /**

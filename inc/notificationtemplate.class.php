@@ -49,7 +49,7 @@ class NotificationTemplate extends CommonDBTM {
    //Store templates for each language
    public $templates_by_languages = [];
 
-   static $rightname = 'config';
+   protected $rightname = 'config';
 
    public function getCloneRelations() :array {
       return [
@@ -62,16 +62,16 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return static::canUpdate();
+   function canCreate() {
+      return $this->canUpdate();
    }
 
 
    /**
     * @since 0.85
    **/
-   static function canPurge() {
-      return static::canUpdate();
+   function canPurge() {
+      return $this->canUpdate();
    }
 
 
@@ -98,7 +98,7 @@ class NotificationTemplate extends CommonDBTM {
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
 

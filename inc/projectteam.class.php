@@ -84,7 +84,7 @@ class ProjectTeam extends CommonDBRelation {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (self::canView()) {
+      if ($this->canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Project' :
@@ -105,6 +105,7 @@ class ProjectTeam extends CommonDBRelation {
             $item->showTeam($item);
             return true;
       }
+      return false;
    }
 
    /**

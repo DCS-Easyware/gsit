@@ -231,7 +231,7 @@ class GLPIKey {
     * @param string       $sodium_key Current key
     * @param string|false $old_key     Old key, if any
     *
-    * @return void
+    * @return boolean
     */
    protected function migrateFieldsInDb($sodium_key, $old_key = false) {
       global $DB;

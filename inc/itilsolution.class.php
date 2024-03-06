@@ -44,7 +44,7 @@ class ITILSolution extends CommonDBChild {
    public $dohistory                   = true;
    private $item                       = null;
 
-   static public $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
+   protected $itemtype     = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
    static public $items_id = 'items_id'; // Field name
 
    public static function getNameField() {
@@ -67,15 +67,16 @@ class ITILSolution extends CommonDBChild {
          }
          return self::createTabEntry($title, $nb);
       }
+      return false;
    }
 
-   static function canView() {
+   function canView() {
       return Session::haveRight('ticket', READ)
              || Session::haveRight('change', READ)
              || Session::haveRight('problem', READ);
    }
 
-   public static function canUpdate() {
+   public function canUpdate() {
       //always true, will rely on ITILSolution::canUpdateItem
       return true;
    }
@@ -84,7 +85,7 @@ class ITILSolution extends CommonDBChild {
       return $this->item->maySolve();
    }
 
-   public static function canCreate() {
+   public function canCreate() {
       //always true, will rely on ITILSolution::canCreateItem
       return true;
    }
@@ -143,8 +144,8 @@ class ITILSolution extends CommonDBChild {
 
       $canedit = $item->maySolve();
 
+      $kb = new KnowbaseItem();
       if (isset($options['kb_id_toload']) && $options['kb_id_toload'] > 0) {
-         $kb = new KnowbaseItem();
          if ($kb->getFromDB($options['kb_id_toload'])) {
             $this->fields['content'] = $kb->getField('answer');
          }
@@ -255,6 +256,7 @@ class ITILSolution extends CommonDBChild {
          $options['canedit']  = $canedit;
          $this->showFormButtons($options);
       }
+      return true;
    }
 
 

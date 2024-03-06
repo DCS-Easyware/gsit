@@ -39,7 +39,7 @@ class RuleMailCollectorCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = true;
-   static $rightname           = 'rule_mailcollector';
+   protected $rightname        = 'rule_mailcollector';
    public $menu_option         = 'mailcollector';
 
 
@@ -130,9 +130,6 @@ class RuleMailCollectorCollection extends RuleCollection {
     * @see RuleCollection::canList()
    **/
    function canList() {
-
-      return static::canView()
-             && MailCollector::countCollectors();
+      return $this->canView() && MailCollector::countCollectors();
    }
-
 }

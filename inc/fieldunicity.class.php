@@ -45,7 +45,7 @@ class FieldUnicity extends CommonDropdown {
    public $second_level_menu  = "control";
    public $can_be_translated  = false;
 
-   static $rightname          = 'config';
+   protected $rightname       = 'config';
 
 
    static function getTypeName($nb = 0) {
@@ -53,16 +53,16 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   static function canCreate() {
-      return static::canUpdate();
+   function canCreate() {
+      return $this->canUpdate();
    }
 
 
    /**
     * @since 0.85
    **/
-   static function canPurge() {
-      return static::canUpdate();
+   function canPurge() {
+      return $this->canUpdate();
    }
 
 
@@ -613,7 +613,7 @@ class FieldUnicity extends CommonDropdown {
 
       } else {
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' colspan='$colspan'>".__('No item to display')."</td></tr>";
+         echo "<td class='center'>".__('No item to display')."</td></tr>";
       }
       echo "</table>";
    }

@@ -40,12 +40,12 @@ if (!defined('GLPI_ROOT')) {
 class Infocom extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype        = 'itemtype';
+   protected $itemtype            = 'itemtype';
    static public $items_id        = 'items_id';
    public $dohistory              = true;
    public $auto_message_on_action = false; // Link in message can't work'
    static public $logs_for_parent = false;
-   static $rightname              = 'infocom';
+   protected $rightname           = 'infocom';
 
    //Option to automatically fill dates
    const ON_STATUS_CHANGE   = 'STATUS';
@@ -124,7 +124,7 @@ class Infocom extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // Can exists on template
-      if (Session::haveRight(self::$rightname, READ)) {
+      if (Session::haveRight($this->rightname, READ)) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Supplier' :
@@ -248,7 +248,7 @@ class Infocom extends CommonDBChild {
 
    function prepareInputForAdd($input) {
       if (!$this->getFromDBforDevice($input['itemtype'], $input['items_id'])) {
-         if ($item = static::getItemFromArray(static::$itemtype, static::$items_id, $input)) {
+         if ($item = static::getItemFromArray($this->itemtype, static::$items_id, $input)) {
             $input['alert'] = Entity::getUsedConfig('default_infocom_alert', $item->getEntityID());
             return parent::prepareInputForAdd($input);
          }
@@ -691,12 +691,13 @@ class Infocom extends CommonDBChild {
     * @param $itemtype   integer  item type
     * @param $device_id  integer  item ID
     *
-    * @return float
+    * @return boolean
    **/
    static function showDisplayLink($itemtype, $device_id) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight(self::$rightname, READ)
+      $item = new static();
+      if (!Session::haveRight($item->getRightname(), READ)
           || !($item = getItemForItemtype($itemtype))) {
          return false;
       }
@@ -715,7 +716,7 @@ class Infocom extends CommonDBChild {
       if ($result['cpt'] > 0) {
          $add  = "";
          $text = _x('button', 'Show');
-      } else if (!Infocom::canUpdate()) {
+      } else if (!ProfileRight::checkPermission('update', 'Infocom')) {
          return false;
       }
 
@@ -729,6 +730,7 @@ class Infocom extends CommonDBChild {
                                           "?itemtype=$itemtype&items_id=$device_id",
                                        ['height' => 600]);
       }
+      return true;
    }
 
 
@@ -1011,7 +1013,8 @@ class Infocom extends CommonDBChild {
       global $CFG_GLPI;
 
       // Show Infocom or blank form
-      if (!self::canView()) {
+      $infocom = new static();
+      if (!$infocom->canView()) {
          return false;
       }
 
@@ -1115,7 +1118,7 @@ class Infocom extends CommonDBChild {
                                         'width'  => '70%']);
             }
             echo "</td>";
-            if (Budget::canView()) {
+            if (ProfileRight::checkPermission('view', 'Budget')) {
                echo "<td>".Budget::getTypeName(1)."</td><td >";
                Budget::dropdown(['value'    => $ic->fields["budgets_id"],
                                       'entity'   => $item->getEntityID(),
@@ -1286,15 +1289,15 @@ class Infocom extends CommonDBChild {
             self::addPluginInfos($item);
 
             if ($canedit
-                && Session::haveRightsOr(self::$rightname, [UPDATE, PURGE])) {
+                && Session::haveRightsOr($infocom->getRightname(), [UPDATE, PURGE])) {
                echo "<tr>";
-               if (Session::haveRight(self::$rightname, UPDATE)) {
+               if (Session::haveRight($infocom->getRightname(), UPDATE)) {
                   echo "<td class='tab_bg_2 center' colspan='2'>";
                   echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
                          class='submit'>";
                   echo "</td>";
                }
-               if (Session::haveRight(self::$rightname, PURGE)) {
+               if (Session::haveRight($infocom->getRightname(), PURGE)) {
                   echo "<td class='tab_bg_2 center' colspan='2'>";
                   echo "<input type='submit' name='purge' value=\""._sx('button',
                                                                       'Delete permanently')."\"
@@ -1976,9 +1979,9 @@ class Infocom extends CommonDBChild {
                                                 CommonDBTM $checkitem = null) {
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';
-
+      $item = new $itemtype();
       if (Infocom::canApplyOn($itemtype)
-          && static::canCreate()) {
+          && $item->canCreate()) {
          $actions[$action_name] = "<i class='ma-icon far fa-money-bill-alt'></i>".
                                   __('Enable the financial and administrative information');
       }
@@ -2025,7 +2028,7 @@ class Infocom extends CommonDBChild {
     * @see CommonDBChild::canUpdateItem()
    **/
    function canUpdateItem() {
-      return Session::haveRight(static::$rightname, UPDATE);
+      return Session::haveRight($this->rightname, UPDATE);
    }
 
 
@@ -2034,7 +2037,7 @@ class Infocom extends CommonDBChild {
     * @see CommonDBChild::canPurgeItem()
    **/
    function canPurgeItem() {
-      return Session::haveRight(static::$rightname, PURGE);
+      return Session::haveRight($this->rightname, PURGE);
    }
 
 
@@ -2043,7 +2046,7 @@ class Infocom extends CommonDBChild {
     * @see CommonDBChild::canCreateItem()
    **/
    function canCreateItem() {
-      return Session::haveRight(static::$rightname, CREATE);
+      return Session::haveRight($this->rightname, CREATE);
    }
 
    /**

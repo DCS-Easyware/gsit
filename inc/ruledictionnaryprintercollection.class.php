@@ -42,7 +42,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    public $menu_type           = 'dictionnary';
    public $menu_option         = 'printer';
 
-   static $rightname           = 'rule_dictionnary_printer';
+   protected $rightname        = 'rule_dictionnary_printer';
 
    /**
     * @see RuleCollection::getTitle()
@@ -201,7 +201,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     * @param $IDs       array of printers IDs to replay
     * @param $res_rule  array of rule results
     *
-    * @return Query result handler
+    * @return void
    **/
    function replayDictionnaryOnPrintersByID(array $IDs, $res_rule = []) {
       global $DB;

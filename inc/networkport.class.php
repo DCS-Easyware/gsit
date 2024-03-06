@@ -49,16 +49,19 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPort extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype             = 'itemtype';
-   static public $items_id             = 'items_id';
-   public $dohistory                   = true;
+   protected $itemtype     = 'itemtype';
+   static public $items_id = 'items_id';
+   public $dohistory       = true;
 
    static public $checkParentRights    = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
    static protected $forward_entity_to = ['NetworkName'];
 
-   static $rightname                   = 'networking';
+   protected $rightname                   = 'networking';
 
+   public $input_for_instantiation      = [];
+   public $input_for_NetworkName        = [];
+   public $input_for_NetworkPortConnect = [];
 
    function getForbiddenStandardMassiveAction() {
 
@@ -255,9 +258,9 @@ class NetworkPort extends CommonDBChild {
    **/
    function splitInputForElements($input) {
 
-      if (isset($this->input_for_instantiation)
-          || isset($this->input_for_NetworkName)
-          || isset($this->input_for_NetworkPortConnect)
+      if (count($this->input_for_instantiation) > 0
+          || count($this->input_for_NetworkName) > 0
+          || count($this->input_for_NetworkPortConnect) > 0
           || !isset($input)) {
          return;
       }
@@ -384,7 +387,6 @@ class NetworkPort extends CommonDBChild {
           && $input['_create_children']) {
          $input = $this->splitInputForElements($input);
       }
-
       return parent::prepareInputForAdd($input);
    }
 
@@ -449,6 +451,7 @@ class NetworkPort extends CommonDBChild {
     * @return boolean true on success
    **/
    function resetConnections($ID) {
+      return true;
    }
 
 
@@ -503,7 +506,7 @@ class NetworkPort extends CommonDBChild {
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
-      if (!NetworkEquipment::canView()
+      if (!ProfileRight::checkPermission('view', 'NetworkEquipment')
           || !$item->can($items_id, READ)) {
          return false;
       }
@@ -820,7 +823,7 @@ class NetworkPort extends CommonDBChild {
          $options['several'] = false;
       }
 
-      if (!self::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
@@ -1142,7 +1145,7 @@ class NetworkPort extends CommonDBChild {
 
       // Can exists on template
       $nb = 0;
-      if (NetworkEquipment::canView()) {
+      if (ProfileRight::checkPermission('view', 'NetworkEquipment')) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = self::countForItem($item);
@@ -1198,6 +1201,7 @@ class NetworkPort extends CommonDBChild {
          self::showForItem($item, $withtemplate);
          return true;
       }
+      return false;
    }
 
 

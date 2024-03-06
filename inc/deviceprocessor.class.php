@@ -160,6 +160,7 @@ class DeviceProcessor extends CommonDevice {
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
       }
+      return $column;
    }
 
 

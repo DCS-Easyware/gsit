@@ -115,6 +115,7 @@ class DeviceBattery extends CommonDevice {
       $base->addHeader('devicebattery_type', _n('Type', 'Types', 1), $super, $father);
       $base->addHeader('voltage', sprintf('%1$s (%2$s)', __('Voltage'), __('mV')), $super, $father);
       $base->addHeader('capacity', sprintf('%1$s (%2$s)', __('Capacity'), __('mWh')), $super, $father);
+      return $column;
    }
 
    function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,

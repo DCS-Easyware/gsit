@@ -62,7 +62,7 @@ class Itil_Project extends CommonDBRelation {
 
       $label = '';
 
-      if (static::canView()) {
+      if ($this->canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case Change::class :

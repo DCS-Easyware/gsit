@@ -243,45 +243,6 @@ final class StatusChecker {
     * @param bool $public_only True if only public status information should be given.
     * @return array
     */
-   public static function getCASStatus($public_only = true): array {
-      global $CFG_GLPI;
-
-      static $status = null;
-
-      if ($status === null) {
-         $status['status'] = self::STATUS_NO_DATA;
-         if (!empty($CFG_GLPI['cas_host'])) {
-            $url = $CFG_GLPI['cas_host'];
-            if (!empty($CFG_GLPI['cas_port'])) {
-               $url .= ':'. (int)$CFG_GLPI['cas_port'];
-            }
-            $url .= '/'.$CFG_GLPI['cas_uri'];
-            if (Toolbox::isUrlSafe($url)) {
-               $data = Toolbox::getURLContent($url);
-               if (!empty($data)) {
-                  $status['status'] = self::STATUS_OK;
-               } else {
-                  $status['status'] = self::STATUS_PROBLEM;
-               }
-            } else {
-               $status['status'] = self::STATUS_NO_DATA;
-               if (!$public_only) {
-                  $status['status_msg'] = sprintf(
-                     __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
-                     $url
-                  );
-               }
-            }
-         }
-      }
-
-      return $status;
-   }
-
-   /**
-    * @param bool $public_only True if only public status information should be given.
-    * @return array
-    */
    public static function getMailCollectorStatus($public_only = true): array {
       static $status = null;
 
@@ -446,7 +407,6 @@ final class StatusChecker {
       if ($status === null) {
          $status = [
             'db'              => self::getDBStatus($public_only),
-            'cas'             => self::getCASStatus($public_only),
             'ldap'            => self::getLDAPStatus($public_only),
             'imap'            => self::getIMAPStatus($public_only),
             'mail_collectors' => self::getMailCollectorStatus($public_only),
@@ -499,11 +459,6 @@ final class StatusChecker {
          }
       } else {
          $output .= "No IMAP server\n";
-      }
-      if (isset($status['cas']['status']) && $status['cas']['status'] !== self::STATUS_NO_DATA) {
-         $output .= "CAS_SERVER_{$status['cas']['status']}\n";
-      } else {
-         $output .= "No CAS server\n";
       }
       if (count($status['mail_collectors']['servers'])) {
          $output .= 'Check mail collectors:';

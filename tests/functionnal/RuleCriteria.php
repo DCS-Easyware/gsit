@@ -45,7 +45,7 @@ class RuleCriteria extends DbTestCase {
 
    public function testConstruct() {
       $criteria = new \RuleCriteria('RuleDictionnarySoftware');
-      $this->string($criteria::$itemtype)->isIdenticalTo('RuleDictionnarySoftware');
+      $this->string($criteria->getItemtype())->isIdenticalTo('RuleDictionnarySoftware');
    }
 
    public function testPost_getFromDB() {
@@ -70,7 +70,7 @@ class RuleCriteria extends DbTestCase {
       $this->integer((int)$criteria_id)->isGreaterThan(0);
 
       $this->boolean($criteria->getFromDB($criteria_id))->isTrue();
-      $this->string($criteria::$itemtype)->isIdenticalTo('RuleDictionnarySoftware');
+      $this->string($criteria->getItemtype())->isIdenticalTo('RuleDictionnarySoftware');
    }
 
    public function testGetTypeName() {

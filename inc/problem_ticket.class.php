@@ -65,7 +65,7 @@ class Problem_Ticket extends CommonDBRelation{
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Ticket' :
@@ -262,7 +262,7 @@ class Problem_Ticket extends CommonDBRelation{
 
       $ID = $problem->getField('id');
 
-      if (!static::canView() || !$problem->can($ID, READ)) {
+      if (!ProfileRight::checkPermission('view', get_called_class()) || !$problem->can($ID, READ)) {
          return false;
       }
 
@@ -365,7 +365,7 @@ class Problem_Ticket extends CommonDBRelation{
 
       $ID = $ticket->getField('id');
 
-      if (!static::canView() || !$ticket->can($ID, READ)) {
+      if (!ProfileRight::checkPermission('view', get_called_class()) || !$ticket->can($ID, READ)) {
          return false;
       }
 

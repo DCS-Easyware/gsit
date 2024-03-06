@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DocumentType  extends CommonDropdown {
 
-   static $rightname      = 'typedoc';
+   protected $rightname = 'typedoc';
 
 
    function getAdditionalFields() {

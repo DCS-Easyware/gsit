@@ -167,12 +167,7 @@ class CommonDBTM extends CommonGLPI {
     */
    static $undisclosedFields = [];
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-   }
-
+   protected $right = "";
 
    /**
     * Return the table used to store this object
@@ -548,10 +543,14 @@ class CommonDBTM extends CommonGLPI {
     * @param string[] $updates   fields to update
     * @param string[] $oldvalues array of old values of the updated fields
     *
-    * @return void
+    * @return boolean
    **/
    function updateInDB($updates, $oldvalues = []) {
       global $DB;
+
+      if (count($updates) == 0) {
+         return false;
+      }
 
       foreach ($updates as $field) {
          if (isset($this->fields[$field])) {
@@ -578,7 +577,6 @@ class CommonDBTM extends CommonGLPI {
          Log::constructHistory($this, $oldvalues, $this->fields);
          $this->getFromDB($this->fields['id']);
       }
-
       return true;
    }
 
@@ -1049,7 +1047,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param array $saved Array of values saved in session
     *
-    * @return array Array of values
+    * @return void
    **/
    protected function restoreSavedValues(Array $saved = []) {
       if (count($saved)) {
@@ -1127,6 +1125,9 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $this->input = $this->prepareInputForAdd($this->input);
+         if ($this->input === false) {
+            return false;
+         }
       }
 
       if ($this->input && is_array($this->input)) {
@@ -1505,8 +1506,14 @@ class CommonDBTM extends CommonGLPI {
                      switch ($searchopt['datatype']) {
                         case 'string' :
                         case 'text' :
-                           $ischanged = (strcmp($DB->escape($this->fields[$key]),
-                                                $this->input[$key]) != 0);
+                           if (is_null($this->fields[$key]) && is_null($this->input[$key])) {
+                              $ischanged = false;
+                           } else if (is_null($this->fields[$key]) || is_null($this->input[$key])) {
+                              $ischanged = true;
+                           } else {
+                              $ischanged = (strcmp($DB->escape($this->fields[$key]),
+                                                   $this->input[$key]) != 0);
+                           }
                            break;
 
                         case 'itemlink' :
@@ -2360,7 +2367,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param array $options Options
     *
-    * @return boolean
+    * @return void
    **/
    function showDates($options = []) {
 
@@ -2460,7 +2467,7 @@ class CommonDBTM extends CommonGLPI {
       Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
 
       if ($params['formfooter'] === null) {
-          $this->showDates($params);
+         $this->showDates($params);
       }
 
       if (!$params['canedit']
@@ -2873,7 +2880,7 @@ class CommonDBTM extends CommonGLPI {
              && ($this->fields['users_id'] == Session::getLoginUserID())) {
             return true;
          }
-         return (static::canCreate() && $this->canCreateItem());
+         return ($this->canCreate() && $this->canCreateItem());
 
       }
       // else : Get item if not already loaded
@@ -2899,7 +2906,7 @@ class CommonDBTM extends CommonGLPI {
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
-            return (static::canView() && $this->canViewItem());
+            return ($this->canView() && $this->canViewItem());
 
          case UPDATE :
             // Personnal item
@@ -2907,7 +2914,7 @@ class CommonDBTM extends CommonGLPI {
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
-            return (static::canUpdate() && $this->canUpdateItem());
+            return ($this->canUpdate() && $this->canUpdateItem());
 
          case DELETE :
             // Personnal item
@@ -2915,7 +2922,7 @@ class CommonDBTM extends CommonGLPI {
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
-            return (static::canDelete() && $this->canDeleteItem());
+            return ($this->canUpdate() && $this->canDeleteItem());
 
          case PURGE :
             // Personnal item
@@ -2923,7 +2930,7 @@ class CommonDBTM extends CommonGLPI {
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
-            return (static::canPurge() && $this->canPurgeItem());
+            return ($this->canPurge() && $this->canPurgeItem());
 
          case CREATE :
             // Personnal item
@@ -2931,12 +2938,12 @@ class CommonDBTM extends CommonGLPI {
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
-            return (static::canCreate() && $this->canCreateItem());
+            return ($this->canCreate() && $this->canCreateItem());
 
          case 'recursive' :
             if ($this->isEntityAssign()
                 && $this->maybeRecursive()) {
-               if (static::canCreate()
+               if ($this->canCreate()
                    && Session::haveAccessToEntity($this->getEntityID())) {
                   // Can make recursive if recursive access to entity
                   return Session::haveRecursiveAccessToEntity($this->getEntityID());
@@ -3025,25 +3032,25 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param mixed $right Right to check : c / r / w / d / READ / UPDATE / CREATE / DELETE
     *
-    * @return void
+    * @return boolean
    **/
    function canGlobal($right) {
 
       switch ($right) {
          case READ :
-            return static::canView();
+            return $this->canView();
 
          case UPDATE :
-            return static::canUpdate();
+            return $this->canUpdate();
 
          case CREATE :
-            return static::canCreate();
+            return $this->canCreate();
 
          case DELETE :
-            return static::canDelete();
+            return $this->canDelete();
 
          case PURGE :
-            return static::canPurge();
+            return $this->canPurge();
 
       }
 
@@ -3666,45 +3673,41 @@ class CommonDBTM extends CommonGLPI {
    public final function searchOptions() {
       static $options;
 
-      unset($options);
+      $options = [];
 
-      if (!isset($options)) {
-         $options = [];
+      foreach ($this->rawSearchOptions() as $opt) {
+         $missingFields = [];
+         if (!isset($opt['id'])) {
+            $missingFields[] = 'id';
+         }
+         if (!isset($opt['name'])) {
+            $missingFields[] = 'name';
+         }
+         if (count($missingFields) > 0) {
+            throw new \Exception(
+               vsprintf(
+                  'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
+                  [
+                     get_called_class(),
+                     implode('", "', $missingFields),
+                     print_r($opt, true)
+                  ]
+               )
+            );
+         }
 
-         foreach ($this->rawSearchOptions() as $opt) {
-            $missingFields = [];
-            if (!isset($opt['id'])) {
-               $missingFields[] = 'id';
-            }
-            if (!isset($opt['name'])) {
-               $missingFields[] = 'name';
-            }
-            if (count($missingFields) > 0) {
-               throw new \Exception(
-                  vsprintf(
-                     'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
-                     [
-                        get_called_class(),
-                        implode('", "', $missingFields),
-                        print_r($opt, true)
-                     ]
-                  )
-               );
-            }
+         $optid = $opt['id'];
+         unset($opt['id']);
 
-            $optid = $opt['id'];
-            unset($opt['id']);
+         if (isset($options[$optid])) {
+            $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                  get_class($this) . " searchOptions!";
 
-            if (isset($options[$optid])) {
-               $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
-                   get_class($this) . " searchOptions!";
+            Toolbox::logError($message);
+         }
 
-               Toolbox::logError($message);
-            }
-
-            foreach ($opt as $k => $v) {
-               $options[$optid][$k] = $v;
-            }
+         foreach ($opt as $k => $v) {
+            $options[$optid][$k] = $v;
          }
       }
 
@@ -3925,15 +3928,15 @@ class CommonDBTM extends CommonGLPI {
 
       $actions = [];
       // test if current profile has rights to unlock current item type
-      if (Session::haveRight( static::$rightname, UNLOCK)) {
+      if (Session::haveRight($this->rightname, UNLOCK)) {
          $actions['ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock']
                         = _x('button', 'Unlock items');
       }
-      if ($DB->fieldExists(static::getTable(), 'entities_id') && static::canUpdate()) {
+      if ($DB->fieldExists(static::getTable(), 'entities_id') && $this->canUpdate()) {
          MassiveAction::getAddTransferList($actions);
       }
 
-      if (in_array(static::getType(), Appliance::getTypes(true)) && static::canUpdate()) {
+      if (in_array(static::getType(), Appliance::getTypes(true)) && $this->canUpdate()) {
          $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] = _x('button', 'Associate to an appliance');
       }
 
@@ -5379,7 +5382,12 @@ class CommonDBTM extends CommonGLPI {
       if (in_array($this->getType(), $CFG_GLPI['asset_types'])) {
          $ruleasset          = new RuleAssetCollection();
          $input              = $this->input;
-         $input['_itemtype'] = $this->getType();
+
+         $className = $this->getType();
+         if (!$className) {
+            return;
+         }
+         $input['_itemtype'] = $className;
 
          //If _auto is not defined : it's a manual process : set it's value to 0
          if (!isset($this->input['_auto'])) {
@@ -5491,10 +5499,6 @@ class CommonDBTM extends CommonGLPI {
       }
 
       return $data;
-   }
-
-   static function getIcon() {
-      return "fas fa-empty-icon";
    }
 
    /**
@@ -5635,5 +5639,475 @@ class CommonDBTM extends CommonGLPI {
       $name_field = static::getNameField();
 
       return "$table.$name_field AS $alias";
+   }
+
+   /**
+    * Show tabs
+    *
+    * @param array $options parameters to add to URLs and ajax
+    *     - withtemplate is a template view ?
+    *
+    * @return void
+   **/
+   function showNavigationHeader($options = []) {
+      global $CFG_GLPI;
+
+      // for objects not in table like central
+      if (isset($this->fields['id'])) {
+         $ID = $this->fields['id'];
+      } else {
+         if (isset($options['id'])) {
+            $ID = $options['id'];
+         } else {
+            $ID = 0;
+         }
+      }
+      $target         = $_SERVER['PHP_SELF'];
+      $extraparamhtml = "";
+      $withtemplate   = "";
+
+      if (is_array($options) && count($options)) {
+         $cleanoptions = $options;
+         if (isset($options['withtemplate'])) {
+            $withtemplate = $options['withtemplate'];
+            unset($cleanoptions['withtemplate']);
+         }
+         foreach (array_keys($cleanoptions) as $key) {
+            // Do not include id options
+            if (($key[0] == '_') || ($key == 'id')) {
+               unset($cleanoptions[$key]);
+            }
+         }
+         $extraparamhtml = "&amp;".Toolbox::append_params($cleanoptions, '&amp;');
+      }
+
+      if (empty($withtemplate)
+         && !$this->isNewID($ID)
+         && $this->getType()
+         && $this->displaylist) {
+
+         $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
+         $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
+         $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
+
+         if (empty($glpilisturl)) {
+            $glpilisturl = $this->getSearchURL();
+         }
+
+         // echo "<div id='menu_navigate'>";
+
+         $next = $prev = $first = $last = -1;
+         $current = false;
+         if (is_array($glpilistitems)) {
+            $current = array_search($ID, $glpilistitems);
+            if ($current !== false) {
+
+               if (isset($glpilistitems[$current+1])) {
+                  $next = $glpilistitems[$current+1];
+               }
+
+               if (isset($glpilistitems[$current-1])) {
+                  $prev = $glpilistitems[$current-1];
+               }
+
+               $first = $glpilistitems[0];
+               if ($first == $ID) {
+                  $first = -1;
+               }
+
+               $last = $glpilistitems[count($glpilistitems)-1];
+               if ($last == $ID) {
+                  $last = -1;
+               }
+
+            }
+         }
+         $cleantarget = Html::cleanParametersURL($target);
+         echo "<div class='navigationheader'>";
+
+         if ($first >= 0) {
+            echo "<a href='$cleantarget?id=$first$extraparamhtml'
+                     class='navicon left'>
+                     <i class='fas fa-angle-double-left pointer' title=\"".__s('First')."\"></i>
+                  </a>";
+         }
+
+         if ($prev >= 0) {
+            echo "<a href='$cleantarget?id=$prev$extraparamhtml'
+                     id='previouspage'
+                     class='navicon left'>
+                     <i class='fas fa-angle-left pointer' title=\"".__s('Previous')."\"></i>
+                  </a>";
+            $js = '$("body").keydown(function(e) {
+                     if ($("input, textarea").is(":focus") === false) {
+                        if(e.keyCode == 37 && e.ctrlKey) {
+                           window.location = $("#previouspage").attr("href");
+                        }
+                     }
+                  });';
+            echo Html::scriptBlock($js);
+         }
+
+         if (!$glpilisttitle) {
+            $glpilisttitle = __s('List');
+         }
+         echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
+                  class='navicon left'>
+                  <i class='far fa-list-alt pointer'></i>
+               </a>";
+
+         $name = '';
+         if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
+            $name = $this->getName();
+            if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
+               $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
+            }
+         }
+         if (isset($this->fields["entities_id"])
+               && Session::isMultiEntitiesMode()
+               && $this->isEntityAssign()) {
+            $entname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
+            if ($this->isRecursive()) {
+               $entname = sprintf(__('%1$s + %2$s'), $entname, __('Child entities'));
+            }
+            $name = sprintf(__('%1$s (%2$s)'), $name, $entname);
+
+         }
+         echo "<span class='center nav_title'>&nbsp;";
+         if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
+            if ($this instanceof CommonITILObject) {
+               echo "<span class='status'>";
+               echo $this->getStatusIcon($this->fields['status']);
+               echo "</span>";
+            }
+            echo $name;
+         }
+         echo "</span>";
+
+         $ma = new MassiveAction([
+               'item' => [
+                  $this->getType() => [
+                     $this->fields['id'] => 1
+                  ]
+               ]
+            ],
+            $_GET,
+            'initial',
+            $this->fields['id']
+         );
+         $actions = $ma->getInput()['actions'];
+         $input   = $ma->getInput();
+
+         if ($this->isEntityAssign()) {
+            $input['entity_restrict'] = $this->getEntityID();
+         }
+
+         if (count($actions)) {
+            $rand          = mt_rand();
+
+            if (count($actions)) {
+               echo "<span class='single-actions'>";
+               echo "<button type='button' class='btn btn-secondary moreactions'>
+                        ".__("Actions")."
+                        <i class='fas fa-caret-down'></i>
+                     </button>";
+
+               echo "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>";
+               foreach ($actions as $key => $action) {
+                  echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
+               }
+               echo "</div>";
+               echo "</span>";
+            }
+
+            Html::openMassiveActionsForm();
+            echo "<div id='dialog_container_$rand'></div>";
+            // Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
+            $CFG_GLPI['checkbox-zero-on-empty'] = true;
+            Html::closeForm();
+            //restore
+            unset($CFG_GLPI['checkbox-zero-on-empty']);
+
+            echo Html::scriptBlock( "$(function() {
+               var ma = ".json_encode($input).";
+
+               $(document).on('click', '.moreactions', function() {
+                  $('.moreactions + .dropdown-menu').toggle();
+               });
+
+               $(document).on('click', function(event) {
+                  var target = $(event.target);
+                  var parent = target.parent();
+
+                  if(!target.hasClass('moreactions')
+                     && !parent.hasClass('moreactions')) {
+                     $('.moreactions + .dropdown-menu').hide();
+                  }
+               });
+
+               $(document).on('click', '[data-action]', function() {
+                  $('.moreactions + .dropdown-menu').hide();
+
+                  var current_action = $(this).data('action');
+
+                  $('<div></div>').dialog({
+                     title: ma.actions[current_action],
+                     width: 500,
+                     height: 'auto',
+                     modal: true,
+                     appendTo: '#dialog_container_$rand',
+                     close: function() { $(this).remove(); },
+                  }).load(
+                     '".$CFG_GLPI['root_doc']. "/ajax/dropdownMassiveAction.php',
+                     Object.assign(
+                        {action: current_action},
+                        ma
+                     )
+                  );
+               });
+            });");
+         }
+
+         if ($current !== false) {
+            echo "<span class='right navicon'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
+         }
+
+         if ($next >= 0) {
+            echo "<a href='$cleantarget?id=$next$extraparamhtml'
+                     id='nextpage'
+                     class='navicon right'>" .
+               "<i class='fas fa-angle-right pointer' title=\"".__s('Next')."\"></i>
+                  </a>";
+            $js = '$("body").keydown(function(e) {
+                     if ($("input, textarea").is(":focus") === false) {
+                        if(e.keyCode == 39 && e.ctrlKey) {
+                           window.location = $("#nextpage").attr("href");
+                        }
+                     }
+                  });';
+            echo Html::scriptBlock($js);
+         }
+
+         if ($last >= 0) {
+            echo "<a href='$cleantarget?id=$last $extraparamhtml'
+                     class='navicon right'>" .
+               "<i class='fas fa-angle-double-right pointer' title=\"" . __s('Last') . "\"></i></a>";
+         }
+
+         echo "</div>"; // .navigationheader
+      }
+   }
+
+
+   /**
+    * List infos in debug tab
+    *
+    * @return void
+   **/
+   function showDebugInfo() {
+      global $CFG_GLPI;
+
+      if (method_exists($this, 'showDebug')) {
+         $this->showDebug();
+      }
+
+      $class = $this->getType();
+
+      if (Infocom::canApplyOn($class)) {
+         $infocom = new Infocom();
+         if ($infocom->getFromDBforDevice($class, $this->fields['id'])) {
+            $infocom->showDebug();
+         }
+      }
+
+      if (in_array($class, $CFG_GLPI["reservation_types"])) {
+         $resitem = new ReservationItem();
+         if ($resitem->getFromDBbyItem($class, $this->fields['id'])) {
+            $resitem->showDebugResa();
+         }
+      }
+   }
+
+
+   /**
+    * Display item with tabs
+    *
+    * @since 0.85
+    *
+    * @param array $options Options
+    *
+    * @return void
+   **/
+   function display($options = []) {
+      global $CFG_GLPI;
+
+      if (isset($options['id'])
+         && !$this->isNewID($options['id'])) {
+         if (!$this->getFromDB($options['id'])) {
+            Html::displayNotFoundError();
+         }
+      }
+
+      // in case of lefttab layout, we couldn't see "right error" message
+      if ($this->get_item_to_display_tab) {
+         if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
+            // This triggers from a profile switch.
+            // If we don't have right, redirect instead to central page
+            if (isset($_SESSION['_redirected_from_profile_selector'])
+               && $_SESSION['_redirected_from_profile_selector']) {
+               unset($_SESSION['_redirected_from_profile_selector']);
+               Html::redirect($CFG_GLPI['root_doc']."/front/central.php");
+            }
+            Html::displayRightError();
+         }
+      }
+
+      // try to lock object
+      // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+      ObjectLock::manageObjectLock(get_class($this), $options);
+
+      $this->showNavigationHeader($options);
+      if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
+
+         if (!isset($options['id'])) {
+            $options['id'] = 0;
+         }
+         $this->showPrimaryForm($options);
+      }
+
+      $this->showTabsContent($options);
+   }
+
+
+   /**
+    * Update $_SESSION to set the display options.
+    *
+    * @since 0.84
+    *
+    * @param array  $input        data to update
+    * @param string $sub_itemtype sub itemtype if needed (default '')
+    *
+    * @return void
+   **/
+   static function updateDisplayOptions($input = [], $sub_itemtype = '') {
+
+      $options = static::getAvailableDisplayOptions();
+      if (count($options)) {
+         if (empty($sub_itemtype)) {
+            $display_options = &$_SESSION['glpi_display_options'][self::getType()];
+         } else {
+            $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
+         }
+         // reset
+         if (isset($input['reset'])) {
+            foreach ($options as $option_group) {
+               foreach ($option_group as $option_name => $attributs) {
+                  $display_options[$option_name] = $attributs['default'];
+               }
+            }
+         } else {
+            foreach ($options as $option_group) {
+               foreach ($option_group as $option_name => $attributs) {
+                  if (isset($input[$option_name]) && ($_GET[$option_name] == 'on')) {
+                     $display_options[$option_name] = true;
+                  } else {
+                     $display_options[$option_name] = false;
+                  }
+               }
+            }
+         }
+         // Store new display options for user
+         if ($uid = Session::getLoginUserID()) {
+            $user = new User();
+            if ($user->getFromDB($uid)) {
+               $user->update(['id' => $uid,
+                                 'display_options'
+                                       => exportArrayToDB($_SESSION['glpi_display_options'])]);
+            }
+         }
+      }
+   }
+
+
+   /**
+    * Load display options to $_SESSION
+    *
+    * @since 0.84
+    *
+    * @param string $sub_itemtype sub itemtype if needed (default '')
+    *
+    * @return array
+   **/
+   static function getDisplayOptions($sub_itemtype = '') {
+
+      if (!isset($_SESSION['glpi_display_options'])) {
+         // Load display_options from user table
+         $_SESSION['glpi_display_options'] = [];
+         if ($uid = Session::getLoginUserID()) {
+            $user = new User();
+            if ($user->getFromDB($uid)) {
+               $_SESSION['glpi_display_options'] = importArrayFromDB($user->fields['display_options']);
+            }
+         }
+      }
+      if (!isset($_SESSION['glpi_display_options'][self::getType()])) {
+         $_SESSION['glpi_display_options'][self::getType()] = [];
+      }
+
+      if (!empty($sub_itemtype)) {
+         if (!isset($_SESSION['glpi_display_options'][self::getType()][$sub_itemtype])) {
+            $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype] = [];
+         }
+         $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
+      } else {
+         $display_options = &$_SESSION['glpi_display_options'][self::getType()];
+      }
+
+      // Load default values if not set
+      $options = static::getAvailableDisplayOptions();
+      if (count($options)) {
+         foreach ($options as $option_group) {
+            foreach ($option_group as $option_name => $attributs) {
+               if (!isset($display_options[$option_name])) {
+                  $display_options[$option_name] = $attributs['default'];
+               }
+            }
+         }
+      }
+      return $display_options;
+   }
+
+   /**
+    * Get error message for item
+    *
+    * @since 0.85
+    *
+    * @param integer $error  error type see define.php for ERROR_*
+    * @param string  $object string to use instead of item link (default '')
+    *
+    * @return string
+   **/
+   function getErrorMessage($error, $object = '') {
+
+      if (empty($object)) {
+         $object = $this->getLink();
+      }
+      switch ($error) {
+         case ERROR_NOT_FOUND :
+            return sprintf(__('%1$s: %2$s'), $object, __('Unable to get item'));
+
+         case ERROR_RIGHT :
+            return sprintf(__('%1$s: %2$s'), $object, __('Authorization error'));
+
+         case ERROR_COMPAT :
+            return sprintf(__('%1$s: %2$s'), $object, __('Incompatible items'));
+
+         case ERROR_ON_ACTION :
+            return sprintf(__('%1$s: %2$s'), $object, __('Error on executing the action'));
+
+         case ERROR_ALREADY_DEFINED :
+            return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
+      }
+      return 'Unknown error';
    }
 }

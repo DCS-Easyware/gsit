@@ -39,7 +39,7 @@ class AuthMail extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-   static $rightname = 'config';
+   protected $rightname = 'config';
 
    static function getTypeName($nb = 0) {
       return _n('Mail server', 'Mail servers', $nb);
@@ -53,12 +53,12 @@ class AuthMail extends CommonDBTM {
       return $input;
    }
 
-   static function canCreate() {
-      return static::canUpdate();
+   function canCreate() {
+      return $this->canUpdate();
    }
 
-   static function canPurge() {
-      return static::canUpdate();
+   function canPurge() {
+      return $this->canUpdate();
    }
 
    function prepareInputForAdd($input) {
@@ -160,7 +160,7 @@ class AuthMail extends CommonDBTM {
     */
    function showForm($ID, $options = []) {
 
-      if (!Config::canUpdate()) {
+      if (!ProfileRight::checkPermission('update', 'Config')) {
          return false;
       }
       if (empty($ID)) {

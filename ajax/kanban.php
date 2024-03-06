@@ -187,7 +187,7 @@ if (($_POST['action'] ?? null) == 'update') {
    $checkParams(['column_field', 'items_id', 'column_name']);
    $column_field = $_POST['column_field'];
    $column_itemtype = getItemtypeForForeignKeyField($column_field);
-   if (!$column_itemtype::canCreate() || !$column_itemtype::canView()) {
+   if (!ProfileRight::checkPermission('create', $column_itemtype) || !ProfileRight::checkPermission('view', $column_itemtype)) {
       // Missing rights
       http_response_code(403);
       return;

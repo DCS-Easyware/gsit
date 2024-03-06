@@ -48,7 +48,7 @@ class Problem extends CommonITILObject {
    public $grouplinkclass       = 'Group_Problem';
    public $supplierlinkclass    = 'Problem_Supplier';
 
-   static $rightname            = 'problem';
+   protected $rightname         = 'problem';
    protected $usenotepad        = true;
 
 
@@ -76,8 +76,8 @@ class Problem extends CommonITILObject {
       return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
               && !in_array($this->fields['status'], $this->getClosedStatusArray())
-              && (Session::haveRight(self::$rightname, UPDATE)
-                  || (Session::haveRight(self::$rightname, self::READMY)
+              && (Session::haveRight($this->rightname, UPDATE)
+                  || (Session::haveRight($this->rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
                               && $this->haveAGroup(CommonITILActor::ASSIGN,
@@ -85,8 +85,8 @@ class Problem extends CommonITILObject {
    }
 
 
-   static function canView() {
-      return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
+   function canView() {
+      return Session::haveRightsOr($this->rightname, [self::READALL, self::READMY]);
    }
 
 
@@ -100,8 +100,8 @@ class Problem extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive())) {
          return false;
       }
-      return (Session::haveRight(self::$rightname, self::READALL)
-              || (Session::haveRight(self::$rightname, self::READMY)
+      return (Session::haveRight($this->rightname, self::READALL)
+              || (Session::haveRight($this->rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -125,7 +125,7 @@ class Problem extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return Session::haveRight(self::$rightname, CREATE);
+      return Session::haveRight($this->rightname, CREATE);
    }
 
 
@@ -156,7 +156,7 @@ class Problem extends CommonITILObject {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (static::canView()) {
+      if ($this->canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
                $timeline    = $item->getTimelineItems();
@@ -386,7 +386,7 @@ class Problem extends CommonITILObject {
 
    function getSpecificMassiveActions($checkitem = null) {
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if (ProblemTask::canCreate()) {
+      if (ProfileRight::checkPermission('create', 'ProblemTask')) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'] = __('Add a new task');
       }
       if ($this->canAdminActors()) {
@@ -763,7 +763,7 @@ class Problem extends CommonITILObject {
    static function showCentralList($start, $status = "process", $showgroupproblems = true) {
       global $DB, $CFG_GLPI;
 
-      if (!static::canView()) {
+      if (!ProfileRight::checkPermission('view', get_called_class())) {
          return false;
       }
 
@@ -990,14 +990,14 @@ class Problem extends CommonITILObject {
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
    **/
-   static function showCentralCount($foruser = false) {
+   function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
-      if (!static::canView()) {
+      if (!$this->canView()) {
          return false;
       }
-      if (!Session::haveRight(self::$rightname, self::READALL)) {
+      if (!Session::haveRight($this->rightname, self::READALL)) {
          $foruser = true;
       }
 
@@ -1111,7 +1111,7 @@ class Problem extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $viewusers = User::canView();
+      $viewusers = ProfileRight::checkPermission('view', 'User');
 
       $problem   = new self();
       $rand      = mt_rand();
@@ -1187,7 +1187,7 @@ class Problem extends CommonITILObject {
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
-      if (!static::canView()) {
+      if (!$this->canView()) {
          return false;
       }
 
@@ -1239,7 +1239,7 @@ class Problem extends CommonITILObject {
       $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
       $showuserlink = 0;
-      if (User::canView()) {
+      if (ProfileRight::checkPermission('view', 'User')) {
          $showuserlink = 1;
       }
 
@@ -1787,7 +1787,8 @@ class Problem extends CommonITILObject {
    static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
-      if (!Session::haveRight(self::$rightname, self::READALL)) {
+      $problem = new static();
+      if (!Session::haveRight($problem->getRightname(), self::READALL)) {
          return false;
       }
 
@@ -1863,7 +1864,7 @@ class Problem extends CommonITILObject {
       // Link to open a new problem
       if ($item->getID()
           && Problem::isPossibleToAssignType($item->getType())
-          && self::canCreate()
+          && $problem->canCreate()
           && !(!empty($withtemplate) && $withtemplate == 2)
           && (!isset($item->fields['is_template']) || $item->fields['is_template'] == 0)) {
          echo "<div class='firstbloc'>";

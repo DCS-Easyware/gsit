@@ -115,6 +115,7 @@ class DeviceControl extends CommonDevice {
 
             break;
       }
+      return $column;
    }
 
 

@@ -1167,7 +1167,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
 
-      $this->boolean((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isFalse();
+      $this->boolean((boolean)\Session::haveRight($ticket->getRightname(), \Ticket::CHANGEPRIORITY))->isFalse();
       //check output with default ACLs
       $this->checkFormOutput(
          $ticket,
@@ -1209,7 +1209,7 @@ class Ticket extends DbTestCase {
          ]
       );
 
-      $this->boolean((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isTrue();
+      $this->boolean((boolean)\Session::haveRight($ticket->getRightname(), \Ticket::CHANGEPRIORITY))->isTrue();
       //check output with changed ACLs
       $this->checkFormOutput(
          $ticket,
@@ -2942,6 +2942,10 @@ class Ticket extends DbTestCase {
     */
    protected function getAssociatedDocumentsCriteriaProvider() {
       $ticket = new \Ticket();
+      $change = new \Change();
+      $problem = new \Problem();
+      $itilFollowup = new \ITILFollowup();
+      $ticketTask = new \TicketTask();
       $ticket_id = $ticket->add([
          'name'            => "test",
          'content'         => "test",
@@ -2951,11 +2955,11 @@ class Ticket extends DbTestCase {
       return [
          [
             'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => 0,
-               \ITILFollowup::$rightname => 0,
-               \TicketTask::$rightname   => 0,
+               $change->getRightname()   => 0,
+               $problem->getRightname()  => 0,
+               $ticket->getRightname() => 0,
+               $itilFollowup->getRightname() => 0,
+               $ticketTask->getRightname() => 0,
             ],
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
@@ -2966,11 +2970,11 @@ class Ticket extends DbTestCase {
          ],
          [
             'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => \READ,
-               \ITILFollowup::$rightname => 0,
-               \TicketTask::$rightname   => 0,
+               $change->getRightname()       => 0,
+               $problem->getRightname()      => 0,
+               $ticket->getRightname()       => \READ,
+               $itilFollowup->getRightname() => 0,
+               $ticketTask->getRightname()   => 0,
             ],
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
@@ -2984,11 +2988,11 @@ class Ticket extends DbTestCase {
          ],
          [
             'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => \READ,
-               \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
-               \TicketTask::$rightname   => \TicketTask::SEEPUBLIC,
+               $change->getRightname()       => 0,
+               $problem->getRightname()      => 0,
+               $ticket->getRightname()       => \READ,
+               $itilFollowup->getRightname() => \ITILFollowup::SEEPUBLIC,
+               $ticketTask->getRightname()   => \TicketTask::SEEPUBLIC,
             ],
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
@@ -3003,11 +3007,11 @@ class Ticket extends DbTestCase {
          ],
          [
             'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => \READ,
-               \ITILFollowup::$rightname => \ITILFollowup::SEEPRIVATE,
-               \TicketTask::$rightname   => 0,
+               $change->getRightname()       => 0,
+               $problem->getRightname()      => 0,
+               $ticket->getRightname()       => \READ,
+               $itilFollowup->getRightname() => \ITILFollowup::SEEPRIVATE,
+               $ticketTask->getRightname()   => 0,
             ],
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
@@ -3021,11 +3025,11 @@ class Ticket extends DbTestCase {
          ],
          [
             'rights'   => [
-               \Change::$rightname       => 0,
-               \Problem::$rightname      => 0,
-               \Ticket::$rightname       => \READ,
-               \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
-               \TicketTask::$rightname   => \TicketTask::SEEPRIVATE,
+               $change->getRightname()       => 0,
+               $problem->getRightname()      => 0,
+               $ticket->getRightname()       => \READ,
+               $itilFollowup->getRightname() => \ITILFollowup::SEEPUBLIC,
+               $ticketTask->getRightname()   => \TicketTask::SEEPRIVATE,
             ],
             'ticket_id'      => $ticket_id,
             'bypass_rights'  => false,
@@ -3222,14 +3226,15 @@ class Ticket extends DbTestCase {
       $tech_id     = getItemByTypeName('User', 'tech', true);
       $postonly_id = getItemByTypeName('User', 'post-only', true);
       $tuser_id    = getItemByTypeName('User', TU_USER, true);
+      $ticket = new \Ticket();
 
       // check base behavior (only standard interface can create for other users)
       $this->login();
-      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
+      $this->boolean($ticket->canDelegateeCreateTicket($normal_id))->isTrue();
       $this->login('tech', 'tech');
-      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
+      $this->boolean($ticket->canDelegateeCreateTicket($normal_id))->isTrue();
       $this->login('post-only', 'postonly');
-      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isFalse();
+      $this->boolean($ticket->canDelegateeCreateTicket($normal_id))->isFalse();
 
       // create a test group
       $group = new \Group;
@@ -3250,10 +3255,10 @@ class Ticket extends DbTestCase {
 
       // check postonly can now create (yes for normal and himself) or not (no for others) for other users
       $this->login('post-only', 'postonly');
-      $this->boolean(\Ticket::canDelegateeCreateTicket($postonly_id))->isTrue();
-      $this->boolean(\Ticket::canDelegateeCreateTicket($normal_id))->isTrue();
-      $this->boolean(\Ticket::canDelegateeCreateTicket($tech_id))->isFalse();
-      $this->boolean(\Ticket::canDelegateeCreateTicket($tuser_id))->isFalse();
+      $this->boolean($ticket->canDelegateeCreateTicket($postonly_id))->isTrue();
+      $this->boolean($ticket->canDelegateeCreateTicket($normal_id))->isTrue();
+      $this->boolean($ticket->canDelegateeCreateTicket($tech_id))->isFalse();
+      $this->boolean($ticket->canDelegateeCreateTicket($tuser_id))->isFalse();
    }
 
    public function testCanAddFollowupsDefaults() {
@@ -3291,6 +3296,7 @@ class Ticket extends DbTestCase {
       $this->login();
 
       $ticket = new \Ticket();
+      $itilFollowup = new \ITILFollowup();
       $this->integer(
          (int)$ticket->add([
             'name'               => '',
@@ -3308,7 +3314,7 @@ class Ticket extends DbTestCase {
          ],
          [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+            'name'        => $itilFollowup->getRightname(),
          ]
       );
 
@@ -3326,7 +3332,7 @@ class Ticket extends DbTestCase {
          ],
          [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+            'name'        => $itilFollowup->getRightname(),
          ]
       );
 
@@ -3345,6 +3351,7 @@ class Ticket extends DbTestCase {
       $this->login();
 
       $ticket = new \Ticket();
+      $itilFollowup = new \ITILFollowup();
       $this->integer(
          (int)$ticket->add([
             'name'    => '',
@@ -3360,7 +3367,7 @@ class Ticket extends DbTestCase {
          ],
          [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+            'name'        => $itilFollowup->getRightname(),
          ]
       );
 
@@ -3395,7 +3402,7 @@ class Ticket extends DbTestCase {
          ],
          [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+            'name'        => $itilFollowup->getRightname(),
          ]
       );
 
@@ -3414,6 +3421,7 @@ class Ticket extends DbTestCase {
       $this->login();
 
       $ticket = new \Ticket();
+      $itilFollowup = new \ITILFollowup();
       $this->integer(
          (int)$ticket->add([
             'name'    => '',
@@ -3429,7 +3437,7 @@ class Ticket extends DbTestCase {
          ],
          [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+            'name'        => $itilFollowup->getRightname(),
          ]
       );
 
@@ -3475,7 +3483,7 @@ class Ticket extends DbTestCase {
          ],
          [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+            'name'        => $itilFollowup->getRightname(),
          ]
       );
 
@@ -3494,6 +3502,7 @@ class Ticket extends DbTestCase {
       $this->login();
 
       $ticket = new \Ticket();
+      $itilFollowup = new \ITILFollowup();
       $this->integer(
          (int)$ticket->add([
             'name'    => '',
@@ -3509,7 +3518,7 @@ class Ticket extends DbTestCase {
          ],
          [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+            'name'        => $itilFollowup->getRightname(),
          ]
       );
 
@@ -3545,6 +3554,7 @@ class Ticket extends DbTestCase {
       $this->login();
 
       $ticket = new \Ticket();
+      $itilFollowup = new \ITILFollowup();
       $this->integer(
          (int)$ticket->add([
             'name'    => '',
@@ -3560,7 +3570,7 @@ class Ticket extends DbTestCase {
          ],
          [
             'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-            'name'        => \ITILFollowup::$rightname,
+            'name'        => $itilFollowup->getRightname(),
          ]
       );
 

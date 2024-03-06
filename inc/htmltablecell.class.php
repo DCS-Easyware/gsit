@@ -53,6 +53,9 @@ class HTMLTableCell extends HTMLTableEntity {
    // List of rows that have specific attributs
    private  $attributForTheRow = false;
 
+   protected $numberOfLines = 0;
+   protected $start = 0;
+
    /**
     * @param HTMLTableHeader $row
     * @param HTMLTableHeader $header

@@ -53,11 +53,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    public $dohistory = true;
 
    // From CommonDBChild
-   static public $itemtype     = 'Project';
+   protected $itemtype         = 'Project';
    static public $items_id     = 'projects_id';
 
    protected $team             = [];
-   static $rightname           = 'projecttask';
+   protected $rightname           = 'projecttask';
    protected $usenotepad       = true;
 
    public $can_be_translated   = true;
@@ -72,15 +72,15 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    }
 
 
-   static function canPurge() {
+   function canPurge() {
       return static::canChild('canUpdate');
    }
 
 
-   static function canView() {
+   function canView() {
 
       return (Session::haveRightsOr('project', [Project::READALL, Project::READMY])
-              || Session::haveRight(self::$rightname, ProjectTask::READMY));
+              || Session::haveRight($this->rightname, ProjectTask::READMY));
    }
 
 
@@ -100,7 +100,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                      && (($project->fields["users_id"] === Session::getLoginUserID())
                          || $project->isInTheManagerGroup()
                          || $project->isInTheTeam()))
-                 || (Session::haveRight(self::$rightname, self::READMY)
+                 || (Session::haveRight($this->rightname, self::READMY)
                      && (($this->fields["users_id"] === Session::getLoginUserID())
                          || $this->isInTheTeam())));
       }
@@ -108,15 +108,15 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    }
 
 
-   static function canCreate() {
+   function canCreate() {
       return (Session::haveRight('project', UPDATE));
    }
 
 
-   static function canUpdate() {
+   function canUpdate() {
 
       return (parent::canUpdate()
-              || Session::haveRight(self::$rightname, self::UPDATEMY));
+              || Session::haveRight($this->rightname, self::UPDATEMY));
    }
 
 
@@ -133,7 +133,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       $project = new Project();
       if ($project->getFromDB($this->fields['projects_id'])) {
          return (Session::haveRight('project', UPDATE)
-                 || (Session::haveRight(self::$rightname, self::UPDATEMY)
+                 || (Session::haveRight($this->rightname, self::UPDATEMY)
                      && (($this->fields["users_id"] === Session::getLoginUserID())
                          || $this->isInTheTeam())));
       }
@@ -839,8 +839,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
    static function getTotalEffectiveDuration($projecttasks_id) {
       global $DB;
 
-      $item = new static();
+      $item = getItemForItemtype(get_called_class());
       $time = 0;
+
+      if (!$item) {
+         return $time;
+      }
 
       if ($item->getFromDB($projecttasks_id)) {
          $time += $item->fields['effective_duration'];
@@ -2045,7 +2049,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
       $vtodo = $vcalendar->getBaseComponent();
 
       if (null !== $vtodo->RRULE) {
-         throw new UnexpectedValueException('RRULE not yet implemented for Project tasks');
+         throw new \UnexpectedValueException('RRULE not yet implemented for Project tasks');
       }
 
       $input = $this->getCommonInputFromVcomponent($vtodo, $this->isNewItem());

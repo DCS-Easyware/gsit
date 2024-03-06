@@ -43,8 +43,8 @@ class SoftwareVersion extends CommonDBChild {
    public $dohistory = true;
 
    // From CommonDBChild
-   static public $itemtype  = 'Software';
-   static public $items_id  = 'softwares_id';
+   protected $itemtype     = 'Software';
+   static public $items_id = 'softwares_id';
 
 
    static function getTypeName($nb = 0) {

@@ -35,7 +35,7 @@ class RuleDictionnaryDropdown extends Rule {
    // From Rule
    public $can_sort      = true;
 
-   static $rightname     = 'rule_dictionnary_dropdown';
+   protected $rightname  = 'rule_dictionnary_dropdown';
 
    /**
     * @see Rule::maxActionsCount()

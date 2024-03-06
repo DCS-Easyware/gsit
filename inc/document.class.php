@@ -47,7 +47,7 @@ class Document extends CommonDBTM {
 
    static protected $forward_entity_to = ['Document_Item'];
 
-   static $rightname                   = 'document';
+   protected $rightname                = 'document';
    static $tag_prefix                  = '#';
    protected $usenotepad               = true;
 
@@ -114,7 +114,7 @@ class Document extends CommonDBTM {
    }
 
 
-   static function canCreate() {
+   function canCreate() {
 
       // Have right to add document OR ticket followup
       return (Session::haveRight('document', CREATE)
@@ -142,7 +142,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      if (Document::canCreate()) {
+      if (ProfileRight::checkPermission('create', 'Document')) {
          return parent::canCreateItem();
       }
       return false;
@@ -518,7 +518,7 @@ class Document extends CommonDBTM {
       $out   = '';
       $open  = '';
       $close = '';
-      if (self::canView()
+      if ($this->canView()
           || $this->canViewFile(['tickets_id' => $this->fields['tickets_id']])) {
          $open  = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
                     $this->fields['id'].$params."' alt=\"".$initfileout."\"
@@ -725,8 +725,9 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      if (!Session::haveRight(KnowbaseItem::$rightname, READ)
-          && !Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::READFAQ)
+      $knowbaseItem = new KnowbaseItem();
+      if (!Session::haveRight($knowbaseItem->getRightname(), READ)
+          && !Session::haveRight($knowbaseItem->getRightname(), KnowbaseItem::READFAQ)
           && !$CFG_GLPI['use_public_faq']) {
          return false;
       }
@@ -1462,16 +1463,16 @@ class Document extends CommonDBTM {
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
       $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
-
+      $document = new Document();
       if (self::canApplyOn($itemtype)) {
-         if (Document::canView()) {
+         if ($document->canView()) {
             $actions[$action_prefix.'add']    = "<i class='ma-icon far fa-file'></i>".
                                                 _x('button', 'Add a document');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a document');
          }
       }
 
-      if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
+      if (is_a($itemtype, __CLASS__, true) && $document->canUpdate()) {
          $actions[$action_prefix.'add_item']    = _x('button', 'Add an item');
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }
@@ -1549,7 +1550,7 @@ class Document extends CommonDBTM {
 
       //let's see if original image needs resize
       $img_infos  = getimagesize($path);
-      if (!($img_infos[0] > $mwidth) && !($img_infos[1] > $mheight)) {
+      if ($img_infos !== false && !($img_infos[0] > $mwidth) && !($img_infos[1] > $mheight)) {
          //no resize needed
          return $path;
       }

@@ -39,7 +39,7 @@ class RuleSoftwareCategoryCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = true;
-   static $rightname   = 'rule_softwarecategories';
+   protected $rightname   = 'rule_softwarecategories';
    public $menu_option = 'softwarecategories';
 
 

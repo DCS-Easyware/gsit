@@ -40,10 +40,10 @@ if (!defined('GLPI_ROOT')) {
 class Supplier extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory           = true;
+   public $dohistory     = true;
 
-   static $rightname           = 'contact_enterprise';
-   protected $usenotepad       = true;
+   protected $rightname  = 'contact_enterprise';
+   protected $usenotepad = true;
 
 
 
@@ -197,7 +197,7 @@ class Supplier extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['Contact_Supplier'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']

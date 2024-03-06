@@ -415,8 +415,8 @@ class Migration {
             }
             return true;
          }
-         return false;
       }
+      return false;
    }
 
 
@@ -677,7 +677,7 @@ class Migration {
     * @param string $table The table to alter
     * @param array  $input The elements to add inside the table
     *
-    * @return integer id of the last item inserted by mysql
+    * @return integer|false id of the last item inserted by mysql
    **/
    function insertInTable($table, array $input) {
       global $DB;
@@ -696,6 +696,7 @@ class Migration {
 
          return $DB->insertId();
       }
+      return false;
    }
 
 
@@ -780,7 +781,7 @@ class Migration {
     * @param array $criteria Array of Array of fields of glpi_rulecriterias
     * @param array $actions  Array of Array of fields of glpi_ruleactions
     *
-    * @return integer new rule id
+    * @return void
    **/
    function createRule(Array $rule, Array $criteria, Array $actions) {
       global $DB;
@@ -1010,7 +1011,7 @@ class Migration {
     *
     * @since 9.2
     *
-    * @return boolean
+    * @return void
     */
    private function storeConfig() {
       global $DB;

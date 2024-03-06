@@ -45,7 +45,12 @@ if (isset($_POST["update"])) {
 
    // Load item and check rights
    $impact_item->getFromDB($id);
-   Session::checkRight($impact_item->fields['itemtype']::$rightname, UPDATE);
+   $itemtype = $impact_item->fields['itemtype'];
+   $item = getItemForItemtype($impact_item->fields['itemtype']);
+   if ($item === false) {
+      exit;
+   }
+   Session::checkRight($item->getRightname(), UPDATE);
 
    // Update item and back
    $impact_item->update($_POST);

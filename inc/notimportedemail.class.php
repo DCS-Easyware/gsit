@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotImportedEmail extends CommonDBTM {
 
-   static $rightname = 'config';
+   protected $rightname = 'config';
 
    const MATCH_NO_RULE     = 0;
    const USER_UNKNOWN      = 1;
@@ -68,7 +68,7 @@ class NotImportedEmail extends CommonDBTM {
     **/
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {

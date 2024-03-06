@@ -43,7 +43,7 @@ class Link extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static $rightname = 'link';
+   protected $rightname = 'link';
    static $tags      = ['[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
                              '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]'];
@@ -68,7 +68,7 @@ class Link extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (self::canView()) {
+      if ($this->canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $entity_criteria = getEntitiesRestrictCriteria(
@@ -129,6 +129,7 @@ class Link extends CommonDBTM {
       parent::getEmpty();
       //Keep the same behavior as in previous versions
       $this->fields['open_window'] = 1;
+      return true;
    }
 
 
@@ -533,7 +534,7 @@ class Link extends CommonDBTM {
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
-      if (!self::canView()) {
+      if (!ProfileRight::checkPermission('view', get_called_class())) {
          return false;
       }
 

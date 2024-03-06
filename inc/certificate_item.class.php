@@ -85,7 +85,7 @@ class Certificate_Item extends CommonDBRelation {
             return _n('Associated item', 'Associated items', Session::getPluralNumber());
 
          } else if (in_array($item->getType(), Certificate::getTypes(true))
-            && Certificate::canView()) {
+            && ProfileRight::checkPermission('view', 'Certificate')) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(Certificate::getTypeName(2),
                                            self::countForItem($item));
@@ -323,7 +323,7 @@ class Certificate_Item extends CommonDBRelation {
       $ID = $item->getField('id');
 
       if ($item->isNewID($ID)
-         || !Certificate::canView() ||
+         || !ProfileRight::checkPermission('view', 'Certificate') ||
             !$item->can($item->fields['id'], READ)) {
          return false;
       }
@@ -369,7 +369,7 @@ class Certificate_Item extends CommonDBRelation {
 
          echo "<div class='firstbloc'>";
 
-         if (Certificate::canView() && (!$nb || ($nb > count($used)))) {
+         if (ProfileRight::checkPermission('view', 'Certificate') && (!$nb || ($nb > count($used)))) {
             echo "<form name='certificate_form$rand'
                         id='certificate_form$rand'
                         method='post'
@@ -494,5 +494,6 @@ class Certificate_Item extends CommonDBRelation {
          Html::closeForm();
       }
       echo "</div>";
+      return true;
    }
 }

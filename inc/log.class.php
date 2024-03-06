@@ -69,7 +69,7 @@ class Log extends CommonDBTM {
    // Plugin must use value starting from
    const HISTORY_PLUGIN             = 1000;
 
-   static $rightname = 'logs';
+   protected $rightname = 'logs';
 
 
 
@@ -121,6 +121,10 @@ class Log extends CommonDBTM {
 
       foreach ($oldvalues as $key => $oldval) {
          $changes = [];
+         $protectedOldval = null;
+         if (!is_null($oldval)) {
+            $protectedOldval = addslashes($oldval);
+         }
 
          // Parsing $SEARCHOPTION to find changed field
          foreach ($searchopt as $key2 => $val2) {
@@ -135,7 +139,7 @@ class Log extends CommonDBTM {
                    && ($val2['rightname'] == $item->fields['name'])) {
 
                   $id_search_option = $key2;
-                  $changes          =  [$id_search_option, addslashes($oldval), $values[$key]];
+                  $changes          =  [$id_search_option, $protectedOldval, $values[$key]];
                }
 
             } else if (($val2['linkfield'] == $key && $real_type === $item->getType())
@@ -144,7 +148,7 @@ class Log extends CommonDBTM {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                if ($val2['table'] == $item->getTable()) {
-                  $changes = [$id_search_option, addslashes($oldval), $values[$key]];
+                  $changes = [$id_search_option, $protectedOldval, $values[$key]];
                } else {
                   // other cases; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
@@ -213,12 +217,13 @@ class Log extends CommonDBTM {
             sprintf(__('%1$s (%2$s)'), getUserName($impersonator_id), $impersonator_id)
          );
       }
-
-      $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
+      if (!is_null($old_value)) {
+         $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
+      }
       $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
 
       // Security to be sure that values do not pass over the max length
-      if (Toolbox::strlen($old_value) > 255) {
+      if (!is_null($old_value) && Toolbox::strlen($old_value) > 255) {
          $old_value = Toolbox::substr($old_value, 0, 250);
       }
       if (Toolbox::strlen($new_value) > 255) {
@@ -568,7 +573,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
 
                   if ($data['itemtype'] == 'Ticket') {
-                     if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
+                     if ($data['id_search_option'] && !is_null($data['id_search_option'])) { // Recent record - see CommonITILObject::getSearchOptionsActors()
                         $as = $SEARCHOPTION[$data['id_search_option']]['name'];
                      } else { // Old record
                         switch ($data['itemtype_link']) {

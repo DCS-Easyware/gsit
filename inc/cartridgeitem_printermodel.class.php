@@ -70,7 +70,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (!$withtemplate && Printer::canView()) {
+      if (!$withtemplate && ProfileRight::checkPermission('view', 'Printer')) {
          $nb = 0;
          switch ($item->getType()) {
             case 'CartridgeItem' :

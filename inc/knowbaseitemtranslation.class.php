@@ -44,13 +44,12 @@ if (!defined('GLPI_ROOT')) {
 **/
 class KnowbaseItemTranslation extends CommonDBChild {
 
-   static public $itemtype = 'KnowbaseItem';
+   protected $itemtype     = 'KnowbaseItem';
    static public $items_id = 'knowbaseitems_id';
    public $dohistory       = true;
    static public $logs_for_parent = false;
 
-   static $rightname       = 'knowbase';
-
+   protected $rightname    = 'knowbase';
 
 
    static function getTypeName($nb = 0) {
@@ -148,7 +147,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       // show item : question and answer
       if (((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
           || (Session::getCurrentInterface() == "helpdesk")
-          || !User::canView()) {
+          || !ProfileRight::checkPermission('view', 'User')) {
          $linkusers_id = false;
       }
 

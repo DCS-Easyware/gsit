@@ -85,6 +85,7 @@ class DeviceSensor extends CommonDevice {
             $base->addHeader('devicesensor_type', _n('Type', 'Types', 1), $super, $father);
             break;
       }
+      return $column;
    }
 
 

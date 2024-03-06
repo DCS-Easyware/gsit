@@ -60,20 +60,20 @@ class Appliance_Item_Relation extends CommonDBRelation {
 
       $types = $CFG_GLPI['appliance_relation_types'];
 
-      foreach ($types as $key => $type) {
-         if (!class_exists($type)) {
+      foreach ($types as $key => $itemtype) {
+         if (!class_exists($itemtype)) {
             continue;
          }
-
-         if ($all === false && !$type::canView()) {
+         $item = new $itemtype();
+         if ($all === false && !$item->canView()) {
             unset($types[$key]);
          }
       }
       return $types;
    }
 
-   static function canCreate() {
-      return Appliance_Item::canUpdate();
+   function canCreate() {
+      return ProfileRight::checkPermission('update', 'Appliance_Item');
    }
 
 

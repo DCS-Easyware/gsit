@@ -56,7 +56,7 @@ class RuleCollection extends CommonDBTM {
 
    public $entity                                = 0;
 
-   static $rightname                             = 'config';
+   protected $rightname                          = 'config';
 
 
 
@@ -77,7 +77,7 @@ class RuleCollection extends CommonDBTM {
 
 
    function canList() {
-      return static::canView();
+      return $this->canView();
    }
 
 
@@ -316,6 +316,7 @@ class RuleCollection extends CommonDBTM {
     * @return -1 if all rows done, else offset for next run
    **/
    function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
+      return -1;
    }
 
 
@@ -433,7 +434,7 @@ class RuleCollection extends CommonDBTM {
                            && ($p['inherited'] || $p['childrens']));
 
       // Do not know what it is ?
-      $canedit    = (self::canUpdate()
+      $canedit    = ($this->canUpdate()
                      && !$display_entities);
 
       $use_conditions = false;
@@ -1422,7 +1423,7 @@ class RuleCollection extends CommonDBTM {
     *                            - condition : specific condition to limit rule list
     *                            - only_criteria : only react on specific criteria
     *
-    * @return the output array updated by actions (addslashes datas)
+    * @return mixed[] the output array updated by actions (addslashes datas)
    **/
    function processAllRules($input = [], $output = [], $params = [], $options = []) {
 
@@ -1761,7 +1762,7 @@ class RuleCollection extends CommonDBTM {
     * @param $output          array    output data array
     * @param $global_result   boolean  global result
     *
-    * @return cleaned array
+    * @return void
     **/
    function showTestResults($rule, array $output, $global_result) {
 
@@ -1855,6 +1856,7 @@ class RuleCollection extends CommonDBTM {
          }
          return null;
       }
+      return null;
    }
 
 

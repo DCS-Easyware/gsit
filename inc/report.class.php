@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class Report extends CommonGLPI{
 
    static protected $notable = false;
-   static $rightname         = 'reports';
+   protected $rightname      = 'reports';
 
 
    static function getTypeName($nb = 0) {
@@ -72,12 +72,12 @@ class Report extends CommonGLPI{
       $report_list["default"]["name"] = __('Default report');
       $report_list["default"]["file"] = "report.default.php";
 
-      if (Contract::canView()) {
+      if (ProfileRight::checkPermission('view', 'Contract')) {
          // Rapport ajoute par GLPI V0.2
          $report_list["Contrats"]["name"] = __('By contract');
          $report_list["Contrats"]["file"] = "report.contract.php";
       }
-      if (Infocom::canView()) {
+      if (ProfileRight::checkPermission('view', 'Infocom')) {
          $report_list["Par_annee"]["name"] = __('By year');
          $report_list["Par_annee"]["file"] = "report.year.php";
          $report_list["Infocoms"]["name"]  = __('Hardware financial and administrative information');
@@ -93,12 +93,12 @@ class Report extends CommonGLPI{
          $report_list["reservation"]["name"] = __('Loan');
          $report_list["reservation"]["file"] = "report.reservation.php";
       }
-      if (Computer::canView()
-          || Monitor::canView()
+      if (ProfileRight::checkPermission('view', 'Computer')
+          || ProfileRight::checkPermission('view', 'Monitor')
           || Session::haveRight("networking", READ)
-          || Peripheral::canView()
-          || Printer::canView()
-          || Phone::canView()) {
+          || ProfileRight::checkPermission('view', 'Peripheral')
+          || ProfileRight::checkPermission('view', 'Printer')
+          || ProfileRight::checkPermission('view', 'Phone')) {
          $report_list["state"]["name"] = __('Status');
          $report_list["state"]["file"] = "report.state.php";
       }

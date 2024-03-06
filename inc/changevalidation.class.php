@@ -40,9 +40,9 @@ if (!defined('GLPI_ROOT')) {
 class ChangeValidation  extends CommonITILValidation {
 
    // From CommonDBChild
-   static public $itemtype           = 'Change';
-   static public $items_id           = 'changes_id';
+   protected $itemtype     = 'Change';
+   static public $items_id = 'changes_id';
 
-   static $rightname                 = 'changevalidation';
+   protected $rightname    = 'changevalidation';
 
 }

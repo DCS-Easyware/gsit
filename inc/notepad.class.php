@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class Notepad extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype        = 'itemtype';
+   protected $itemtype            = 'itemtype';
    static public $items_id        = 'items_id';
    public $dohistory              = false;
    public $auto_message_on_action = false; // Link in message can't work'
@@ -64,7 +64,7 @@ class Notepad extends CommonDBChild {
 
       if (isset($this->fields['itemtype'])
           && ($item = getItemForItemtype($this->fields['itemtype']))) {
-         return Session::haveRight($item::$rightname, UPDATENOTE);
+         return Session::haveRight($item->getRightname(), UPDATENOTE);
       }
       return false;
    }
@@ -74,7 +74,7 @@ class Notepad extends CommonDBChild {
 
       if (isset($this->fields['itemtype'])
           && ($item = getItemForItemtype($this->fields['itemtype']))) {
-         return Session::haveRight($item::$rightname, UPDATENOTE);
+         return Session::haveRight($item->getRightname(), UPDATENOTE);
       }
       return false;
    }
@@ -128,7 +128,7 @@ class Notepad extends CommonDBChild {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (Session::haveRight($item::$rightname, READNOTE)) {
+      if (Session::haveRight($item->getRightname(), READNOTE)) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForItem($item);
@@ -143,6 +143,8 @@ class Notepad extends CommonDBChild {
     * @param $item            CommonGLPI object
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
+    *
+    * @return void
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       static::showForItem($item, $withtemplate);
@@ -293,15 +295,15 @@ class Notepad extends CommonDBChild {
     * @param $withtemplate integer  template or basic item (default 0)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      if (!Session::haveRight($item::$rightname, READNOTE)) {
+      if (!Session::haveRight($item->getRightname(), READNOTE)) {
          return false;
       }
       $notes   = static::getAllForItem($item);
       $rand    = mt_rand();
-      $canedit = Session::haveRight($item::$rightname, UPDATENOTE);
+      $canedit = Session::haveRight($item->getRightname(), UPDATENOTE);
 
       $showuserlink = 0;
-      if (User::canView()) {
+      if (ProfileRight::checkPermission('view', 'User')) {
          $showuserlink = 1;
       }
 

@@ -54,7 +54,7 @@ abstract class CommonDropdown extends CommonDBTM {
    //This dropdown can be translated
    public $can_be_translated = true;
 
-   static $rightname = 'dropdown';
+   protected $rightname = 'dropdown';
 
 
    /**
@@ -94,7 +94,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     *  @since 0.85
    **/
-   static function getMenuContent() {
+   function getMenuContent() {
 
       $menu = [];
       if (get_called_class() == 'CommonDropdown') {
@@ -865,7 +865,7 @@ abstract class CommonDropdown extends CommonDBTM {
     **/
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       // Manage forbidden actions

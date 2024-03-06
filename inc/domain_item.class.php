@@ -43,7 +43,7 @@ class Domain_Item extends CommonDBRelation {
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
 
-   static $rightname = 'domain';
+   protected $rightname      = 'domain';
 
    static function cleanForItem(CommonDBTM $item) {
       $temp = new self();
@@ -573,6 +573,7 @@ class Domain_Item extends CommonDBRelation {
          Html::closeForm();
       }
       echo "</div>";
+      return true;
    }
 
    function rawSearchOptions() {

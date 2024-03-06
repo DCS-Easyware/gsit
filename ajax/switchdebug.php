@@ -32,7 +32,7 @@
 
 include ('../inc/includes.php');
 
-if (Config::canUpdate()) {
+if (ProfileRight::checkPermission('update', 'Config')) {
    $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
    $user = new User();
    $user->update(

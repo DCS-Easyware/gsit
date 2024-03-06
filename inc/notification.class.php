@@ -135,7 +135,7 @@ class Notification extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-   static $rightname = 'notification';
+   protected $rightname = 'notification';
 
 
 
@@ -149,11 +149,11 @@ class Notification extends CommonDBTM {
     *
     *  @since 0.85
    **/
-   static function getMenuContent() {
+   function getMenuContent() {
       $menu = [];
 
-      if (Notification::canView()
-          || Config::canView()) {
+      if (ProfileRight::checkPermission('view', 'Notification')
+          || ProfileRight::checkPermission('view', 'Config')) {
          $menu['title']                                      = _n('Notification', 'Notifications', Session::getPluralNumber());
          $menu['page']                                       = '/front/setup.notification.php';
          $menu['icon']                                       = self::getIcon();
@@ -219,11 +219,11 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . _n('Type', 'Types', 1) . "</td>";
       echo "<td>";
-      if (!Session::haveRight(static::$rightname, UPDATE)) {
+      if (!Session::haveRight($this->rightname, UPDATE)) {
          $itemtype = $this->fields['itemtype'];
          echo $itemtype::getTypeName(1);
          $rand ='';
-      } else if (Config::canUpdate()
+      } else if (ProfileRight::checkPermission('update', 'Config')
           && ($this->getEntityID() == 0)) {
          $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
                                           ['value' => $this->fields['itemtype']]);
@@ -448,7 +448,7 @@ class Notification extends CommonDBTM {
     */
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
@@ -530,7 +530,7 @@ class Notification extends CommonDBTM {
 
       if ((($this->fields['itemtype'] == 'CronTask')
            || ($this->fields['itemtype'] == 'DBConnection'))
-          && !Config::canView()) {
+          && !ProfileRight::checkPermission('view', 'Config')) {
           return false;
       }
       return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
@@ -546,7 +546,7 @@ class Notification extends CommonDBTM {
 
       if ((($this->fields['itemtype'] == 'CronTask')
            || ($this->fields['itemtype'] == 'DBConnection'))
-          && !Config::canUpdate()) {
+          && !ProfileRight::checkPermission('update', 'Config')) {
           return false;
       }
       return Session::haveAccessToEntity($this->getEntityID());

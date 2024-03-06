@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 class NetworkName extends FQDNLabel {
 
    // From CommonDBChild
-   static public $itemtype              = 'itemtype';
+   protected $itemtype                  = 'itemtype';
    static public $items_id              = 'items_id';
    public $dohistory                    = true;
 
@@ -60,7 +60,7 @@ class NetworkName extends FQDNLabel {
 
    static public $mustBeAttached        = false;
 
-   static $rightname                   = 'internet';
+   protected $rightname                 = 'internet';
 
 
    static function getTypeName($nb = 0) {
@@ -741,7 +741,7 @@ class NetworkName extends FQDNLabel {
          echo "<input type='submit' name='assign_address' value='"._sx('button', 'Associate').
                 "' class='submit'>";
          echo "</td>";
-         if (static::canCreate()) {
+         if (ProfileRight::checkPermission('create', get_called_class())) {
             echo "<td class='right' width='30%'>";
             echo "<a href=\"" . static::getFormURL()."?items_id=$items_id&amp;itemtype=$itemtype\">";
             echo __('Create a new network name')."</a>";
@@ -843,6 +843,10 @@ class NetworkName extends FQDNLabel {
    }
 
 
+   /**
+    *
+    * @return void
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {

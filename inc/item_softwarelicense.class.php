@@ -422,7 +422,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
       $license_table = SoftwareLicense::getTable();
       $item_license_table = self::getTable(__CLASS__);
 
-      if (!Software::canView() || !$softwarelicense_id) {
+      if (!ProfileRight::checkPermission('view', 'Software') || !$softwarelicense_id) {
          return false;
       }
 
@@ -498,7 +498,7 @@ class Item_SoftwareLicense extends CommonDBRelation {
 
       $searchID = $license->getField('id');
 
-      if (!Software::canView() || !$searchID) {
+      if (!ProfileRight::checkPermission('view', 'Software') || !$searchID) {
          return false;
       }
 
@@ -608,7 +608,7 @@ JAVASCRIPT;
 
       $queries = [];
       foreach ($CFG_GLPI['software_types'] as $itemtype) {
-         $canshowitems[$itemtype] = $itemtype::canView();
+         $canshowitems[$itemtype] = ProfileRight::checkPermission('view', $itemtype);
          $itemtable = $itemtype::getTable();
          $query = [
             'SELECT' => [
@@ -771,7 +771,7 @@ JAVASCRIPT;
          $soft       = new Software();
          $soft->getFromDB($license->fields['softwares_id']);
          $showEntity = ($license->isRecursive());
-         $linkUser   = User::canView();
+         $linkUser   = ProfileRight::checkPermission('view', 'User');
 
          $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
          $text = sprintf(__('%1$s - %2$s'), $text, $data["license"]);
@@ -898,7 +898,7 @@ JAVASCRIPT;
     * @param integer $items_id         ID of the item
     * @param integer $softwareversions_id ID of the version
     *
-    * @return void
+    * @return array
    **/
    static function getLicenseForInstallation($itemtype, $items_id, $softwareversions_id) {
       global $DB;
@@ -1039,7 +1039,7 @@ JAVASCRIPT;
     *
     * @param integer $softwares_id Software ID
     *
-    * @return void
+    * @return integer the number of licenses
     **/
    static function countLicenses($softwares_id) {
       global $DB;

@@ -62,7 +62,8 @@ abstract class CommonDropdown extends DbTestCase {
 
    public function testGetMenuContent() {
       $class = $this->getObjectClass();
-      $this->boolean($class::getMenuContent())->isFalse();
+      $item = new $class();
+      $this->boolean($item->getMenuContent())->isFalse();
    }
 
    public function testGetAdditionalFields() {

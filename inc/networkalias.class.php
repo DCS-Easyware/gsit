@@ -43,9 +43,9 @@ if (!defined('GLPI_ROOT')) {
 class NetworkAlias extends FQDNLabel {
 
    // From CommonDBChild
-   static public $itemtype           = 'NetworkName';
-   static public $items_id           = 'networknames_id';
-   public $dohistory                 = true;
+   protected $itemtype     = 'NetworkName';
+   static public $items_id = 'networknames_id';
+   public $dohistory       = true;
 
    static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
@@ -446,6 +446,10 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
+   /**
+    *
+    * @return void
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {

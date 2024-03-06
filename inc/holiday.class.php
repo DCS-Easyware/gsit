@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Holiday extends CommonDropdown {
 
-   static $rightname = 'calendar';
+   protected $rightname = 'calendar';
 
    public $can_be_translated = false;
 

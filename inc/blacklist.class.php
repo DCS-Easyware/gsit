@@ -44,7 +44,7 @@ class Blacklist extends CommonDropdown {
    // From CommonDBTM
    public $dohistory = true;
 
-   static $rightname = 'config';
+   protected $rightname = 'config';
 
    public $can_be_translated = false;
 
@@ -59,16 +59,16 @@ class Blacklist extends CommonDropdown {
       return 0;
    }
 
-   static function canCreate() {
-      return static::canUpdate();
+   function canCreate() {
+      return $this->canUpdate();
    }
 
 
    /**
     * @since 0.85
     */
-   static function canPurge() {
-      return static::canUpdate();
+   function canPurge() {
+      return $this->canUpdate();
    }
 
 

@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 */
 abstract class CommonDevice extends CommonDropdown {
 
-   static $rightname          = 'device';
+   protected $rightname       = 'device';
 
    public $can_be_translated  = false;
 
@@ -97,10 +97,10 @@ abstract class CommonDevice extends CommonDropdown {
     *
     *  @since 0.85
    **/
-   static function getMenuContent() {
+   function getMenuContent() {
 
       $menu = [];
-      if (self::canView()) {
+      if ($this->canView()) {
          $menu['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['page']  = '/front/devices.php';
          $menu['icon']  = self::getIcon();
@@ -340,7 +340,7 @@ abstract class CommonDevice extends CommonDropdown {
          return $father;
       }
 
-      if (static::canView()) {
+      if (ProfileRight::checkPermission('view', $this_type)) {
          $content = "<a href='".static::getSearchURL()."'>" . static::getTypeName(1) . "</a>";
       } else {
          $content = static::getTypeName(1);
@@ -356,7 +356,6 @@ abstract class CommonDevice extends CommonDropdown {
       }
 
       return $column;
-
    }
 
 
@@ -379,7 +378,7 @@ abstract class CommonDevice extends CommonDropdown {
          return $father;
       }
 
-      if (static::canView()) {
+      if (ProfileRight::checkPermission('view', $this_type)) {
          $content = $this->getLink();
       } else {
          $content = $this->getName();

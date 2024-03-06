@@ -46,7 +46,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    static protected $forward_entity_to = ['Infocom'];
 
-   static $rightname                   = 'license';
+   protected $rightname                = 'license';
    protected $usenotepad               = true;
 
 
@@ -725,7 +725,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       $tab = [];
       $name = static::getTypeName(Session::getPluralNumber());
 
-      if (!self::canView()) {
+      if (!ProfileRight::checkPermission('view', get_called_class())) {
          return $tab;
       }
 
@@ -1033,7 +1033,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if (static::canUpdate()) {
+      if ($this->canUpdate()) {
          $prefix                       = 'Item_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$prefix.'add_item']  = _x('button', 'Add an item');
       }
@@ -1092,7 +1092,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       }
 
       // Righ type is enough. Can add a License on a software we have Read access
-      $canedit             = Software::canUpdate();
+      $canedit             = ProfileRight::checkPermission('update', 'Software');
       $showmassiveactions  = $canedit;
 
       // Total Number of events
@@ -1324,7 +1324,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          $nb = 0;
          switch ($item->getType()) {
             case 'Software' :
-               if (!self::canView()) {
+               if (!$this->canView()) {
                   return '';
                }
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -1334,7 +1334,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                                            (($nb >= 0) ? $nb : '&infin;'));
             break;
             case 'SoftwareLicense' :
-               if (!self::canView()) {
+               if (!$this->canView()) {
                   return '';
                }
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -1354,10 +1354,10 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      if ($item->getType()=='Software' && self::canView()) {
+      if ($item->getType()=='Software' && ProfileRight::checkPermission('view', get_called_class())) {
          self::showForSoftware($item);
       } else {
-         if ($item->getType()=='SoftwareLicense' && self::canView()) {
+         if ($item->getType()=='SoftwareLicense' && ProfileRight::checkPermission('view', get_called_class())) {
             self::getSonsOf($item);
             return true;
          }

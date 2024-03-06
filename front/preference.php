@@ -39,7 +39,7 @@ $user = new User();
 
 // Manage lost password
 if (isset($_GET['lostpassword'])) {
-   Html::nullHeader();
+   Html::nullHeader("Lost password");
    if (isset($_GET['password_forget_token'])) {
       User::showPasswordForgetChangeForm($_GET['password_forget_token']);
    } else {
@@ -76,4 +76,3 @@ if (isset($_POST["update"])
       Html::helpFooter();
    }
 }
-

@@ -54,7 +54,7 @@ if (!defined('GLPI_ROOT')) {
 class IPAddress extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype       = 'itemtype';
+   protected $itemtype           = 'itemtype';
    static public $items_id       = 'items_id';
    public $dohistory             = false;
 
@@ -71,7 +71,7 @@ class IPAddress extends CommonDBChild {
    //to know is IPV4 is Dotted quoad Format
    protected $isDottedQuoadFormat = false;
 
-   static $rightname  = 'internet';
+   protected $rightname  = 'internet';
 
    //////////////////////////////////////////////////////////////////////////////
    // CommonDBTM related methods
@@ -287,8 +287,10 @@ class IPAddress extends CommonDBChild {
       switch ($item->getType()) {
          case 'IPNetwork' :
             self::showForItem($item, $withtemplate);
+            return true;
             break;
       }
+      return false;
    }
 
 
@@ -590,7 +592,6 @@ class IPAddress extends CommonDBChild {
          $this->isDottedQuoadFormat = true;
       }
 
-      unset($binary);
       $singletons = explode(".", $address);
       // First, check to see if it is an IPv4 address
       if (count($singletons) == 4) {
@@ -606,7 +607,7 @@ class IPAddress extends CommonDBChild {
             $binary *= 256;
             $binary += intval($singleton);
          }
-         $binary  = self::getIPv4ToIPv6Address($binary);
+         $binary = self::getIPv4ToIPv6Address($binary);
       }
 
       // Else, it should be an IPv6 address

@@ -39,11 +39,11 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Group extends CommonTreeDropdown {
 
-   public $dohistory       = true;
+   public $dohistory     = true;
 
-   static $rightname       = 'group';
+   protected $rightname  = 'group';
 
-   protected $usenotepad  = true;
+   protected $usenotepad = true;
 
 
    static function getTypeName($nb = 0) {
@@ -56,7 +56,7 @@ class Group extends CommonTreeDropdown {
     *
     * @since 0.85
    **/
-   static function getAdditionalMenuOptions() {
+   function getAdditionalMenuOptions() {
 
       if (Session::haveRight('user', User::UPDATEAUTHENT)) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(Session::getPluralNumber());
@@ -113,7 +113,7 @@ class Group extends CommonTreeDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (!$withtemplate && self::canView()) {
+      if (!$withtemplate && $this->canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Group' :
@@ -131,7 +131,7 @@ class Group extends CommonTreeDropdown {
                   $ong[2] = __('Managed items');
                }
                if ($item->getField('is_usergroup')
-                   && Group::canUpdate()
+                   && ProfileRight::checkPermission('update', 'Group')
                    && Session::haveRight("user", User::UPDATEAUTHENT)
                    && AuthLDAP::useAuthLdap()) {
                   $ong[3] = __('LDAP directory link');
@@ -302,7 +302,7 @@ class Group extends CommonTreeDropdown {
       global $CFG_GLPI;
 
       $buttons = [];
-      if (Group::canUpdate()
+      if (ProfileRight::checkPermission('update', 'Group')
           && Session::haveRight("user", User::UPDATEAUTHENT)
           && AuthLDAP::useAuthLdap()) {
 
@@ -320,7 +320,7 @@ class Group extends CommonTreeDropdown {
 
    function getSpecificMassiveActions($checkitem = null) {
 
-      $isadmin = static::canUpdate();
+      $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $prefix                            = 'Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR;
@@ -399,7 +399,7 @@ class Group extends CommonTreeDropdown {
             }
             return;
       }
-      parent::processMassiveActionsForOneItemtype($ma, $baseitem, $ids);
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
@@ -546,7 +546,7 @@ class Group extends CommonTreeDropdown {
              $this->getFormURL()."'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if (Group::canUpdate()
+      if (ProfileRight::checkPermission('update', 'Group')
           && Session::haveRight("user", User::UPDATEAUTHENT)
           && AuthLDAP::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
@@ -803,7 +803,7 @@ class Group extends CommonTreeDropdown {
          }
          if ($item->canUpdate($data['items_id'])
              || ($item->canView($data['items_id'])
-                 && self::canUpdate())) {
+                 && $this->canUpdate())) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             echo Html::hidden('field', ['value'                 => $field,
                                              'data-glpicore-ma-tags' => 'common']);
@@ -823,7 +823,7 @@ class Group extends CommonTreeDropdown {
          $header_begin  = "<tr><th width='10'>";
          if ($item->canUpdate($data['items_id'])
              || ($item->canView($data['items_id'])
-                 && self::canUpdate())) {
+                 && $this->canUpdate())) {
             $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          } else {
@@ -851,7 +851,7 @@ class Group extends CommonTreeDropdown {
             echo "<tr class='tab_bg_1'><td>";
             if ($item->canUpdate($data['items_id'])
                 || ($item->canView($data['items_id'])
-                    && self::canUpdate())) {
+                    && $this->canUpdate())) {
                Html::showMassiveActionCheckBox($data['itemtype'], $data['items_id']);
             }
             echo "</td><td>".$item->getTypeName(1);
@@ -881,7 +881,7 @@ class Group extends CommonTreeDropdown {
       if ($nb) {
          if ($item->canUpdate($data['items_id'])
              || ($item->canView($data['items_id'])
-                 && self::canUpdate())) {
+                 && $this->canUpdate())) {
             $massiveactionparams['ontop'] = false;
             Html::showMassiveActions($massiveactionparams);
          }

@@ -708,7 +708,7 @@ class Computer_Item extends CommonDBRelation{
             case 'Printer' :
             case 'Peripheral' :
             case 'Monitor' :
-               if (Computer::canView()) {
+               if (ProfileRight::checkPermission('view', 'Computer')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = self::countForItem($item);
                   }
@@ -718,10 +718,10 @@ class Computer_Item extends CommonDBRelation{
                break;
 
             case 'Computer' :
-               if (Phone::canView()
-                   || Printer::canView()
-                   || Peripheral::canView()
-                   || Monitor::canView()) {
+               if (ProfileRight::checkPermission('view', 'Phone')
+                   || ProfileRight::checkPermission('view', 'Printer')
+                   || ProfileRight::checkPermission('view', 'Peripheral')
+                   || ProfileRight::checkPermission('view', 'Monitor')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = self::countForMainItem($item);
                   }
@@ -749,6 +749,7 @@ class Computer_Item extends CommonDBRelation{
             self::showForComputer($item, $withtemplate);
             return true;
       }
+      return true;
    }
 
 

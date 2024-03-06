@@ -39,7 +39,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class VObject extends CommonDBChild {
 
-   static public $itemtype          = 'itemtype';
-   static public $items_id          = 'items_id';
-
+   protected $itemtype     = 'itemtype';
+   static public $items_id = 'items_id';
 }

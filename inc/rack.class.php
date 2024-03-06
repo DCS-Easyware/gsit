@@ -54,8 +54,8 @@ class Rack extends CommonDBTM {
    const ROOM_O_WEST  = 4;
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   static $rightname                   = 'datacenter';
+   public $dohistory    = true;
+   protected $rightname = 'datacenter';
 
    static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
@@ -508,14 +508,17 @@ class Rack extends CommonDBTM {
             );
             break;
       }
+      return '';
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       switch ($item->getType()) {
          case DCRoom::getType():
             self::showForRoom($item);
+            return true;
             break;
       }
+      return false;
    }
 
    /**
