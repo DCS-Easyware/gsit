@@ -1127,6 +1127,9 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $this->input = $this->prepareInputForAdd($this->input);
+         if ($this->input === false) {
+            return false;
+         }
       }
 
       if ($this->input && is_array($this->input)) {
@@ -1505,8 +1508,14 @@ class CommonDBTM extends CommonGLPI {
                      switch ($searchopt['datatype']) {
                         case 'string' :
                         case 'text' :
-                           $ischanged = (strcmp($DB->escape($this->fields[$key]),
-                                                $this->input[$key]) != 0);
+                           if (is_null($this->fields[$key]) && is_null($this->input[$key])) {
+                              $ischanged = false;
+                           } else if (is_null($this->fields[$key]) || is_null($this->input[$key])) {
+                              $ischanged = true;
+                           } else {
+                              $ischanged = (strcmp($DB->escape($this->fields[$key]),
+                                                   $this->input[$key]) != 0);
+                           }
                            break;
 
                         case 'itemlink' :
@@ -3666,45 +3675,41 @@ class CommonDBTM extends CommonGLPI {
    public final function searchOptions() {
       static $options;
 
-      unset($options);
+      $options = [];
 
-      if (!isset($options)) {
-         $options = [];
+      foreach ($this->rawSearchOptions() as $opt) {
+         $missingFields = [];
+         if (!isset($opt['id'])) {
+            $missingFields[] = 'id';
+         }
+         if (!isset($opt['name'])) {
+            $missingFields[] = 'name';
+         }
+         if (count($missingFields) > 0) {
+            throw new \Exception(
+               vsprintf(
+                  'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
+                  [
+                     get_called_class(),
+                     implode('", "', $missingFields),
+                     print_r($opt, true)
+                  ]
+               )
+            );
+         }
 
-         foreach ($this->rawSearchOptions() as $opt) {
-            $missingFields = [];
-            if (!isset($opt['id'])) {
-               $missingFields[] = 'id';
-            }
-            if (!isset($opt['name'])) {
-               $missingFields[] = 'name';
-            }
-            if (count($missingFields) > 0) {
-               throw new \Exception(
-                  vsprintf(
-                     'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
-                     [
-                        get_called_class(),
-                        implode('", "', $missingFields),
-                        print_r($opt, true)
-                     ]
-                  )
-               );
-            }
+         $optid = $opt['id'];
+         unset($opt['id']);
 
-            $optid = $opt['id'];
-            unset($opt['id']);
+         if (isset($options[$optid])) {
+            $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                  get_class($this) . " searchOptions!";
 
-            if (isset($options[$optid])) {
-               $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
-                   get_class($this) . " searchOptions!";
+            Toolbox::logError($message);
+         }
 
-               Toolbox::logError($message);
-            }
-
-            foreach ($opt as $k => $v) {
-               $options[$optid][$k] = $v;
-            }
+         foreach ($opt as $k => $v) {
+            $options[$optid][$k] = $v;
          }
       }
 
@@ -5379,7 +5384,13 @@ class CommonDBTM extends CommonGLPI {
       if (in_array($this->getType(), $CFG_GLPI['asset_types'])) {
          $ruleasset          = new RuleAssetCollection();
          $input              = $this->input;
-         $input['_itemtype'] = $this->getType();
+         if (!$this->getType()) {
+            return;
+         }
+         $className = $this->getType();
+         if ($className) {
+            $input['_itemtype'] = $className;
+         }
 
          //If _auto is not defined : it's a manual process : set it's value to 0
          if (!isset($this->input['_auto'])) {

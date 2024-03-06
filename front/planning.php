@@ -142,8 +142,10 @@ if (isset($_GET['checkavailability'])) {
 
    Session::checkRightsOr('planning', [Planning::READALL, Planning::READMY]);
 
+   $datetime = new DateTime();
+
    if (!isset($_GET["date"]) || empty($_GET["date"])) {
-      $_GET["date"] = strftime("%Y-%m-%d");
+      $_GET["date"] = $datetime->format("Y-m-d");
    }
    if (!isset($_GET["type"])) {
       $_GET["type"] = "week";

@@ -119,7 +119,6 @@ class GLPIUploadHandler extends UploadHandler {
    }
 
    static function uploadFiles($params = []) {
-
       global $DB;
 
       $default_params = [

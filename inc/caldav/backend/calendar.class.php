@@ -336,6 +336,14 @@ class Calendar extends AbstractBackend {
          if (!$item->can(-1, CREATE, $input)) {
             throw new \Sabre\DAV\Exception\Forbidden();
          }
+
+         // the lib set some field as null, but create in DB will be wrong with database schema, so set '' if null (CommonDBTM:addToDB)
+         foreach ($input as $key=>$val) {
+            if (is_null($val)) {
+               $input[$key] = '';
+            }
+         }
+
          $items_id = $item->add($input);
          if (false === $items_id) {
             return false;
@@ -350,6 +358,14 @@ class Calendar extends AbstractBackend {
       if (array_key_exists('date_creation', $input)) {
          unset($input['date_creation']); // Prevent date creation override
       }
+
+      // the lib set some field as null, but update in DB will be drop, so set '' if null (CommonDBTM:updateInDB)
+      foreach ($input as $key=>$val) {
+         if (is_null($val)) {
+            $input[$key] = '';
+         }
+      }
+
       $update = $item->update($input);
       if (false === $update) {
          return false;
