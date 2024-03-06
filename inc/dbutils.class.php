@@ -1166,7 +1166,7 @@ final class DbUtils {
          $transcomment = $result['transcomment'];
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
-         } else {
+         } else if (!is_null($result['comment'])) {
             $comment .= nl2br($result['comment']);
          }
       }
