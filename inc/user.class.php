@@ -1587,7 +1587,6 @@ class User extends CommonDBTM {
          return false;
       }
 
-      if (is_resource($ldap_connection)) {
       if ((version_compare(phpversion(), '8.1', '<') && is_resource($ldap_connection))
             || (version_compare(phpversion(), '8.1', '>=') && $ldap_connection)) {
          //Set all the search fields
