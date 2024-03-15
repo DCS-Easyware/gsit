@@ -378,7 +378,7 @@ class Reservation extends CommonDBChild {
    static function showCalendar($ID = "") {
       global $CFG_GLPI;
 
-      $datetime = new Datetime();
+      $datetime = new DateTime();
 
       if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
          return false;
