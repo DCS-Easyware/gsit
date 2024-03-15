@@ -1199,11 +1199,6 @@ class Search {
       }
 
       $DBread->execution_time = true;
-// echo "<pre>";
-// print_r($data);
-// echo "</pre>";
-
-//      echo $data['sql']['search'];
       $result = $DBread->query($data['sql']['search']);
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
@@ -6358,7 +6353,7 @@ JAVASCRIPT;
                $out           = '';
                $count_display = 0;
                for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
+                  if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= $separate;
                      }
@@ -6452,7 +6447,7 @@ JAVASCRIPT;
                      $out .= self::LBBR;
                   }
                   $count_display++;
-                  if (!empty($data[$ID][$k]['name'])) {
+                  if (!is_null($data[$ID][$k]['name']) && !empty($data[$ID][$k]['name'])) {
                      $out .= (empty($out)?'':self::LBBR);
                      $out .= "<a href='mailto:".Html::entities_deep($data[$ID][$k]['name'])."'>".$data[$ID][$k]['name'];
                      $out .= "</a>";
@@ -6461,15 +6456,17 @@ JAVASCRIPT;
                return (empty($out) ? "&nbsp;" : $out);
 
             case "weblink" :
-               $orig_link = trim($data[$ID][0]['name']);
-               if (!empty($orig_link) && Toolbox::isValidWebUrl($orig_link)) {
-                  // strip begin of link
-                  $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
-                  $link = preg_replace('/\/$/', '', $link);
-                  if (Toolbox::strlen($link)>$CFG_GLPI["url_maxlength"]) {
-                     $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+               if (!is_null($data[$ID][0]['name'])) {
+                  $orig_link = trim($data[$ID][0]['name']);
+                  if (!empty($orig_link) && Toolbox::isValidWebUrl($orig_link)) {
+                     // strip begin of link
+                     $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
+                     $link = preg_replace('/\/$/', '', $link);
+                     if (Toolbox::strlen($link)>$CFG_GLPI["url_maxlength"]) {
+                        $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+                     }
+                     return "<a href=\"".Toolbox::formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                   }
-                  return "<a href=\"".Toolbox::formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                }
                return "&nbsp;";
 
@@ -6478,7 +6475,7 @@ JAVASCRIPT;
                $out           = "";
                $count_display = 0;
                for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
+                  if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= self::LBBR;
                      }
@@ -6497,8 +6494,7 @@ JAVASCRIPT;
                $out           = "";
                $count_display = 0;
                for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
-
+                  if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= self::LBBR;
                      }
@@ -7395,12 +7391,15 @@ JAVASCRIPT;
             global $CFG_GLPI;
             $out = "<td $extraparam valign='top'>";
 
-            if (!preg_match('/'.self::LBHR.'/', $value)) {
-               $values = preg_split('/'.self::LBBR.'/i', $value);
-               $line_delimiter = '<br>';
-            } else {
-               $values = preg_split('/'.self::LBHR.'/i', $value);
-               $line_delimiter = '<hr>';
+            $values = [];
+            if (!is_null($value)) {
+               if (!preg_match('/'.self::LBHR.'/', $value)) {
+                  $values = preg_split('/'.self::LBBR.'/i', $value);
+                  $line_delimiter = '<br>';
+               } else {
+                  $values = preg_split('/'.self::LBHR.'/i', $value);
+                  $line_delimiter = '<hr>';
+               }
             }
 
             if (count($values) > 1
@@ -7421,7 +7420,7 @@ JAVASCRIPT;
                   ]
                );
                $out .= $values[0] . $valTip;
-            } else {
+            } else if (!is_null($value)) {
                $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
                $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
                $out .= $value;

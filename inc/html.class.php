@@ -4188,7 +4188,7 @@ JS;
                      } else {
                         echo "(object) " . get_class($val);
                      }
-                  } else {
+                  } else if (!is_null($val)) {
                      echo htmlentities($val);
                   }
                }

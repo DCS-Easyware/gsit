@@ -3666,43 +3666,41 @@ class CommonDBTM extends CommonGLPI {
    public final function searchOptions() {
       static $options;
 
-      if (!isset($options)) {
-         $options = [];
+      $options = [];
 
-         foreach ($this->rawSearchOptions() as $opt) {
-            $missingFields = [];
-            if (!isset($opt['id'])) {
-               $missingFields[] = 'id';
-            }
-            if (!isset($opt['name'])) {
-               $missingFields[] = 'name';
-            }
-            if (count($missingFields) > 0) {
-               throw new \Exception(
-                  vsprintf(
-                     'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
-                     [
-                        get_called_class(),
-                        implode('", "', $missingFields),
-                        print_r($opt, true)
-                     ]
-                  )
-               );
-            }
+      foreach ($this->rawSearchOptions() as $opt) {
+         $missingFields = [];
+         if (!isset($opt['id'])) {
+            $missingFields[] = 'id';
+         }
+         if (!isset($opt['name'])) {
+            $missingFields[] = 'name';
+         }
+         if (count($missingFields) > 0) {
+            throw new \Exception(
+               vsprintf(
+                  'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
+                  [
+                     get_called_class(),
+                     implode('", "', $missingFields),
+                     print_r($opt, true)
+                  ]
+               )
+            );
+         }
 
-            $optid = $opt['id'];
-            unset($opt['id']);
+         $optid = $opt['id'];
+         unset($opt['id']);
 
-            if (isset($options[$optid])) {
-               $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
-                   get_class($this) . " searchOptions!";
+         if (isset($options[$optid])) {
+            $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                  get_class($this) . " searchOptions!";
 
-               Toolbox::logError($message);
-            }
+            Toolbox::logError($message);
+         }
 
-            foreach ($opt as $k => $v) {
-               $options[$optid][$k] = $v;
-            }
+         foreach ($opt as $k => $v) {
+            $options[$optid][$k] = $v;
          }
       }
 
