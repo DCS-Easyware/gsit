@@ -4189,7 +4189,7 @@ JS;
                         echo "(object) " . get_class($val);
                      }
                   } else if (!is_null($val)) {
-                     echo htmlentities($val);
+                     echo htmlentities($val, ENT_COMPAT);
                   }
                }
             }

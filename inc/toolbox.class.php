@@ -3589,7 +3589,7 @@ HTML;
       // - absence of ; ensure that ending `&gt;` has not been reached.
       $regex = "/(&lt;[^\"';]+?@[^\"';]+?&gt;)/";
       $string = preg_replace_callback($regex, function($matches) {
-         return htmlentities($matches[1]);
+         return htmlentities($matches[1], ENT_COMPAT);
       }, $string);
       return $string;
    }
