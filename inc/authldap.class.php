@@ -1738,11 +1738,6 @@ class AuthLDAP extends CommonDBTM {
          } else {
             return false;
          }
-         if (self::isLdapPageSizeAvailable($config_ldap) && version_compare(PHP_VERSION, '7.3') < 0) {
-            // phpcs:ignore Generic.PHP.DeprecatedFunctions
-            ldap_control_paged_result_response($ds, $sr, $cookie);
-         }
-
       } while (($cookie !== null) && ($cookie != ''));
       return true;
    }
@@ -2324,10 +2319,6 @@ class AuthLDAP extends CommonDBTM {
                   }
                }
             }
-         }
-         if (self::isLdapPageSizeAvailable($config_ldap) && version_compare(PHP_VERSION, '7.3') < 0) {
-            // phpcs:ignore Generic.PHP.DeprecatedFunctions
-            ldap_control_paged_result_response($ldap_connection, $sr, $cookie);
          }
       } while (($cookie !== null) && ($cookie != ''));
 
