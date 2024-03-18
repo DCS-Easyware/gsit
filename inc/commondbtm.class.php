@@ -1505,8 +1505,14 @@ class CommonDBTM extends CommonGLPI {
                      switch ($searchopt['datatype']) {
                         case 'string' :
                         case 'text' :
-                           $ischanged = (strcmp($DB->escape($this->fields[$key]),
-                                                $this->input[$key]) != 0);
+                           if (is_null($this->fields[$key]) && is_null($this->input[$key])) {
+                              $ischanged = false;
+                           } else if (is_null($this->fields[$key]) || is_null($this->input[$key])) {
+                              $ischanged = true;
+                           } else {
+                              $ischanged = (strcmp($DB->escape($this->fields[$key]),
+                                                   $this->input[$key]) != 0);
+                           }
                            break;
 
                         case 'itemlink' :

@@ -70,6 +70,7 @@ class CommonGLPI {
    public $get_item_to_display_tab = false;
    static protected $othertabs     = [];
 
+   public $input = [];
 
    /**
     * Return the localized name of the current Type
