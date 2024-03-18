@@ -735,9 +735,12 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            $db_sons = trim($iterator->next()['sons_cache']);
-            if (!empty($db_sons)) {
-               $sons = $this->importArrayFromDB($db_sons, true);
+            $nextSon = $iterator->next();
+            if (!is_null($nextSon['sons_cache'])) {
+               $db_sons = trim($iterator->next()['sons_cache']);
+               if (!empty($db_sons)) {
+                  $sons = $this->importArrayFromDB($db_sons, true);
+               }
             }
          }
       }
@@ -1021,7 +1024,7 @@ final class DbUtils {
 
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
-         } else {
+         } else if (!is_null($result['comment'])) {
             $comment .= nl2br($result['comment']);
          }
       }

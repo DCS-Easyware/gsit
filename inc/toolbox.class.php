@@ -3276,7 +3276,11 @@ class Toolbox {
          return false;
       }
 
-      $filename     = uniqid($uniq_prefix);
+      if (is_null($uniq_prefix)) {
+         $filename = uniqid();
+      } else {
+         $filename     = uniqid($uniq_prefix);
+      }
       $ext          = pathinfo($src, PATHINFO_EXTENSION);
       $subdirectory = substr($filename, -2); // subdirectory based on last 2 hex digit
 

@@ -712,8 +712,8 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @return mixed
     */
-    #[\ReturnTypeWillChange]
-    public function current() {
+   #[\ReturnTypeWillChange]
+   public function current() {
       return $this->row;
    }
 
@@ -722,8 +722,8 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @return mixed
     */
-    #[\ReturnTypeWillChange]
-    public function key() {
+   #[\ReturnTypeWillChange]
+   public function key() {
       return (isset($this->row["id"]) ? $this->row["id"] : $this->position - 1);
    }
 

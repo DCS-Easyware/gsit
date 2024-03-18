@@ -3175,7 +3175,7 @@ class Config extends CommonDBTM {
             case 'memory':
             case 'session':
 
-            // zend server adapters are not available for CLI context
+               // zend server adapters are not available for CLI context
             case 'zend_server_disk':
             case 'zendserverdisk':
             case 'zend_server_shm':
