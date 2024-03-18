@@ -744,6 +744,7 @@ final class DbUtils {
 
       if (!is_array($sons)) {
          // IDs to be present in the final array
+         $sons = [];
          $sons[$IDf] = $IDf;
          // current ID found to be added
          $found = [];
@@ -1780,6 +1781,9 @@ final class DbUtils {
     * @return array containing datas
     */
    public function importArrayFromDB($data) {
+      if (is_null($data)) {
+         return [];
+      }
       $tab = json_decode($data, true);
 
       // Use old scheme to decode
