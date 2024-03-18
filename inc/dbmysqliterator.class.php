@@ -712,7 +712,7 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @return mixed
     */
-   public function current(): mixed {
+   public function current():mixed {
       return $this->row;
    }
 
@@ -721,7 +721,7 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @return mixed
     */
-   public function key(): mixed {
+   public function key():mixed {
       return (isset($this->row["id"]) ? $this->row["id"] : $this->position - 1);
    }
 
