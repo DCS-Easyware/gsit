@@ -1668,7 +1668,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
       $ext = strtolower(get_class($GLPI_CACHE));
       $ext = substr($ext, strrpos($ext, '\\')+1);
-      if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
+      if (in_array($ext, ['apcu', 'memcache', 'memcached', 'redis'])) {
          $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
       } else {
          $msg = sprintf(__s('"%s" cache system is used'), $ext);
@@ -3111,7 +3111,6 @@ class Config extends CommonDBTM {
        * - {"adapter":"dba","options":{"pathname":"trans.db","handler":"flatfile"},"plugins":["serializer"]}
        * - {"adapter":"memcache","options":{"servers":["127.0.0.1"]}}
        * - {"adapter":"memcached","options":{"servers":["127.0.0.1"]}}
-       * - {"adapter":"wincache"}
        *
        */
       // Read configuration
@@ -3142,8 +3141,6 @@ class Config extends CommonDBTM {
       if (!isset($opt['adapter'])) {
          if (function_exists('apcu_fetch')) {
             $opt['adapter'] = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         } else if (function_exists('wincache_ucache_add')) {
-            $opt['adapter'] = 'wincache';
          } else {
             $opt['adapter'] = 'filesystem';
          }
@@ -3178,12 +3175,7 @@ class Config extends CommonDBTM {
             case 'memory':
             case 'session':
 
-               // wincache activation uses different configuration variable for CLI and web server
-               // so it may not be available for all contexts
-            case 'win_cache':
-            case 'wincache':
-
-               // zend server adapters are not available for CLI context
+            // zend server adapters are not available for CLI context
             case 'zend_server_disk':
             case 'zendserverdisk':
             case 'zend_server_shm':
