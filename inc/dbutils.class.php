@@ -736,7 +736,7 @@ final class DbUtils {
 
          if (count($iterator) > 0) {
             $nextSon = $iterator->next();
-            if (!is_null($nextSon['sons_cache'])) {
+            if (!is_null($nextSon) && !is_null($nextSon['sons_cache'])) {
                $db_sons = trim($iterator->next()['sons_cache']);
                if (!empty($db_sons)) {
                   $sons = $this->importArrayFromDB($db_sons, true);
