@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "50eb50c1a9810c244a7b6a7af20ab672",
+    "content-hash": "8e8b8c378061722be49dca6e55c6e53f",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -1661,20 +1661,24 @@
         },
         {
             "name": "mexitek/phpcolors",
-            "version": "v0.4",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mexitek/phpColors.git",
-                "reference": "89bf30473a68dc8845e46e9db3e536b969e18c11"
+                "reference": "4043974240ca7dc3c2bec3c158588148b605b206"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mexitek/phpColors/zipball/89bf30473a68dc8845e46e9db3e536b969e18c11",
-                "reference": "89bf30473a68dc8845e46e9db3e536b969e18c11",
+                "url": "https://api.github.com/repos/mexitek/phpColors/zipball/4043974240ca7dc3c2bec3c158588148b605b206",
+                "reference": "4043974240ca7dc3c2bec3c158588148b605b206",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "nette/tester": "^2.3",
+                "squizlabs/php_codesniffer": "^3.5"
             },
             "type": "library",
             "autoload": {
@@ -1704,9 +1708,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mexitek/phpColors/issues",
-                "source": "https://github.com/mexitek/phpColors/tree/master"
+                "source": "https://github.com/mexitek/phpColors"
             },
-            "time": "2015-09-09T15:43:06+00:00"
+            "time": "2021-11-26T13:19:08+00:00"
         },
         {
             "name": "michelf/php-markdown",
