@@ -3235,7 +3235,7 @@ class Toolbox {
       while ((int) $index > 0) {
          $index--;
          $bij_str = chr($index%26 + ord("A")) . $bij_str;
-         $index = round($index / 26, 2);
+         $index = floor($index / 26);
       }
       return $bij_str;
    }
