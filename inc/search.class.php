@@ -5269,6 +5269,7 @@ JAVASCRIPT;
       $from_referencetype = self::getMetaReferenceItemtype($from_type);
 
       $LINK = " LEFT JOIN ";
+      $infocom_alias = '';
 
       $from_table = $from_type::getTable();
       $from_fk    = getForeignKeyFieldForTable($from_table);
@@ -7825,7 +7826,7 @@ JAVASCRIPT;
    static function sylk_clean($value) {
 
       $value = preg_replace('/\x0A/', ' ', $value);
-      $value = preg_replace('/\x0D/', null, $value);
+      $value = preg_replace('/\x0D/', ' ', $value);
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
       $value = str_replace("\n", " | ", $value);

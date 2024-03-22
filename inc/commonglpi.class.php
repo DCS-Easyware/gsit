@@ -72,6 +72,12 @@ class CommonGLPI {
 
    public $input = [];
 
+   // Initialize variables used into commonitilobjects
+   protected $updates = [];
+   protected $oldvalues = [];
+   protected $countentitiesforuser = 0;
+   protected $userentities = [];
+
    /**
     * Return the localized name of the current Type
     * Should be overloaded in each new class
@@ -1493,5 +1499,34 @@ class CommonGLPI {
          case ERROR_ALREADY_DEFINED :
             return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
       }
+   }
+
+   function showForm($id, $options = []) {
+   }
+
+   function showMassiveActionAddTaskForm() {
+   }
+
+   function showInfos() {
+   }
+
+   function getSolvedStatusArray() {
+      return [];
+   }
+
+   function getProcessStatusArray() {
+      return [];
+   }
+
+   function getClosedStatusArray() {
+      return [];
+   }
+
+   static function getNotSolvedStatusArray() {
+      return [];
+   }
+
+   function getAllStatusArray() {
+      return [];
    }
 }
