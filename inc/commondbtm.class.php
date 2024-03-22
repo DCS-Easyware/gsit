@@ -5381,6 +5381,9 @@ class CommonDBTM extends CommonGLPI {
       if (in_array($this->getType(), $CFG_GLPI['asset_types'])) {
          $ruleasset          = new RuleAssetCollection();
          $input              = $this->input;
+         if (!$this->getType()) {
+            return;
+         }
          $input['_itemtype'] = $this->getType();
 
          //If _auto is not defined : it's a manual process : set it's value to 0
