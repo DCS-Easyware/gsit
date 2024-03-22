@@ -158,6 +158,8 @@ class DBmysql {
    function connect($choice = null) {
       $this->connected = false;
       $this->dbh = @new mysqli();
+      // added in 9.5.13 (compat PHP 8.1, to keep compatibility with PHP 7.4 and 8.0
+      mysqli_report(MYSQLI_REPORT_OFF);
       if ($this->dbssl) {
           mysqli_ssl_set(
              $this->dbh,
