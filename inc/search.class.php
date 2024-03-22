@@ -6513,7 +6513,7 @@ JAVASCRIPT;
                $out           = "";
                $count_display = 0;
                for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
+                  if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= self::LBBR;
                      }

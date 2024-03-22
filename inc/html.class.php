@@ -55,6 +55,9 @@ class Html {
     * @return string
    **/
    static function clean($value, $striptags = true, $keep_bad = 2) {
+      if (is_null($value)) {
+         return $value;
+      }
       $value = Html::entity_decode_deep($value);
 
       // Change <email@domain> to email@domain so it is not removed by htmLawed
@@ -141,7 +144,9 @@ class Html {
     * @return string|array
    **/
    static function entities_deep($value) {
-
+      if (is_null($value)) {
+         return $value;
+      }
       return (is_array($value) ? array_map([__CLASS__, 'entities_deep'], $value)
                                : htmlentities($value, ENT_QUOTES, "UTF-8"));
    }
@@ -224,6 +229,9 @@ class Html {
     * @return string
    **/
    static function cleanInputText($string) {
+      if (is_null($string)) {
+         return $string;
+      }
       return preg_replace( '/\'/', '&apos;', preg_replace('/\"/', '&quot;', $string));
    }
 
@@ -236,6 +244,9 @@ class Html {
     * @return string
    **/
    static function cleanParametersURL($url) {
+      if (is_null($url)) {
+         return $url;
+      }
 
       $url = preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/", "$1", $url);
       return preg_replace("/\?.*/", "", $url);
@@ -250,7 +261,9 @@ class Html {
     * @return string|array
    **/
    static function nl2br_deep($value) {
-
+      if (is_null($value)) {
+         return $value;
+      }
       return (is_array($value) ? array_map([__CLASS__, 'nl2br_deep'], $value)
                                : nl2br($value));
    }
@@ -265,7 +278,9 @@ class Html {
     * @return string
    **/
    static function resume_text($string, $length = 255) {
-
+      if (is_null($string)) {
+         return $string;
+      }
       if (Toolbox::strlen($string) > $length) {
          $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
       }
@@ -283,7 +298,9 @@ class Html {
     * @return string
     **/
    static function resume_name($string, $length = 255) {
-
+      if (is_null($string)) {
+         return $string;
+      }
       if (strlen($string) > $length) {
          $string = Toolbox::substr($string, 0, $length)."...";
       }
@@ -300,7 +317,9 @@ class Html {
     * @return string
    **/
    static function cleanPostForTextArea($value) {
-
+      if (is_null($value)) {
+         return $value;
+      }
       if (is_array($value)) {
          return array_map([__CLASS__, __METHOD__], $value);
       }
