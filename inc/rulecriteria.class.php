@@ -422,7 +422,10 @@ class RuleCriteria extends CommonDBChild {
             if (empty($pattern)) {
                return false;
             }
-            $value = mb_stripos($field, $pattern, 0, 'UTF-8');
+            $value = false;
+            if (!is_null($value)) {
+               $value = mb_stripos($field, $pattern, 0, 'UTF-8');
+            }
             if (($value !== false) && ($value >= 0)) {
                $criterias_results[$criteria] = $pattern;
                return true;

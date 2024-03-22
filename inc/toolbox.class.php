@@ -3091,6 +3091,9 @@ class Toolbox {
     * @return boolean
     */
    static public function endsWith($haystack, $needle) {
+      if (is_null($haystack)) {
+         return false;
+      }
       $length = strlen($needle);
       return $length === 0 || (substr($haystack, -$length) === $needle);
    }
