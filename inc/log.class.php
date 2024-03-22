@@ -121,6 +121,10 @@ class Log extends CommonDBTM {
 
       foreach ($oldvalues as $key => $oldval) {
          $changes = [];
+         $protectedOldval = null;
+         if (!is_null($oldval)) {
+            $protectedOldval = addslashes($oldval);
+         }
 
          // Parsing $SEARCHOPTION to find changed field
          foreach ($searchopt as $key2 => $val2) {
@@ -135,7 +139,7 @@ class Log extends CommonDBTM {
                    && ($val2['rightname'] == $item->fields['name'])) {
 
                   $id_search_option = $key2;
-                  $changes          =  [$id_search_option, addslashes($oldval), $values[$key]];
+                  $changes          =  [$id_search_option, $protectedOldval, $values[$key]];
                }
 
             } else if (($val2['linkfield'] == $key && $real_type === $item->getType())
@@ -144,7 +148,7 @@ class Log extends CommonDBTM {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                if ($val2['table'] == $item->getTable()) {
-                  $changes = [$id_search_option, addslashes($oldval), $values[$key]];
+                  $changes = [$id_search_option, $protectedOldval, $values[$key]];
                } else {
                   // other cases; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {

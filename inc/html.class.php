@@ -125,7 +125,9 @@ class Html {
     * @return string|array
    **/
    static function entity_decode_deep($value) {
-
+      if (is_null($value)) {
+         return $value;
+      }
       return (is_array($value) ? array_map([__CLASS__, 'entity_decode_deep'], $value)
                                : html_entity_decode($value, ENT_QUOTES, "UTF-8"));
    }
