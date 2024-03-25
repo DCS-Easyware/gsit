@@ -5384,7 +5384,10 @@ class CommonDBTM extends CommonGLPI {
          if (!$this->getType()) {
             return;
          }
-         $input['_itemtype'] = $this->getType();
+         $className = $this->getType();
+         if ($className) {
+            $input['_itemtype'] = $className;
+         }
 
          //If _auto is not defined : it's a manual process : set it's value to 0
          if (!isset($this->input['_auto'])) {
