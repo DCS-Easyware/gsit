@@ -1501,9 +1501,6 @@ class CommonGLPI {
       }
    }
 
-   function showForm($id, array $options = []) {
-   }
-
    function showMassiveActionAddTaskForm() {
    }
 
