@@ -1501,7 +1501,7 @@ class CommonGLPI {
       }
    }
 
-   function showForm($id, $options = []) {
+   function showForm($id, array $options = []) {
    }
 
    function showMassiveActionAddTaskForm() {
@@ -1510,15 +1510,15 @@ class CommonGLPI {
    function showInfos() {
    }
 
-   function getSolvedStatusArray() {
+   static function getSolvedStatusArray() {
       return [];
    }
 
-   function getProcessStatusArray() {
+   static function getProcessStatusArray() {
       return [];
    }
 
-   function getClosedStatusArray() {
+   static function getClosedStatusArray() {
       return [];
    }
 
@@ -1526,7 +1526,7 @@ class CommonGLPI {
       return [];
    }
 
-   function getAllStatusArray() {
+   static function getAllStatusArray() {
       return [];
    }
 }
