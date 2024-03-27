@@ -1127,6 +1127,9 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $this->input = $this->prepareInputForAdd($this->input);
+         if ($this->input === false) {
+            return false;
+         }
       }
 
       if ($this->input && is_array($this->input)) {

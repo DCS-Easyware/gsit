@@ -1414,7 +1414,7 @@ class Auth extends CommonGLPI {
       if (is_null($login)) {
          return false;
       }
-      return preg_match( "/^[[:alnum:]'@.\-_ ]+$/iu", $login);
+      return boolval(preg_match( "/^[[:alnum:]'@.\-_ ]+$/iu", $login));
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
