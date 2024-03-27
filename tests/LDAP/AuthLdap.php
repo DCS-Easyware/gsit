@@ -1037,7 +1037,7 @@ class AuthLDAP extends DbTestCase {
             $ldap->connect(),
             'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
             'uid=testecuador',
-            null,
+            'ou=people,ou=ldap3,dc=glpi,dc=org',
             true
          )
       )->isTrue();
@@ -1050,7 +1050,7 @@ class AuthLDAP extends DbTestCase {
             $ldap->connect(),
             'uid=testecuador,ou=people,ou=ldap3,dc=glpi,dc=org',
             'uid=ecuador0',
-            null,
+            'ou=people,ou=ldap3,dc=glpi,dc=org',
             true
          )
       )->isTrue();
@@ -1153,7 +1153,7 @@ class AuthLDAP extends DbTestCase {
             $ldap->connect(),
             'uid=brazil7,ou=people,ou=ldap3,dc=glpi,dc=org',
             'uid=brazil7test',
-            null,
+            'ou=people,ou=ldap3,dc=glpi,dc=org',
             true
          )
       )->isTrue();
@@ -1167,7 +1167,7 @@ class AuthLDAP extends DbTestCase {
             $ldap->connect(),
             'uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org',
             'uid=brazil7',
-            null,
+            'ou=people,ou=ldap3,dc=glpi,dc=org',
             true
          )
       )->isTrue();
@@ -1183,7 +1183,6 @@ class AuthLDAP extends DbTestCase {
       } else {
          $this->object($auth->ldap_connection)->isInstanceOf('LDAP\Connection');
       }
-
 
       //ensure duplicated DN on different authldaps_id does not prevent login
       $this->boolean(
