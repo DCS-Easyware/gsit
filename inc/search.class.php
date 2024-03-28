@@ -1384,11 +1384,11 @@ class Search {
                   }
 
                   // No Group_concat case
-                  if ($fieldname == 'content' || strpos($val, self::LONGSEP) === false) {
+                  if ($fieldname == 'content' || (is_null($val) || strpos($val, self::LONGSEP) === false)) {
                      $newrow[$j]['count'] = 1;
 
                      $handled = false;
-                     if ($fieldname != 'content' && strpos($val, self::SHORTSEP) !== false) {
+                     if ($fieldname != 'content' && !is_null($val) && strpos($val, self::SHORTSEP) !== false) {
                         $split2                    = self::explodeWithID(self::SHORTSEP, $val);
                         if (is_numeric($split2[1])) {
                            $newrow[$j][0][$fieldname] = $split2[0];
@@ -5269,6 +5269,7 @@ JAVASCRIPT;
       $from_referencetype = self::getMetaReferenceItemtype($from_type);
 
       $LINK = " LEFT JOIN ";
+      $infocom_alias = '';
 
       $from_table = $from_type::getTable();
       $from_fk    = getForeignKeyFieldForTable($from_table);
@@ -6353,7 +6354,7 @@ JAVASCRIPT;
                $out           = '';
                $count_display = 0;
                for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
+                  if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= $separate;
                      }
@@ -6447,7 +6448,7 @@ JAVASCRIPT;
                      $out .= self::LBBR;
                   }
                   $count_display++;
-                  if (!empty($data[$ID][$k]['name'])) {
+                  if (!is_null($data[$ID][$k]['name']) && !empty($data[$ID][$k]['name'])) {
                      $out .= (empty($out)?'':self::LBBR);
                      $out .= "<a href='mailto:".Html::entities_deep($data[$ID][$k]['name'])."'>".$data[$ID][$k]['name'];
                      $out .= "</a>";
@@ -6456,15 +6457,17 @@ JAVASCRIPT;
                return (empty($out) ? "&nbsp;" : $out);
 
             case "weblink" :
-               $orig_link = trim($data[$ID][0]['name']);
-               if (!empty($orig_link) && Toolbox::isValidWebUrl($orig_link)) {
-                  // strip begin of link
-                  $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
-                  $link = preg_replace('/\/$/', '', $link);
-                  if (Toolbox::strlen($link)>$CFG_GLPI["url_maxlength"]) {
-                     $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+               if (!is_null($data[$ID][0]['name'])) {
+                  $orig_link = trim($data[$ID][0]['name']);
+                  if (!empty($orig_link) && Toolbox::isValidWebUrl($orig_link)) {
+                     // strip begin of link
+                     $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
+                     $link = preg_replace('/\/$/', '', $link);
+                     if (Toolbox::strlen($link)>$CFG_GLPI["url_maxlength"]) {
+                        $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+                     }
+                     return "<a href=\"".Toolbox::formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                   }
-                  return "<a href=\"".Toolbox::formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                }
                return "&nbsp;";
 
@@ -6473,7 +6476,7 @@ JAVASCRIPT;
                $out           = "";
                $count_display = 0;
                for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
+                  if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= self::LBBR;
                      }
@@ -6492,8 +6495,7 @@ JAVASCRIPT;
                $out           = "";
                $count_display = 0;
                for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
-
+                  if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= self::LBBR;
                      }
@@ -6512,7 +6514,7 @@ JAVASCRIPT;
                $out           = "";
                $count_display = 0;
                for ($k=0; $k<$data[$ID]['count']; $k++) {
-                  if (strlen(trim($data[$ID][$k]['name'])) > 0) {
+                  if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= self::LBBR;
                      }
@@ -6563,7 +6565,7 @@ JAVASCRIPT;
          $separate = self::LBHR;
       }
       for ($k=0; $k<$data[$ID]['count']; $k++) {
-         if (strlen(trim($data[$ID][$k]['name'])) > 0) {
+         if (!is_null($data[$ID][$k]['name']) && strlen(trim($data[$ID][$k]['name'])) > 0) {
             if ($count_display) {
                $out .= $separate;
             }
@@ -7390,12 +7392,15 @@ JAVASCRIPT;
             global $CFG_GLPI;
             $out = "<td $extraparam valign='top'>";
 
-            if (!preg_match('/'.self::LBHR.'/', $value)) {
-               $values = preg_split('/'.self::LBBR.'/i', $value);
-               $line_delimiter = '<br>';
-            } else {
-               $values = preg_split('/'.self::LBHR.'/i', $value);
-               $line_delimiter = '<hr>';
+            $values = [];
+            if (!is_null($value)) {
+               if (!preg_match('/'.self::LBHR.'/', $value)) {
+                  $values = preg_split('/'.self::LBBR.'/i', $value);
+                  $line_delimiter = '<br>';
+               } else {
+                  $values = preg_split('/'.self::LBHR.'/i', $value);
+                  $line_delimiter = '<hr>';
+               }
             }
 
             if (count($values) > 1
@@ -7416,7 +7421,7 @@ JAVASCRIPT;
                   ]
                );
                $out .= $values[0] . $valTip;
-            } else {
+            } else if (!is_null($value)) {
                $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
                $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
                $out .= $value;
@@ -7821,7 +7826,7 @@ JAVASCRIPT;
    static function sylk_clean($value) {
 
       $value = preg_replace('/\x0A/', ' ', $value);
-      $value = preg_replace('/\x0D/', null, $value);
+      $value = preg_replace('/\x0D/', ' ', $value);
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
       $value = str_replace("\n", " | ", $value);

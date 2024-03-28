@@ -70,6 +70,13 @@ class CommonGLPI {
    public $get_item_to_display_tab = false;
    static protected $othertabs     = [];
 
+   public $input = [];
+
+   // Initialize variables used into commonitilobjects
+   protected $updates = [];
+   protected $oldvalues = [];
+   protected $countentitiesforuser = 0;
+   protected $userentities = [];
 
    /**
     * Return the localized name of the current Type
@@ -1492,5 +1499,31 @@ class CommonGLPI {
          case ERROR_ALREADY_DEFINED :
             return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
       }
+   }
+
+   function showMassiveActionAddTaskForm() {
+   }
+
+   function showInfos() {
+   }
+
+   static function getSolvedStatusArray() {
+      return [];
+   }
+
+   static function getProcessStatusArray() {
+      return [];
+   }
+
+   static function getClosedStatusArray() {
+      return [];
+   }
+
+   static function getNotSolvedStatusArray() {
+      return [];
+   }
+
+   static function getAllStatusArray() {
+      return [];
    }
 }

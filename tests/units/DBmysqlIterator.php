@@ -66,7 +66,7 @@ class DBmysqlIterator extends DbTestCase {
             $DB->request('fakeTable');
          }
       )
-         ->isInstanceOf('GlpitestSQLerror')
+         ->isInstanceOf('GlpitestSQLError')
          ->message
             ->contains("fakeTable' doesn't exist");
    }

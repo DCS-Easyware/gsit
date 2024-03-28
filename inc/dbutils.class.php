@@ -735,15 +735,19 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            $db_sons = trim($iterator->next()['sons_cache']);
-            if (!empty($db_sons)) {
-               $sons = $this->importArrayFromDB($db_sons, true);
+            $nextSon = $iterator->next();
+            if (!is_null($nextSon) && !is_null($nextSon['sons_cache'])) {
+               $db_sons = trim($nextSon['sons_cache']);
+               if (!empty($db_sons)) {
+                  $sons = $this->importArrayFromDB($db_sons, true);
+               }
             }
          }
       }
 
       if (!is_array($sons)) {
          // IDs to be present in the final array
+         $sons = [];
          $sons[$IDf] = $IDf;
          // current ID found to be added
          $found = [];
@@ -1020,7 +1024,7 @@ final class DbUtils {
 
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
-         } else {
+         } else if (!is_null($result['comment'])) {
             $comment .= nl2br($result['comment']);
          }
       }
@@ -1166,7 +1170,7 @@ final class DbUtils {
          $transcomment = $result['transcomment'];
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
-         } else {
+         } else if (!is_null($result['comment'])) {
             $comment .= nl2br($result['comment']);
          }
       }
@@ -1423,7 +1427,7 @@ final class DbUtils {
          $id_visible = $_SESSION["glpiis_ids_visible"];
       }
 
-      if (strlen($realname) > 0) {
+      if (!is_null($realname) && strlen($realname) > 0) {
          $formatted = $realname;
 
          if (strlen($firstname) > 0) {
@@ -1780,6 +1784,9 @@ final class DbUtils {
     * @return array containing datas
     */
    public function importArrayFromDB($data) {
+      if (is_null($data)) {
+         return [];
+      }
       $tab = json_decode($data, true);
 
       // Use old scheme to decode

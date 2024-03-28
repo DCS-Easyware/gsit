@@ -932,7 +932,7 @@ class Toolbox extends \GLPITestCase {
          ], [
             'bg_color' => "#FFFFFF",
             'offset'   => 50,
-            'fg_color' => '#7f7f7f',
+            'fg_color' => '#808080',
          ], [
             'bg_color' => "#000000",
             'offset'   => 40,
@@ -940,7 +940,7 @@ class Toolbox extends \GLPITestCase {
          ], [
             'bg_color' => "#000000",
             'offset'   => 50,
-            'fg_color' => '#7f7f7f',
+            'fg_color' => '#808080',
          ],
       ];
    }

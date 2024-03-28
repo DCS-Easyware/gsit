@@ -725,7 +725,7 @@ class Migration extends \GLPITestCase {
          return $table === 'glpi_someoldtypes';
       };
       $this->calling($this->db)->fieldExists = function ($table, $field) {
-         return preg_match('/^someoldtypes_id/', $field);
+         return boolval(preg_match('/^someoldtypes_id/', $field));
       };
       $this->calling($this->db)->request = function ($request) {
          if (isset($request['WHERE']['OR'][0])

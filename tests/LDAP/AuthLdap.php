@@ -638,7 +638,11 @@ class AuthLDAP extends DbTestCase {
       $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
       $this->boolean(\AuthLDAP::testLDAPConnection($ldap->getID()))->isTrue();
 
-      $this->resource($ldap->connect())->isOfType('ldap link');
+      if (version_compare(phpversion(), '8.1', '<')) {
+         $this->resource($ldap->connect())->isOfType('ldap link');
+      } else {
+         $this->object($ldap->connect())->isInstanceOf('LDAP\Connection');
+      }
    }
 
    /**
@@ -795,7 +799,11 @@ class AuthLDAP extends DbTestCase {
       $ldap = $this->ldap;
 
       $connection = $ldap->connect();
-      $this->resource($connection)->isOfType('ldap link');
+      if (version_compare(phpversion(), '8.1', '<')) {
+         $this->resource($connection)->isOfType('ldap link');
+      } else {
+         $this->object($connection)->isInstanceOf('LDAP\Connection');
+      }
 
       $cn = \AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
       $this->boolean($cn)->isFalse();
@@ -1029,7 +1037,7 @@ class AuthLDAP extends DbTestCase {
             $ldap->connect(),
             'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
             'uid=testecuador',
-            null,
+            'ou=people,ou=ldap3,dc=glpi,dc=org',
             true
          )
       )->isTrue();
@@ -1042,7 +1050,7 @@ class AuthLDAP extends DbTestCase {
             $ldap->connect(),
             'uid=testecuador,ou=people,ou=ldap3,dc=glpi,dc=org',
             'uid=ecuador0',
-            null,
+            'ou=people,ou=ldap3,dc=glpi,dc=org',
             true
          )
       )->isTrue();
@@ -1090,7 +1098,12 @@ class AuthLDAP extends DbTestCase {
          ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org');
       $this->boolean($auth->user_present)->isFalse();
       $this->boolean($auth->user_dn)->isFalse();
-      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+
+      if (version_compare(phpversion(), '8.1', '<')) {
+         $this->resource($auth->ldap_connection)->isOfType('ldap link');
+      } else {
+         $this->object($auth->ldap_connection)->isInstanceOf('LDAP\Connection');
+      }
 
       //import user; then try to login
       $ldap = $this->ldap;
@@ -1128,7 +1141,11 @@ class AuthLDAP extends DbTestCase {
 
       $this->boolean($auth->user_present)->isTrue();
       $this->string($auth->user_dn)->isIdenticalTo($user->fields['user_dn']);
-      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+      if (version_compare(phpversion(), '8.1', '<')) {
+         $this->resource($auth->ldap_connection)->isOfType('ldap link');
+      } else {
+         $this->object($auth->ldap_connection)->isInstanceOf('LDAP\Connection');
+      }
 
       //change user login, and try again. Existing user should be updated.
       $this->boolean(
@@ -1136,7 +1153,7 @@ class AuthLDAP extends DbTestCase {
             $ldap->connect(),
             'uid=brazil7,ou=people,ou=ldap3,dc=glpi,dc=org',
             'uid=brazil7test',
-            null,
+            'ou=people,ou=ldap3,dc=glpi,dc=org',
             true
          )
       )->isTrue();
@@ -1150,7 +1167,7 @@ class AuthLDAP extends DbTestCase {
             $ldap->connect(),
             'uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org',
             'uid=brazil7',
-            null,
+            'ou=people,ou=ldap3,dc=glpi,dc=org',
             true
          )
       )->isTrue();
@@ -1161,7 +1178,11 @@ class AuthLDAP extends DbTestCase {
          ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org');
 
       $this->boolean($auth->user_present)->isTrue();
-      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+      if (version_compare(phpversion(), '8.1', '<')) {
+         $this->resource($auth->ldap_connection)->isOfType('ldap link');
+      } else {
+         $this->object($auth->ldap_connection)->isInstanceOf('LDAP\Connection');
+      }
 
       //ensure duplicated DN on different authldaps_id does not prevent login
       $this->boolean(
