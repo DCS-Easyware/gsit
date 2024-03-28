@@ -1233,6 +1233,10 @@ class MailCollector  extends CommonDBTM {
    function cleanContent($string) {
       global $DB;
 
+      if (is_null($string)) {
+         return null;
+      }
+
       // Clean HTML
       $string = Html::clean(Html::entities_deep($string), false, 2);
 

@@ -161,7 +161,9 @@ class Toolbox {
     * @return string
    **/
    static function substr($str, $start, $length = -1) {
-
+      if (is_null($str)) {
+         return null;
+      }
       if ($length == -1) {
          $length = self::strlen($str)-$start;
       }
@@ -177,6 +179,9 @@ class Toolbox {
     * @return string  lower case string
    **/
    static function strtolower($str) {
+      if (is_null($str)) {
+         return null;
+      }
       return mb_strtolower($str, "UTF-8");
    }
 
@@ -189,6 +194,9 @@ class Toolbox {
     * @return string  upper case string
    **/
    static function strtoupper($str) {
+      if (is_null($str)) {
+         return null;
+      }
       return mb_strtoupper($str, "UTF-8");
    }
 
@@ -201,6 +209,9 @@ class Toolbox {
     * @return boolean
    **/
    static function seems_utf8($str) {
+      if (is_null($str)) {
+         return null;
+      }
       return mb_check_encoding($str, "UTF-8");
    }
 
@@ -214,7 +225,9 @@ class Toolbox {
     * @return string  utf8 string
    **/
    static function encodeInUtf8($string, $from_charset = "ISO-8859-1") {
-
+      if (is_null($str)) {
+         return null;
+      }
       if (strcmp($from_charset, "auto") == 0) {
          $from_charset = mb_detect_encoding($string);
       }
@@ -231,6 +244,9 @@ class Toolbox {
     * @return string  converted string
    **/
    static function decodeFromUtf8($string, $to_charset = "ISO-8859-1") {
+      if (is_null($str)) {
+         return null;
+      }
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
 
