@@ -225,7 +225,7 @@ class Toolbox {
     * @return string  utf8 string
    **/
    static function encodeInUtf8($string, $from_charset = "ISO-8859-1") {
-      if (is_null($str)) {
+      if (is_null($string)) {
          return null;
       }
       if (strcmp($from_charset, "auto") == 0) {
@@ -244,7 +244,7 @@ class Toolbox {
     * @return string  converted string
    **/
    static function decodeFromUtf8($string, $to_charset = "ISO-8859-1") {
-      if (is_null($str)) {
+      if (is_null($string)) {
          return null;
       }
       return mb_convert_encoding($string, $to_charset, "UTF-8");

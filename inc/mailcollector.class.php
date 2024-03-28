@@ -1088,6 +1088,7 @@ class MailCollector  extends CommonDBTM {
 
       // See in title
       if (!isset($tkt['tickets_id'])
+          && !is_null($subject)
           && preg_match('/\[.+#(\d+)\]/', $subject, $match)) {
          $tkt['tickets_id'] = intval($match[1]);
       }
@@ -1285,6 +1286,9 @@ class MailCollector  extends CommonDBTM {
     * @return string clean text
    **/
    function cleanSubject($text) {
+      if (is_null($text)) {
+         return null;
+      }
       $text = str_replace("=20", "\n", $text);
       $text =  Toolbox::clean_cross_side_scripting_deep($text);
       return $text;
