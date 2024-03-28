@@ -1587,6 +1587,10 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
+      if (is_null($input["name"])) {
+         $input['name'] = '';
+      }
+
       // save value before clean;
       $title = ltrim($input['name']);
 
@@ -1639,6 +1643,9 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // No name set name
+      if (is_null($input["content"])) {
+         $input['content'] = '';
+      }
       $input["name"]    = ltrim($input["name"]);
       $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
