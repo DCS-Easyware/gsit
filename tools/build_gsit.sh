@@ -106,6 +106,7 @@ dev_nodes=(
     "vendor/wapmorgan/unified-archive/bin"
     "vendor/wapmorgan/unified-archive/tests"
     "webpack.config.js"
+    "vendor/composer/installed.json"
 )
 for node in "${dev_nodes[@]}"
 do
