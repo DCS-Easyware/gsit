@@ -1998,6 +1998,9 @@ class Toolbox {
                               $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
                               $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
                               $forcetab = str_replace( 'ITILFollowup$1', 'Ticket$1', $forcetab);
+                              if ($forcetab == "") {
+                                 Html::redirect($item->getFormURLWithID($data[1]));
+                              }
                               Html::redirect($item->getFormURLWithID($data[1])."&$forcetab");
                            }
 
