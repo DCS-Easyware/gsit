@@ -3666,6 +3666,8 @@ class CommonDBTM extends CommonGLPI {
    public final function searchOptions() {
       static $options;
 
+      unset($options);
+
       if (!isset($options)) {
          $options = [];
 
