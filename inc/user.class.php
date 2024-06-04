@@ -1587,7 +1587,8 @@ class User extends CommonDBTM {
          return false;
       }
 
-      if ($ldap_connection) {
+      if ((version_compare(phpversion(), '8.1', '<') && is_resource($ldap_connection))
+            || (version_compare(phpversion(), '8.1', '>=') && $ldap_connection)) {
          //Set all the search fields
          $this->fields['password'] = "";
 
@@ -3885,7 +3886,7 @@ JAVASCRIPT;
       }
 
       if (!$count) {
-         if ((strlen($search) > 0)) {
+         if (!is_null($search) && (strlen($search) > 0)) {
             $txt_search = Search::makeTextSearchValue($search);
 
             $firstname_field = $DB->quoteName(self::getTableField('firstname'));

@@ -411,6 +411,9 @@ class RuleCriteria extends CommonDBChild {
             if (empty($pattern)) {
                return false;
             }
+            if (is_null($field)) {
+               return false;
+            }
             $value = mb_stripos($field, $pattern, 0, 'UTF-8');
             if (($value !== false) && ($value == 0)) {
                $criterias_results[$criteria] = $pattern;
@@ -420,6 +423,9 @@ class RuleCriteria extends CommonDBChild {
 
          case Rule::PATTERN_CONTAIN :
             if (empty($pattern)) {
+               return false;
+            }
+            if (is_null($field)) {
                return false;
             }
             $value = mb_stripos($field, $pattern, 0, 'UTF-8');

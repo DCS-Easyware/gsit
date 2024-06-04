@@ -151,6 +151,13 @@ abstract class ITILTemplate extends CommonDropdown {
    static function getAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
 
       static $allowed_fields = [];
+      static $classname = '';
+
+      // Because of static variable when called for 2 different classes in same execution code, we reset it
+      if ($classname !== get_called_class()) {
+         $allowed_fields = [];
+         $classname = get_called_class();
+      }
 
       // For integer value for index
       if ($withtypeandcategory) {
@@ -229,7 +236,6 @@ abstract class ITILTemplate extends CommonDropdown {
          //add specific itil type fields
          $allowed_fields[$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
       }
-
       return $allowed_fields[$withtypeandcategory][$withitemtype];
    }
 

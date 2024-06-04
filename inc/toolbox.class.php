@@ -161,7 +161,9 @@ class Toolbox {
     * @return string
    **/
    static function substr($str, $start, $length = -1) {
-
+      if (is_null($str)) {
+         return null;
+      }
       if ($length == -1) {
          $length = self::strlen($str)-$start;
       }
@@ -177,6 +179,9 @@ class Toolbox {
     * @return string  lower case string
    **/
    static function strtolower($str) {
+      if (is_null($str)) {
+         return null;
+      }
       return mb_strtolower($str, "UTF-8");
    }
 
@@ -189,6 +194,9 @@ class Toolbox {
     * @return string  upper case string
    **/
    static function strtoupper($str) {
+      if (is_null($str)) {
+         return null;
+      }
       return mb_strtoupper($str, "UTF-8");
    }
 
@@ -201,6 +209,9 @@ class Toolbox {
     * @return boolean
    **/
    static function seems_utf8($str) {
+      if (is_null($str)) {
+         return null;
+      }
       return mb_check_encoding($str, "UTF-8");
    }
 
@@ -214,7 +225,9 @@ class Toolbox {
     * @return string  utf8 string
    **/
    static function encodeInUtf8($string, $from_charset = "ISO-8859-1") {
-
+      if (is_null($string)) {
+         return null;
+      }
       if (strcmp($from_charset, "auto") == 0) {
          $from_charset = mb_detect_encoding($string);
       }
@@ -231,6 +244,9 @@ class Toolbox {
     * @return string  converted string
    **/
    static function decodeFromUtf8($string, $to_charset = "ISO-8859-1") {
+      if (is_null($string)) {
+         return null;
+      }
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
 
@@ -3094,6 +3110,9 @@ class Toolbox {
     * @return boolean
     */
    static public function endsWith($haystack, $needle) {
+      if (is_null($haystack)) {
+         return false;
+      }
       $length = strlen($needle);
       return $length === 0 || (substr($haystack, -$length) === $needle);
    }
@@ -3238,7 +3257,7 @@ class Toolbox {
       while ((int) $index > 0) {
          $index--;
          $bij_str = chr($index%26 + ord("A")) . $bij_str;
-         $index /= 26;
+         $index = floor($index / 26);
       }
       return $bij_str;
    }
@@ -3279,7 +3298,11 @@ class Toolbox {
          return false;
       }
 
-      $filename     = uniqid($uniq_prefix);
+      if (is_null($uniq_prefix)) {
+         $filename = uniqid();
+      } else {
+         $filename     = uniqid($uniq_prefix);
+      }
       $ext          = pathinfo($src, PATHINFO_EXTENSION);
       $subdirectory = substr($filename, -2); // subdirectory based on last 2 hex digit
 

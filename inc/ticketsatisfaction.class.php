@@ -96,7 +96,7 @@ class TicketSatisfaction extends CommonDBTM {
    /**
     * form for satisfaction
     *
-    * @param $ticket Object : the ticket
+    * @param object $ticket   the ticket
    **/
    function showForm($ticket) {
 

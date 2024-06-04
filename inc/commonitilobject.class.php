@@ -745,7 +745,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $type = null;
       if (isset($input['type'])) {
          $type = $input['type'];
-      } else if (isset($this->field['type'])) {
+      } else if (isset($this->fields['type'])) {
          $type = $this->fields['type'];
       }
 
@@ -1192,18 +1192,22 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if ((($key=array_search('closedate', $this->updates)) !== false)
+          && !is_null($this->fields["closedate"]) && !is_null($this->oldvalues['closedate'])
           && (substr($this->fields["closedate"], 0, 16) == substr($this->oldvalues['closedate'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['closedate']);
       }
 
       if ((($key=array_search('time_to_resolve', $this->updates)) !== false)
+          && !is_null($this->fields["time_to_resolve"]) && !is_null($this->oldvalues['time_to_resolve'])
           && (substr($this->fields["time_to_resolve"], 0, 16) == substr($this->oldvalues['time_to_resolve'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['time_to_resolve']);
       }
 
       if ((($key=array_search('solvedate', $this->updates)) !== false)
+          && !is_null($this->fields["solvedate"]) && isset($this->oldvalues['time_to_resolve'])
+          && !is_null($this->oldvalues['time_to_resolve'])
           && (substr($this->fields["solvedate"], 0, 16) == substr($this->oldvalues['solvedate'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['solvedate']);
@@ -1583,6 +1587,10 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
+      if (is_null($input["name"])) {
+         $input['name'] = '';
+      }
+
       // save value before clean;
       $title = ltrim($input['name']);
 
@@ -1635,6 +1643,9 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // No name set name
+      if (is_null($input["content"])) {
+         $input['content'] = '';
+      }
       $input["name"]    = ltrim($input["name"]);
       $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
@@ -7160,16 +7171,25 @@ abstract class CommonITILObject extends CommonDBTM {
                echo "<span class='h_user_name'>";
                $userdata = getUserName($item_i['users_id'], 2);
                $entity = $this->getEntityID();
+
+               $itilFollowup = ITILFollowup::getById($item_i['id']);
+               $document_item = null;
+               if (isset($item_i['documents_item_id'])) {
+                  $documentItem = Document_Item::getById($item_i['documents_item_id']);
+               }
+
                if (Entity::getUsedConfig('anonymize_support_agents', $entity)
                   && Session::getCurrentInterface() == 'helpdesk'
                   && (
                      $item['type'] == "Solution"
                      || is_subclass_of($item['type'], "CommonITILTask")
                      || ($item['type'] == "ITILFollowup"
-                        && ITILFollowup::getById($item_i['id'])->isFromSupportAgent()
+                        && is_object($itilFollowup)
+                        && $itilFollowup->isFromSupportAgent()
                      )
                      || ($item['type'] == "Document_Item"
-                        && Document_Item::getById($item_i['documents_item_id'])->isFromSupportAgent()
+                        && is_object($documentItem)
+                        && $documentItem->isFromSupportAgent()
                      )
                   )
                ) {
@@ -7878,13 +7898,15 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //timeline first, then main, then the rest?
       $local_tabs = $this->getTabNameForItem($this, $withtemplate);
-      foreach ($local_tabs as $key => $val) {
-         if (!empty($val)) {
-            $tab[static::class . '$' . $key] = $val;
-         }
+      if (is_array($local_tabs)) {
+         foreach ($local_tabs as $key => $val) {
+            if (!empty($val)) {
+               $tab[static::class . '$' . $key] = $val;
+            }
 
-         if (1 === count($tab)) {
-            $tab[$this->getType().'$main'] = $this->getTypeName(1);
+            if (1 === count($tab)) {
+               $tab[$this->getType().'$main'] = $this->getTypeName(1);
+            }
          }
       }
 
@@ -8467,4 +8489,9 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</tr>";
       }
    }
+
+   function canReopen() {
+      return false;
+   }
+
 }
