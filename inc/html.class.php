@@ -1264,9 +1264,9 @@ class Html {
       //detect theme
       $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
 
-      echo Html::css('public/lib/base.css');
+      // echo Html::css('public/lib/base.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
-      echo Html::css('css/jstree-glpi.css');
+      // echo Html::css('css/jstree-glpi.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
@@ -1378,19 +1378,19 @@ class Html {
       // load log filters everywhere
       Html::requireJs('log_filters');
 
-      echo Html::css('css/jquery-glpi.css');
-      if (CommonGLPI::isLayoutWithMain()
-          && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::css('public/lib/scrollable-tabs.css');
-      }
+      // echo Html::css('css/jquery-glpi.css');
+      // if (CommonGLPI::isLayoutWithMain()
+      //     && !CommonGLPI::isLayoutExcludedPage()) {
+      //    echo Html::css('public/lib/scrollable-tabs.css');
+      // }
 
       //  CSS link
-      echo Html::scss('css/styles');
-      if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-         echo Html::scss('css/highcontrast');
-      }
+      // echo Html::scss('css/styles');
+      // if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
+      //    echo Html::scss('css/highcontrast');
+      // }
 
-      echo Html::css('css/print.css', ['media' => 'print']);
+      // echo Html::css('css/print.css', ['media' => 'print']);
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
@@ -1426,7 +1426,7 @@ class Html {
          }
       }
 
-      echo Html::scss('css/palettes/' . $theme);
+      // echo Html::scss('css/palettes/' . $theme);
 
       // Custom CSS for active entity
       if ($DB instanceof DBmysql && $DB->connected) {
@@ -1442,7 +1442,7 @@ class Html {
       }
 
       // AJAX library
-      echo Html::script('public/lib/base.js');
+      // echo Html::script('public/lib/base.js');
 
       // Locales
       $locales_domains = ['glpi' => GLPI_VERSION]; // base domain
@@ -1483,8 +1483,40 @@ JAVASCRIPT;
          echo Html::script('public/lib/scrollable-tabs.js');
       }
 
+      // semantic-ui
+      echo Html::css('semantic-ui/semantic.min.css');
+      echo Html::script('semantic-ui/jquery-3.1.1.min.js');
+      echo Html::script('semantic-ui/semantic.min.js');
+
+      $dropdown = <<<JAVASCRIPT
+         $(function() {
+            $('.ui.dropdown')
+               .dropdown({
+                  on: 'hover',
+               })
+            ;
+            $('.remotedropdown')
+               .dropdown({
+                  fields: { name: "description", value: "data-value" },
+                  apiSettings: {
+                     url: '{url}?text={query}'
+                  }
+               })
+            ;
+            $('.menu .item')
+               .tab({
+                  cache: false,
+                  auto: true,
+                  path: '{url}',
+               })
+            ;
+         });
+JAVASCRIPT;
+      echo Html::scriptBlock($dropdown);
+
       // End of Head
       echo "</head>\n";
+
       self::glpi_flush();
    }
 
@@ -2244,6 +2276,34 @@ JAVASCRIPT;
 
       header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
       header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passe
+   
+      $dropdown = <<<JAVASCRIPT
+         $(function() {
+            $('.ui.dropdown')
+               .dropdown({
+                  on: 'hover',
+               })
+            ;
+            $('.remotedropdown')
+               .dropdown({
+                  fields: { name: "description", value: "data-value" },
+                  apiSettings: {
+                     url: '{url}?text={query}'
+                  }
+               })
+            ;
+            $('.menu .item')
+               .tab({
+                  cache: false,
+                  auto: true,
+                  path: '{url}',
+               })
+            ;
+         });
+JAVASCRIPT;
+      echo Html::scriptBlock($dropdown);
+
+
    }
 
 
@@ -3819,7 +3879,7 @@ JS;
       $field_so = $item->getSearchOptionByField('field', $field, $item->getTable());
       $can_autocomplete = array_key_exists('autocomplete', $field_so) && $field_so['autocomplete'];
 
-      $output = '';
+      $output = '<div class="ui input">';
       if ($can_autocomplete && $CFG_GLPI["use_ajax_autocompletion"]) {
          $output .=  "<input ".$params['option']." id='text$name' type='{$params['type']}' name='".
                        $params['name']."' value=\"".self::cleanInputText($params['value'])."\"
@@ -3858,6 +3918,7 @@ JS;
          $output .=  "<input ".$params['option']." type='text' id='text$name' name='".$params['name']."'
                 value=\"".self::cleanInputText($params['value'])."\">\n";
       }
+      $output .= '</div>';
 
       if (!isset($options['display']) || $options['display']) {
          echo $output;
@@ -5304,28 +5365,31 @@ JAVASCRIPT;
     * @return string
     */
    static function select($name, array $values = [], $options = []) {
-      $selected = false;
-      if (isset($options['selected'])) {
-         $selected = $options['selected'];
-         unset ($options['selected']);
-      }
-      $select = sprintf(
-         '<select name="%1$s" %2$s>',
-         self::cleanInputText($name),
-         self::parseAttributes($options)
-      );
-      foreach ($values as $key => $value) {
-         $select .= sprintf(
-            '<option value="%1$s"%2$s>%3$s</option>',
-            self::cleanInputText($key),
-            ($selected != false && (
-               $key == $selected
-               || is_array($selected) && in_array($key, $selected))
-            ) ? ' selected="selected"' : '',
-            Html::entities_deep($value)
-         );
-      }
-      $select .= '</select>';
+      // echo '<div class="ui selection dropdown remotedropdown" data-url="https://www.google.com">
+      // <div class="text">KOIN</div>
+      // </div>';
+      
+      
+
+      $select  = "<div class='ui selection dropdown remotedropdown' data-url='https://www.google.com'>\n";
+      // $select .= "   <input type='hidden' name='" . $name . "'>\n";
+      // $select .= "   <i class='dropdown icon'></i>\n";
+      // if (isset($options['selected'])) {
+      //    foreach ($values as $key => $value) {
+      //       if ($key == $options['selected']) {
+      //          $select .= "   <div class='text'>" . Html::entities_deep($value) . "</div>\n";
+      //       }
+      //    }
+      // }
+      // $select .= "   <div class='menu'>\n";
+      // $select .= "      <div class='item' data-value='test1'>test1</div>\n";
+      // $select .= "      <div class='item' data-value='test2'>test2</div>\n";
+      // $select .= "      <div class='item' data-value='LENOVO'>LENOVO</div>\n";
+      // foreach ($values as $key => $value) {
+      //    $select .= "      <div class='item' data-value='" . self::cleanInputText($key) . "'>" . Html::entities_deep($value) . "</div>\n";
+      // }
+      // $select .= "   </div>\n";
+      $select .= "</div>\n";
       return $select;
    }
 
@@ -7091,40 +7155,30 @@ JAVASCRIPT;
 
       $already_used_shortcut = ['1'];
 
-      echo "<div id='c_menu'>";
-      echo "<ul id='menu'";
-      if ($full === true) {
-         echo " class='fullmenu'";
-      }
-      echo ">";
-
-      if ($full === false) {
-         // Display Home menu
-         echo "<li id='menu1'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-               __s('Home')."\" class='itemP'>".__('Home')."</a>";
-         echo "</li>";
-      }
+      // Display the menu
+      echo "<div id='c_menu' class='ui text menu'>";
 
       // Get object-variables and build the navigation-elements
       $i = 1;
       foreach ($menu as $part => $data) {
+         echo "<div id='menu' class='ui dropdown item'>";
          if (isset($data['content']) && count($data['content'])) {
             $menu_class = "";
             if (isset($menu[$sector]) && $menu[$sector]['title'] == $data['title']) {
                $menu_class = "active";
             }
 
-            echo "<li id='menu$i' data-id='$i' class='$menu_class'>";
+            // echo "<li id='menu$i' data-id='$i' class='ui dropdown item'>";
             $link = "#";
 
             if (isset($data['default']) && !empty($data['default'])) {
                $link = $CFG_GLPI["root_doc"].$data['default'];
             }
 
-            echo "<a href='$link' class='itemP'>{$data['title']}</a>";
+            echo $data['title'];
+            echo "<i class='dropdown icon'></i>";
             if (!isset($data['content'][0]) || $data['content'][0] !== true) {
-               echo "<ul class='ssmenu'>";
+               echo "<div class='menu'>";
 
                // list menu item
                foreach ($data['content'] as $key => $val) {
@@ -7156,17 +7210,17 @@ JAVASCRIPT;
                      }
                      $icon = "<i class='fa-fw $icon_cls'></i>";
 
-                     echo "<li class='$menu_class'>
+                     echo "<div class='item'>
                         <a href='".$CFG_GLPI["root_doc"].$val['page']."' $shortcut_attr>
                            $icon
                            $title
                         </a>
-                     </li>";
+                     </div>";
                   }
                }
-               echo "</ul>";
+               echo "</div>";
             }
-            echo "</li>";
+            echo "</div>";
             $i++;
          }
       }
@@ -7217,10 +7271,10 @@ JAVASCRIPT;
          }
       }
 
-      echo "</ul>"; // #menu
+      echo "</div>"; // #menu
 
       // Display MENU ALL
-      self::displayMenuAll($menu);
+      // self::displayMenuAll($menu);
 
       // End navigation bar
       // End headline
@@ -7423,6 +7477,7 @@ JAVASCRIPT;
          self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/$mainurl.php");
       }
       echo "</ul>";
+      echo "</div>";
       echo "</div>";
    }
 
@@ -7656,5 +7711,24 @@ JAVASCRIPT;
       echo '</button>';
       echo '</form>';
       echo '</div>';
+   }
+
+   /**
+    * Display warning message
+    * @param $content string content data to display
+    * @param $header string|null the header to display
+    *
+    * @return void
+    */
+   public static function displayMessageWarning($content, $header = null) {
+      echo "<div class='ui warning icon message'>";
+      echo "<i class='exclamation triangle icon'></i>";
+      echo "<div class='content'>";
+      if (!is_null($header)) {
+         echo "<div class='header'>" . $header . "</div>";
+      }
+      echo $content;
+      echo "</div>";
+      echo "</div>";
    }
 }

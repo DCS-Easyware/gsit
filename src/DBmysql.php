@@ -1,40 +1,10 @@
 <?php
-/**
- * ---------------------------------------------------------------------
- * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
- *
- * http://glpi-project.org
- *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
- *
- * ---------------------------------------------------------------------
- *
- * LICENSE
- *
- * This file is part of GLPI.
- *
- * GLPI is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * GLPI is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- * ---------------------------------------------------------------------
- */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+namespace App;
 
-use Glpi\Application\ErrorHandler;
+
+
+// use Glpi\Application\ErrorHandler;
 
 /**
  *  Database class for Mysql
@@ -157,7 +127,7 @@ class DBmysql {
     */
    function connect($choice = null) {
       $this->connected = false;
-      $this->dbh = @new mysqli();
+      $this->dbh = @new \mysqli();
       // added in 9.5.13 (compat PHP 8.1, to keep compatibility with PHP 7.4 and 8.0
       mysqli_report(MYSQLI_REPORT_OFF);
       if ($this->dbssl) {
@@ -218,9 +188,9 @@ class DBmysql {
          // force mysqlnd to return int and float types correctly (not as strings)
          $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
 
-         if (GLPI_FORCE_EMPTY_SQL_MODE) {
-            $this->dbh->query("SET SESSION sql_mode = ''");
-         }
+         // if (GLPI_FORCE_EMPTY_SQL_MODE) {
+         //    $this->dbh->query("SET SESSION sql_mode = ''");
+         // }
 
          $this->connected = true;
 
@@ -243,11 +213,12 @@ class DBmysql {
          $zone = $_SESSION['glpi_tz'];
       } else {
          $conf_tz = ['value' => null];
-         if ($this->tableExists(Config::getTable())
-             && $this->fieldExists(Config::getTable(), 'value')) {
+         $config = new \App\Models\Config();
+         if ($this->tableExists($config->getTable())
+             && $this->fieldExists($config->getTable(), 'value')) {
             $conf_tz = $this->request([
                'SELECT' => 'value',
-               'FROM'   => Config::getTable(),
+               'FROM'   => $config->getTable(),
                'WHERE'  => [
                   'context'   => 'core',
                   'name'      => 'timezone'
@@ -308,6 +279,7 @@ class DBmysql {
          // no translation for error logs
          $error = "  *** MySQL query error:\n  SQL: ".$query."\n  Error: ".
                    $this->dbh->error."\n";
+echo $query;
          $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
 
          Toolbox::logSqlError($error);
@@ -1564,12 +1536,12 @@ class DBmysql {
     * @since 9.5.0
     */
    public function areTimezonesAvailable(string &$msg = '') {
-      $cache = Config::getCache('cache_db');
+      // $cache = Config::getCache('cache_db');
 
-      if ($cache->has('are_timezones_available')) {
-         return $cache->get('are_timezones_available');
-      }
-      $cache->set('are_timezones_available', false, DAY_TIMESTAMP);
+      // if ($cache->has('are_timezones_available')) {
+      //    return $cache->get('are_timezones_available');
+      // }
+      // $cache->set('are_timezones_available', false, DAY_TIMESTAMP);
 
       $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
       if ($mysql_db_res->count() === 0) {
@@ -1599,7 +1571,7 @@ class DBmysql {
          return false;
       }
 
-      $cache->set('are_timezones_available', true);
+      // $cache->set('are_timezones_available', true);
       return true;
    }
 

@@ -687,9 +687,7 @@ class CronTask extends CommonDBTM{
       }
 
       if (isset($CFG_GLPI['maintenance_mode']) && $CFG_GLPI['maintenance_mode']) {
-         echo "<div class='warning'>".
-              __('Maintenance mode enabled, running tasks is disabled').
-              "</div>";
+         Html::displayMessageWarning(__('Maintenance mode enabled, running tasks is disabled'));
       } else if ($launch) {
          echo "&nbsp;";
          Html::showSimpleForm(static::getFormURL(), ['execute' => $this->fields['name']],

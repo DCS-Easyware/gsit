@@ -1,0 +1,36 @@
+.ui.sidebar.visible ~ .pusher {
+  width: calc(100% - 300px);
+}
+
+[hidden] { display:none !important;}
+
+/* priority, impact and urgency */
+.ui.ui.table td.gsitmajor:not(.marked) {
+  background: #ffdef5;
+  color: #581845;
+}
+
+.ui.ui.table td.gsitveryhigh:not(.marked) {
+  background: #ffddea;
+  color: #900c3f;
+}
+
+.ui.ui.table td.gsithigh:not(.marked) {
+  background: #ffdbe5;
+  color: #c70039;
+}
+
+.ui.ui.table td.gsitmedium:not(.marked) {
+  background: #ffdad3;
+  color: #ff5733;
+}
+
+.ui.ui.table td.gsitlow:not(.marked) {
+  background: #fff5d6;
+  color: #ecb400;
+}
+
+.ui.ui.table td.gsitverylow:not(.marked) {
+  background: #fcfff8;
+  color: #c3de93;
+}
