@@ -25,7 +25,8 @@ final class Computer extends Common
   {
     // TODO udpate data
 
-
+    $session = new \SlimSession\Helper();
+    $session->message = "You were awarded +2 points.";
 
     $uri = $request->getUri();
     $response = $response->withStatus(302);

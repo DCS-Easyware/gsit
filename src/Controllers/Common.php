@@ -60,10 +60,18 @@ class Common
 
   protected function commonShowItem(Request $request, Response $response, $args, $item): Response
   {
+
     $globalViewData = [
       'title' => 'GSIT - ' . $item->getTitle(1),
       'menu'  => \App\Controllers\Menu::getMenu($request)
     ];
+    $session = new \SlimSession\Helper();
+
+    if ($session->exists('message'))
+    {
+      $globalViewData['message'] = $session->message;
+      $session->delete('message');
+    }
 
     $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
     $renderer->setLayout('layout.php');

@@ -24,6 +24,7 @@
         "ext-simplexml": "*",
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
+        "bryanjhv/slim-session": "~4.0",
         "elvanto/litemoji": "^4.3",
         "enshrined/svg-sanitize": "^0.15.4",
         "guzzlehttp/guzzle": "^7.4",

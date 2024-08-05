@@ -54,6 +54,15 @@ $capsule->setEventDispatcher(new Dispatcher(new Container()));
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
+// Init session
+$app->add(
+  new \Slim\Middleware\Session([
+    'name' => 'gsit_session',
+    'autorefresh' => true,
+    'lifetime' => '1 hour',
+  ])
+);
+
 // Define routes
 \App\Route::setRoutes($app, $prefix);
 

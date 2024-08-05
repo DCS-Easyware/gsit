@@ -105,7 +105,18 @@
         }
       });
 
+      <?php if (isset($message)): ?>
+      $.toast({
+        title: 'LOOK',
+        message: '<?=$message?>',
+        showProgress: 'top',
+        classProgress: 'green',
+        progressUp: true,
+      });
+      <?php endif ?>
+
   </script>
+
 </body>
 </html>
 
