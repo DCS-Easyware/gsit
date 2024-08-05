@@ -54,6 +54,7 @@
         // minCharacters: 2,
         saveRemoteData: false,
         apiSettings: {
+          encodeParameters: false,
           cache: false,
           url: '{url}',
           method: 'post',

@@ -2,12 +2,20 @@
 
 namespace App\Controllers;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Routing\RouteContext;
+
 final class Menu
 {
 
-  static public function getMenu()
+  static public function getMenu(Request $request)
   {
     global $translator;
+
+    $menu = new self();
+    $basepath = $menu->getRootPath($request);
+    $activePath = $basepath . $menu->getActivePath($request);
+
     return [
       [
         'name' => $translator->translate('Home'),
@@ -20,21 +28,21 @@ final class Menu
         'sub'  => [
           [
             'name'  => $translator->translatePlural('Computer', 'Computers', 2),
-            'link'  => '/gsit/computers',
+            'link'  => $basepath . '/computers',
             'icon'  => 'laptop',
-            'class' => 'active',
+            'class' => $activePath == $basepath . '/computers' ? 'active' : '',
           ],
           [
             'name'  => $translator->translatePlural('Monitor', 'Monitors', 2),
-            'link'  => '/gsit/monitors',
+            'link'  => $basepath . '/monitors',
             'icon'  => 'desktop',
-            'class' => '',
+            'class' => $activePath == $basepath . '/monitors' ? 'active' : '',
           ],
           [
             'name' => $translator->translatePlural('Software', 'Software', 2),
-            'link' => '/gsit/softwares',
+            'link' => $basepath . '/softwares',
             'icon' => 'cube',
-            'class' => '',
+            'class' => $activePath == $basepath . '/softwares' ? 'active' : '',
           ],
         ],
       ],
@@ -44,9 +52,9 @@ final class Menu
         'sub'  => [
           [
             'name'  => $translator->translatePlural('Ticket', 'Tickets', 2),
-            'link'  => '/gsit/tickets',
+            'link'  => $basepath . '/tickets',
             'icon'  => 'hands helping',
-            'class' => '',
+            'class' => $activePath == $basepath . '/tickets' ? 'active' : '',
           ],
         ],
       ],
@@ -76,6 +84,26 @@ final class Menu
         ],
       ],
     ];
+  }
+
+  private function getRootPath(Request $request)
+  {
+    $routeContext = RouteContext::fromRequest($request);
+    return $routeContext->getBasePath();
+  }
+
+  private function getActivePath(Request $request)
+  {
+    $routeContext = RouteContext::fromRequest($request);
+    $route = $routeContext->getRoute();
+    $groups = $route->getGroups();
+    if (count($groups) == 0)
+    {
+      return '';
+    }
+    // get first group
+    $group = current($groups);
+    return $group->getPattern();
   }
 }
 

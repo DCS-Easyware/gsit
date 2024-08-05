@@ -7,5 +7,4 @@ class Config extends Common
 {
   protected $table = 'glpi_configs';
 
-
 }

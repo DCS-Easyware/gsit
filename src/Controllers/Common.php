@@ -28,7 +28,7 @@ class Common
 
     $globalViewData = [
       'title' => 'GSIT - ' . $item->getTitle(2),
-      'menu'  => \App\Controllers\Menu::getMenu()
+      'menu'  => \App\Controllers\Menu::getMenu($request)
     ];
 
     $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
@@ -62,19 +62,21 @@ class Common
   {
     $globalViewData = [
       'title' => 'GSIT - ' . $item->getTitle(1),
-      'menu'  => \App\Controllers\Menu::getMenu()
+      'menu'  => \App\Controllers\Menu::getMenu($request)
     ];
 
     $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
     $renderer->setLayout('layout.php');
 
     // Load the item
-    $item->loadId($args['id']);
+    // $item->loadId($args['id']);
+    $myItem = $item->find($args['id']);
+
 
     // form data
     $viewData = [
       'name' => $item->getTitle(2),
-      'fields' => $item->getFormData()
+      'fields' => $item->getFormData($myItem)
     ];
     return $renderer->render($response, 'genericForm.php', $viewData);
   }

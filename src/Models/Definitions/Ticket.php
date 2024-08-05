@@ -102,20 +102,76 @@ class Ticket
         'id'    => 64,
         'title' => $translator->translate('Last edit by'),
         'type'  => 'dropdown_remote',
-        'name'  => 'users_id_lastupdater',
+        'name'  => 'usersidlastupdater',
         'itemtype' => '\App\Models\User',
       ],
-      // [
-      //   'id'    => 4,
-      //   'title' => $translator->translatePlural('Requester', 'Requesters', 1),
+      [
+        'id'    => 4,
+        'title' => $translator->translatePlural('Requester', 'Requesters', 1),
+        'type'  => 'dropdown_remote',
+        'name'  => 'requester',
+        'itemtype' => '\App\Models\User',
+        'multiple' => true,
+      ],
+      [
+        'id'    => 71,
+        'title' => $translator->translatePlural('Requester group', 'Requester groups', 1),
+        'type'  => 'dropdown_remote',
+        'name'  => 'requestergroup',
+        'itemtype' => '\App\Models\Group',
+        'multiple' => true,
+      ],
+      [
+        'id'    => 22,
+        'title' => $translator->translate('Writer'),
+        'type'  => 'dropdown_remote',
+        'name'  => 'usersidrecipient',
+        'itemtype' => '\App\Models\User',
+      ],
+      [
+        'id'    => 66,
+        'title' => $translator->translatePlural('Watcher', 'Watchers', 1),
+        'type'  => 'dropdown_remote',
+        'name'  => 'watcher',
+        'itemtype' => '\App\Models\User',
+        'multiple' => true,
+      ],
+      [
+        'id'    => 65,
+        'title' => $translator->translatePlural('Watcher group', 'Watcher groups', 1),
+        'type'  => 'dropdown_remote',
+        'name'  => 'watchergroup',
+        'itemtype' => '\App\Models\Group',
+        'multiple' => true,
+      ],
+      [
+        'id'    => 5,
+        'title' => $translator->translate('Technician'),
+        'type'  => 'dropdown_remote',
+        'name'  => 'technician',
+        'itemtype' => '\App\Models\User',
+        'multiple' => true,
+      ],
+      // [ TODO supplier
+      //   'id'    => 6,
+      //   'title' => $translator->translate('Assigned to a supplier'),
       //   'type'  => 'dropdown_remote',
-      //   'name'  => 'requester_name',
+      //   'name'  => 'technician',
       //   'itemtype' => '\App\Models\User',
-      //   'relationship' => 'many-to-many',
-      //   'foreignkey' => 'users_id',
-      //   'pivotitemtype' => '\App\Models\TicketUser',
-      //   'pivotfilters' => ['type' => '1'],
-      // ]
+      //   'multiple' => true,
+      // ],
+      [
+        'id'    => 8,
+        'title' => $translator->translate('Technician group'),
+        'type'  => 'dropdown_remote',
+        'name'  => 'techniciangroup',
+        'itemtype' => '\App\Models\Group',
+        'multiple' => true,
+      ],
+
+
+
+
     ];
 
     // TODO others like users

@@ -2,6 +2,9 @@
 
 use Slim\Factory\AppFactory;
 use Symfony\Component\ErrorHandler\ErrorHandler as SymfonyErrorHandler;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Container\Container;
 
 require __DIR__ . '/../vendor/autoload.php';
 include('../config/config_db.php');
@@ -35,6 +38,21 @@ if (strstr($_SERVER['REQUEST_URI'], '/'))
 
 // $app->get('/hello', function ($request, $response) {
 // })->setName('profile');
+
+$capsule = new Capsule();
+$configdb = [
+  'driver' => 'mysql',
+  'host' => $DB->dbhost,
+  'database' => $DB->dbdefault,
+  'username' => $DB->dbuser,
+  'password' => $DB->dbpassword,
+  'charset' => 'utf8',
+  'collation' => 'utf8_unicode_ci',
+];
+$capsule->addConnection($configdb);
+$capsule->setEventDispatcher(new Dispatcher(new Container()));
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
 
 // Define routes
 \App\Route::setRoutes($app, $prefix);

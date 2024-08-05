@@ -3,7 +3,7 @@
 namespace App\Models;
 
 
-class ComputerModel extends Common
+class Computermodel extends Common
 {
   protected $table = 'glpi_computermodels';
   protected $definition = '\App\Models\Definitions\ComputerModel';
