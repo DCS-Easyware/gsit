@@ -6,6 +6,18 @@
   </div>
 </div>
 
+<?php if (count($relatedPages) > 0): ?>
+  <div class="ui equal width labeled icon menu">
+    <?php foreach ($relatedPages as $item): ?>
+      <a class="item">
+        <i class="icon blue <?=$item['icon']?>"></i>
+        <?=$item['title']?>
+        <!-- <div class="floating ui blue label">22</div> -->
+      </a>
+    <?php endforeach ?>
+  </div>
+<?php endif ?>
+
 <form method="post" class="ui form">
   <button class="ui button right floated" type="submit">Save</button>
   <?php foreach ($fields as $item): ?>

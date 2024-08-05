@@ -308,4 +308,61 @@ class Ticket
     ];
   }
 
+  public static function getRelatedPages()
+  {
+    global $translator;
+
+    return [
+      [
+        'title' => 'Statisques',
+        'icon' => 'chartline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Validations',
+        'icon' => 'thumbs up',
+        'link' => '',
+      ],
+      [
+        'title' => 'Base de connaissances',
+        'icon' => 'book',
+        'link' => '',
+      ],
+      [
+        'title' => 'Elements',
+        'icon' => 'desktop',
+        'link' => '',
+      ],
+      [
+        'title' => 'Coûts',
+        'icon' => 'money bill alternate',
+        'link' => '',
+      ],
+      [
+        'title' => 'Projets',
+        'icon' => 'folder open',
+        'link' => '',
+      ],
+      [
+        'title' => 'Tâches de projets',
+        'icon' => 'tasks',
+        'link' => '',
+      ],
+      [
+        'title' => 'Problèmes',
+        'icon' => 'drafting compass',
+        'link' => '',
+      ],
+      [
+        'title' => 'Changements',
+        'icon' => 'paint roller',
+        'link' => '',
+      ],
+      [
+        'title' => 'Historique',
+        'icon' => 'history',
+        'link' => '',
+      ],
+    ];
+  }
 }

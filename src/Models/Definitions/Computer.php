@@ -20,6 +20,7 @@ class Computer
         'title' => $translator->translate('Status'),
         'type'  => 'dropdown_remote',
         'name'  => 'state',
+        'dbname' => 'states_id',
         'itemtype' => '\App\Models\State',
       ],
       // [
@@ -34,6 +35,7 @@ class Computer
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
+        'dbname' => 'computertypes_id',
         'itemtype' => '\App\Models\Computertype',
       ],
       // [
@@ -48,6 +50,7 @@ class Computer
         'title' => $translator->translate('Manufacturer', 'Manufacturers', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'manufacturer',
+        'dbname' => 'manufacturers_id',
         'itemtype' => '\App\Models\Manufacturer',
       ],
       // [
@@ -62,6 +65,7 @@ class Computer
         'title' => $translator->translatePlural('Model', 'Models', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'model',
+        'dbname' => 'computermodels_id',
         'itemtype' => '\App\Models\Computermodel',
       ],
       [
@@ -128,6 +132,109 @@ class Computer
         'type'  => 'textarea',
         'name'  => 'comment',
       ]
+    ];
+  }
+
+  public static function getRelatedPages()
+  {
+    global $translator;
+
+    return [
+      [
+        'title' => 'Système d\'exploitation',
+        'icon' => 'laptop house',
+        'link' => '',
+      ],
+      [
+        'title' => 'Composants',
+        'icon' => 'microchip',
+        'link' => '',
+      ],
+      [
+        'title' => 'Volumes',
+        'icon' => 'hdd',
+        'link' => '',
+      ],
+      [
+        'title' => 'Logiciels',
+        'icon' => 'cube',
+        'link' => '',
+      ],
+      [
+        'title' => 'Connexions',
+        'icon' => 'linkify',
+        'link' => '',
+      ],
+      [
+        'title' => 'Ports réseau',
+        'icon' => 'ethernet',
+        'link' => '',
+      ],
+      [
+        'title' => 'Documents',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Virtualisation',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Antivirus',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'base de connaissances',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Tickets',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Problèmes',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Changements',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Certificats',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Verrous',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Notes',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Réservations',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Applicatifs',
+        'icon' => 'caret square down outline',
+        'link' => '',
+      ],
+      [
+        'title' => 'Historique',
+        'icon' => 'history',
+        'link' => '',
+      ],
     ];
   }
 }

@@ -23,6 +23,9 @@ final class Computer extends Common
 
   public function updateItem(Request $request, Response $response, $args): Response
   {
+    $item = new \App\Models\Computer();
+    return $this->commonUpdateItem($request, $response, $args, $item);
+
     // TODO udpate data
 
     $session = new \SlimSession\Helper();

@@ -14,6 +14,16 @@ class Common extends Model
   const CREATED_AT = 'date_creation';
   const UPDATED_AT = 'date_mod';
 
+  public static function booted()
+  {
+    parent::booted();
+
+    static::updated(function ($model)
+    {
+      \App\Models\Common::changesOnUpdated($model, $model->original);
+    });    
+  }
+
   function getTitle($nb = 1)
   {
     global $translator;
@@ -190,7 +200,7 @@ class Common extends Model
 
   function getDropdownValues()
   {
-    $items = $this->get();
+    $items = $this->orderBy('name')->get();
     $data = [];
     foreach ($items as $item)
     {
@@ -209,6 +219,15 @@ class Common extends Model
       return [];
     }
     return call_user_func($this->definition . '::getDefinition');
+  }
+
+  function getRelatedPages()
+  {
+    if (is_null($this->definition) || !method_exists($this->definition, 'getRelatedPages'))
+    {
+      return [];
+    }
+    return call_user_func($this->definition . '::getRelatedPages');
   }
 
   /**
@@ -242,5 +261,34 @@ class Common extends Model
       }
     }
     return $def;
+  }
+
+
+  /**
+   * Add in changes when update fields
+   */
+  public static function changesOnUpdated($model, $original)
+  {
+    $changes = $model->getChanges();
+    $casts = $model->getCasts();
+    foreach ($changes as $key => $newValue)
+    {
+      if (in_array($key, ['created_at', 'date_mod']))
+      {
+        continue;
+      }
+      $oldValue = $original[$key];
+      if (isset($casts[$key]) && $casts[$key] == 'boolean')
+      {
+        $newValue = (boolval($newValue) ? 'true' : 'false');
+        $oldValue = (boolval($oldValue) ? 'true' : 'false');
+      }
+      \App\Controllers\Log::addEntry(
+        $model,
+        '{username} changed ' . $key . ' to "{new_value}"',
+        $newValue,
+        $oldValue,
+      );
+    }
   }
 }

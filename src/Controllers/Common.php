@@ -80,12 +80,52 @@ class Common
     // $item->loadId($args['id']);
     $myItem = $item->find($args['id']);
 
-
     // form data
     $viewData = [
-      'name' => $item->getTitle(2),
-      'fields' => $item->getFormData($myItem)
+      'name'         => $item->getTitle(2),
+      'fields'       => $item->getFormData($myItem),
+      'relatedPages' => $item->getRelatedPages(),
     ];
     return $renderer->render($response, 'genericForm.php', $viewData);
+  }
+
+  public function commonUpdateItem(Request $request, Response $response, $args, $item): Response
+  {
+    $data = (object) $request->getParsedBody();
+    $myItem = $item->find($args['id']);
+
+    // rewrite data with right database name (for dropdown mainly)
+    $definitions = $item->getDefinitions();
+    foreach ($definitions as $def)
+    {
+      if (property_exists($data, $def['name']))
+      {
+        if (in_array($def['type'], ['input', 'textarea', 'dropdown']))
+        {
+          $myItem->{$def['name']} = $data->{$def['name']};
+        }
+        else  if ($def['type'] == 'dropdown_remote')
+        {
+          $myItem->{$def['dbname']} = $data->{$def['name']};
+        }
+      }
+    }
+
+    // pre update
+
+    // update
+    $myItem->save();
+
+    // manage logs
+
+    // post update
+
+    // add message to session
+    $session = new \SlimSession\Helper();
+    $session->message = "The computer has been updated correctly";
+
+    $uri = $request->getUri();
+    $response = $response->withStatus(302);
+    return $response->withHeader('Location', (string) $uri);
   }
 }
