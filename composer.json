@@ -24,12 +24,16 @@
         "ext-simplexml": "*",
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
+        "bryanjhv/slim-session": "~4.0",
         "elvanto/litemoji": "^4.3",
         "enshrined/svg-sanitize": "^0.15.4",
         "guzzlehttp/guzzle": "^7.4",
         "guzzlehttp/psr7": "^1.8",
         "htmlawed/htmlawed": "^1.2",
         "iamcal/lib_autolink": "^1.7",
+        "illuminate/container": "^10.48",
+        "illuminate/database": "^10.48",
+        "illuminate/events": "^10.48",
         "laminas/laminas-cache": "^3.1",
         "laminas/laminas-cache-storage-adapter-apcu": "^2.0",
         "laminas/laminas-cache-storage-adapter-filesystem": "^2.0",
@@ -39,6 +43,8 @@
         "laminas/laminas-mail": "^2.12",
         "laminas/laminas-mime": "^2.7",
         "laminas/laminas-serializer": "^2.8",
+        "laminas/laminas-servicemanager": "^3.22",
+        "league/html-to-markdown": "^5.1",
         "mexitek/phpcolors": "^1",
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^2.0",
@@ -55,7 +61,11 @@
         "scssphp/scssphp": "^1.0",
         "sebastian/diff": "^3.0",
         "simplepie/simplepie": "^1.5",
+        "slim/php-view": "^3.3",
+        "slim/psr7": "^1.7",
+        "slim/slim": "4.*",
         "symfony/console": "^5.0",
+        "symfony/error-handler": "^6.4",
         "tecnickcom/tcpdf": "^6.2",
         "true/punycode": "^2.1",
         "wapmorgan/unified-archive": "^1.0"
@@ -114,6 +124,11 @@
         "htmlawed": {
             "type": "composer",
             "url": "https://www.bioinformatics.org/phplabware/downloads/"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src"
         }
     }
 }

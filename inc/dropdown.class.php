@@ -83,6 +83,10 @@ class Dropdown {
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
          return false;
       }
+      echo '<div class="ui selection dropdown remotedropdown" data-url="https://www.google.com">
+      <div class="text">KOIN</div>
+      </div>';
+      return;
 
       $table = $item->getTable();
 
