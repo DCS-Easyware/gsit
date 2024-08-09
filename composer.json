@@ -44,6 +44,7 @@
         "laminas/laminas-mime": "^2.7",
         "laminas/laminas-serializer": "^2.8",
         "laminas/laminas-servicemanager": "^3.22",
+        "league/html-to-markdown": "^5.1",
         "mexitek/phpcolors": "^1",
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^2.0",

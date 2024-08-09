@@ -34,3 +34,27 @@
   background: #fcfff8;
   color: #c3de93;
 }
+
+i.icon.gsitmajor {
+  color: #581845;
+}
+
+i.icon.gsitveryhigh {
+  color: #900c3f;
+}
+
+i.icon.gsithigh {
+  color: #c70039;
+}
+
+i.icon.gsitmedium {
+  color: #ff5733;
+}
+
+i.icon.gsitlow {
+  color: #ecb400;
+}
+
+i.icon.gsitverylow {
+  color: #c3de93;
+}

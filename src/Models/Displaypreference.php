@@ -15,7 +15,8 @@ class Displaypreference extends Common
    *
    * @return array
   **/
-  static function getForTypeUser($itemtype, $user_id) {
+  static function getForTypeUser($itemtype, $user_id)
+  {
     $items = \App\Models\Displaypreference::where('itemtype', $itemtype)
       ->where('users_id', 0)->get();
 

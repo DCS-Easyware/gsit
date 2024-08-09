@@ -26,6 +26,7 @@ class Ticket
         'title' => $translator->translate('Status'),
         'type'  => 'dropdown',
         'name'  => 'status',
+        'dbname'  => 'status',
         'values' => self::getStatusArray(),
       ],
       [
@@ -33,6 +34,7 @@ class Ticket
         'title' => $translator->translate('Urgency'),
         'type'  => 'dropdown',
         'name'  => 'urgency',
+        'dbname'  => 'urgency',
         'values' => self::getUrgencyArray(),
       ],
       [
@@ -40,6 +42,7 @@ class Ticket
         'title' => $translator->translate('Impact'),
         'type'  => 'dropdown',
         'name'  => 'impact',
+        'dbname'  => 'impact',
         'values' => self::getImpactArray(),
       ],
       [
@@ -47,6 +50,7 @@ class Ticket
         'title' => $translator->translate('Priority'),
         'type'  => 'dropdown',
         'name'  => 'priority',
+        'dbname'  => 'priority',
         'values' => self::getPriorityArray(),
       ],
       [
@@ -85,13 +89,14 @@ class Ticket
         'type'  => 'datetime',
         'name'  => 'date_mod',
       ],
-      // [
-      //   'id'    => 7,
-      //   'title' => $translator->translate('Category'),
-      //   'type'  => 'dropdown_remote',
-      //   'name'  => 'itilvategories_id',
-      //   'itemtype' => '\App\Models\ITILCategory',
-      // ],
+      [
+        'id'    => 7,
+        'title' => $translator->translate('Category'),
+        'type'  => 'dropdown_remote',
+        'name'  => 'itilcategories_id',
+        'dbname' => 'itilcategories_id',
+        'itemtype' => '\App\Models\ITILCategory',
+      ],
       [
         'id'    => 45,
         'title' => $translator->translate('Total duration'),
@@ -103,6 +108,7 @@ class Ticket
         'title' => $translator->translate('Last edit by'),
         'type'  => 'dropdown_remote',
         'name'  => 'usersidlastupdater',
+        'dbname' => 'users_id_lastupdater',
         'itemtype' => '\App\Models\User',
       ],
       [
@@ -112,6 +118,7 @@ class Ticket
         'name'  => 'requester',
         'itemtype' => '\App\Models\User',
         'multiple' => true,
+        'pivot' => ['type' => 1],
       ],
       [
         'id'    => 71,
@@ -120,12 +127,14 @@ class Ticket
         'name'  => 'requestergroup',
         'itemtype' => '\App\Models\Group',
         'multiple' => true,
+        'pivot' => ['type' => 1],
       ],
       [
         'id'    => 22,
         'title' => $translator->translate('Writer'),
         'type'  => 'dropdown_remote',
         'name'  => 'usersidrecipient',
+        'dbname'  => 'users_id_recipient',
         'itemtype' => '\App\Models\User',
       ],
       [
@@ -135,6 +144,7 @@ class Ticket
         'name'  => 'watcher',
         'itemtype' => '\App\Models\User',
         'multiple' => true,
+        'pivot' => ['type' => 3],
       ],
       [
         'id'    => 65,
@@ -143,6 +153,7 @@ class Ticket
         'name'  => 'watchergroup',
         'itemtype' => '\App\Models\Group',
         'multiple' => true,
+        'pivot' => ['type' => 3],
       ],
       [
         'id'    => 5,
@@ -151,6 +162,7 @@ class Ticket
         'name'  => 'technician',
         'itemtype' => '\App\Models\User',
         'multiple' => true,
+        'pivot' => ['type' => 2],
       ],
       // [ TODO supplier
       //   'id'    => 6,
@@ -167,11 +179,8 @@ class Ticket
         'name'  => 'techniciangroup',
         'itemtype' => '\App\Models\Group',
         'multiple' => true,
+        'pivot' => ['type' => 2],
       ],
-
-
-
-
     ];
 
     // TODO others like users

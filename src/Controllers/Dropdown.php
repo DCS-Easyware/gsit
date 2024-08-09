@@ -57,11 +57,14 @@ final class Dropdown extends Common
   $dropData = [];
   $success = false;
 
-  if (class_exists($data->itemtype))
+  if (property_exists($data, 'itemtype') && class_exists($data->itemtype))
   {
     $item = new $data->itemtype();
     $dropData = $item->getDropdownValues();
     $success = true;
+  } else {
+    $dropData = [];
+    $success = false;    
   }
 
   $respdata = [

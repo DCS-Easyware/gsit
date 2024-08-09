@@ -25,14 +25,39 @@ final class Computer extends Common
   {
     $item = new \App\Models\Computer();
     return $this->commonUpdateItem($request, $response, $args, $item);
+  }
 
-    // TODO udpate data
+  public function showOperatingsystem(Request $request, Response $response, $args): Response
+  {
+    $item = new \App\Models\Computer();
 
+    $globalViewData = [
+      'title'    => 'GSIT - ' . $item->getTitle(1),
+      'menu'     => \App\Controllers\Menu::getMenu($request),
+      'rootpath' => \App\Controllers\Toolbox::getRootPath($request),
+    ];
     $session = new \SlimSession\Helper();
-    $session->message = "You were awarded +2 points.";
 
-    $uri = $request->getUri();
-    $response = $response->withStatus(302);
-    return $response->withHeader('Location', (string) $uri);
+    if ($session->exists('message'))
+    {
+      $globalViewData['message'] = $session->message;
+      $session->delete('message');
+    }
+
+    $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
+    $renderer->setLayout('layout.php');
+
+    // return $renderer->render($response, 'empty.php', []);
+
+    $myItem = $item->find($args['id']);
+
+    // form data
+    $viewData = [
+      'name'         => $item->getTitle(1),
+      'fields'       => [],
+      'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
+    ];
+    return $renderer->render($response, 'genericForm.php', $viewData);
+
   }
 }

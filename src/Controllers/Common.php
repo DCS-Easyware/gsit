@@ -27,8 +27,9 @@ class Common
     $page = 1;
 
     $globalViewData = [
-      'title' => 'GSIT - ' . $item->getTitle(2),
-      'menu'  => \App\Controllers\Menu::getMenu($request)
+      'title'    => 'GSIT - ' . $item->getTitle(2),
+      'menu'     => \App\Controllers\Menu::getMenu($request),
+      'rootpath' => \App\Controllers\Toolbox::getRootPath($request),
     ];
 
     $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
@@ -62,8 +63,9 @@ class Common
   {
 
     $globalViewData = [
-      'title' => 'GSIT - ' . $item->getTitle(1),
-      'menu'  => \App\Controllers\Menu::getMenu($request)
+      'title'    => 'GSIT - ' . $item->getTitle(1),
+      'menu'     => \App\Controllers\Menu::getMenu($request),
+      'rootpath' => \App\Controllers\Toolbox::getRootPath($request),
     ];
     $session = new \SlimSession\Helper();
 
@@ -82,9 +84,9 @@ class Common
 
     // form data
     $viewData = [
-      'name'         => $item->getTitle(2),
+      'name'         => $item->getTitle(1),
       'fields'       => $item->getFormData($myItem),
-      'relatedPages' => $item->getRelatedPages(),
+      'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
     ];
     return $renderer->render($response, 'genericForm.php', $viewData);
   }
@@ -98,20 +100,40 @@ class Common
     $definitions = $item->getDefinitions();
     foreach ($definitions as $def)
     {
+      echo "<br>";
       if (property_exists($data, $def['name']))
       {
         if (in_array($def['type'], ['input', 'textarea', 'dropdown']))
         {
-          $myItem->{$def['name']} = $data->{$def['name']};
+          if ($myItem->{$def['name']} != $data->{$def['name']})
+          {
+            $myItem->{$def['name']} = $data->{$def['name']};
+          }
         }
         else  if ($def['type'] == 'dropdown_remote')
         {
-          $myItem->{$def['dbname']} = $data->{$def['name']};
+          if (isset($def['multiple']))
+          {
+            $values = $data->{$def['name']};
+            if (!is_array($values))
+            {
+              if (empty($values))
+              {
+                $values = [];
+              } else {
+                $values = explode(',', $values);
+              }
+            }
+            // save
+            $myItem->{$def['name']}()->sync($values, $def['pivot']);
+          }
+          else if ($myItem->{$def['dbname']} != $data->{$def['name']})
+          {
+            $myItem->{$def['dbname']} = $data->{$def['name']};
+          }
         }
       }
     }
-
-    // pre update
 
     // update
     $myItem->save();

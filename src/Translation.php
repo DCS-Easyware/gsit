@@ -88,8 +88,8 @@ final class translation
    *
    * @return string
    */
-  private function getPreferredLanguage(): string {
-
+  private function getPreferredLanguage(): string
+  {
     // Extract accepted languages from headers
     // Accept-Language: fr-FR, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
     $accepted_languages = [];
@@ -102,12 +102,13 @@ final class translation
     }
     arsort($accepted_languages); // sort by qfactor
 
-    foreach (array_keys($accepted_languages) as $language) {
-        if (array_key_exists($language, $this->languages)) {
-          return $language;
-        }
+    foreach (array_keys($accepted_languages) as $language)
+    {
+      if (array_key_exists($language, $this->languages))
+      {
+        return $language;
+      }
     }
-
     return 'en_GB';
   }
 }

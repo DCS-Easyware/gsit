@@ -47,7 +47,7 @@ class Computer
       // ],
       [
         'id'    => 23,
-        'title' => $translator->translate('Manufacturer', 'Manufacturers', 1),
+        'title' => $translator->translatePlural('Manufacturer', 'Manufacturers', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'manufacturer',
         'dbname' => 'manufacturers_id',
@@ -135,15 +135,15 @@ class Computer
     ];
   }
 
-  public static function getRelatedPages()
+  public static function getRelatedPages($rootUrl)
   {
     global $translator;
 
     return [
       [
-        'title' => 'Système d\'exploitation',
+        'title' => $translator->translatePlural('Operating system', 'Operating systems', 1),
         'icon' => 'laptop house',
-        'link' => '',
+        'link' => $rootUrl.'/operatingsystem',
       ],
       [
         'title' => 'Composants',
@@ -158,7 +158,7 @@ class Computer
       [
         'title' => 'Logiciels',
         'icon' => 'cube',
-        'link' => '',
+        'link' => $rootUrl.'/softwares',
       ],
       [
         'title' => 'Connexions',

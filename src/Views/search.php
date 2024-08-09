@@ -106,10 +106,19 @@
           <i class="left chevron icon"></i>
         </a>
         <?php for($i=1; $i <= $fields['paging']['pages']; $i++): ?>
+          <?php if ($i > ($fields['paging']['current'] - 2) && ($i < $fields['paging']['current'])): ?>
+            <a href="<?=$fields['paging']['linkpage'] . $i?>" class="item"><?=$i?></a>
+          <?php endif ?>
           <?php if ($fields['paging']['current'] == $i): ?>
             <a href="<?=$fields['paging']['linkpage'] . $i?>" class="active item"><?=$i?></a>
           <?php endif ?>
-          <?php if ($fields['paging']['current'] != $i): ?>
+          <?php if ($i < ($fields['paging']['current'] + 2) && ($i > $fields['paging']['current'])): ?>
+            <a href="<?=$fields['paging']['linkpage'] . $i?>" class="item"><?=$i?></a>
+          <?php endif ?>
+          <?php if ($i == ($fields['paging']['current'] + 2)): ?>
+            <a class="item">...</a>
+          <?php endif ?>
+          <?php if ($i == $fields['paging']['pages'] && $fields['paging']['current'] != $i): ?>
             <a href="<?=$fields['paging']['linkpage'] . $i?>" class="item"><?=$i?></a>
           <?php endif ?>
         <?php endfor ?>

@@ -13,7 +13,7 @@ final class Menu
     global $translator;
 
     $menu = new self();
-    $basepath = $menu->getRootPath($request);
+    $basepath = \App\Controllers\Toolbox::getRootPath($request);
     $activePath = $basepath . $menu->getActivePath($request);
 
     return [
@@ -73,7 +73,12 @@ final class Menu
         'name' => $translator->translate('Administration'),
         'icon' => 'screwdriver',
         'sub'  => [
-
+          [
+            'name' => $translator->translate('Business rules for tickets'),
+            'link' => $basepath . '/rules/tickets',
+            'icon' => 'magic',
+            'class' => $activePath == $basepath . '/rules/tickets' ? 'active' : '',
+          ],
         ],
       ],
       [
@@ -84,12 +89,6 @@ final class Menu
         ],
       ],
     ];
-  }
-
-  private function getRootPath(Request $request)
-  {
-    $routeContext = RouteContext::fromRequest($request);
-    return $routeContext->getBasePath();
   }
 
   private function getActivePath(Request $request)

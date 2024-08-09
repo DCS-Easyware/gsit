@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use League\HTMLToMarkdown\HtmlConverter;
 
 class Common extends Model
 {
@@ -35,141 +36,6 @@ class Common extends Model
   {
     return $this->icon;
   }
-
-  /**
-   * Retrieve an item from the database
-   *
-   * @param integer $ID ID of the item to get
-   *
-   * @return boolean true if succeed else false
-  **/
-  // function getFromDB($ID) {
-  //   global $DB;
-  //   // Make new database object and fill variables
-
-  //   // != 0 because 0 is consider as empty
-  //   if (strlen($ID) == 0) {
-  //      return false;
-  //   }
-
-  //   $iterator = $DB->request([
-  //     'FROM'   => $this->getTable(),
-  //     'WHERE'  => [
-  //       $this->getTable() . '.id' => \App\Controllers\Toolbox::cleanInteger($ID)
-  //     ],
-  //     'LIMIT'  => 1
-  //   ]);
-
-  //   if (count($iterator) == 1) {
-  //     $this->fields = $iterator->next();
-  //     // $this->post_getFromDB();
-  //     return true;
-  //   } else if (count($iterator) > 1) {
-  //     Toolbox::logWarning(
-  //       sprintf(
-  //         'getFromDB expects to get one result, %1$s found!',
-  //         count($iterator)
-  //       )
-  //     );
-  //   }
-  //   return false;
-  // }
-
-  /**
-   * Retrieve all items from the database
-   *
-   * @param array        $condition condition used to search if needed (empty get all) (default '')
-   * @param array|string $order     order field if needed (default '')
-   * @param integer      $limit     limit retrieved data if needed (default '')
-   *
-   * @return array all retrieved data in a associative array by id
-   **/
-  // function find($condition = [], $order = [], $limit = 0, $start = 0, $fields = [], $leftjoin = [])
-  // {
-  //   global $DB;
-
-  //   $criteria = [
-  //     'FROM'   => $this->getTable()
-  //   ];
-
-  //   if (count($fields))
-  //   {
-  //     $criteria['SELECT'] = $fields;
-  //   }
-
-  //   if (count($condition))
-  //   {
-  //     $criteria['WHERE'] = $condition;
-  //   }
-
-  //   if (!is_array($order))
-  //   {
-  //     $order = [$order];
-  //   }
-  //   if (count($order)) {
-  //     $criteria['ORDERBY'] = $order;
-  //   }
-
-  //   if ((int)$start > 0)
-  //   {
-  //     $criteria['START'] = $start;
-  //   }
-
-  //   if ((int)$limit > 0)
-  //   {
-  //     $criteria['LIMIT'] = $limit;
-  //   }
-
-  //   if (count($leftjoin) > 0)
-  //   {
-  //     $criteria['LEFT JOIN'] = $leftjoin;
-  //   }
-
-  //   // $criteria['LEFT JOIN'] = [
-  //   //   'glpi_tickets_users' => [
-  //   //     'FKEY' => [
-  //   //       'glpi_tickets'       => 'id',
-  //   //       'glpi_tickets_users' => 'tickets_id',
-  //   //       ['and' => ['glpi_tickets_users.type' => '1']]
-  //   //     ],
-  //   //   ],
-  //   //   'glpi_users' => [
-  //   //     'FKEY' => [
-  //   //       'glpi_tickets_users' => 'users_id',
-  //   //       'glpi_users'         => 'id',
-  //   //     ],
-  //   //   ]
-  //   // ];
-
-  //   $data = [];
-  //   $iterator = $DB->request($criteria);
-  //   while ($line = $iterator->next())
-  //   {
-  //     $data[$line['id']] = $line;
-  //   }
-  //   return $data;
-  // }
-
-  // function count($condition = [])
-  // {
-  //   global $DB;
-
-  //   $criteria = [
-  //     'SELECT' => 'id',
-  //     'FROM'   => $this->getTable(),
-  //     'COUNT'  => 'cpt',
-  //   ];
-
-  //   if (count($condition))
-  //   {
-  //     $criteria['WHERE'] = $condition;
-  //   }
-
-  //   $iterator = $DB->request($criteria);
-  //   $line = $iterator->next();
-  //   return $line['cpt'];
-  // }
-
 
   function getNameFromID($id)
   {
@@ -221,13 +87,13 @@ class Common extends Model
     return call_user_func($this->definition . '::getDefinition');
   }
 
-  function getRelatedPages()
+  function getRelatedPages($rootUrl)
   {
     if (is_null($this->definition) || !method_exists($this->definition, 'getRelatedPages'))
     {
       return [];
     }
-    return call_user_func($this->definition . '::getRelatedPages');
+    return call_user_func($this->definition . '::getRelatedPages', $rootUrl);
   }
 
   /**
@@ -237,24 +103,47 @@ class Common extends Model
    */
   function getFormData($myItem)
   {
+    $converter = new HtmlConverter();
+    $converter->getConfig()->setOption('strip_tags', true);
+
     $def = $this->getDefinitions();
     foreach ($def as &$field)
     {
       if ($field['type'] == 'dropdown_remote')
       {
-        if (is_null($myItem->{$field['name']}))
+        if (is_null($myItem->{$field['name']}) || $myItem->{$field['name']} == false)
         {
           $field['value'] = 0;
           $field['valuename'] = '';
         }
         else if (isset($field['multiple']))
         {
+          // if ($field['name'] == 'requester'){
+          // print_r($myItem->{$field['name']});
+          // }
           // TODO manage multiple select
-          $field['value'] = 0;
-          $field['valuename'] = '';
+          $values = [];
+          $valuenames = [];
+          foreach ($myItem->{$field['name']} as $val)
+          {
+            $values[] = $val->id;
+            $valuenames[] = $val->name;
+          }
+          $field['value'] = implode(',', $values);
+          $field['valuename'] = implode(',', $valuenames);
         } else {
           $field['value'] = $myItem->{$field['name']}->id;
           $field['valuename'] = $myItem->{$field['name']}->name;
+        }
+      }
+      else if ($field['type'] == 'textarea')
+      {
+        if (is_null($myItem->{$field['name']}))
+        {
+          $field['value'] = '';
+        } else {
+          // We convert html to markdown
+          $field['value'] = $converter->convert(html_entity_decode($myItem->{$field['name']}));
         }
       } else {
         $field['value'] = $myItem->{$field['name']};
@@ -283,6 +172,13 @@ class Common extends Model
         $newValue = (boolval($newValue) ? 'true' : 'false');
         $oldValue = (boolval($oldValue) ? 'true' : 'false');
       }
+
+      // TODO for textarea
+      if (count_chars($newValue) >= 255 || count_chars($oldValue) >= 255)
+      {
+        return;
+      }
+
       \App\Controllers\Log::addEntry(
         $model,
         '{username} changed ' . $key . ' to "{new_value}"',

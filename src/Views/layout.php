@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="/gsit/fomantic-ui/semantic.min.css">
-  <link rel="stylesheet" type="text/css" href="/gsit/assets/main.css">
-  <script type="text/javascript" src="/gsit/fomantic-ui/jquery-3.7.1.min.js"></script>
-  <script type="text/javascript" src="/gsit/fomantic-ui/semantic.min.js"></script>
-  <script type="text/javascript" src="/gsit/fomantic-ui/jquery.tablesort.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="<?=$rootpath?>/assets/fomantic-ui/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="<?=$rootpath?>/assets/main.css">
+  <link rel="stylesheet" href="<?=$rootpath?>/assets/toast-ui/toastui-editor.min.css" />  <script type="text/javascript" src="<?=$rootpath?>/assets/fomantic-ui/jquery-3.7.1.min.js"></script>
+  <script type="text/javascript" src="<?=$rootpath?>/assets/fomantic-ui/semantic.min.js"></script>
+  <script type="text/javascript" src="<?=$rootpath?>/assets/fomantic-ui/jquery.tablesort.min.js"></script>
+  <script src="<?=$rootpath?>/assets/toast-ui/toastui-editor-all.min.js"></script>
   <title><?=$title?></title>
 </head>
 <body>
@@ -53,6 +54,7 @@
       .dropdown({
         // minCharacters: 2,
         saveRemoteData: false,
+        // preserveHTML : false,
         apiSettings: {
           encodeParameters: false,
           cache: false,
@@ -116,7 +118,6 @@
       <?php endif ?>
 
   </script>
-
 </body>
 </html>
 

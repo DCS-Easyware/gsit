@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Routing\RouteContext;
+
 final class Toolbox
 {
 
@@ -14,8 +17,14 @@ final class Toolbox
    *
    * @return string  clean integer
    **/
-  static function cleanInteger($integer) {
+  static function cleanInteger($integer)
+  {
     return preg_replace("/[^0-9-]/", "", $integer);
   }
 
+  static function getRootPath(Request $request)
+  {
+    $routeContext = RouteContext::fromRequest($request);
+    return $routeContext->getBasePath();
+  }
 }

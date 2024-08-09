@@ -23,16 +23,40 @@ final class Route
     {
       $computers->map(['GET'], '', \App\Controllers\Computer::class . ':getAll');
       $computers->map(['POST'], '', \App\Controllers\Computer::class . ':postItem');
-      $computers->map(['GET'], '/{id:[0-9]+}', \App\Controllers\Computer::class . ':showItem');
-      $computers->map(['POST'], '/{id:[0-9]+}', \App\Controllers\Computer::class . ':updateItem');
+      $computers->group("/{id:[0-9]+}", function (RouteCollectorProxy $computerId)
+      {
+        $computerId->map(['GET'], '', \App\Controllers\Computer::class . ':showItem');
+        $computerId->map(['POST'], '', \App\Controllers\Computer::class . ':updateItem');
+        $computerId->map(['GET'], '/operatingsystem', \App\Controllers\Computer::class . ':showOperatingsystem');
+        $computerId->map(['GET'], '/softwares', \App\Controllers\Computer::class . ':showSoftwares');
+      });
     });
 
-    $app->group($prefix . '/tickets', function (RouteCollectorProxy $computers)
+    $app->group($prefix . '/softwares', function (RouteCollectorProxy $softwares)
     {
-      $computers->map(['GET'], '', \App\Controllers\Ticket::class . ':getAll');
-      $computers->map(['POST'], '', \App\Controllers\Ticket::class . ':postItem');
-      $computers->map(['GET'], '/{id:[0-9]+}', \App\Controllers\Ticket::class . ':showItem');
-      $computers->map(['POST'], '/{id:[0-9]+}', \App\Controllers\Ticket::class . ':updateItem');
+      $softwares->map(['GET'], '', \App\Controllers\Software::class . ':getAll');
+      $softwares->map(['POST'], '', \App\Controllers\Software::class . ':postItem');
+    });
+
+    $app->group($prefix . '/tickets', function (RouteCollectorProxy $tickets)
+    {
+      $tickets->map(['GET'], '', \App\Controllers\Ticket::class . ':getAll');
+      $tickets->map(['POST'], '', \App\Controllers\Ticket::class . ':postItem');
+
+      $tickets->group("/{id:[0-9]+}", function (RouteCollectorProxy $ticketId)
+      {
+        $ticketId->map(['GET'], '', \App\Controllers\Ticket::class . ':showItem');
+        $ticketId->map(['POST'], '', \App\Controllers\Ticket::class . ':updateItem');
+      });
+    });
+
+    $app->group($prefix . '/rules', function (RouteCollectorProxy $rules)
+    {
+      $rules->group("/tickets", function (RouteCollectorProxy $tickets)
+      {
+        $tickets->map(['GET'], '', \App\Controllers\Rules\Ticket::class . ':getAll');
+
+      });
     });
   }
 }

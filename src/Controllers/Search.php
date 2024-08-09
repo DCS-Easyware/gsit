@@ -72,12 +72,24 @@ final class Search extends Common
       {
         if ($field['type'] == 'dropdown_remote')
         {
-          if (is_null($item->{$field['name']})) {
+          if (is_null($item->{$field['name']}))
+          {
             $myData[$field['name']] = [
               'value' => '',
             ];
           } else {
-            if (isset($field['multiple']))
+            if (isset($field['count']))
+            {
+              $elements = [];
+              foreach ($item->{$field['name']} as $t)
+              {
+                $elements[] = $t->{$field['count']};
+              }
+              $myData[$field['name']] = [
+                'value' => array_sum($elements),
+              ];
+            }
+            else if (isset($field['multiple']))
             {
               $elements = [];
               foreach ($item->{$field['name']} as $t)
