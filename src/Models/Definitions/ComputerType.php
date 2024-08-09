@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class ComputerType
 {
   public static function getDefinition()

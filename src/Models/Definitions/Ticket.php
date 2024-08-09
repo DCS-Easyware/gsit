@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class Ticket
 {
   public static function getDefinition()

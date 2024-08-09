@@ -116,7 +116,7 @@ class Common extends Model
           $field['value'] = 0;
           $field['valuename'] = '';
         }
-        else if (isset($field['multiple']))
+        elseif (isset($field['multiple']))
         {
           // if ($field['name'] == 'requester'){
           // print_r($myItem->{$field['name']});
@@ -136,7 +136,7 @@ class Common extends Model
           $field['valuename'] = $myItem->{$field['name']}->name;
         }
       }
-      else if ($field['type'] == 'textarea')
+      elseif ($field['type'] == 'textarea')
       {
         if (is_null($myItem->{$field['name']}))
         {

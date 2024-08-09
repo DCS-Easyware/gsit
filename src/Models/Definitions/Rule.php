@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class Rule
 {
   public static function getDefinition()

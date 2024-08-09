@@ -35,7 +35,7 @@ final class Ticket extends Common
     *
     * @return integer from 1 to 5 (priority)
    **/
-  static function computePriority($urgency, $impact)
+  public static function computePriority($urgency, $impact)
   {
     $priority_matrix = \App\Models\Config::where('context', 'core')->where('name', 'priority_matrix')->first();
     if (!is_null($priority_matrix))
@@ -47,7 +47,6 @@ final class Ticket extends Common
       }
     }
     // Failback to trivial
-    return round(($urgency+$impact)/2);
- }
-
+    return round(($urgency + $impact) / 2);
+  }
 }

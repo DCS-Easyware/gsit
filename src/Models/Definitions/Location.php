@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class Location
 {
   public static function getDefinition()

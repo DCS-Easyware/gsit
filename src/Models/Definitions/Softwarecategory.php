@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class Softwarecategory
 {
   public static function getDefinition()

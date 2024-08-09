@@ -7,7 +7,6 @@ use Slim\Routing\RouteContext;
 
 final class Toolbox
 {
-
   /**
    * Clean integer string value (strip all chars not - and spaces )
    *
@@ -17,14 +16,30 @@ final class Toolbox
    *
    * @return string  clean integer
    **/
-  static function cleanInteger($integer)
+  public static function cleanInteger($integer)
   {
     return preg_replace("/[^0-9-]/", "", $integer);
   }
 
-  static function getRootPath(Request $request)
+  public static function getRootPath(Request $request)
   {
     $routeContext = RouteContext::fromRequest($request);
     return $routeContext->getBasePath();
+  }
+
+  /**
+   * strtolower function for utf8 string
+   *
+   * @param string $str
+   *
+   * @return string  lower case string
+  **/
+  public static function strtolower($str)
+  {
+    if (is_null($str))
+    {
+      return null;
+    }
+    return mb_strtolower($str, "UTF-8");
   }
 }

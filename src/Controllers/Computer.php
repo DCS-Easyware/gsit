@@ -58,6 +58,5 @@ final class Computer extends Common
       'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
     ];
     return $renderer->render($response, 'genericForm.php', $viewData);
-
   }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class Manufacturer
 {
   public static function getDefinition()

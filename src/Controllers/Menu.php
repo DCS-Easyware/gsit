@@ -7,8 +7,7 @@ use Slim\Routing\RouteContext;
 
 final class Menu
 {
-
-  static public function getMenu(Request $request)
+  public static function getMenu(Request $request)
   {
     global $translator;
 
@@ -212,5 +211,3 @@ final class Menu
 //      Notifications generation
 //      Tasks Workflows
 //      Applications Oauth IMAP
-
- 

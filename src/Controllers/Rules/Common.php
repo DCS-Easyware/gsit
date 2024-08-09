@@ -10,7 +10,7 @@ use Slim\Routing\RouteContext;
 class Common extends \App\Controllers\Common
 {
   protected $stop_on_first_match = false;
-  
+
   ///Actions affected to this rule
   public $actionsDefinition     = [];
   ///Criterias affected to this rule
@@ -19,26 +19,26 @@ class Common extends \App\Controllers\Common
   protected $criteriaDefinitionModel = null;
   protected $actionsDefinitionModel = null;
 
-  const RULE_WILDCARD           = '*';
+  public const RULE_WILDCARD           = '*';
 
   //Generic rules engine
-  const PATTERN_IS              = 0;
-  const PATTERN_IS_NOT          = 1;
-  const PATTERN_CONTAIN         = 2;
-  const PATTERN_NOT_CONTAIN     = 3;
-  const PATTERN_BEGIN           = 4;
-  const PATTERN_END             = 5;
-  const REGEX_MATCH             = 6;
-  const REGEX_NOT_MATCH         = 7;
-  const PATTERN_EXISTS          = 8;
-  const PATTERN_DOES_NOT_EXISTS = 9;
-  const PATTERN_FIND            = 10; // Global criteria
-  const PATTERN_UNDER           = 11;
-  const PATTERN_NOT_UNDER       = 12;
-  const PATTERN_IS_EMPTY        = 30; // Global criteria
+  public const PATTERN_IS              = 0;
+  public const PATTERN_IS_NOT          = 1;
+  public const PATTERN_CONTAIN         = 2;
+  public const PATTERN_NOT_CONTAIN     = 3;
+  public const PATTERN_BEGIN           = 4;
+  public const PATTERN_END             = 5;
+  public const REGEX_MATCH             = 6;
+  public const REGEX_NOT_MATCH         = 7;
+  public const PATTERN_EXISTS          = 8;
+  public const PATTERN_DOES_NOT_EXISTS = 9;
+  public const PATTERN_FIND            = 10; // Global criteria
+  public const PATTERN_UNDER           = 11;
+  public const PATTERN_NOT_UNDER       = 12;
+  public const PATTERN_IS_EMPTY        = 30; // Global criteria
 
-  const AND_MATCHING            = 'AND';
-  const OR_MATCHING             = 'OR';
+  public const AND_MATCHING            = 'AND';
+  public const OR_MATCHING             = 'OR';
 
 
   // Processing several rules : use result of the previous one to the current one
@@ -98,7 +98,7 @@ class Common extends \App\Controllers\Common
     }
     // return Toolbox::addslashes_deep($output);
     return $output;
- }
+  }
 
   function process($rule, &$input, &$output, &$params, &$options = [])
   {
@@ -362,7 +362,7 @@ class Common extends \App\Controllers\Common
       {
         switch ($crit['type'])
         {
-          case "dropdown" :
+          case "dropdown":
             $tmp = Dropdown::getDropdownName($crit["table"], $value, false, false);
             //$tmp = Dropdown::getDropdownName($crit["table"], $value);
             // return empty string to be able to check if set
@@ -370,25 +370,24 @@ class Common extends \App\Controllers\Common
             {
                 return '';
             }
-            return $tmp;
+              return $tmp;
 
-          case "dropdown_assign" :
-          case "dropdown_users" :
-            return getUserName($value);
+          case "dropdown_assign":
+          case "dropdown_users":
+              return getUserName($value);
 
-          case "yesonly" :
-          case "yesno"  :
-            return Dropdown::getYesNo($value);
+          case "yesonly":
+          case "yesno":
+              return Dropdown::getYesNo($value);
 
-          case "dropdown_impact" :
-            return Ticket::getImpactName($value);
+          case "dropdown_impact":
+              return Ticket::getImpactName($value);
 
-          case "dropdown_urgency" :
-            return Ticket::getUrgencyName($value);
+          case "dropdown_urgency":
+              return Ticket::getUrgencyName($value);
 
-          case "dropdown_priority" :
-            return Ticket::getPriorityName($value);
-
+          case "dropdown_priority":
+              return Ticket::getPriorityName($value);
         }
       }
     }

@@ -52,6 +52,4 @@ final class Log extends Common
 
     $log->save();
   }
-
-
 }

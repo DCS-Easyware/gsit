@@ -9,5 +9,4 @@ use Slim\Routing\RouteContext;
 
 final class ComputerType extends Common
 {
-
 }

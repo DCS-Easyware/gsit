@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class AutoUpdateSystem
 {
   public static function getDefinition()

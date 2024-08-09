@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class User
 {
   public static function getDefinition()

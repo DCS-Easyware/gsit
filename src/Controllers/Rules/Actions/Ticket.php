@@ -193,6 +193,6 @@ class Ticket
         'type'          => 'dropdown',
         'force_actions' => ['assign'],
       ],
-   ];
+    ];
   }
 }

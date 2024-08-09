@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class State
 {
   public static function getDefinition()

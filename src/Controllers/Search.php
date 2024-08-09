@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 final class Search extends Common
 {
-
   public function getData($item, $uri, $page = 1, $filters = [])
   {
     $itemtype = get_class($item);
@@ -28,7 +27,7 @@ final class Search extends Common
     $start = ($page - 1) * $limit;
 
     // Apply filters
-    foreach ($where as $key=>$value)
+    foreach ($where as $key => $value)
     {
       if (is_array($value))
       {
@@ -51,7 +50,7 @@ final class Search extends Common
     return $itemDbData;
   }
 
-  function prepareValues($itemDef, $data, $uri)
+  private function prepareValues($itemDef, $data, $uri)
   {
     $header = ['id'];
     foreach ($itemDef as $field)
@@ -72,7 +71,7 @@ final class Search extends Common
       {
         if ($field['type'] == 'dropdown_remote')
         {
-          if (is_null($item->{$field['name']}))
+          if (is_null($item->{$field['name']}) || empty($item->{$field['name']}))
           {
             $myData[$field['name']] = [
               'value' => '',
@@ -89,7 +88,7 @@ final class Search extends Common
                 'value' => array_sum($elements),
               ];
             }
-            else if (isset($field['multiple']))
+            elseif (isset($field['multiple']))
             {
               $elements = [];
               foreach ($item->{$field['name']} as $t)
@@ -105,7 +104,7 @@ final class Search extends Common
               ];
             }
           }
-        } else if ($field['type'] == 'dropdown')
+        } elseif ($field['type'] == 'dropdown')
         {
           $myData[$field['name']] = [
             'value' => $field['values'][$item->{$field['name']}],
@@ -126,17 +125,7 @@ final class Search extends Common
     ];
   }
 
-  function getItemdata($className, $ids)
-  {
-    if (count($ids) == 0)
-    {
-      return [];
-    }
-    $item = new $className();
-    return $item->find(['id' => $ids]);
-  }
-
-  function manageFilters($itemDef, $params)
+  private function manageFilters($itemDef, $params)
   {
     if (isset($params['field']) && is_numeric($params['field']))
     {

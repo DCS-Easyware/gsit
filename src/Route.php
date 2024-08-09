@@ -55,7 +55,6 @@ final class Route
       $rules->group("/tickets", function (RouteCollectorProxy $tickets)
       {
         $tickets->map(['GET'], '', \App\Controllers\Rules\Ticket::class . ':getAll');
-
       });
     });
   }

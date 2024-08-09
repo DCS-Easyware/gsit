@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class ComputerModel
 {
   public static function getDefinition()

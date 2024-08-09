@@ -33,13 +33,13 @@ final class Criteria
 
     switch ($condition)
     {
-      case \App\Controllers\Rules\Common::PATTERN_EXISTS :
-        return (!empty($field));
+      case \App\Controllers\Rules\Common::PATTERN_EXISTS:
+          return (!empty($field));
 
-      case \App\Controllers\Rules\Common::PATTERN_DOES_NOT_EXISTS :
-        return (empty($field));
+      case \App\Controllers\Rules\Common::PATTERN_DOES_NOT_EXISTS:
+          return (empty($field));
 
-      case \App\Controllers\Rules\Common::PATTERN_IS :
+      case \App\Controllers\Rules\Common::PATTERN_IS:
         if (is_array($field))
         {
           // Special case (used only by UNIQUE_PROFILE, for now)
@@ -51,55 +51,55 @@ final class Criteria
           }
         } else {
           //Perform comparison with fields in lower case
-          $field                        = Toolbox::strtolower($field);
-          $pattern                      = Toolbox::strtolower($pattern);
+          $field                        = \App\Controllers\Toolbox::strtolower($field);
+          $pattern                      = \App\Controllers\Toolbox::strtolower($pattern);
           if ($field == $pattern)
           {
             $criterias_results[$criteria] = $pattern;
             return true;
           }
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::PATTERN_IS_NOT :
+      case \App\Controllers\Rules\Common::PATTERN_IS_NOT:
         //Perform comparison with fields in lower case
-        $field   = Toolbox::strtolower($field);
-        $pattern = Toolbox::strtolower($pattern);
+        $field   = \App\Controllers\Toolbox::strtolower($field);
+        $pattern = \App\Controllers\Toolbox::strtolower($pattern);
         if ($field != $pattern)
         {
           $criterias_results[$criteria] = $pattern;
           return true;
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::PATTERN_UNDER :
+      case \App\Controllers\Rules\Common::PATTERN_UNDER:
         $table  = getTableNameForForeignKeyField($criteria);
         $values = getSonsOf($table, $pattern);
         if (isset($values[$field]))
         {
           return true;
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::PATTERN_NOT_UNDER :
+      case \App\Controllers\Rules\Common::PATTERN_NOT_UNDER:
         $table  = getTableNameForForeignKeyField($criteria);
         $values = getSonsOf($table, $pattern);
         if (isset($values[$field]))
         {
           return false;
         }
-        return true;
+          return true;
 
-      case \App\Controllers\Rules\Common::PATTERN_END :
+      case \App\Controllers\Rules\Common::PATTERN_END:
         $value = "/".$pattern."$/i";
         if (preg_match($value, $field) > 0)
         {
           $criterias_results[$criteria] = $pattern;
           return true;
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::PATTERN_BEGIN :
+      case \App\Controllers\Rules\Common::PATTERN_BEGIN:
         if (empty($pattern))
         {
           return false;
@@ -114,9 +114,9 @@ final class Criteria
           $criterias_results[$criteria] = $pattern;
           return true;
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::PATTERN_CONTAIN :
+      case \App\Controllers\Rules\Common::PATTERN_CONTAIN:
         if (empty($pattern))
         {
           return false;
@@ -131,9 +131,9 @@ final class Criteria
           $criterias_results[$criteria] = $pattern;
           return true;
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::PATTERN_NOT_CONTAIN :
+      case \App\Controllers\Rules\Common::PATTERN_NOT_CONTAIN:
         if (empty($pattern))
         {
           return false;
@@ -144,9 +144,9 @@ final class Criteria
           $criterias_results[$criteria] = $pattern;
           return true;
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::REGEX_MATCH :
+      case \App\Controllers\Rules\Common::REGEX_MATCH:
         $results = [];
         // Permit use < and >
         $pattern = Toolbox::unclean_cross_side_scripting_deep($pattern);
@@ -167,9 +167,9 @@ final class Criteria
           $criterias_results[$criteria] = $pattern;
           return true;
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::REGEX_NOT_MATCH :
+      case \App\Controllers\Rules\Common::REGEX_NOT_MATCH:
         // Permit use < and >
         $pattern = Toolbox::unclean_cross_side_scripting_deep($pattern);
         if (preg_match($pattern."i", $field) == 0)
@@ -177,14 +177,13 @@ final class Criteria
           $criterias_results[$criteria] = $pattern;
           return true;
         }
-        return false;
+          return false;
 
-      case \App\Controllers\Rules\Common::PATTERN_FIND :
-      case \App\Controllers\Rules\Common::PATTERN_IS_EMPTY :
+      case \App\Controllers\Rules\Common::PATTERN_FIND:
+      case \App\Controllers\Rules\Common::PATTERN_IS_EMPTY:
         // Global criteria will be evaluated later
-        return true;
+          return true;
     }
     return false;
   }
-
 }

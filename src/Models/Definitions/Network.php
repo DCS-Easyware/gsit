@@ -2,7 +2,6 @@
 
 namespace App\Models\Definitions;
 
-
 class Network
 {
   public static function getDefinition()

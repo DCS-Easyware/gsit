@@ -8,7 +8,6 @@ use Slim\Views\PhpRenderer;
 
 class Common
 {
-
   protected function getUrlWithoutQuery(Request $request)
   {
     $uri = $request->getUri();
@@ -16,7 +15,7 @@ class Common
     $url = (string) $uri;
     if (!empty($query))
     {
-      $url = str_replace('?'.$query, '', $url);
+      $url = str_replace('?' . $query, '', $url);
     }
     return $url;
   }
@@ -34,7 +33,7 @@ class Common
 
     $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
     $renderer->setLayout('layout.php');
-    
+
     $search = new \App\Controllers\Search();
     $url = $this->getUrlWithoutQuery($request);
     if (isset($params['page']) && is_numeric($params['page']))
@@ -110,7 +109,7 @@ class Common
             $myItem->{$def['name']} = $data->{$def['name']};
           }
         }
-        else  if ($def['type'] == 'dropdown_remote')
+        elseif ($def['type'] == 'dropdown_remote')
         {
           if (isset($def['multiple']))
           {
@@ -127,7 +126,7 @@ class Common
             // save
             $myItem->{$def['name']}()->syncWithPivotValues($values, $def['pivot']);
           }
-          else if ($myItem->{$def['dbname']} != $data->{$def['name']})
+          elseif ($myItem->{$def['dbname']} != $data->{$def['name']})
           {
             $myItem->{$def['dbname']} = $data->{$def['name']};
           }
