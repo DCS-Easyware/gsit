@@ -125,7 +125,7 @@ class Common
               }
             }
             // save
-            $myItem->{$def['name']}()->sync($values, $def['pivot']);
+            $myItem->{$def['name']}()->syncWithPivotValues($values, $def['pivot']);
           }
           else if ($myItem->{$def['dbname']} != $data->{$def['name']})
           {

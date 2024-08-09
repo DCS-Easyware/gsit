@@ -103,7 +103,7 @@ class Common extends \App\Controllers\Common
   function process($rule, &$input, &$output, &$params, &$options = [])
   {
     // if ($this->validateCriterias($options))
-    {
+    // {
       $this->regex_results     = [];
       $this->criterias_results = [];
       // $input = $this->prepareInputDataForProcess($input, $params);
