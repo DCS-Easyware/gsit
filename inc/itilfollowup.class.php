@@ -414,6 +414,24 @@ class ITILFollowup  extends CommonDBChild {
       if (!isset($input['date'])) {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
+
+      $entid = 0;
+      if (isset($input['entities_id'])) {
+         $entid = $input['entities_id'];
+      } else {
+         if (isset($this->fields['entities_id'])) {
+            $entid = $this->fields['entities_id'];
+         }
+      }
+      $rules               = new RuleItilFollowupCollection($entid);
+
+      $input = $rules->processAllRules($input,
+                                       $input,
+                                       ['recursive' => true],
+                                       ['condition' => RuleTicket::ONADD]);
+
+      $input = Toolbox::stripslashes_deep($input);
+
       return $input;
    }
 
