@@ -11,7 +11,7 @@ Mandatory fields:
 
 * id: integer | the id used in displaypreferences (got from old version of GSIT / GLPI)
 * title: string | the title of the field, with translation
-* type: string | values are: 
+* type: string | values are:
   * input
   * datetime
   * dropdown
@@ -25,17 +25,18 @@ Optional fields:
 * multiple: boolean | if true, set it, if false, remove the field. This is required when can have multiple values
 * pivot" array | the field and value of a pivot table if required for dropdown_remote
 * values: array | only for type 'dropdown', can define the values (see next chapter)
+* readonly: readonly | field in readonly mode
 
 
 
 
 ## Case of values of a static list (dropdown)
 
-In the case you use a static list, like tickets status, this is the specifications of the values, the key of array is the key that will be stored in database. 
+In the case you use a static list, like tickets status, this is the specifications of the values, the key of array is the key that will be stored in database.
 
 Mandatory:
 
-* title: string | the title name 
+* title: string | the title name
 
 Optional:
 
@@ -58,7 +59,7 @@ Optional:
 * icon: string | the icon of the value, choose [here](https://fomantic-ui.com/elements/icon.html)
 * displaystyle: string | when you have color, you can set marked, else it's plain color in search cell and no need this field
 
-Example: 
+Example:
 
 ```php
 $data = [

@@ -1,5 +1,5 @@
 <div class="ui blue dividing header">
-  <i class="big laptop icon"></i>
+  <i class="big <?php echo $icon; ?> icon"></i>
   <div class="content">
     <?=$name?>
     <div class="sub header">
@@ -28,12 +28,12 @@
     <div class="field">
       <label><?=$item['title']?></label>
       <?php if ($item['type'] == 'input'): ?>
-        <input type="text" name="<?=$item['name']?>" value="<?=$item['value']?>">
+        <input type="text" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?> value="<?=$item['value']?>">
       <?php endif ?>
 
       <?php if ($item['type'] == 'dropdown'): ?>
         <div class="ui selection dropdown">
-          <input type="hidden" name="<?=$item['name']?>" value="<?=$item['value']?>">
+          <input type="hidden" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?>  value="<?=$item['value']?>">
           <i class="dropdown icon"></i>
           <div class="default text">Select value...</div>
           <div class="menu">
@@ -50,12 +50,19 @@
       <?php endif ?>
 
       <?php if ($item['type'] == 'dropdown_remote'): ?>
+        <?php if (isset($item['readonly'])){ ?>
+          <?php if ($item['value'] > 0): ?>
+            <div class="text"><?=$item['valuename']?></div>
+          <?php endif ?>
+        <?php } ?>
+
+        <?php if (!isset($item['readonly'])){ ?>
         <div
           class="ui <?php if (isset($item['multiple'])) { echo 'multiple ';} ?>selection dropdown remotedropdown"
-          data-url="http://127.0.0.1/gsit/dropdown"
+          data-url="http://127.0.0.1/gsit96/gsit/dropdown"
           data-itemtype="<?=$item['itemtype']?>"
         >
-          <input type="hidden" name="<?=$item['name']?>" value="<?=$item['value']?>">
+          <input type="hidden" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?>  value="<?=$item['value']?>">
           <i class="dropdown icon"></i>
           <?php if ($item['value'] == 0): ?>
             <div class="default text">Select value...</div>
@@ -71,26 +78,64 @@
             <?php endif ?>
           </div>
         </div>
+        <?php } ?>
       <?php endif ?>
 
       <?php if ($item['type'] == 'textarea'): ?>
-        <div id="editor"><?=$item['value']?></div>
-        <textarea rows="3" name="<?=$item['name']?>" style="display: none"><?=$item['value']?></textarea>
+        <div id="editor<?php echo $item['name'] ?>"><?=$item['value']?></div>
+        <textarea rows="3" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?>  style="display: none"><?=$item['value']?></textarea>
 <script type="text/javascript">
-editor<?=$item['name']?> = new toastui.Editor({
-  el: document.querySelector('#editor'),
+editor<?php echo $item['name'] ?> = new toastui.Editor({
+  el: document.querySelector('#editor<?php echo $item['name'] ?>'),
   initialEditType: 'markdown',
   previewStyle: 'vertical',
   initialEditType: 'wysiwyg',
   events: {
     blur: () => {
-      document.querySelector(`textarea[name='<?=$item['name']?>']`).value = editor<?=$item['name']?>.getMarkdown();
+      document.querySelector(`textarea[name='<?=$item['name']?>']`).value = editor<?php echo $item['name'] ?>.getMarkdown();
     },
   },
 });
 </script>
+      <?php endif ?>
 
+      <?php if ($item['type'] == 'boolean'): ?>
+        <?php if (isset($item['readonly'])){ ?>
+          <?php if ($item['value'] == 1) { ?>Oui<?php } ?>
+          <?php if ($item['value'] == 0) { ?>Non<?php } ?>
+        <?php } ?>
 
+        <?php if (!isset($item['readonly'])){ ?>
+          <select name="<?=$item['name']?>">
+            <option <?php if ($item['value'] == 1) { ?>selected="selected"<?php } ?> value="1">Oui</option>
+            <option <?php if ($item['value'] == 0) { ?>selected="selected"<?php } ?> value="0">Non</option>
+          </select>
+        <?php } ?>
+
+      <?php endif ?>
+
+      <?php if ($item['type'] == 'date'): ?>
+        <?php if (isset($item['readonly'])){ ?>
+          <?php echo $item['value'] ?>
+        <?php } ?>
+
+        <?php if (!isset($item['readonly'])){ ?>
+          <input type="date" name="<?=$item['name']?>" value="<?=$item['value']?>">
+        <?php } ?>
+      <?php endif ?>
+
+      <?php if ($item['type'] == 'email'): ?>
+        <input type="email" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?> value="<?=$item['value']?>">
+      <?php endif ?>
+
+      <?php if ($item['type'] == 'datetime'): ?>
+        <?php if (isset($item['readonly'])){ ?>
+          <?php echo $item['value'] ?>
+        <?php } ?>
+
+        <?php if (!isset($item['readonly'])){ ?>
+          <input type="text" name="<?=$item['name']?>" value="<?=$item['value']?>">
+        <?php } ?>
       <?php endif ?>
     </div>
   <?php endforeach ?>

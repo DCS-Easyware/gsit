@@ -16,7 +16,7 @@ $translator = $lang->loadLanguage();
 $app = AppFactory::create();
 
 $app->addRoutingMiddleware();
-$app->setBasePath('/gsit');
+$app->setBasePath('/gsit96/gsit');
 
 $prefix = "";
 if (strstr($_SERVER['REQUEST_URI'], 'index.php'))

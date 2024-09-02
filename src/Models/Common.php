@@ -22,7 +22,7 @@ class Common extends Model
     static::updated(function ($model)
     {
       \App\Models\Common::changesOnUpdated($model, $model->original);
-    });    
+    });
   }
 
   function getTitle($nb = 1)
@@ -52,7 +52,7 @@ class Common extends Model
 
   // function getTable()
   // {
-  //   return $this->table;    
+  //   return $this->table;
   // }
 
   // function loadId($id)
@@ -132,6 +132,9 @@ class Common extends Model
           $field['value'] = implode(',', $values);
           $field['valuename'] = implode(',', $valuenames);
         } else {
+          // var_dump($field['name']);                   // #EB
+          // var_dump($myItem->{$field['name']}->id);    // #EB
+
           $field['value'] = $myItem->{$field['name']}->id;
           $field['valuename'] = $myItem->{$field['name']}->name;
         }
@@ -147,6 +150,9 @@ class Common extends Model
         }
       } else {
         $field['value'] = $myItem->{$field['name']};
+      }
+      if (isset($field['readonly'])) {
+        $field['readonly'] = 'readonly';
       }
     }
     return $def;

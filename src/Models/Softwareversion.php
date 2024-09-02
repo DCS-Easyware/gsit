@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Softwareversion extends Common
 {
   protected $table = 'glpi_softwareversions';
-  // protected $definition = '\App\Models\Definitions\Softwareversion';
+  protected $definition = '\App\Models\Definitions\Softwareversion';
 
   protected $appends = [
   ];

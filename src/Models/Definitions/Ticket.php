@@ -87,12 +87,13 @@ class Ticket
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
         'name'  => 'date_mod',
+        'readonly'  => 'readonly',
       ],
       [
         'id'    => 7,
         'title' => $translator->translate('Category'),
         'type'  => 'dropdown_remote',
-        'name'  => 'itilcategories_id',
+        'name'  => 'itilcategorie',
         'dbname' => 'itilcategories_id',
         'itemtype' => '\App\Models\ITILCategory',
       ],
@@ -180,6 +181,7 @@ class Ticket
         'multiple' => true,
         'pivot' => ['type' => 2],
       ],
+      /**/
     ];
 
     // TODO others like users
@@ -200,13 +202,13 @@ class Ticket
         'icon'  => 'book open',
       ],
       2 => [
-        'title' => $translator->translate('Processing (assigned)'),
+        'title' => $translator->translate('status'."\004".'Processing (assigned)'),
         'displaystyle' => 'marked',
         'color' => 'blue',
         'icon'  => 'book reader',
       ],
       3 => [
-        'title' => $translator->translate('Processing (planned)'),
+        'title' => $translator->translate('status'."\004".'Processing (planned)'),
         'displaystyle' => 'marked',
         'color' => 'blue',
         'icon'  => 'business time',
@@ -238,19 +240,19 @@ class Ticket
 
     return [
       5 => [
-        'title' => $translator->translate('Very high'),
+        'title' => $translator->translate('urgency'."\004". 'Very high'),
       ],
       4 => [
-        'title' => $translator->translate('High'),
+        'title' => $translator->translate('urgency'."\004". 'High'),
       ],
       3 => [
-        'title' => $translator->translate('Medium'),
+        'title' => $translator->translate('urgency'."\004". 'Medium'),
       ],
       2 => [
-        'title' => $translator->translate('Low'),
+        'title' => $translator->translate('urgency'."\004". 'Low'),
       ],
       1 => [
-        'title' => $translator->translate('Very low'),
+        'title' => $translator->translate('urgency'."\004". 'Very low'),
       ],
     ];
   }
@@ -261,19 +263,19 @@ class Ticket
 
     return [
       5 => [
-        'title' => $translator->translate('Very high'),
+        'title' => $translator->translate('impact'."\004". 'Very high'),
       ],
       4 => [
-        'title' => $translator->translate('High'),
+        'title' => $translator->translate('impact'."\004". 'High'),
       ],
       3 => [
-        'title' => $translator->translate('Medium'),
+        'title' => $translator->translate('impact'."\004". 'Medium'),
       ],
       2 => [
-        'title' => $translator->translate('Low'),
+        'title' => $translator->translate('impact'."\004". 'Low'),
       ],
       1 => [
-        'title' => $translator->translate('Very low'),
+        'title' => $translator->translate('impact'."\004". 'Very low'),
       ],
     ];
   }
@@ -284,32 +286,32 @@ class Ticket
 
     return [
       6 => [
-        'title' => $translator->translate('Major'),
+        'title' => $translator->translate('priority'."\004". 'Major'),
         'color' => 'gsitmajor',
         'icon'  => 'fire extinguisher',
       ],
       5 => [
-        'title' => $translator->translate('Very high'),
+        'title' => $translator->translate('priority'."\004". 'Very high'),
         'color' => 'gsitveryhigh',
         'icon'  => 'fire alternate',
       ],
       4 => [
-        'title' => $translator->translate('High'),
+        'title' => $translator->translate('priority'."\004". 'High'),
         'color' => 'gsithigh',
         'icon'  => 'fire',
       ],
       3 => [
-        'title' => $translator->translate('Medium'),
+        'title' => $translator->translate('priority'."\004". 'Medium'),
         'color' => 'gsitmedium',
         'icon'  => 'volume up',
       ],
       2 => [
-        'title' => $translator->translate('Low'),
+        'title' => $translator->translate('priority'."\004". 'Low'),
         'color' => 'gsitlow',
         'icon'  => 'volume down',
       ],
       1 => [
-        'title' => $translator->translate('Very low'),
+        'title' => $translator->translate('priority'."\004". 'Very low'),
         'color' => 'gsitverylow',
         'icon'  => 'volume off',
       ],
@@ -322,52 +324,52 @@ class Ticket
 
     return [
       [
-        'title' => 'Statisques',
+        'title' => $translator->translate('Statistics'),
         'icon' => 'chartline',
         'link' => '',
       ],
       [
-        'title' => 'Validations',
+        'title' => $translator->translatePlural('Approval', 'Approvals', 2),
         'icon' => 'thumbs up',
         'link' => '',
       ],
       [
-        'title' => 'Base de connaissances',
+        'title' => $translator->translate('Knowledge base'),
         'icon' => 'book',
         'link' => '',
       ],
       [
-        'title' => 'Elements',
+        'title' => $translator->translatePlural('Item', 'Items', 2),
         'icon' => 'desktop',
         'link' => '',
       ],
       [
-        'title' => 'Coûts',
+        'title' => $translator->translatePlural('Cost', 'Costs', 2),
         'icon' => 'money bill alternate',
         'link' => '',
       ],
       [
-        'title' => 'Projets',
+        'title' => $translator->translatePlural('Project', 'Projects', 2),
         'icon' => 'folder open',
         'link' => '',
       ],
       [
-        'title' => 'Tâches de projets',
+        'title' => $translator->translatePlural('Project task', 'Project tasks', 2),
         'icon' => 'tasks',
         'link' => '',
       ],
       [
-        'title' => 'Problèmes',
+        'title' => $translator->translatePlural('Problem', 'Problems', 2),
         'icon' => 'drafting compass',
         'link' => '',
       ],
       [
-        'title' => 'Changements',
+        'title' => $translator->translatePlural('Change', 'Changes', 2),
         'icon' => 'paint roller',
         'link' => '',
       ],
       [
-        'title' => 'Historique',
+        'title' => $translator->translate('Historical'),
         'icon' => 'history',
         'link' => '',
       ],

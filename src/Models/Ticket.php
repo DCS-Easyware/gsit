@@ -18,8 +18,9 @@ class Ticket extends Common
     'watchergroup',
     'technician',
     'techniciangroup',
-    'users_id_lastupdater',
+    'usersidlastupdater',
     'usersidrecipient',
+    'itilcategorie',
   ];
 
   protected $visible = [
@@ -31,6 +32,7 @@ class Ticket extends Common
     'techniciangroup',
     'usersidlastupdater',
     'usersidrecipient',
+    'itilcategorie',
   ];
 
   protected $with = [
@@ -42,8 +44,9 @@ class Ticket extends Common
     'techniciangroup:id,name',
     'usersidlastupdater:id,name',
     'usersidrecipient:id,name',
+    'itilcategorie:id,name',
   ];
-  
+
 
   public static function boot()
   {
@@ -134,11 +137,16 @@ class Ticket extends Common
 
   public function usersidlastupdater(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User', 'users_id_lastupdater');
   }
 
   public function usersidrecipient(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User', 'users_id_recipient');
+  }
+
+  public function itilcategorie(): BelongsTo
+  {
+    return $this->belongsTo('\App\Models\ITILCategory', 'itilcategories_id');
   }
 }

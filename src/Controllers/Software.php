@@ -18,4 +18,10 @@ final class Software extends Common
     $item = new \App\Models\Software();
     return $this->commonShowItem($request, $response, $args, $item);
   }
+
+  public function updateItem(Request $request, Response $response, $args): Response
+  {
+    $item = new \App\Models\Software();
+    return $this->commonUpdateItem($request, $response, $args, $item);
+  }
 }

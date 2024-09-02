@@ -86,6 +86,7 @@ class Common
       'name'         => $item->getTitle(1),
       'fields'       => $item->getFormData($myItem),
       'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
+      'icon'         => $item->getIcon(),
     ];
     return $renderer->render($response, 'genericForm.php', $viewData);
   }
