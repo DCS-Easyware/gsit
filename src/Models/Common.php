@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use League\HTMLToMarkdown\HtmlConverter;
 
 class Common extends Model
 {
@@ -103,9 +102,6 @@ class Common extends Model
    */
   function getFormData($myItem)
   {
-    $converter = new HtmlConverter();
-    $converter->getConfig()->setOption('strip_tags', true);
-
     $def = $this->getDefinitions();
     foreach ($def as &$field)
     {
@@ -143,7 +139,7 @@ class Common extends Model
           $field['value'] = '';
         } else {
           // We convert html to markdown
-          $field['value'] = $converter->convert(html_entity_decode($myItem->{$field['name']}));
+          $field['value'] = \App\Controllers\Toolbox::convertHtmlToMarkdown($myItem->{$field['name']});
         }
       } else {
         $field['value'] = $myItem->{$field['name']};

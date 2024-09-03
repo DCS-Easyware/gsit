@@ -18,7 +18,7 @@ final class Ticket extends Common
   public function showItem(Request $request, Response $response, $args): Response
   {
     $item = new \App\Models\Ticket();
-    return $this->commonShowItem($request, $response, $args, $item);
+    return $this->commonShowITILItem($request, $response, $args, $item);
   }
 
   public function updateItem(Request $request, Response $response, $args): Response

@@ -151,4 +151,39 @@ class Common
     $response = $response->withStatus(302);
     return $response->withHeader('Location', (string) $uri);
   }
+
+  protected function commonShowITILItem(Request $request, Response $response, $args, $item): Response
+  {
+
+    $globalViewData = [
+      'title'    => 'GSIT - ' . $item->getTitle(1),
+      'menu'     => \App\Controllers\Menu::getMenu($request),
+      'rootpath' => \App\Controllers\Toolbox::getRootPath($request),
+    ];
+    $session = new \SlimSession\Helper();
+
+    if ($session->exists('message'))
+    {
+      $globalViewData['message'] = $session->message;
+      $session->delete('message');
+    }
+
+    $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
+    $renderer->setLayout('layout.php');
+
+    // Load the item
+    // $item->loadId($args['id']);
+    $myItem = $item->find($args['id']);
+
+    // form data
+    $viewData = [
+      'name'         => $item->getTitle(1),
+      'fields'       => $item->getFormData($myItem),
+      'feeds'        => $item->getFeeds($args['id']), //[
+      'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
+      'icon'         => $item->getIcon(),
+      'color'        => $myItem->getColor(),
+    ];
+    return $renderer->render($response, 'ITILForm.php', $viewData);
+  }
 }

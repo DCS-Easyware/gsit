@@ -163,6 +163,7 @@ final class Route
       });
     });
 
+    $app->post('/itilfollowups', \App\Controllers\Itilfollowup::class . ':postItem');
 
     $app->group($prefix . '/tickets', function (RouteCollectorProxy $tickets)
     {

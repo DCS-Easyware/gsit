@@ -77,4 +77,37 @@ class User extends Common
     return $this->belongsTo('\App\Models\Group', 'groups_id');
   }
 
+  protected $appends = [
+    'completename',
+  ];
+
+  protected $visible = [
+    'completename',
+  ];
+
+  public function getCompletenameAttribute()
+  {
+    if ($this->id == 0)
+    {
+      return 'Nobody';
+    }
+
+    $name = '';
+    if (!is_null($this->realname) || !is_null($this->firstname))
+    {
+      $names = [];
+      if (!is_null($this->firstname))
+      {
+        $names[] = $this->firstname;
+      }
+      if (!is_null($this->realname))
+      {
+        $names[] = $this->realname;
+      }
+      $name = implode(' ', $names);
+    } else {
+      $name = $this->name;
+    }
+    return $name;
+  }
 }

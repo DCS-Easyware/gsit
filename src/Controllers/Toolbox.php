@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteContext;
+use League\HTMLToMarkdown\HtmlConverter;
 
 final class Toolbox
 {
@@ -41,5 +42,16 @@ final class Toolbox
       return null;
     }
     return mb_strtolower($str, "UTF-8");
+  }
+
+  /**
+   * Convert HTML text into markdown
+   */
+  public static function convertHtmlToMarkdown($text)
+  {
+    $converter = new HtmlConverter();
+    $converter->getConfig()->setOption('strip_tags', true);
+
+    return $converter->convert(html_entity_decode($text));
   }
 }

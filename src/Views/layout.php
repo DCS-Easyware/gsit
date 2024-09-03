@@ -107,6 +107,9 @@
         }
       });
 
+      $('.menu .item')
+        .tab();
+
       <?php if (isset($message)): ?>
       $.toast({
         title: 'LOOK',
