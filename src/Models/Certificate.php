@@ -52,7 +52,7 @@ class Certificate extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Certificatetype', 'certificatetypes_id');
+    return $this->belongsTo('\App\Models\CertificateType', 'certificatetypes_id');
   }
 
   public function state(): BelongsTo

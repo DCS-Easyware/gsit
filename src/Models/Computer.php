@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Computer extends Common
 {
@@ -56,12 +57,12 @@ class Computer extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Computertype', 'computertypes_id');
+    return $this->belongsTo('\App\Models\ComputerType', 'computertypes_id');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Computermodel', 'computermodels_id');
+    return $this->belongsTo('\App\Models\ComputerModel', 'computermodels_id');
   }
 
   public function state(): BelongsTo

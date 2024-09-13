@@ -34,7 +34,7 @@ class Budget extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Budgettype', 'budgettypes_id');
+    return $this->belongsTo('\App\Models\BudgetType', 'budgettypes_id');
   }
 
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PDU extends Common
 {
@@ -44,12 +45,12 @@ class PDU extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\PDUtype', 'pdutypes_id');
+    return $this->belongsTo('\App\Models\PDUType', 'pdutypes_id');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\PDUmodel', 'pdumodels_id');
+    return $this->belongsTo('\App\Models\PDUModel', 'pdumodels_id');
   }
 
   public function state(): BelongsTo

@@ -36,7 +36,7 @@ class Printer
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'printertypes_id',
-        'itemtype' => '\App\Models\Printertype',
+        'itemtype' => '\App\Models\PrinterType',
       ],
       [
         'id'    => 40,
@@ -44,7 +44,7 @@ class Printer
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'printermodels_id',
-        'itemtype' => '\App\Models\Printermodel',
+        'itemtype' => '\App\Models\PrinterModel',
       ],
       [
         'id'    => 5,
@@ -187,8 +187,6 @@ class Printer
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
       // ],
-
-
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
@@ -205,64 +203,59 @@ class Printer
       ],
 
       /*
-
       $tab[] = [
-         'id'                 => '9',
-         'table'              => $this->getTable(),
-         'field'              => '_virtual',
-         'linkfield'          => '_virtual',
-         'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
-         'datatype'           => 'specific',
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'nosort'             => true
+        'id'                 => '9',
+        'table'              => $this->getTable(),
+        'field'              => '_virtual',
+        'linkfield'          => '_virtual',
+        'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
+        'datatype'           => 'specific',
+        'massiveaction'      => false,
+        'nosearch'           => true,
+        'nosort'             => true
       ];
 
       $tab[] = [
-         'id'                 => '17',
-         'table'              => 'glpi_cartridges',
-         'field'              => 'id',
-         'name'               => __('Number of used cartridges'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => 'AND NEWTABLE.`date_use` IS NOT NULL
-                                     AND NEWTABLE.`date_out` IS NULL'
-         ]
+        'id'                 => '17',
+        'table'              => 'glpi_cartridges',
+        'field'              => 'id',
+        'name'               => __('Number of used cartridges'),
+        'datatype'           => 'count',
+        'forcegroupby'       => true,
+        'usehaving'          => true,
+        'massiveaction'      => false,
+        'joinparams'         => [
+        'jointype'           => 'child',
+        'condition'          => 'AND NEWTABLE.`date_use` IS NOT NULL
+          AND NEWTABLE.`date_out` IS NULL'
+        ]
       ];
 
       $tab[] = [
-         'id'                 => '18',
-         'table'              => 'glpi_cartridges',
-         'field'              => 'id',
-         'name'               => __('Number of worn cartridges'),
-         'datatype'           => 'count',
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child',
-            'condition'          => 'AND NEWTABLE.`date_out` IS NOT NULL'
-         ]
+        'id'                 => '18',
+        'table'              => 'glpi_cartridges',
+        'field'              => 'id',
+        'name'               => __('Number of worn cartridges'),
+        'datatype'           => 'count',
+        'forcegroupby'       => true,
+        'usehaving'          => true,
+        'massiveaction'      => false,
+        'joinparams'         => [
+        'jointype'           => 'child',
+        'condition'          => 'AND NEWTABLE.`date_out` IS NOT NULL'
+        ]
       ];
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
-
       */
-
     ];
   }
-
 
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translate('Analysis impact'),

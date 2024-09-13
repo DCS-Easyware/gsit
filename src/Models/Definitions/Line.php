@@ -15,10 +15,10 @@ class Line
         'name'  => 'name',
       ],
       [
-         'id'    => 86,
-         'title' => $translator->translate('Child entities'),
-         'type'  => 'boolean',
-         'name'  => 'is_recursive',
+        'id'    => 86,
+        'title' => $translator->translate('Child entities'),
+        'type'  => 'boolean',
+        'name'  => 'is_recursive',
       ],
       [
         'id'    => 3,
@@ -34,7 +34,7 @@ class Line
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'linetypes_id',
-        'itemtype' => '\App\Models\Linetype',
+        'itemtype' => '\App\Models\LineType',
       ],
       [
         'id'    => 184,
@@ -42,7 +42,7 @@ class Line
         'type'  => 'dropdown_remote',
         'name'  => 'operator',
         'dbname' => 'lineoperators_id',
-        'itemtype' => '\App\Models\Lineoperator',
+        'itemtype' => '\App\Models\LineOperator',
       ],
       [
         'id'    => 16,
@@ -93,27 +93,24 @@ class Line
         'dbname' => 'groups_id',
         'itemtype' => '\App\Models\Group',
       ],
-
-
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
         'name'  => 'date_mod',
         'readonly'  => 'readonly',
-     ],
-     [
+      ],
+      [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
         'name'  => 'date_creation',
         'readonly'  => 'readonly',
-     ],
-      /*
+      ],
 
+      /*
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
-
       */
     ];
   }
@@ -121,7 +118,6 @@ class Line
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Line', 'Lines', 1),

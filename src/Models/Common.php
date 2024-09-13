@@ -109,8 +109,7 @@ class Common extends Model
     $def = $this->getDefinitions();
     foreach ($def as &$field)
     {
-      if ($field['type'] == 'dropdown_remote')
-      {
+      if ($field['type'] == 'dropdown_remote') {
         if (is_null($myItem->{$field['name']}) || $myItem->{$field['name']} == false)
         {
           $field['value'] = 0;
@@ -138,9 +137,7 @@ class Common extends Model
           $field['value'] = $myItem->{$field['name']}->id;
           $field['valuename'] = $myItem->{$field['name']}->name;
         }
-      }
-      elseif ($field['type'] == 'textarea')
-      {
+      } elseif ($field['type'] == 'textarea') {
         if (is_null($myItem->{$field['name']}))
         {
           $field['value'] = '';

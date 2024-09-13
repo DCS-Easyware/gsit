@@ -9,4 +9,21 @@ use Slim\Routing\RouteContext;
 
 final class ComputerType extends Common
 {
+  public function getAll(Request $request, Response $response, $args): Response
+  {
+    $item = new \App\Models\ComputerType();
+    return $this->commonGetAll($request, $response, $args, $item);
+  }
+
+  public function showItem(Request $request, Response $response, $args): Response
+  {
+    $item = new \App\Models\ComputerType();
+    return $this->commonShowItem($request, $response, $args, $item);
+  }
+
+  public function updateItem(Request $request, Response $response, $args): Response
+  {
+    $item = new \App\Models\ComputerType();
+    return $this->commonUpdateItem($request, $response, $args, $item);
+  }
 }

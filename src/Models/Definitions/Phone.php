@@ -36,7 +36,7 @@ class Phone
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'phonetypes_id',
-        'itemtype' => '\App\Models\Phonetype',
+        'itemtype' => '\App\Models\PhoneType',
       ],
       [
         'id'    => 40,
@@ -44,7 +44,7 @@ class Phone
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'phonemodels_id',
-        'itemtype' => '\App\Models\Phonemodel',
+        'itemtype' => '\App\Models\PhoneModel',
       ],
       [
         'id'    => 5,
@@ -136,7 +136,7 @@ class Phone
         'type'  => 'dropdown_remote',
         'name'  => 'phonepowersupply',
         'dbname' => 'phonepowersupplies_id',
-        'itemtype' => '\App\Models\Phonepowersupply',
+        'itemtype' => '\App\Models\PhonePowerSupply',
       ],
       [
         'id'    => 43,
@@ -177,50 +177,45 @@ class Phone
         'name'  => 'date_creation',
         'readonly'  => 'readonly',
       ],
-      /*
 
+      /*
       $tab[] = [
-         'id'                 => '32',
-         'table'              => 'glpi_devicefirmwares',
-         'field'              => 'version',
-         'name'               => _n('Firmware', 'Firmware', 1),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'massiveaction'      => false,
-         'datatype'           => 'dropdown',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_items_devicefirmwares',
-               'joinparams'         => [
-                  'jointype'           => 'itemtype_item',
-                  'specific_itemtype'  => 'Phone'
-               ]
-            ]
-         ]
+        'id'                 => '32',
+        'table'              => 'glpi_devicefirmwares',
+        'field'              => 'version',
+        'name'               => _n('Firmware', 'Firmware', 1),
+        'forcegroupby'       => true,
+        'usehaving'          => true,
+        'massiveaction'      => false,
+        'datatype'           => 'dropdown',
+        'joinparams'         => [
+        'beforejoin'         => [
+        'table'              => 'glpi_items_devicefirmwares',
+        'joinparams'         => [
+        'jointype'           => 'itemtype_item',
+        'specific_itemtype'  => 'Phone'
+        ]
+        ]
+        ]
       ];
 
-
       $tab[] = [
-         'id'                 => '82',
-         'table'              => $this->getTable(),
-         'field'              => 'is_global',
-         'name'               => __('Global management'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+        'id'                 => '82',
+        'table'              => $this->getTable(),
+        'field'              => 'is_global',
+        'name'               => __('Global management'),
+        'datatype'           => 'bool',
+        'massiveaction'      => false
       ];
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
-
       */
-
     ];
   }
-
 
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translate('Analysis impact'),

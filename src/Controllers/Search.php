@@ -104,12 +104,21 @@ final class Search extends Common
               ];
             }
           }
-        } elseif ($field['type'] == 'dropdown')
+        }
+        elseif ($field['type'] == 'dropdown')
         {
           $myData[$field['name']] = [
             'value' => $field['values'][$item->{$field['name']}],
           ];
-        } else {
+        }
+        elseif ($field['type'] == 'description')
+        {
+          $myData[$field['name']] = [
+            'value' => $field['values'][$item->{$field['name']}],
+          ];
+        }
+        else
+        {
           $myData[$field['name']] = [
             'value' => $item->{$field['name']},
           ];

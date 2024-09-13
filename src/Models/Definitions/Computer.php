@@ -36,7 +36,7 @@ class Computer
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'computertypes_id',
-        'itemtype' => '\App\Models\Computertype',
+        'itemtype' => '\App\Models\ComputerType',
       ],
       [
         'id'    => 24,
@@ -68,7 +68,7 @@ class Computer
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'computermodels_id',
-        'itemtype' => '\App\Models\Computermodel',
+        'itemtype' => '\App\Models\ComputerModel',
       ],
       [
         'id'    => 8,
@@ -158,7 +158,6 @@ class Computer
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Operating system', 'Operating systems', 1),

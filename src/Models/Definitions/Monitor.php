@@ -36,7 +36,7 @@ class Monitor
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'monitortypes_id',
-        'itemtype' => '\App\Models\Monitortype',
+        'itemtype' => '\App\Models\MonitorType',
       ],
       [
         'id'    => 40,
@@ -44,7 +44,7 @@ class Monitor
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'monitormodels_id',
-        'itemtype' => '\App\Models\Monitormodel',
+        'itemtype' => '\App\Models\MonitorModel',
       ],
       [
         'id'    => 40,
@@ -203,15 +203,12 @@ class Monitor
         'name'  => 'date_creation',
         'readonly'  => 'readonly',
       ],
-
     ];
   }
-
 
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translate('Analysis impact'),

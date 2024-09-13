@@ -70,8 +70,6 @@ class News
         'type'  => 'boolean',
         'name'  => 'is_active',
       ],
-
-
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
@@ -80,11 +78,11 @@ class News
         'readonly'  => 'readonly',
       ],
       [
-         'id'    => 121,
-         'title' => $translator->translate('Creation date'),
-         'type'  => 'datetime',
-         'name'  => 'date_creation',
-         'readonly'  => 'readonly',
+        'id'    => 121,
+        'title' => $translator->translate('Creation date'),
+        'type'  => 'datetime',
+        'name'  => 'date_creation',
+        'readonly'  => 'readonly',
       ],
       // [
       //   'id'    => 4,
@@ -95,19 +93,16 @@ class News
       // ],
 
       /*
-
       $tab[] = [
-         'id'               => 6,
-         'table'            => PluginNewsAlert_Target::getTable(),
-         'field'            => 'items_id',
-         'name'             => PluginNewsAlert_Target::getTypename(),
-         'datatype'         => 'specific',
-         'forcegroupby'     => true,
-         'joinparams'       => ['jointype' => 'child'],
-         'additionalfields' => ['itemtype'],
+        'id'               => 6,
+        'table'            => PluginNewsAlert_Target::getTable(),
+        'field'            => 'items_id',
+        'name'             => PluginNewsAlert_Target::getTypename(),
+        'datatype'         => 'specific',
+        'forcegroupby'     => true,
+        'joinparams'       => ['jointype' => 'child'],
+        'additionalfields' => ['itemtype'],
       ];
-
-
       */
     ];
   }
@@ -115,7 +110,6 @@ class News
   public static function getTypeArray()
   {
     global $translator;
-
     return [
       1 => [
         'title' => $translator->translate('news'."\004".'General'),
@@ -132,11 +126,9 @@ class News
     ];
   }
 
-
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Alert', 'Alerts', 2),

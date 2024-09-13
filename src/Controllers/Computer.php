@@ -27,7 +27,7 @@ final class Computer extends Common
     return $this->commonUpdateItem($request, $response, $args, $item);
   }
 
-  public function showOperatingsystem(Request $request, Response $response, $args): Response
+  public function showOperatingSystem(Request $request, Response $response, $args): Response
   {
     $item = new \App\Models\Computer();
 

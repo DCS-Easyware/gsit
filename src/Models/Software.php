@@ -50,7 +50,7 @@ class Software extends Common
 
   public function category(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Softwarecategory', 'softwarecategories_id');
+    return $this->belongsTo('\App\Models\SoftwareCategory', 'softwarecategories_id');
   }
 
   public function manufacturer(): BelongsTo
@@ -60,12 +60,12 @@ class Software extends Common
 
   // public function nbinstallation(): HasMany
   // {
-  //   return $this->hasMany('\App\Models\Softwareversion', 'softwares_id')->withCount('devices');
+  //   return $this->hasMany('\App\Models\SoftwareVersion', 'softwares_id')->withCount('devices');
   // }
 
   public function versions(): HasMany
   {
-    return $this->hasMany('\App\Models\Softwareversion', 'softwares_id');
+    return $this->hasMany('\App\Models\SoftwareVersion', 'softwares_id');
   }
 
   public function groupstech(): BelongsTo

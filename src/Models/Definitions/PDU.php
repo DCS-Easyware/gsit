@@ -36,7 +36,7 @@ class PDU
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'pdutypes_id',
-        'itemtype' => '\App\Models\PDUtype',
+        'itemtype' => '\App\Models\PDUType',
       ],
       [
         'id'    => 40,
@@ -44,7 +44,7 @@ class PDU
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'pdumodels_id',
-        'itemtype' => '\App\Models\PDUmodel',
+        'itemtype' => '\App\Models\PDUModel',
       ],
       [
         'id'    => 5,
@@ -111,20 +111,16 @@ class PDU
         'name'  => 'date_creation',
         'readonly'  => 'readonly',
       ],
+
       /*
-
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
-
       */
-
     ];
   }
-
 
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translate('Analysis impact'),

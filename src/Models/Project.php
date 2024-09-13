@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Common
 {
@@ -35,12 +36,12 @@ class Project extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Projecttype', 'projecttypes_id');
+    return $this->belongsTo('\App\Models\ProjectType', 'projecttypes_id');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Projectstate', 'projectstates_id');
+    return $this->belongsTo('\App\Models\ProjectState', 'projectstates_id');
   }
 
   public function user(): BelongsTo

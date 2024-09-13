@@ -34,7 +34,7 @@ class Software
         'type'  => 'dropdown_remote',
         'name'  => 'category',
         'dbname' => 'softwarecategories_id',
-        'itemtype' => '\App\Models\Softwarecategory',
+        'itemtype' => '\App\Models\SoftwareCategory',
       ],
       [
         'id'    => 23,
@@ -296,7 +296,7 @@ class Software
       //   'title' => $translator->translate('Number of installations'),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'nbinstallation',
-      //   'itemtype' => '\App\Models\Softwareversion',
+      //   'itemtype' => '\App\Models\SoftwareVersion',
       //   'count' => 'devices_count',
       // ],
       // [
@@ -304,7 +304,7 @@ class Software
       //   'title' => $translator->translate('Versions'),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'versions',
-      //   'itemtype' => '\App\Models\Softwareversion',
+      //   'itemtype' => '\App\Models\SoftwareVersion',
       //   'multiple' => true,
       // ],
 
@@ -315,7 +315,6 @@ class Software
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translate('Analysis impact'),

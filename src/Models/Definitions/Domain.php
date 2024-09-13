@@ -20,7 +20,7 @@ class Domain
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'domaintypes_id',
-        'itemtype' => '\App\Models\Domaintype',
+        'itemtype' => '\App\Models\DomainType',
       ],
       [
         'id'    => 3,
@@ -62,8 +62,6 @@ class Domain
         'type'  => 'input',
         'name'  => 'others',
       ],
-
-
       [
         'id'    => 18,
         'title' => $translator->translate('Child entities'),
@@ -71,11 +69,11 @@ class Domain
         'name'  => 'is_recursive',
       ],
       [
-         'id'    => 12,
-         'title' => $translator->translate('Last update'),
-         'type'  => 'datetime',
-         'name'  => 'date_mod',
-         'readonly'  => 'readonly',
+        'id'    => 12,
+        'title' => $translator->translate('Last update'),
+        'type'  => 'datetime',
+        'name'  => 'date_mod',
+        'readonly'  => 'readonly',
       ],
       // [
       //   'id'    => 80,
@@ -85,42 +83,40 @@ class Domain
       //   'itemtype' => '\App\Models\Entity',
       // ],
 
-
       /*
-
       $tab = [];
 
       $tab[] = [
-         'id'                 => 'common',
-         'name'               => self::getTypeName(2)
+        'id'                 => 'common',
+        'name'               => self::getTypeName(2)
       ];
 
       $tab[] = [
-         'id'                 => '8',
-         'table'              => 'glpi_domains_items',
-         'field'              => 'items_id',
-         'nosearch'           => true,
-         'massiveaction'      => false,
-         'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
-         'forcegroupby'       => true,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+      'id'                 => '8',
+        'table'              => 'glpi_domains_items',
+        'field'              => 'items_id',
+        'nosearch'           => true,
+        'massiveaction'      => false,
+        'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
+        'forcegroupby'       => true,
+        'joinparams'         => [
+        'jointype'           => 'child'
+        ]
       ];
 
       $tab[] = [
-         'id'                 => '30',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'datatype'           => 'number'
+        'id'                 => '30',
+        'table'              => $this->getTable(),
+        'field'              => 'id',
+        'name'               => __('ID'),
+        'datatype'           => 'number'
       ];
 
       $tab[] = [
-         'id'                 => '81',
-         'table'              => 'glpi_entities',
-         'field'              => 'entities_id',
-         'name'               => __('Entity-ID')
+        'id'                 => '81',
+        'table'              => 'glpi_entities',
+        'field'              => 'entities_id',
+        'name'               => __('Entity-ID')
       ];
       */
     ];

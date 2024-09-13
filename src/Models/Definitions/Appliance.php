@@ -44,7 +44,7 @@ class Appliance
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'appliancetypes_id',
-        'itemtype' => '\App\Models\Appliancetype',
+        'itemtype' => '\App\Models\ApplianceType',
       ],
       [
         'id'    => 10,
@@ -52,7 +52,7 @@ class Appliance
         'type'  => 'dropdown_remote',
         'name'  => 'environment',
         'dbname' => 'applianceenvironments_id',
-        'itemtype' => '\App\Models\Applianceenvironment',
+        'itemtype' => '\App\Models\ApplianceEnvironment',
       ],
       [
         'id'    => 24,
@@ -130,50 +130,45 @@ class Appliance
         'name'  => 'date_mod',
         'readonly'  => 'readonly',
       ],
-
-
-
       /*
 
       $tab[] = [
-          'id'   => 'common',
-          'name' => __('Characteristics')
+        'id'   => 'common',
+        'name' => __('Characteristics')
       ];
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-
       $tab[] = [
-         'id'            => '5',
-         'table'         =>  Appliance_Item::getTable(),
-         'field'         => 'items_id',
-         'name'               => _n('Associated item', 'Associated items', 2),
-         'nosearch'           => true,
-         'massiveaction' => false,
-         'forcegroupby'  =>  true,
-         'additionalfields'   => ['itemtype'],
-         'joinparams'    => ['jointype' => 'child']
+        'id'            => '5',
+        'table'         =>  Appliance_Item::getTable(),
+        'field'         => 'items_id',
+        'name'               => _n('Associated item', 'Associated items', 2),
+        'nosearch'           => true,
+        'massiveaction' => false,
+        'forcegroupby'  =>  true,
+        'additionalfields'   => ['itemtype'],
+        'joinparams'    => ['jointype' => 'child']
       ];
 
       $tab[] = [
-         'id'            => '31',
-         'table'         => self::getTable(),
-         'field'         => 'id',
-         'name'          => __('ID'),
-         'datatype'      => 'number',
-         'massiveaction' => false
+        'id'            => '31',
+        'table'         => self::getTable(),
+        'field'         => 'id',
+        'name'          => __('ID'),
+        'datatype'      => 'number',
+        'massiveaction' => false
       ];
 
       $tab[] = [
-         'id'            => '81',
-         'table'         => Entity::getTable(),
-         'field'         => 'entities_id',
-         'name'          => sprintf('%s-%s', Entity::getTypeName(1), __('ID'))
+        'id'            => '81',
+        'table'         => Entity::getTable(),
+        'field'         => 'entities_id',
+        'name'          => sprintf('%s-%s', Entity::getTypeName(1), __('ID'))
       ];
 
       $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
-
       */
     ];
   }

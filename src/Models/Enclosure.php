@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Enclosure extends Common
 {
@@ -41,7 +42,7 @@ class Enclosure extends Common
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Enclosuremodel', 'enclosuremodels_id');
+    return $this->belongsTo('\App\Models\EnclosureModel', 'enclosuremodels_id');
   }
 
   public function state(): BelongsTo

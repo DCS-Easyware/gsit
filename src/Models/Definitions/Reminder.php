@@ -99,7 +99,6 @@ class Reminder
   public static function getStateArray()
   {
     global $translator;
-
     return [
       0 => [
         'title' => $translator->translatePlural('Information', 'Information', 1),
@@ -122,7 +121,6 @@ class Reminder
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Note', 'Notes', 2),

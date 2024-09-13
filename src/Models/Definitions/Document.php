@@ -20,7 +20,7 @@ class Document
         'type'  => 'dropdown_remote',
         'name'  => 'categorie',
         'dbname' => 'documentcategories_id',
-        'itemtype' => '\App\Models\Documentcategorie',
+        'itemtype' => '\App\Models\DocumentCategory',
       ],
       [
         'id'    => 3,
@@ -73,56 +73,50 @@ class Document
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
-     ],
-     [
+      ],
+      [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
         'name'  => 'date_mod',
         'readonly'  => 'readonly',
-     ],
-     [
+      ],
+      [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
         'name'  => 'date_creation',
         'readonly'  => 'readonly',
-     ],
-
-
+      ],
 
       /*
-
-
       $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
+        'id'                 => '2',
+        'table'              => $this->getTable(),
+        'field'              => 'id',
+        'name'               => __('ID'),
+        'massiveaction'      => false,
+        'datatype'           => 'number'
       ];
 
-
       $tab[] = [
-         'id'                 => '72',
-         'table'              => 'glpi_documents_items',
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of associated items'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'datatype'           => 'count',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+        'id'                 => '72',
+        'table'              => 'glpi_documents_items',
+        'field'              => 'id',
+        'name'               => _x('quantity', 'Number of associated items'),
+        'forcegroupby'       => true,
+        'usehaving'          => true,
+        'datatype'           => 'count',
+        'massiveaction'      => false,
+        'joinparams'         => [
+        'jointype'           => 'child'
+        ]
       ];
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
-
       */
     ];
   }
@@ -130,7 +124,6 @@ class Document
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Document', 'Documents', 1),

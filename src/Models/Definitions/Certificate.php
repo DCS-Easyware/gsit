@@ -48,7 +48,7 @@ class Certificate
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'certificatetypes_id',
-        'itemtype' => '\App\Models\Certificatetype',
+        'itemtype' => '\App\Models\CertificateType',
       ],
       [
         'id'    => 8,
@@ -98,7 +98,6 @@ class Certificate
         'type'  => 'textarea',
         'name'  => 'comment',
       ],
-
       [
         'id'    => 23,
         'title' => sprintf($translator->translate('%1$s (%2$s)'), $translator->translatePlural('Manufacturer', 'Manufacturers', 1), $translator->translate('Root CA')),
@@ -187,42 +186,40 @@ class Certificate
 
       /*
       $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+        'id'                 => 'common',
+        'name'               => __('Characteristics')
       ];
 
       $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_certificates_items',
-         'field'              => 'items_id',
-         'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
-         'nosearch'           => true,
-         'massiveaction'      => false,
-         'forcegroupby'       => true,
-         'additionalfields'   => ['itemtype'],
-         'joinparams'         => ['jointype' => 'child']
+        'id'                 => '14',
+        'table'              => 'glpi_certificates_items',
+        'field'              => 'items_id',
+        'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
+        'nosearch'           => true,
+        'massiveaction'      => false,
+        'forcegroupby'       => true,
+        'additionalfields'   => ['itemtype'],
+        'joinparams'         => ['jointype' => 'child']
       ];
 
 
       $tab[] = [
-         'id'                 => '72',
-         'table'              => 'glpi_certificates_items',
-         'field'              => 'id',
-         'name'               => _x('quantity', 'Number of associated items'),
-         'forcegroupby'       => true,
-         'usehaving'          => true,
-         'datatype'           => 'count',
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ]
+        'id'                 => '72',
+        'table'              => 'glpi_certificates_items',
+        'field'              => 'id',
+        'name'               => _x('quantity', 'Number of associated items'),
+        'forcegroupby'       => true,
+        'usehaving'          => true,
+        'datatype'           => 'count',
+        'massiveaction'      => false,
+        'joinparams'         => [
+        'jointype'           => 'child'
+        ]
       ];
-
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
-
       */
     ];
   }

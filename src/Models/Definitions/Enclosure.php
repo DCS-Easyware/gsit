@@ -36,7 +36,7 @@ class Enclosure
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'enclosuremodels_id',
-        'itemtype' => '\App\Models\Enclosuremodel',
+        'itemtype' => '\App\Models\EnclosureModel',
       ],
       [
         'id'    => 5,
@@ -95,7 +95,6 @@ class Enclosure
         'type'  => 'textarea',
         'name'  => 'comment',
       ],
-
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
@@ -110,21 +109,18 @@ class Enclosure
         'name'  => 'date_creation',
         'readonly'  => 'readonly',
       ],
-      /*
 
+      /*
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
-
       */
     ];
   }
 
-
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translate('Analysis impact'),

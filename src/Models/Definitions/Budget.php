@@ -38,7 +38,7 @@ class Budget
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'budgettypes_id',
-        'itemtype' => '\App\Models\Budgettype',
+        'itemtype' => '\App\Models\BudgetType',
       ],
       [
         'id'    => 16,
@@ -68,43 +68,37 @@ class Budget
       //   'itemtype' => '\App\Models\Entity',
       // ],
       [
-         'id'    => 86,
-         'title' => $translator->translate('Child entities'),
-         'type'  => 'boolean',
-         'name'  => 'is_recursive',
+        'id'    => 86,
+        'title' => $translator->translate('Child entities'),
+        'type'  => 'boolean',
+        'name'  => 'is_recursive',
       ],
       [
-         'id'    => 19,
-         'title' => $translator->translate('Last update'),
-         'type'  => 'datetime',
-         'name'  => 'date_mod',
-         'readonly'  => 'readonly',
+        'id'    => 19,
+        'title' => $translator->translate('Last update'),
+        'type'  => 'datetime',
+        'name'  => 'date_mod',
+        'readonly'  => 'readonly',
       ],
       [
-         'id'    => 121,
-         'title' => $translator->translate('Creation date'),
-         'type'  => 'datetime',
-         'name'  => 'date_creation',
-         'readonly'  => 'readonly',
+        'id'    => 121,
+        'title' => $translator->translate('Creation date'),
+        'type'  => 'datetime',
+        'name'  => 'date_creation',
+        'readonly'  => 'readonly',
       ],
-
-
 
 
       /*
-
-
       $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+        'id'                 => 'common',
+        'name'               => __('Characteristics')
       ];
-
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
-
       */
     ];
   }
@@ -112,7 +106,6 @@ class Budget
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Budget', 'Budget', 1),

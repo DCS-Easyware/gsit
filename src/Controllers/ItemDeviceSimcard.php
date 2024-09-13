@@ -26,5 +26,4 @@ final class ItemDeviceSimcard extends Common
     $item = new \App\Models\ItemDeviceSimcard();
     return $this->commonUpdateItem($request, $response, $args, $item);
   }
-
 }

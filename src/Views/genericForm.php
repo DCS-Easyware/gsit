@@ -28,12 +28,23 @@
     <div class="field">
       <label><?=$item['title']?></label>
       <?php if ($item['type'] == 'input'): ?>
-        <input type="text" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?> value="<?=$item['value']?>">
+        <?php if (isset($item['readonly'])){ ?>
+          <?php echo $item['value'] ?>
+        <?php } ?>
+
+        <?php if (!isset($item['readonly'])){ ?>
+          <input type="text" name="<?=$item['name']?>" value="<?=$item['value']?>">
+        <?php } ?>
       <?php endif ?>
 
       <?php if ($item['type'] == 'dropdown'): ?>
+        <?php if (isset($item['readonly'])){ ?>
+          <?php echo $item['values'][$item['value']]['title']; ?>
+        <?php } ?>
+
+        <?php if (!isset($item['readonly'])){ ?>
         <div class="ui selection dropdown">
-          <input type="hidden" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?>  value="<?=$item['value']?>">
+          <input type="hidden" name="<?=$item['name']?>" value="<?=$item['value']?>">
           <i class="dropdown icon"></i>
           <div class="default text">Select value...</div>
           <div class="menu">
@@ -47,6 +58,7 @@
             <?php endforeach ?>
           </div>
         </div>
+        <?php } ?>
       <?php endif ?>
 
       <?php if ($item['type'] == 'dropdown_remote'): ?>
@@ -62,7 +74,7 @@
           data-url="http://127.0.0.1/gsit96/gsit/dropdown"
           data-itemtype="<?=$item['itemtype']?>"
         >
-          <input type="hidden" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?>  value="<?=$item['value']?>">
+          <input type="hidden" name="<?=$item['name']?>" value="<?=$item['value']?>">
           <i class="dropdown icon"></i>
           <?php if ($item['value'] == 0): ?>
             <div class="default text">Select value...</div>
@@ -136,6 +148,10 @@ editor<?php echo $item['name'] ?> = new toastui.Editor({
         <?php if (!isset($item['readonly'])){ ?>
           <input type="text" name="<?=$item['name']?>" value="<?=$item['value']?>">
         <?php } ?>
+      <?php endif ?>
+
+      <?php if ($item['type'] == 'description'): ?>
+        <div><?php echo $item['values'] ?></div>
       <?php endif ?>
     </div>
   <?php endforeach ?>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Monitor extends Common
 {
@@ -50,12 +51,12 @@ class Monitor extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Monitortype', 'monitortypes_id');
+    return $this->belongsTo('\App\Models\MonitorType', 'monitortypes_id');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Monitormodel', 'monitormodels_id');
+    return $this->belongsTo('\App\Models\MonitorModel', 'monitormodels_id');
   }
 
   public function state(): BelongsTo

@@ -88,6 +88,7 @@ class Common
       'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
       'icon'         => $item->getIcon(),
     ];
+
     return $renderer->render($response, 'genericForm.php', $viewData);
   }
 

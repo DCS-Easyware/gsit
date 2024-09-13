@@ -74,7 +74,7 @@ class Supplier
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'suppliertypes_id',
-        'itemtype' => '\App\Models\Suppliertype',
+        'itemtype' => '\App\Models\SupplierType',
       ],
       [
         'id'    => 16,
@@ -178,7 +178,6 @@ class Supplier
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Supplier', 'Suppliers', 1),

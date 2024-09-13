@@ -46,12 +46,12 @@ class Line extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Linetype', 'linetypes_id');
+    return $this->belongsTo('\App\Models\LineType', 'linetypes_id');
   }
 
   public function operator(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Lineoperator', 'lineoperators_id');
+    return $this->belongsTo('\App\Models\LineOperator', 'lineoperators_id');
   }
 
   public function state(): BelongsTo

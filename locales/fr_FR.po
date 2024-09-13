@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Cédric Anne, 2019
 # Thierry Bugier <tbugier@teclib.com>, 2019
@@ -19,7 +19,7 @@
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
 # Legastelois François <flegastelois@teclib.com>, 2021
 # CupidSG, 2021
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -23418,3 +23418,75 @@ msgid ""
 msgstr ""
 "L'évènement glissé est un évènement recrurent. Voulez vous changer la série "
 "ou l'instance ?"
+
+
+
+#: msgid "Alert"
+#: msgid_plural "Alerts"
+#: msgstr[0] "Alerte"
+#: msgstr[1] "Alertes"
+
+#: msgid "Form"
+#: msgid_plural "Forms"
+#: msgstr[0] "Formulaire"
+#: msgstr[1] "Formulaires"
+
+#: msgid "FusionInventory"
+#: msgstr "FusionInventory"
+
+#: msgid "Data injection"
+#: msgstr "Data Injection"
+
+#: msgid "Form Creator"
+#: msgstr "Formcreator"
+
+#: msgid "Direct access on homepage"
+#: msgstr "Accès direct depuis la page d'accueil"
+
+#: msgid "Header"
+#: msgid_plural "Headers"
+#: msgstr[0] "Entête"
+#: msgstr[1] "En-têtes"
+
+#: msgid "Need to be validate?"
+#: msgstr "Validation requise ?"
+
+#: msgid "Default form in service catalog"
+#: msgstr "Formulaire par défaut dans le catalogue de service"
+
+#: msgid "Question"
+#: msgid_plural "Questions"
+#: msgstr[0] "Question"
+#: msgstr[1] "Questions"
+
+#: msgid "Access type"
+#: msgid_plural "Access types"
+#: msgstr[0] "Types d'accès"
+#: msgstr[1] "Types d'accès"
+
+#: msgid "Form answer"
+#: msgid_plural "Form answers"
+#: msgstr[0] "Réponse de formulaire"
+#: msgstr[1] "Réponses de formulaire"
+
+#: msgid "Form category"
+#: msgid_plural "Form categories"
+#: msgstr[0] "Catégorie de formulaire"
+#: msgstr[1] "Catégories de formulaire"
+
+#: msgid "Boutique"
+#: msgstr "Boutique"
+
+#: msgid "Oauth IMAP application"
+#: msgid_plural "Oauth IMAP applications"
+#: msgstr[0] "Application Oauth IMAP"
+#: msgstr[1] "Applications Oauth IMAP"
+
+#: msgid "Tenant ID"
+#: msgstr "ID de l'annuaire (locataire)"
+
+#: msgid "Client ID"
+#: msgstr "ID d'application (client)"
+
+#: msgid "Oauth provider"
+#: msgstr "Fournisseur Oauth"

@@ -86,15 +86,15 @@ class Contact
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'contacttypes_id',
-        'itemtype' => '\App\Models\Contacttype',
+        'itemtype' => '\App\Models\ContactType',
       ],
       [
-        'id'    => 9,
+        'id'    => 119,
         'title' => $translator->translate('person'."\004".'Title'),
         'type'  => 'dropdown_remote',
         'name'  => 'title',
         'dbname' => 'usertitles_id',
-        'itemtype' => '\App\Models\Usertitle',
+        'itemtype' => '\App\Models\UserTitle',
       ],
       [
         'id'    => 16,
@@ -110,10 +110,10 @@ class Contact
       //   'itemtype' => '\App\Models\Entity',
       // ],
       [
-          'id'    => 86,
-          'title' => $translator->translate('Child entities'),
-          'type'  => 'boolean',
-          'name'  => 'is_recursive',
+        'id'    => 86,
+        'title' => $translator->translate('Child entities'),
+        'type'  => 'boolean',
+        'name'  => 'is_recursive',
       ],
       [
         'id'    => 19,
@@ -131,30 +131,27 @@ class Contact
       ],
 
 
-
       /*
-
-
       $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
+        'id'                 => 'common',
+        'name'               => __('Characteristics')
       ];
 
       $tab[] = [
-         'id'                 => '8',
-         'table'              => 'glpi_suppliers',
-         'field'              => 'name',
-         'name'               => _n('Associated supplier', 'Associated suppliers', Session::getPluralNumber()),
-         'forcegroupby'       => true,
-         'datatype'           => 'itemlink',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_contacts_suppliers',
-               'joinparams'         => [
-                  'jointype'           => 'child'
-               ]
-            ]
-         ]
+        'id'                 => '8',
+        'table'              => 'glpi_suppliers',
+        'field'              => 'name',
+        'name'               => _n('Associated supplier', 'Associated suppliers', Session::getPluralNumber()),
+        'forcegroupby'       => true,
+        'datatype'           => 'itemlink',
+        'joinparams'         => [
+        'beforejoin'         => [
+        'table'              => 'glpi_contacts_suppliers',
+        'joinparams'         => [
+        'jointype'           => 'child'
+        ]
+        ]
+        ]
       ];
 
       // add objectlock search options
@@ -169,7 +166,6 @@ class Contact
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Contact', 'Contacts', 1),

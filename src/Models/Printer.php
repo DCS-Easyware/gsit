@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Printer extends Common
 {
@@ -53,12 +54,12 @@ class Printer extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Printertype', 'printertypes_id');
+    return $this->belongsTo('\App\Models\PrinterType', 'printertypes_id');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Printermodel', 'printermodels_id');
+    return $this->belongsTo('\App\Models\PrinterModel', 'printermodels_id');
   }
 
   public function state(): BelongsTo

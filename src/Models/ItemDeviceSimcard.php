@@ -3,54 +3,38 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ItemDeviceSimcard extends Common
 {
-  protected $table = 'glpi_items_devicesimcards';
+  protected $table = 'glpi_devicesimcards';
   protected $definition = '\App\Models\Definitions\ItemDeviceSimcard';
   protected $titles = ['Simcard', 'Simcards'];
-  protected $icon = 'sim card';
+  protected $icon = 'edit';
 
   protected $appends = [
-    'state',
-    'location',
-    'user',
-    'group',
+    'manufacturer',
+    'type',
   ];
 
   protected $visible = [
-    'state',
-    'location',
-    'user',
-    'group',
+    'manufacturer',
+    'type',
   ];
 
   protected $with = [
-    'state:id,name',
-    'location:id,name',
-    'user:id,name',
-    'group:id,name',
+    'manufacturer:id,name',
+    'type:id,name',
   ];
 
-
-  public function state(): BelongsTo
+  public function manufacturer(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\Manufacturer', 'manufacturers_id');
   }
 
-  public function location(): BelongsTo
+  public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
-  }
-
-  public function user(): BelongsTo
-  {
-    return $this->belongsTo('\App\Models\User', 'users_id');
-  }
-
-  public function group(): BelongsTo
-  {
-    return $this->belongsTo('\App\Models\Group', 'groups_id');
+    return $this->belongsTo('\App\Models\ItemDeviceSimcardType', 'devicesimcardtypes_id');
   }
 
 }

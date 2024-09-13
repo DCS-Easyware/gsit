@@ -36,7 +36,7 @@ class Peripheral
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'peripheraltypes_id',
-        'itemtype' => '\App\Models\Networkequipmenttype',
+        'itemtype' => '\App\Models\NetworkEquipmentType',
       ],
       [
         'id'    => 40,
@@ -44,7 +44,7 @@ class Peripheral
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'peripheralmodels_id',
-        'itemtype' => '\App\Models\Networkequipmentmodel',
+        'itemtype' => '\App\Models\NetworkEquipmentModel',
       ],
       [
         'id'    => 5,
@@ -151,33 +151,27 @@ class Peripheral
         'name'  => 'date_creation',
         'readonly'  => 'readonly',
       ],
-/*
 
-
-
+      /*
       $tab[] = [
-         'id'                 => '82',
-         'table'              => $this->getTable(),
-         'field'              => 'is_global',
-         'name'               => __('Global management'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false
+        'id'                 => '82',
+        'table'              => $this->getTable(),
+        'field'              => 'is_global',
+        'name'               => __('Global management'),
+        'datatype'           => 'bool',
+        'massiveaction'      => false
       ];
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
-
       */
-
     ];
   }
-
 
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translate('Analysis impact'),

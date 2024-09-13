@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Peripheral extends Common
 {
@@ -53,12 +54,12 @@ class Peripheral extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Peripheraltype', 'peripheraltypes_id');
+    return $this->belongsTo('\App\Models\PeripheralType', 'peripheraltypes_id');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Peripheralmodel', 'peripheralmodels_id');
+    return $this->belongsTo('\App\Models\PeripheralModel', 'peripheralmodels_id');
   }
 
   public function state(): BelongsTo

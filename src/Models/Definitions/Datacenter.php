@@ -23,7 +23,7 @@ class Datacenter
         'itemtype' => '\App\Models\Location',
       ],
       // [
-      //   'id'    => 80,
+      //   'id'     => 80,
       //   'title' => $translator->translate('Entity'),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
@@ -36,7 +36,7 @@ class Datacenter
         'name'  => 'date_mod',
         'readonly'  => 'readonly',
       ],
-      [
+        [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
@@ -49,7 +49,6 @@ class Datacenter
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Data center', 'Data centers', 2),

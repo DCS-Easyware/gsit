@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Phone extends Common
 {
@@ -56,17 +57,17 @@ class Phone extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Phonetype', 'phonetypes_id');
+    return $this->belongsTo('\App\Models\PhoneType', 'phonetypes_id');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Phonemodel', 'phonemodels_id');
+    return $this->belongsTo('\App\Models\PhoneModel', 'phonemodels_id');
   }
 
   public function phonepowersupply(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Phonepowersupply', 'phonepowersupplies_id');
+    return $this->belongsTo('\App\Models\PhonePowerSupply', 'phonepowersupplies_id');
   }
 
   public function state(): BelongsTo

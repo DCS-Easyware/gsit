@@ -35,7 +35,7 @@ class Cluster extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Clustertype', 'clustertypes_id');
+    return $this->belongsTo('\App\Models\ClusterType', 'clustertypes_id');
   }
 
   public function state(): BelongsTo

@@ -28,7 +28,7 @@ class Cluster
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'clustertypes_id',
-        'itemtype' => '\App\Models\Clustertype',
+        'itemtype' => '\App\Models\ClusterType',
       ],
       [
         'id'    => 5,
@@ -71,32 +71,29 @@ class Cluster
         'name'  => 'is_recursive',
       ],
       [
-         'id'    => 19,
-         'title' => $translator->translate('Last update'),
-         'type'  => 'datetime',
-         'name'  => 'date_mod',
-         'readonly'  => 'readonly',
+        'id'    => 19,
+        'title' => $translator->translate('Last update'),
+        'type'  => 'datetime',
+        'name'  => 'date_mod',
+        'readonly'  => 'readonly',
       ],
       [
-         'id'    => 121,
-         'title' => $translator->translate('Creation date'),
-         'type'  => 'datetime',
-         'name'  => 'date_creation',
-         'readonly'  => 'readonly',
+        'id'    => 121,
+        'title' => $translator->translate('Creation date'),
+        'type'  => 'datetime',
+        'name'  => 'date_creation',
+        'readonly'  => 'readonly',
       ],
 
       /*
-
-
       $tab[] = [
-          'id'   => 'common',
-          'name' => __('Characteristics')
+        'id'   => 'common',
+        'name' => __('Characteristics')
       ];
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
-
       */
     ];
   }

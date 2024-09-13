@@ -36,7 +36,7 @@ class Rack
         'type'  => 'dropdown_remote',
         'name'  => 'type',
         'dbname' => 'racktypes_id',
-        'itemtype' => '\App\Models\Racktype',
+        'itemtype' => '\App\Models\RackType',
       ],
       [
         'id'    => 40,
@@ -44,7 +44,7 @@ class Rack
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'rackmodels_id',
-        'itemtype' => '\App\Models\Rackmodel',
+        'itemtype' => '\App\Models\RackModel',
       ],
       [
         'id'    => 5,
@@ -144,11 +144,9 @@ class Rack
     ];
   }
 
-
   public static function getRelatedPages($rootUrl)
   {
     global $translator;
-
     return [
       [
         'title' => $translator->translatePlural('Rack', 'Racks', 2),
