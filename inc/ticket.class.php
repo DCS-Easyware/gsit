@@ -4539,10 +4539,10 @@ class Ticket extends CommonITILObject {
 
       if ($ID) {
          echo "</table>";
-         echo "<table  class='tab_cadre_fixe' id='mainformtable2'>";
+         echo "<table  class='ui celled striped table' id='mainformtable2'>";
       }
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr>";
       echo "<th width='$colsize1%'>".sprintf(__('%1$s%2$s'), _n('Type', 'Types', 1),
                                              $tt->getMandatoryMark('type'))."</th>";
       echo "<td width='$colsize2%'>";
@@ -4617,10 +4617,10 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          echo "</table>";
          $this->showActorsPartForm($ID, $options);
-         echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
+         echo "<table class='ui celled striped table' id='mainformtable3'>";
       }
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr>";
       echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('status');
       printf(__('%1$s%2$s'), __('Status'), $tt->getMandatoryMark('status'));
       echo $tt->getEndHiddenFieldText('status')."</th>";
@@ -4656,7 +4656,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr>";
       echo "<th>".$tt->getBeginHiddenFieldText('urgency');
       printf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
       echo $tt->getEndHiddenFieldText('urgency')."</th>";
@@ -4732,7 +4732,7 @@ class Ticket extends CommonITILObject {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr>";
       echo "<th>".$tt->getBeginHiddenFieldText('impact');
       printf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
       echo $tt->getEndHiddenFieldText('impact')."</th>";
@@ -4764,7 +4764,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr>";
       echo "<th>".$tt->getBeginHiddenFieldText('priority');
       printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
       echo $tt->getEndHiddenFieldText('priority')."</th>";
@@ -4819,7 +4819,7 @@ class Ticket extends CommonITILObject {
       if (!$ID
           && Session::haveRight('followup', ITILFollowup::ADDALLTICKET)) {
 
-         echo "<tr class='tab_bg_1'>";
+         echo "<tr>";
          // Need comment right to add a followup with the actiontime
          echo "<th>".$tt->getBeginHiddenFieldText('actiontime');
          printf(__('%1$s%2$s'), __('Total duration'), $tt->getMandatoryMark('actiontime'));
@@ -4838,8 +4838,8 @@ class Ticket extends CommonITILObject {
          $this->showActorsPartForm($ID, $options);
       }
 
-      echo "<table class='tab_cadre_fixe' id='mainformtable4'>";
-      echo "<tr class='tab_bg_1'>";
+      echo "<table class='ui celled striped table' id='mainformtable4'>";
+      echo "<tr>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
       echo $tt->getEndHiddenFieldText('name')."</th>";
@@ -4860,7 +4860,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
       if ($canupdate || $can_requester) {
@@ -4914,7 +4914,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr>";
       echo "<th style='width:$colsize1%'>". _n('Linked ticket', 'Linked tickets',
                                                Session::getPluralNumber());
       $rand_linked_ticket = mt_rand();
@@ -5300,8 +5300,8 @@ class Ticket extends CommonITILObject {
          : $total_row_count;
 
       if ($displayed_row_count > 0) {
-         echo "<table class='tab_cadrehov'>";
-         echo "<tr class='noHover'><th colspan='4'>";
+         echo "<table class='ui celled striped table'>";
+         echo "<thead><tr><th colspan='4'>";
 
          $options  = [
             'criteria' => [],
@@ -5603,10 +5603,10 @@ class Ticket extends CommonITILObject {
          }
 
          echo "</th></tr>";
-         echo "<tr><th style='width: 75px;'>".__('ID')."</th>";
-         echo "<th style='width: 20%;'>"._n('Requester', 'Requesters', 1)."</th>";
-         echo "<th style='width: 20%;'>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
-         echo "<th>".__('Description')."</th></tr>";
+         echo "<tr><th>".__('ID')."</th>";
+         echo "<th>"._n('Requester', 'Requesters', 1)."</th>";
+         echo "<th>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
+         echo "<th>".__('Description')."</th></tr></thead>";
          $i = 0;
          while ($i < $displayed_row_count && ($data = $iterator->next())) {
             self::showVeryShort($data['id'], $forcetab);
@@ -5722,8 +5722,8 @@ class Ticket extends CommonITILObject {
       $options['criteria'][0]['value']      = 'process';
       $options['criteria'][0]['link']       = 'AND';
 
-      echo "<table class='tab_cadrehov' >";
-      echo "<tr class='noHover'><th colspan='2'>";
+      echo "<table class='ui celled striped table' >";
+      echo "<thead><tr><th colspan='2'>";
 
       if (Session::getCurrentInterface() != "central") {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\" class='pointer'>".
@@ -5734,7 +5734,7 @@ class Ticket extends CommonITILObject {
       }
       echo "</th></tr>";
       echo "<tr><th>"._n('Ticket', 'Tickets', Session::getPluralNumber())."</th>
-            <th class='numeric'>"._x('quantity', 'Number')."</th></tr>";
+            <th class='numeric'>"._x('quantity', 'Number')."</th></tr></thead>";
 
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
            $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
@@ -5753,7 +5753,7 @@ class Ticket extends CommonITILObject {
            $opt['criteria'][1]['value']      = Session::getLoginUserID();
            $opt['criteria'][1]['link']       = 'AND';
 
-           echo "<tr class='tab_bg_2'>";
+           echo "<tr>";
            echo "<td><a href=\"".Ticket::getSearchURL()."?".
                Toolbox::append_params($opt, '&amp;')."\">".__('Ticket waiting for your approval')."</a></td>";
            echo "<td class='numeric'>".$number_waitapproval."</td></tr>";
@@ -5761,7 +5761,7 @@ class Ticket extends CommonITILObject {
 
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
-         echo "<tr class='tab_bg_2'>";
+         echo "<tr>";
          echo "<td><a href=\"".Ticket::getSearchURL()."?".
                     Toolbox::append_params($options, '&amp;')."\">".self::getStatus($key)."</a></td>";
          echo "<td class='numeric'>$val</td></tr>";
@@ -5769,7 +5769,7 @@ class Ticket extends CommonITILObject {
 
       $options['criteria'][0]['value'] = 'all';
       $options['is_deleted']  = 1;
-      echo "<tr class='tab_bg_2'>";
+      echo "<tr>";
       echo "<td><a href=\"".Ticket::getSearchURL()."?".
                  Toolbox::append_params($options, '&amp;')."\">".__('Deleted')."</a></td>";
       echo "<td class='numeric'>".$number_deleted."</td></tr>";
@@ -5807,12 +5807,12 @@ class Ticket extends CommonITILObject {
          $options['criteria'][0]['value']   = self::INCOMING;
          $options['criteria'][0]['link']       = 'AND';
 
-         echo "<div class='center'><table class='tab_cadre_fixe' style='min-width: 85%'>";
+         echo "<div class='center'><table class='ui celled striped table' style='min-width: 85%'>";
          //TRANS: %d is the number of new tickets
-         echo "<tr><th colspan='12'>".sprintf(_n('%d new ticket', '%d new tickets', $number), $number);
+         echo "<thead><tr><th colspan='12'>".sprintf(_n('%d new ticket', '%d new tickets', $number), $number);
          echo "<a href='".Ticket::getSearchURL()."?".
                 Toolbox::append_params($options, '&amp;')."'>".__('Show all')."</a>";
-         echo "</th></tr>";
+         echo "</th></tr></thead>";
 
          self::commonListHeader(Search::HTML_OUTPUT);
 
@@ -5824,8 +5824,8 @@ class Ticket extends CommonITILObject {
 
       } else {
          echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe' style='min-width: 85%'>";
-         echo "<tr><th>".__('No ticket found.')."</th></tr>";
+         echo "<table class='ui celled striped table' style='min-width: 85%'>";
+         echo "<thead><tr><th>".__('No ticket found.')."</th></tr></thead>";
          echo "</table>";
          echo "</div><br>";
       }
