@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteContext;
 use League\HTMLToMarkdown\HtmlConverter;
+use League\CommonMark\CommonMarkConverter;
 
 final class Toolbox
 {
@@ -53,5 +54,18 @@ final class Toolbox
     $converter->getConfig()->setOption('strip_tags', true);
 
     return $converter->convert(html_entity_decode($text));
+  }
+
+  /**
+   * Convert markdown text into HTML
+   */
+  public static function convertMarkdownToHtml($text)
+  {
+    $converter = new CommonMarkConverter([
+      'html_input' => 'strip',
+      'allow_unsafe_links' => false,
+    ]);
+    
+    return $converter->convert($text);
   }
 }

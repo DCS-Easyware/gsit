@@ -94,7 +94,8 @@ final class translation
     // Accept-Language: fr-FR, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
     $accepted_languages = [];
     $values = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
-    foreach ($values as $value) {
+    foreach ($values as $value)
+    {
         $parts = explode(';q=', trim($value));
         $language = str_replace('-', '_', $parts[0]);
         $qfactor  = $parts[1] ?? 1; //q-factor defaults to 1

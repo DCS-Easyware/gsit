@@ -58,3 +58,27 @@ i.icon.gsitlow {
 i.icon.gsitverylow {
   color: #c3de93;
 }
+
+.loginbg {
+  background-color: #000000;
+  background-image: url(img/logo.jpg);
+  background-position: center top;
+  background-size: 100% auto;
+}
+
+blockquote {
+  border-left: 4px solid #e5e5e5;
+  color: #999;
+  margin: 14px 0;
+  padding: 0 16px;
+}
+
+.itilcontent {
+  border-left: 4px solid #2185d0;
+  margin: 14px 2px;
+  padding: 0 16px;
+}
+
+.event > .content {
+  margin-bottom: 25px !important;
+}

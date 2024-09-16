@@ -67,31 +67,6 @@ class Ticket extends Common
         $model->content = preg_replace('/\\\\n/', "\n", $model->content);
       }
 
-      // automatic recalculate if user changes urgence or technician change impact
-      // $canpriority = Session::haveRight($this->rightname, self::CHANGEPRIORITY);
-      $canpriority = true;
-      if ($model->urgency != $currentItem->urgency ||
-        $model->impact != $currentItem->impact &&
-        ($canpriority && !$model->isDirty('priority') || !$canpriority)
-      )
-      {
-        $model->priority = \App\Controllers\Ticket::computePriority($model->urgency, $model->impact);
-      }
-
-      // TODO manage security, check if can't steal or own the ticket
-
-      // TODO Manage template?
-
-      // test rules, need write with old prepareInputtoupdate
-      $input = [
-        'name' => $model->name,
-        'urgency' => $model->urgency,
-        'priority' => $model->priority,
-      ];
-      $rule = new \App\Controllers\Rules\Ticket();
-      $input = $rule->processAllRules(
-        $input
-      );
 
      // TODO finish
     });
@@ -157,8 +132,10 @@ class Ticket extends Common
 
     $statesDef = $this->definition::getStatusArray();
 
+    $itemtypes = ['Ticket', 'App\Models\Ticket'];
+
     // Get followups
-    $followups = \App\Models\Itilfollowup::where('itemtype', 'Ticket')->where('items_id', $id)->get();
+    $followups = \App\Models\Itilfollowup::whereIn('itemtype', $itemtypes)->where('items_id', $id)->get();
     foreach ($followups as $followup)
     {
       
@@ -168,30 +145,31 @@ class Ticket extends Common
         "type"     => "followup",
         "date"     => $followup['date_creation'],
         "summary"  => "added a followup",
-        "content"  => $followup['content'],
+        "content"  => \App\Controllers\Toolbox::convertMarkdownToHtml($followup['content']),
         "time"     => null,
       ];
     }
     // Get important events:
     // * state changes
     // * user / group attribution
-    $states = \App\Models\Log::where('itemtype', 'Ticket')->where('items_id', $id)->where('id_search_option', 12)->get();
+    
+    $states = \App\Models\Log::whereIn('itemtype', $itemtypes)->where('items_id', $id)->where('id_search_option', 12)->get();
     foreach ($states as $state)
     {
       $userActionSpl = explode(" (", $state['user_name']);
-
+      $stateDef = $statesDef[$state['new_value']];
       $feeds[] = [
         "user"     => $userActionSpl[0],
         "usertype" => "tech",
         "type"     => "event",
         "date"     => $state['date_mod'],
-        "summary"  => "changed state to " . $statesDef[$state['new_value']]['title'],
+        "summary"  => "changed state to <span class=\"ui " . $stateDef['color'] . " text\"><i class=\"" . $stateDef['icon'] . " icon\"></i>" . $stateDef['title'] . "</span>",
         "content"  => "",
         "time"     => null,
       ];
     }
 
-    $userAttributes = \App\Models\Log::where('itemtype', 'Ticket')->where('items_id', $id)->where('id_search_option', 5)->get();
+    $userAttributes = \App\Models\Log::whereIn('itemtype', $itemtypes)->where('items_id', $id)->where('id_search_option', 5)->get();
     foreach ($userAttributes as $userAttr)
     {
       $userActionSpl = explode(" (", $userAttr['user_name']);
@@ -208,21 +186,34 @@ class Ticket extends Common
       ];
     }
 
-    $groupAttributes = \App\Models\Log::where('itemtype', 'Ticket')->where('items_id', $id)->where('id_search_option', 8)->get();
+    $groupAttributes = \App\Models\Log::whereIn('itemtype', $itemtypes)->where('items_id', $id)->where('id_search_option', 8)->get();
     foreach ($groupAttributes as $groupAttr)
     {
-      $userActionSpl = explode(" (", $userAttr['user_name']);
-      $groupSpl = explode(" (", $userAttr['new_value']);
-
-      $feeds[] = [
-        "user"     => $userActionSpl[0],
-        "usertype" => "tech",
-        "type"     => "event",
-        "date"     => $userAttr['date_mod'],
-        "summary"  => "add attribution to the group " . $groupSpl[0],
-        "content"  => "",
-        "time"     => null,
-      ];
+      $userActionSpl = explode(" (", $groupAttr['user_name']);
+      if (!is_null($groupAttr['new_value']))
+      {
+        $groupSpl = explode(" (", $groupAttr['new_value']);
+        $feeds[] = [
+          "user"     => $userActionSpl[0],
+          "usertype" => "tech",
+          "type"     => "event",
+          "date"     => $groupAttr['date_mod'],
+          "summary"  => "add (+) attribution to the group " . $groupSpl[0],
+          "content"  => "",
+          "time"     => null,
+        ];
+      } else {
+        $groupSpl = explode(" (", $groupAttr['old_value']);
+        $feeds[] = [
+          "user"     => $userActionSpl[0],
+          "usertype" => "tech",
+          "type"     => "event",
+          "date"     => $groupAttr['date_mod'],
+          "summary"  => "delete (-) attribution to the group " . $groupSpl[0],
+          "content"  => "",
+          "time"     => null,
+        ];
+      }
     }
 
     // sort

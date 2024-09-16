@@ -76,7 +76,7 @@ class Common extends \App\Controllers\Common
         if ($rule->is_active)
         {
           // Load criteria and actions
-          $this->actions = \App\Models\Rules\Action::where('rules_id', $rule->id)->get();
+          // $this->actions = \App\Models\Rules\Action::where('rules_id', $rule->id)->get();
 
           $output["_rule_process"] = false;
           $this->process($rule, $input, $output, $params, $p);
@@ -85,7 +85,8 @@ class Common extends \App\Controllers\Common
           {
             unset($output["_rule_process"]);
             $output["_ruleid"] = $rule->id;
-            return Toolbox::addslashes_deep($output);
+            return $output;
+            // return Toolbox::addslashes_deep($output);
           }
         }
 
@@ -97,6 +98,8 @@ class Common extends \App\Controllers\Common
       }
     }
     // return Toolbox::addslashes_deep($output);
+    // echo "FINISH";
+    // print_r($output);
     return $output;
   }
 
@@ -110,7 +113,6 @@ class Common extends \App\Controllers\Common
 
       if ($this->checkCriterias($rule, $input))
       {
-        echo "YO";
         unset($output["_no_rule_matches"]);
         $refoutput = $output;
         $output    = $this->executeActions($rule, $output, $params, $input);
@@ -146,6 +148,10 @@ class Common extends \App\Controllers\Common
             break;
 
           case "append" :
+            // print_r($action);
+
+
+
             $value = $action->value;
             if (isset($this->actionsDefinition[$action->field]["appendtoarray"])
               && isset($this->actionsDefinition[$action->field]["appendtoarrayfield"]))

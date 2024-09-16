@@ -34,38 +34,48 @@
   <div class="ui internally celled grid">
     <div class="row">
       <div class="twelve wide column">
-        <?php foreach ($fields as $item): ?>
-          <?php if ($item['name'] == 'content'): ?>
-            <div id="editor<?php echo $item['name'] ?>"><?=$item['value']?></div>
-            <textarea rows="3" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?>  style="display: none"><?=$item['value']?></textarea>
+        <form class="ui form <?=$color?> segment">
+          <div class="field">
+            <label>Description</label>
+            <div class="itilcontent">
+              <?=$content?>
+            </div>
+          </div>
+        </form>
+        <!-- ?php foreach ($fields as $item): ?>
+          ?php if ($item['name'] == 'content'): ?>
+            <div id="editor?php echo $item['name'] ?>">?=$item['value']?></div>
+            <textarea rows="3" name="?=$item['name']?>" ?php if (isset($item['readonly'])){ ?>readonly="?=$item['readonly']?>"?php } ?>  style="display: none">?=$item['value']?></textarea>
 <script type="text/javascript">
-editor<?php echo $item['name'] ?> = new toastui.Editor({
-  el: document.querySelector('#editor<?php echo $item['name'] ?>'),
+editor?php echo $item['name'] ?> = new toastui.Editor({
+  el: document.querySelector('#editor?php echo $item['name'] ?>'),
   initialEditType: 'markdown',
   previewStyle: 'vertical',
   initialEditType: 'wysiwyg',
   events: {
     blur: () => {
-      document.querySelector(`textarea[name='<?=$item['name']?>']`).value = editor<?php echo $item['name'] ?>.getMarkdown();
+      document.querySelector(`textarea[name='?=$item['name']?>']`).value = editor?php echo $item['name'] ?>.getMarkdown();
     },
   },
 });
 </script>
-          <?php endif ?>
-        <?php endforeach ?>
+          ?php endif ?>
+        ?php endforeach ?> -->
 
         <!-- Tabs: followup, solutions -->
         <div class="ui secondary menu">
           <a class="item active" data-tab="feeds">Feeds</a>
-          <a class="item" data-tab="followup">Followup</a>
-          <a class="item" data-tab="solution">Solution</a>
+          <a class="yellow item" data-tab="followup">Followup</a>
+          <a class="blue item" data-tab="solution">Solution</a>
         </div>
         <div class="ui tab segment" hidden data-tab="feeds">
         </div>
-        <div class="ui active tab segment" data-tab="followup">
+        <div class="ui active tab yellow segment" data-tab="followup">
           <form method="post" action="/gsit/itilfollowups" class="ui form">
-            <div id="editorfollowup"></div>
-            <textarea rows="3" name="followup" style="display: none"></textarea>
+            <div class="ui grid">
+              <div class="eleven wide column">
+                <div id="editorfollowup"></div>
+                <textarea rows="3" name="followup" style="display: none"></textarea>
 <script type="text/javascript">
 editorfollowup = new toastui.Editor({
   el: document.querySelector('#editorfollowup'),
@@ -81,34 +91,94 @@ editorfollowup = new toastui.Editor({
   },
 });
 </script>
+              </div>
+              <div class="five wide column">
+                <div class="field">
+                  <label>Template</label>
+                  <select name="template">
+                  </select>
+                </div>
 
-              <div class="field">
-                <label>Privé</label>
-                <select name="private">
-                  <option value="1">Oui</option>
-                  <option selected="selected" value="0">Non</option>
-                </select>
+                <div class="field">
+                  <label>Privé</label>
+                  <div class="ui fitted mini toggle checkbox">
+                    <input type="checkbox" name="private"> <label></label>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label>Source du suivi</label>
+                  <select name="source">
+                  </select>
+                </div>
               </div>
-              <div>
-                <button class="ui button" type="submit">Add followup</button>
+            </div>
+            <div class="ui grid">
+              <div class="five wide column">
+                <div class="field">
+                  <label>Catégorie</label>
+                  <select name="category">
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Status</label>
+                  <select name="status">
+                  </select>
+                </div>
               </div>
-            </form>
+              <div class="five wide column">
+                <div class="field" style="width: 100px;margin-left: auto;margin-right: auto;">
+                  <label>Durée</label>
+                  <div class="ui right labeled input">
+                    <input type="number" name="time"  min="0">
+                    <div class="ui grey inverted label">
+                      <div class="ui labeled dropdown button">
+                        <input type="hidden" name="timetype">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">secondes</div>
+                        <div class="menu">
+                          <div class="item" data-value="seconds">secondes</div>
+                          <div class="item" data-value="minutes">minutes</div>
+                          <div class="item" data-value="hours">heures</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="six wide column">
+                <div class="field">
+                  <label>Utilisateur</label>
+                  <select name="user">
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Groupe</label>
+                  <select name="group">
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div style="text-align: center;">
+              <button class="ui primary button" type="submit">Add followup</button>
+            </div>
+          </form>
         </div>
         <div class="ui tab segment" data-tab="solution">
           TODO
         </div>
 
         <!-- Feeds -->
-        <div class="ui feed">
+        <div class="ui connected feed">
           <?php foreach ($feeds as $feed): ?>
             <div class="event">
               <div class="label">
                 <?php if ($feed['type'] == 'event'): ?>
-                  <i class="exchange alternate brown icon"></i>
+                  <i class="circular colored inverted exchange alternate brown icon"></i>
                 <?php elseif ($feed['usertype'] == 'tech'): ?>
-                  <i class="headset olive icon"></i>
+                  <i class="circular colored inverted headset olive icon"></i>
                 <?php else: ?>
-                  <i class="user blue icon"></i>
+                  <i class="circular colored inverted user blue icon"></i>
                 <?php endif ?>
                 <!-- <img src="/images/avatar/small/elliot.jpg"> -->
               </div>
@@ -140,7 +210,7 @@ editorfollowup = new toastui.Editor({
       </div>
       <div class="four wide column">
         <form method="post" class="ui form">
-          <button class="ui button right floated" type="submit">Save</button>
+          <button class="ui primary button right floated" type="submit">Save</button>
         <?php foreach ($fields as $item): ?>
           <?php if ($item['name'] == 'content') { continue; } ?>
           <div class="field">
@@ -177,7 +247,7 @@ editorfollowup = new toastui.Editor({
               <?php if (!isset($item['readonly'])){ ?>
               <div
                 class="ui <?php if (isset($item['multiple'])) { echo 'multiple ';} ?>selection dropdown remotedropdown"
-                data-url="http://127.0.0.1/gsit96/gsit/dropdown"
+                data-url="http://127.0.0.1/gsit/dropdown"
                 data-itemtype="<?=$item['itemtype']?>"
               >
                 <input type="hidden" name="<?=$item['name']?>" <?php if (isset($item['readonly'])){ ?>readonly="<?=$item['readonly']?>"<?php } ?>  value="<?=$item['value']?>">
@@ -257,7 +327,7 @@ editor<?php echo $item['name'] ?> = new toastui.Editor({
             <?php endif ?>
           </div>
         <?php endforeach ?>
-          <button class="ui button right floated" type="submit">Save</button>
+          <button class="ui primary button right floated" type="submit">Save</button>
         </form>
 
       </div>

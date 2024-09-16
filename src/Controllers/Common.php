@@ -139,17 +139,17 @@ class Common
     // update
     $myItem->save();
 
-    // manage logs
+    // manage logs => manage it into model
 
     // post update
 
     // add message to session
     $session = new \SlimSession\Helper();
-    $session->message = "The computer has been updated correctly";
+    $session->message = "The item has been updated correctly";
 
     $uri = $request->getUri();
-    $response = $response->withStatus(302);
-    return $response->withHeader('Location', (string) $uri);
+    header('Location: ' . (string) $uri);
+    exit();
   }
 
   protected function commonShowITILItem(Request $request, Response $response, $args, $item): Response
@@ -183,6 +183,7 @@ class Common
       'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
       'icon'         => $item->getIcon(),
       'color'        => $myItem->getColor(),
+      'content'      => \App\Controllers\Toolbox::convertMarkdownToHtml($myItem->content),
     ];
     return $renderer->render($response, 'ITILForm.php', $viewData);
   }

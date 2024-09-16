@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use GeneaLabs\LaravelPivotEvents\Traits\PivotEventTrait;
 use Illuminate\Database\Eloquent\Model;
+use stdClass;
 
 class Common extends Model
 {
+  use PivotEventTrait;
+
   protected $definition = null;
   protected $titles = ['not defined', 'not defined'];
   protected $icon = '';
@@ -20,7 +24,18 @@ class Common extends Model
 
     static::updated(function ($model)
     {
-      \App\Models\Common::changesOnUpdated($model, $model->original);
+      if (get_class($model) != 'App\Models\Log')
+      {
+        $model->changesOnUpdated();
+      }
+    });
+
+    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+      $model->changesOnPivotUpdated($relationName, $pivotIds, 'add');
+    });
+
+    static::pivotDetached(function ($model, $relationName, $pivotIds) {
+      $model->changesOnPivotUpdated($relationName, $pivotIds, 'delete');
     });
   }
 
@@ -144,7 +159,8 @@ class Common extends Model
       } else {
         $field['value'] = $myItem->{$field['name']};
       }
-      if (isset($field['readonly'])) {
+      if (isset($field['readonly']))
+      {
         $field['readonly'] = 'readonly';
       }
     }
@@ -155,35 +171,98 @@ class Common extends Model
   /**
    * Add in changes when update fields
    */
-  public static function changesOnUpdated($model, $original)
+  public function changesOnUpdated()
   {
-    $changes = $model->getChanges();
-    $casts = $model->getCasts();
+    $changes = $this->getChanges();
+    $casts = $this->getCasts();
     foreach ($changes as $key => $newValue)
     {
       if (in_array($key, ['created_at', 'date_mod']))
       {
         continue;
       }
-      $oldValue = $original[$key];
+      $oldValue = $this->original[$key];
       if (isset($casts[$key]) && $casts[$key] == 'boolean')
       {
         $newValue = (boolval($newValue) ? 'true' : 'false');
         $oldValue = (boolval($oldValue) ? 'true' : 'false');
       }
-
       // TODO for textarea
-      if (count_chars($newValue) >= 255 || count_chars($oldValue) >= 255)
+      if (strlen($newValue) >= 255 || strlen($oldValue) >= 255)
       {
         return;
       }
 
+      // get the id_search_option
+      $definitions = $this->getDefinitions();
+      $idSearchOption = 0;
+      foreach ($definitions as $definition)
+      {
+        if ($definition['name'] == $key)
+        {
+          $idSearchOption = $definition['id'];
+          break;
+        }
+      }
+  
       \App\Controllers\Log::addEntry(
-        $model,
+        $this,
         '{username} changed ' . $key . ' to "{new_value}"',
         $newValue,
         $oldValue,
+        $idSearchOption,
       );
+    }
+  }
+
+  /**
+   * Add in changes when update fields
+   * @param $name string  name of the field (=name in definition)
+   */
+  public function changesOnPivotUpdated($name, $pivotIds, $type = 'add')
+  {
+    // get the id_search_option
+    $definitions = $this->getDefinitions();
+    $idSearchOption = 0;
+    $title = '';
+    $item = new stdClass();
+    foreach ($definitions as $definition)
+    {
+      if ($definition['name'] == $name)
+      {
+        $idSearchOption = $definition['id'];
+        $title = $definition['title'];
+        $item = new $definition['itemtype']();
+        break;
+      }
+    }
+    if ($type == 'add')
+    {
+      foreach ($pivotIds as $id)
+      {
+        $myItem = $item->find($id);
+        \App\Controllers\Log::addEntry(
+          $this,
+          '{username} Add ' . $title . ' to "{new_value}"',
+          $myItem->name,
+          null,
+          $idSearchOption,
+        );
+      }
+    }
+    if ($type == 'delete')
+    {
+      foreach ($pivotIds as $id)
+      {
+        $myItem = $item->find($id);
+        \App\Controllers\Log::addEntry(
+          $this,
+          '{username} delete ' . $title . ' to "{new_value}"',
+          null,
+          $myItem->name,
+          $idSearchOption,
+        );
+      }
     }
   }
 }

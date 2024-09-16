@@ -112,7 +112,7 @@
 
       <?php if (isset($message)): ?>
       $.toast({
-        title: 'LOOK',
+        title: 'Action',
         message: '<?=$message?>',
         showProgress: 'top',
         classProgress: 'green',

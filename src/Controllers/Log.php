@@ -14,18 +14,17 @@ final class Log extends Common
     $message,
     $new_value,
     $old_value = null,
-    $property = null,
+    $idSearchOption = 0,
     $set_by_rule = false
   )
   {
     $log = new \App\Models\Log();
     // $log->userid = $GLOBALS['user_id'];
-    // $user = \App\Models\User::find($GLOBALS['user_id']);
+    $user = \App\Models\User::find($GLOBALS['user_id']);
     // Store the name in case the user account deleted later
-    $user = null;
     if (!is_null($user))
     {
-      $log->username = $user->name;
+      $log->user_name = $user->completename . ' (' . $GLOBALS['user_id'] . ')';
     }
     if (is_object($model))
     {
@@ -49,6 +48,7 @@ final class Log extends Common
     } else {
       $log->new_value = $new_value;
     }
+    $log->id_search_option = $idSearchOption;
 
     $log->save();
   }

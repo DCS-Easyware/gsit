@@ -71,7 +71,7 @@
         <?php if (!isset($item['readonly'])){ ?>
         <div
           class="ui <?php if (isset($item['multiple'])) { echo 'multiple ';} ?>selection dropdown remotedropdown"
-          data-url="http://127.0.0.1/gsit96/gsit/dropdown"
+          data-url="http://127.0.0.1/gsit/dropdown"
           data-itemtype="<?=$item['itemtype']?>"
         >
           <input type="hidden" name="<?=$item['name']?>" value="<?=$item['value']?>">

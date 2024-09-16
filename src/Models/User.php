@@ -93,7 +93,10 @@ class User extends Common
     }
 
     $name = '';
-    if (!is_null($this->realname) || !is_null($this->firstname))
+    if (
+      (!is_null($this->realname) && !empty($this->realname)) ||
+      (!is_null($this->firstname) && !empty($this->firstname))
+    )
     {
       $names = [];
       if (!is_null($this->firstname))

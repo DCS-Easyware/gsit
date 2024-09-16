@@ -18,6 +18,14 @@ $app = AppFactory::create();
 $app->addRoutingMiddleware();
 $app->setBasePath('/gsit');
 
+// See https://github.com/tuupola/slim-jwt-auth
+$container = $app->getContainer();
+
+$container["jwt"] = function ($container)
+{
+  return new StdClass();
+};
+
 $prefix = "";
 if (strstr($_SERVER['REQUEST_URI'], 'index.php'))
 {
@@ -30,14 +38,42 @@ if (strstr($_SERVER['REQUEST_URI'], '/'))
   $prefix = $uri_spl[0];
 }
 
-// $app->get('/', function (Request $request, Response $response, $args) {
-//     $response->getBody()->write("Hello world!");
-//     return $response;
-// });
+$secret = sodium_base642bin('TEST', SODIUM_BASE64_VARIANT_ORIGINAL);
 
+$app->add(new Tuupola\Middleware\JwtAuthentication([
+  "ignore" => [
+    $prefix . "/gsit/ping",
+    $prefix . "/gsit/login"
+  ],
+  "secure" => false,
+  "secret" => $secret,
+  "before" => function ($request, $arguments)
+  {
+    $myUser = \App\Models\User::find($arguments['decoded']['user_id']);
+    // $jwtid = $myUser->getPropertyAttribute('userjwtid');
+    // if (is_null($jwtid) || $jwtid != $arguments['decoded']['jti'])
+    // {
+    //   throw new Exception('jti changed, ask for a new token ' . $myUser['jwtid'] . ' != ' .
+    //                       $arguments['decoded']['jti'], 401);
+    // }
+    $GLOBALS['user_id'] = $arguments['decoded']['user_id'];
+    // Load permissions
+    // $GLOBALS['permissions'] = \App\v1\Controllers\Config\Role::generatePermission(
+    //   $arguments['decoded']['role_id']
+    // );
+  },
+  "error" => function ($response, $arguments)
+  {
+    $GLOBALS['user_id'] = null;
+    // for web, redirect to login page
+    header('Location: /gsit/login');
+    exit();
 
-// $app->get('/hello', function ($request, $response) {
-// })->setName('profile');
+    // for API
+    throw new Exception($arguments["message"], 401);
+  }
+]));
+
 
 $capsule = new Capsule();
 $configdb = [

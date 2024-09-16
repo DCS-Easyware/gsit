@@ -19,6 +19,11 @@ final class Route
 
     $app->map(['POST'], '/dropdown', \App\Controllers\Dropdown::class . ':getAll');
 
+    $app->group($prefix . '/login', function (RouteCollectorProxy $login)
+    {
+      $login->map(['GET'], '', \App\Controllers\Login::class . ':getLogin');
+      $login->map(['POST'], '', \App\Controllers\Login::class . ':postLogin');
+    });
 
     $app->group($prefix . '/computers', function (RouteCollectorProxy $computers)
     {
