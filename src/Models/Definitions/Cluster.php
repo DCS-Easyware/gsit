@@ -27,8 +27,8 @@ class Cluster
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'clustertypes_id',
-        'itemtype' => '\App\Models\ClusterType',
+        'dbname' => 'clustertype_id',
+        'itemtype' => '\App\Models\Clustertype',
       ],
       [
         'id'    => 5,

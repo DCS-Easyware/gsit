@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Supplier extends Common
 {
-  protected $table = 'glpi_suppliers';
   protected $definition = '\App\Models\Definitions\Supplier';
   protected $titles = ['Supplier', 'Suppliers'];
   protected $icon = 'dolly';
@@ -26,8 +25,6 @@ class Supplier extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\SupplierType', 'suppliertypes_id');
+    return $this->belongsTo('\App\Models\Suppliertype');
   }
-
-
 }

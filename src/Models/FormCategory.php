@@ -11,5 +11,4 @@ class FormCategory extends Common
   protected $definition = '\App\Models\Definitions\FormCategory';
   protected $titles = ['Form category', 'Form categories'];
   protected $icon = 'edit';
-
 }

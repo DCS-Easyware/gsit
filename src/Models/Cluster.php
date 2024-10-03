@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cluster extends Common
 {
-  protected $table = 'glpi_clusters';
   protected $definition = '\App\Models\Definitions\Cluster';
   protected $titles = ['Cluster', 'Clusters'];
   protected $icon = 'project diagram';
@@ -35,23 +34,21 @@ class Cluster extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\ClusterType', 'clustertypes_id');
+    return $this->belongsTo('\App\Models\Clustertype');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\State');
   }
 
   public function userstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_tech');
+    return $this->belongsTo('\App\Models\User', 'user_id_tech');
   }
 
   public function groupstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id_tech');
+    return $this->belongsTo('\App\Models\Group', 'group_id_tech');
   }
-
-
 }

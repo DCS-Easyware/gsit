@@ -29,12 +29,11 @@ class FormcreatorCategory extends Common
 
   public function knowbaseitemcategory(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\KnowbaseItemCategory', 'knowbaseitemcategories_id');
+    return $this->belongsTo('\App\Models\Knowbaseitemcategory');
   }
 
   public function category(): BelongsTo
   {
     return $this->belongsTo('\App\Models\FormcreatorCategory', 'plugin_formcreator_categories_id');
   }
-
 }

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Rack extends Common
 {
-  protected $table = 'glpi_racks';
   protected $definition = '\App\Models\Definitions\Rack';
   protected $titles = ['Rack', 'Racks'];
   protected $icon = 'print';
@@ -45,37 +44,36 @@ class Rack extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\RackType', 'racktypes_id');
+    return $this->belongsTo('\App\Models\Racktype');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\RackModel', 'rackmodels_id');
+    return $this->belongsTo('\App\Models\Rackmodel');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\State');
   }
 
   public function manufacturer(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Manufacturer', 'manufacturers_id');
+    return $this->belongsTo('\App\Models\Manufacturer');
   }
 
   public function groupstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id_tech');
+    return $this->belongsTo('\App\Models\Group', 'group_id_tech');
   }
 
   public function userstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_tech');
+    return $this->belongsTo('\App\Models\User', 'user_id_tech');
   }
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
-
 }

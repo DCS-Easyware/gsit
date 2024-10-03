@@ -19,8 +19,8 @@ class FormcreatorCategory
         'title' => $translator->translate('Knowbase category'),
         'type'  => 'dropdown_remote',
         'name'  => 'knowbaseitemcategory',
-        'dbname' => 'knowbaseitemcategories_id',
-        'itemtype' => '\App\Models\KnowbaseItemCategory',
+        'dbname' => 'knowbaseitemcategory_id',
+        'itemtype' => '\App\Models\Knowbaseitemcategory',
       ],
       [
         'id'    => 3,

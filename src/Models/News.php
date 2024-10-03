@@ -24,10 +24,8 @@ class News extends Common
     // 'user:id,name',
   ];
 
-
   // public function user(): BelongsTo
   // {
   //   return $this->belongsTo('\App\Models\User', 'users_id');
   // }
-
 }

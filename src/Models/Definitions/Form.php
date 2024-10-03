@@ -36,7 +36,7 @@ class Form
       ],
       // [
       //   'id'    => 5,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -167,7 +167,7 @@ class Form
   }
 
   public static function getRelatedPages($rootUrl)
-    {
+  {
     global $translator;
     return [
       [

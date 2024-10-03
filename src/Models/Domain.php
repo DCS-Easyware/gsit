@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Domain extends Common
 {
-  protected $table = 'glpi_domains';
   protected $definition = '\App\Models\Definitions\Domain';
   protected $titles = ['Domain', 'Domains'];
   protected $icon = 'globe americas';
@@ -32,18 +31,16 @@ class Domain extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\DomainType', 'domaintypes_id');
+    return $this->belongsTo('\App\Models\Domaintype');
   }
 
   public function userstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_tech');
+    return $this->belongsTo('\App\Models\User', 'user_id_tech');
   }
 
   public function groupstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id_tech');
+    return $this->belongsTo('\App\Models\Group', 'group_id_tech');
   }
-
-
 }

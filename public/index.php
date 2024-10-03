@@ -1,6 +1,7 @@
 <?php
 
 use Slim\Factory\AppFactory;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Symfony\Component\ErrorHandler\ErrorHandler as SymfonyErrorHandler;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Events\Dispatcher;
@@ -12,6 +13,7 @@ $DB = new DB();
 // Load lang
 $lang = new \App\Translation();
 $translator = $lang->loadLanguage();
+$apiversion = 'v1';
 
 $app = AppFactory::create();
 
@@ -112,7 +114,6 @@ $customErrorHandler = function (
 ) use ($app)
 {
   // TODO write error page
-
 };
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);

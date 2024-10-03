@@ -35,16 +35,16 @@ class Phone
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'phonetypes_id',
-        'itemtype' => '\App\Models\PhoneType',
+        'dbname' => 'phonetype_id',
+        'itemtype' => '\App\Models\Phonetype',
       ],
       [
         'id'    => 40,
         'title' => $translator->translatePlural('Model', 'Models', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'model',
-        'dbname' => 'phonemodels_id',
-        'itemtype' => '\App\Models\PhoneModel',
+        'dbname' => 'phonemodel_id',
+        'itemtype' => '\App\Models\Phonemodel',
       ],
       [
         'id'    => 5,
@@ -135,8 +135,8 @@ class Phone
         'title' => $translator->translatePlural('Power supply', 'Power supplies', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'phonepowersupply',
-        'dbname' => 'phonepowersupplies_id',
-        'itemtype' => '\App\Models\PhonePowerSupply',
+        'dbname' => 'phonepowersupply_id',
+        'itemtype' => '\App\Models\Phonepowersupply',
       ],
       [
         'id'    => 43,
@@ -158,7 +158,7 @@ class Phone
       // ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -225,12 +225,12 @@ class Phone
       [
         'title' => $translator->translatePlural('Operating system', 'Operating systems', 2),
         'icon' => 'laptop house',
-        'link' => $rootUrl.'/operatingsystem',
+        'link' => $rootUrl . '/operatingsystem',
       ],
       [
         'title' => $translator->translatePlural('Software', 'Softwares', 2),
         'icon' => 'cube',
-        'link' => $rootUrl.'/softwares',
+        'link' => $rootUrl . '/softwares',
       ],
       [
         'title' => $translator->translatePlural('Component', 'Components', 2),

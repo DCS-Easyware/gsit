@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Change extends Common
 {
-  protected $table = 'glpi_changes';
   protected $definition = '\App\Models\Definitions\Change';
   protected $titles = ['Change', 'Changes'];
   protected $icon = 'clipboard check';
@@ -32,18 +31,16 @@ class Change extends Common
 
   public function itilcategorie(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\ITILCategory', 'itilcategories_id');
+    return $this->belongsTo('\App\Models\Category');
   }
 
   public function usersidlastupdater(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_lastupdater');
+    return $this->belongsTo('\App\Models\User', 'user_id_lastupdater');
   }
 
   public function usersidrecipient(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_recipient');
+    return $this->belongsTo('\App\Models\User', 'user_id_recipient');
   }
-
-
 }

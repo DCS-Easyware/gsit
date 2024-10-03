@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Fieldunicity extends Common
 {
-  protected $table = 'glpi_fieldunicities';
   protected $definition = '\App\Models\Definitions\Fieldunicity';
   protected $titles = ['Fields unicity', 'Fields unicity'];
   protected $icon = 'edit';
-
 }

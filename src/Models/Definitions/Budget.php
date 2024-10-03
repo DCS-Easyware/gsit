@@ -16,7 +16,7 @@ class Budget
       ],
       [
         'id'    => 7,
-        'title' => $translator->translate('price'."\004".'Value'),
+        'title' => $translator->translate('price' . "\004" . 'Value'),
         'type'  => 'input',
         'name'  => 'value',
       ],
@@ -37,8 +37,8 @@ class Budget
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'budgettypes_id',
-        'itemtype' => '\App\Models\BudgetType',
+        'dbname' => 'budgettype_id',
+        'itemtype' => '\App\Models\Budgettype',
       ],
       [
         'id'    => 16,
@@ -62,7 +62,7 @@ class Budget
       // ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',

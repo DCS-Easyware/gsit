@@ -93,9 +93,9 @@ class Ticket
         'id'    => 7,
         'title' => $translator->translate('Category'),
         'type'  => 'dropdown_remote',
-        'name'  => 'itilcategorie',
-        'dbname' => 'itilcategories_id',
-        'itemtype' => '\App\Models\ITILCategory',
+        'name'  => 'category',
+        'dbname' => 'categorie_id',
+        'itemtype' => '\App\Models\Category',
       ],
       [
         'id'    => 45,
@@ -104,10 +104,10 @@ class Ticket
         'name'  => 'actiontime',
         'dbname'  => 'actiontime',
         'values' => self::getTimestampArray(
-            [
-              'addfirstminutes' => true
-            ]
-          ),
+          [
+            'addfirstminutes' => true
+          ]
+        ),
         // 'type'  => 'input',
         // 'name'  => 'actiontime',
       ],
@@ -193,9 +193,6 @@ class Ticket
     ];
 
     // TODO others like users
-
-
-
   }
 
   public static function getStatusArray()
@@ -210,13 +207,13 @@ class Ticket
         'icon'  => 'book open',
       ],
       2 => [
-        'title' => $translator->translate('status'."\004".'Processing (assigned)'),
+        'title' => $translator->translate('status' . "\004" . 'Processing (assigned)'),
         'displaystyle' => 'marked',
         'color' => 'blue',
         'icon'  => 'book reader',
       ],
       3 => [
-        'title' => $translator->translate('status'."\004".'Processing (planned)'),
+        'title' => $translator->translate('status' . "\004" . 'Processing (planned)'),
         'displaystyle' => 'marked',
         'color' => 'blue',
         'icon'  => 'business time',
@@ -247,19 +244,19 @@ class Ticket
     global $translator;
     return [
       5 => [
-        'title' => $translator->translate('urgency'."\004". 'Very high'),
+        'title' => $translator->translate('urgency' . "\004" . 'Very high'),
       ],
       4 => [
-        'title' => $translator->translate('urgency'."\004". 'High'),
+        'title' => $translator->translate('urgency' . "\004" . 'High'),
       ],
       3 => [
-        'title' => $translator->translate('urgency'."\004". 'Medium'),
+        'title' => $translator->translate('urgency' . "\004" . 'Medium'),
       ],
       2 => [
-        'title' => $translator->translate('urgency'."\004". 'Low'),
+        'title' => $translator->translate('urgency' . "\004" . 'Low'),
       ],
       1 => [
-        'title' => $translator->translate('urgency'."\004". 'Very low'),
+        'title' => $translator->translate('urgency' . "\004" . 'Very low'),
       ],
     ];
   }
@@ -269,19 +266,19 @@ class Ticket
     global $translator;
     return [
       5 => [
-        'title' => $translator->translate('impact'."\004". 'Very high'),
+        'title' => $translator->translate('impact' . "\004" . 'Very high'),
       ],
       4 => [
-        'title' => $translator->translate('impact'."\004". 'High'),
+        'title' => $translator->translate('impact' . "\004" . 'High'),
       ],
       3 => [
-        'title' => $translator->translate('impact'."\004". 'Medium'),
+        'title' => $translator->translate('impact' . "\004" . 'Medium'),
       ],
       2 => [
-        'title' => $translator->translate('impact'."\004". 'Low'),
+        'title' => $translator->translate('impact' . "\004" . 'Low'),
       ],
       1 => [
-        'title' => $translator->translate('impact'."\004". 'Very low'),
+        'title' => $translator->translate('impact' . "\004" . 'Very low'),
       ],
     ];
   }
@@ -291,32 +288,32 @@ class Ticket
     global $translator;
     return [
       6 => [
-        'title' => $translator->translate('priority'."\004". 'Major'),
+        'title' => $translator->translate('priority' . "\004" . 'Major'),
         'color' => 'gsitmajor',
         'icon'  => 'fire extinguisher',
       ],
       5 => [
-        'title' => $translator->translate('priority'."\004". 'Very high'),
+        'title' => $translator->translate('priority' . "\004" . 'Very high'),
         'color' => 'gsitveryhigh',
         'icon'  => 'fire alternate',
       ],
       4 => [
-        'title' => $translator->translate('priority'."\004". 'High'),
+        'title' => $translator->translate('priority' . "\004" . 'High'),
         'color' => 'gsithigh',
         'icon'  => 'fire',
       ],
       3 => [
-        'title' => $translator->translate('priority'."\004". 'Medium'),
+        'title' => $translator->translate('priority' . "\004" . 'Medium'),
         'color' => 'gsitmedium',
         'icon'  => 'volume up',
       ],
       2 => [
-        'title' => $translator->translate('priority'."\004". 'Low'),
+        'title' => $translator->translate('priority' . "\004" . 'Low'),
         'color' => 'gsitlow',
         'icon'  => 'volume down',
       ],
       1 => [
-        'title' => $translator->translate('priority'."\004". 'Very low'),
+        'title' => $translator->translate('priority' . "\004" . 'Very low'),
         'color' => 'gsitverylow',
         'icon'  => 'volume off',
       ],
@@ -325,99 +322,120 @@ class Ticket
 
   public static function getTimestampArray($options = [])
   {
-     global $translator;
+    global $translator;
 
-     $MINUTE_TIMESTAMP = 60;
-     $HOUR_TIMESTAMP = 3600;
-     $DAY_TIMESTAMP = 86400;
-     $WEEK_TIMESTAMP = 604800;
-     $MONTH_TIMESTAMP = 2592000;
+    $MINUTE_TIMESTAMP = 60;
+    $HOUR_TIMESTAMP = 3600;
+    $DAY_TIMESTAMP = 86400;
+    $WEEK_TIMESTAMP = 604800;
+    $MONTH_TIMESTAMP = 2592000;
 
 
-     $params = [];
-     $params['min']                 = 0;
-     $params['max']                 = $DAY_TIMESTAMP;
-     $params['step']                = 5*$MINUTE_TIMESTAMP;
-     $params['addfirstminutes']     = false;
-     $params['toadd']               = [];
-     $params['inhours']             = false;
+    $params = [];
+    $params['min']                 = 0;
+    $params['max']                 = $DAY_TIMESTAMP;
+    $params['step']                = 5 * $MINUTE_TIMESTAMP;
+    $params['addfirstminutes']     = false;
+    $params['toadd']               = [];
+    $params['inhours']             = false;
 
-     if (is_array($options) && count($options)) {
-        foreach ($options as $key => $val) {
-           $params[$key] = $val;
-        }
-     }
+    if (is_array($options) && count($options))
+    {
+      foreach ($options as $key => $val)
+      {
+        $params[$key] = $val;
+      }
+    }
 
-     $params['min'] = floor($params['min'] / $params['step']) * $params['step'];
+    $params['min'] = floor($params['min'] / $params['step']) * $params['step'];
 
-     if ($params['min'] == 0) {
-        $params['min'] = $params['step'];
-     }
+    if ($params['min'] == 0)
+    {
+      $params['min'] = $params['step'];
+    }
 
-     $values = [];
+    $values = [];
 
-     if ($params['addfirstminutes']) {
-        $max = max($params['min'], 10*$MINUTE_TIMESTAMP);
-        for ($i=$MINUTE_TIMESTAMP; $i < $max; $i+=$MINUTE_TIMESTAMP) {
-           $values[$i] = '';
-        }
-     }
-
-     for ($i = $params['min']; $i <= $params['max']; $i+=$params['step']) {
+    if ($params['addfirstminutes'])
+    {
+      $max = max($params['min'], 10 * $MINUTE_TIMESTAMP);
+      for ($i = $MINUTE_TIMESTAMP; $i < $max; $i += $MINUTE_TIMESTAMP)
+      {
         $values[$i] = '';
-     }
+      }
+    }
 
-     if (count($params['toadd'])) {
-        foreach ($params['toadd'] as $key) {
-           $values[$key] = '';
+    for ($i = $params['min']; $i <= $params['max']; $i += $params['step'])
+    {
+      $values[$i] = '';
+    }
+
+    if (count($params['toadd']))
+    {
+      foreach ($params['toadd'] as $key)
+      {
+        $values[$key] = '';
+      }
+      ksort($values);
+    }
+
+    foreach ($values as $i => $val)
+    {
+      if (empty($val))
+      {
+        if ($params['inhours'])
+        {
+          $day  = 0;
+          $hour = floor($i / $HOUR_TIMESTAMP);
+        } else {
+          $day  = floor($i / $DAY_TIMESTAMP);
+          $hour = floor(($i % $DAY_TIMESTAMP) / $HOUR_TIMESTAMP);
         }
-        ksort($values);
-     }
-
-     foreach ($values as $i => $val) {
-        if (empty($val)) {
-           if ($params['inhours']) {
-              $day  = 0;
-              $hour = floor($i/$HOUR_TIMESTAMP);
-           } else {
-              $day  = floor($i/$DAY_TIMESTAMP);
-              $hour = floor(($i%$DAY_TIMESTAMP)/$HOUR_TIMESTAMP);
-           }
-           $minute     = floor(($i%$HOUR_TIMESTAMP)/$MINUTE_TIMESTAMP);
-           if ($minute === '0') {
-              $minute = '00';
-           }
-           $values[$i] = '';
-           if ($day > 0) {
-              if (($hour > 0) || ($minute > 0)) {
-                 if ($minute < 10) {
-                    $minute = '0'.$minute;
-                 }
-
-                 //TRANS: %1$d is the number of days, %2$d the number of hours,
-                 //       %3$s the number of minutes : display 1 day 3h15
-                 $values[$i] = sprintf($translator->translatePlural('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
-                                      $day, $hour, $minute);
-              } else {
-                 $values[$i] = sprintf($translator->translatePlural('%d day', '%d days', $day), $day);
-              }
-
-           } else if ($hour > 0 || $minute > 0) {
-              if ($minute < 10) {
-                 $minute = '0'.$minute;
-              }
-
-              //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
-              $values[$i] = sprintf($translator->translate('%1$dh%2$s'), $hour, $minute);
-           }
+        $minute     = floor(($i % $HOUR_TIMESTAMP) / $MINUTE_TIMESTAMP);
+        if ($minute === '0')
+        {
+          $minute = '00';
         }
-     }
+        $values[$i] = '';
+        if ($day > 0)
+        {
+          if (($hour > 0) || ($minute > 0))
+          {
+            if ($minute < 10)
+            {
+              $minute = '0' . $minute;
+            }
 
-     $tab = [];
-     foreach (array_keys($values) as $key) {
-       $tab[$key]['title'] = $values[$key];
-     }
-     return $tab;
+            //TRANS: %1$d is the number of days, %2$d the number of hours,
+            //       %3$s the number of minutes : display 1 day 3h15
+            $values[$i] = sprintf(
+              $translator->translatePlural('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
+              $day,
+              $hour,
+              $minute
+            );
+          } else {
+              $values[$i] = sprintf($translator->translatePlural('%d day', '%d days', $day), $day);
+          }
+        } elseif ($hour > 0 || $minute > 0)
+        {
+          if ($minute < 10)
+          {
+              $minute = '0' . $minute;
+          }
+
+          //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
+          $values[$i] = sprintf($translator->translate('%1$dh%2$s'), $hour, $minute);
+        }
+      }
+    }
+
+    $tab = [];
+    foreach (array_keys($values) as $key)
+    {
+      $tab[$key]['title'] = $values[$key];
+    }
+    return $tab;
   }
 
   public static function getRelatedPages()

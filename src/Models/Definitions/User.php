@@ -18,7 +18,7 @@ class User
         'id'    => 34,
         'title' => $translator->translate('Last name'),
         'type'  => 'input',
-        'name'  => 'realname',
+        'name'  => 'lastname',
       ],
       [
         'id'    => 9,
@@ -73,8 +73,8 @@ class User
         'title' => $translator->translate('Category'),
         'type'  => 'dropdown_remote',
         'name'  => 'category',
-        'dbname' => 'usercategories_id',
-        'itemtype' => '\App\Models\UserCategory',
+        'dbname' => 'usercategory_id',
+        'itemtype' => '\App\Models\Usercategory',
       ],
       [
         'id'    => 16,
@@ -87,8 +87,8 @@ class User
         'title' => $translator->translate('Title'),
         'type'  => 'dropdown_remote',
         'name'  => 'title',
-        'dbname' => 'usertitles_id',
-        'itemtype' => '\App\Models\UserTitle',
+        'dbname' => 'usertitle_id',
+        'itemtype' => '\App\Models\Usertitle',
       ],
       [
         'id'    => 3,
@@ -103,7 +103,7 @@ class User
         'title' => $translator->translate('Default profile'),
         'type'  => 'dropdown_remote',
         'name'  => 'profile',
-        'dbname' => 'profiles_id',
+        'dbname' => 'profile_id',
         'itemtype' => '\App\Models\Profile',
       ],
       [
@@ -119,7 +119,7 @@ class User
         'title' => $translator->translate('Default entity'),
         'type'  => 'dropdown_remote',
         'name'  => 'entity',
-        'dbname' => 'entities_id',
+        'dbname' => 'entity_id',
         'itemtype' => '\App\Models\Entity',
       ],
       [

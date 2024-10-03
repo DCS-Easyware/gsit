@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Computer extends Common
 {
-  protected $table = 'glpi_computers';
   protected $definition = '\App\Models\Definitions\Computer';
   protected $titles = ['Computer', 'Computers'];
   protected $icon = 'laptop';
@@ -57,57 +56,56 @@ class Computer extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\ComputerType', 'computertypes_id');
+    return $this->belongsTo('\App\Models\Computertype');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\ComputerModel', 'computermodels_id');
+    return $this->belongsTo('\App\Models\Computermodel');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\State');
   }
 
   public function manufacturer(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Manufacturer', 'manufacturers_id');
+    return $this->belongsTo('\App\Models\Manufacturer');
   }
 
   public function network(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Network', 'networks_id');
+    return $this->belongsTo('\App\Models\Network');
   }
 
   public function groupstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id_tech');
+    return $this->belongsTo('\App\Models\Group', 'group_id_tech');
   }
 
   public function userstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_tech');
+    return $this->belongsTo('\App\Models\User', 'user_id_tech');
   }
 
   public function user(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User');
   }
 
   public function group(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id');
+    return $this->belongsTo('\App\Models\Group');
   }
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
 
   public function autoupdatesystem(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\AutoUpdateSystem', 'autoupdatesystems_id');
+    return $this->belongsTo('\App\Models\Autoupdatesystem');
   }
-
 }

@@ -59,7 +59,7 @@ jobs:
       run: echo -en "<?php\nclass DB {\n   public \$dbhost     = '127.0.0.1';\n   public \$dbuser     = 'gsit';\n   public \$dbpassword = 'gsit';\n   public \$dbdefault  = 'gsit';\n}" > config/config_db.php
 
     - name: Run PHPStan
-      run: phpstan analyse config src public
+      run: phpstan analyse db src public
 
   lint:
     # Do not run scheduled lint on tier repositories
@@ -106,7 +106,7 @@ jobs:
           .github/actions/init_install-dependencies.sh
       - name: "PHP lint (phpcs)"
         run: |
-          files=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }} | grep '^\(src\|public)' || true)
+          files=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }} | grep '^\(db\|src\|public)' || true)
           if [ -n "$files" ]; then
             phpcs -q --report=checkstyle $files | cs2pr
           fi

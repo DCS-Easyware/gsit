@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Enclosure extends Common
 {
-  protected $table = 'glpi_enclosures';
   protected $definition = '\App\Models\Definitions\Enclosure';
   protected $titles = ['Enclosure', 'Enclosures'];
   protected $icon = 'th';
@@ -42,32 +41,31 @@ class Enclosure extends Common
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\EnclosureModel', 'enclosuremodels_id');
+    return $this->belongsTo('\App\Models\Enclosuremodel');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\State');
   }
 
   public function manufacturer(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Manufacturer', 'manufacturers_id');
+    return $this->belongsTo('\App\Models\Manufacturer');
   }
 
   public function groupstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id_tech');
+    return $this->belongsTo('\App\Models\Group', 'group_id_tech');
   }
 
   public function userstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_tech');
+    return $this->belongsTo('\App\Models\User', 'user_id_tech');
   }
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
-
 }

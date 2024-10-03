@@ -19,7 +19,7 @@ class Monitor
         'title' => $translator->translatePlural('Location', 'Locations', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'location',
-        'dbname' => 'locations_id',
+        'dbname' => 'location_id',
         'itemtype' => '\App\Models\Location',
       ],
       [
@@ -27,7 +27,7 @@ class Monitor
         'title' => $translator->translate('Status'),
         'type'  => 'dropdown_remote',
         'name'  => 'state',
-        'dbname' => 'states_id',
+        'dbname' => 'state_id',
         'itemtype' => '\App\Models\State',
       ],
       [
@@ -35,23 +35,23 @@ class Monitor
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'monitortypes_id',
-        'itemtype' => '\App\Models\MonitorType',
+        'dbname' => 'monitortype_id',
+        'itemtype' => '\App\Models\Monitortype',
       ],
       [
         'id'    => 40,
         'title' => $translator->translatePlural('Model', 'Models', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'model',
-        'dbname' => 'monitormodels_id',
-        'itemtype' => '\App\Models\MonitorModel',
+        'dbname' => 'monitormodel_id',
+        'itemtype' => '\App\Models\Monitormodel',
       ],
       [
         'id'    => 40,
         'title' => $translator->translatePlural('Manufacturer', 'Manufacturers', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'manufacturer',
-        'dbname' => 'manufacturers_id',
+        'dbname' => 'manufacturer_id',
         'itemtype' => '\App\Models\Manufacturer',
       ],
       [
@@ -83,7 +83,7 @@ class Monitor
         'title' => $translator->translatePlural('User', 'Users', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'user',
-        'dbname' => 'users_id',
+        'dbname' => 'user_id',
         'itemtype' => '\App\Models\User',
       ],
       [
@@ -91,7 +91,7 @@ class Monitor
         'title' => $translator->translatePlural('Group', 'Groups', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'group',
-        'dbname' => 'groups_id',
+        'dbname' => 'group_id',
         'itemtype' => '\App\Models\Group',
       ],
       [
@@ -184,7 +184,7 @@ class Monitor
       // ],
       // [
       //   'id'    => 49,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -193,14 +193,14 @@ class Monitor
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
     ];
@@ -218,12 +218,12 @@ class Monitor
       [
         'title' => $translator->translatePlural('Operating system', 'Operating systems', 2),
         'icon' => 'laptop house',
-        'link' => $rootUrl.'/operatingsystem',
+        'link' => $rootUrl . '/operatingsystem',
       ],
       [
         'title' => $translator->translatePlural('Software', 'Softwares', 2),
         'icon' => 'cube',
-        'link' => $rootUrl.'/softwares',
+        'link' => $rootUrl . '/softwares',
       ],
       [
         'title' => $translator->translatePlural('Connection', 'Connections', 2),

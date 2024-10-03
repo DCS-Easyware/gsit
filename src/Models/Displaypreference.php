@@ -2,11 +2,8 @@
 
 namespace App\Models;
 
-
 class Displaypreference extends Common
 {
-  protected $table = 'glpi_displaypreferences';
-
   /**
    * Get display preference for a user for an itemtype
    *
@@ -15,10 +12,10 @@ class Displaypreference extends Common
    *
    * @return array
   **/
-  static function getForTypeUser($itemtype, $user_id)
+  public static function getForTypeUser($itemtype, $user_id)
   {
     $items = \App\Models\Displaypreference::where('itemtype', $itemtype)
-      ->where('users_id', 0)->get();
+      ->where('user_id', 0)->get();
 
     $default_prefs = [];
     foreach ($items as $myItem)
@@ -44,8 +41,10 @@ class Displaypreference extends Common
     // $default_prefs = [];
     // $user_prefs = [];
 
-    // while ($data = $iterator->next()) {
-    //    if ($data["users_id"] != 0) {
+    // while ($data = $iterator->next())
+    // {
+    //    if ($data["users_id"] != 0)
+    //    {
     //       $user_prefs[] = $data["num"];    global $DB;
 
   //   $iterator = $DB->request([
@@ -63,8 +62,10 @@ class Displaypreference extends Common
   //  $default_prefs = [];
   //  $user_prefs = [];
 
-  //  while ($data = $iterator->next()) {
-  //     if ($data["users_id"] != 0) {
+  //  while ($data = $iterator->next())
+  // {
+  //     if ($data["users_id"] != 0)
+  //     {
   //        $user_prefs[] = $data["num"];
   //     } else {
   //        $default_prefs[] = $data["num"];
@@ -79,5 +80,5 @@ class Displaypreference extends Common
     // }
 
     // return count($user_prefs) ? $user_prefs : $default_prefs;
- }
+  }
 }

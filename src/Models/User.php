@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Common
 {
-  protected $table = 'glpi_users';
   protected $definition = '\App\Models\Definitions\User';
   protected $titles = ['User', 'Users'];
   protected $icon = 'user';
@@ -20,6 +19,7 @@ class User extends Common
     'profile',
     'supervisor',
     'group',
+    'completename',
   ];
 
   protected $visible = [
@@ -30,6 +30,7 @@ class User extends Common
     'profile',
     'supervisor',
     'group',
+    'completename',
   ];
 
   protected $with = [
@@ -44,46 +45,38 @@ class User extends Common
 
   public function category(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\UserCategory', 'usercategories_id');
+    return $this->belongsTo('\App\Models\Usercategory');
   }
 
   public function title(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\UserTitle', 'usertitles_id');
+    return $this->belongsTo('\App\Models\Usertitle');
   }
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
 
   public function entity(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Entity', 'entities_id');
+    return $this->belongsTo('\App\Models\Entity');
   }
 
   public function profile(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Profile', 'profiles_id');
+    return $this->belongsTo('\App\Models\Profile');
   }
 
   public function supervisor(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_supervisor');
+    return $this->belongsTo('\App\Models\User', 'user_id_supervisor');
   }
 
   public function group(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id');
+    return $this->belongsTo('\App\Models\Group');
   }
-
-  protected $appends = [
-    'completename',
-  ];
-
-  protected $visible = [
-    'completename',
-  ];
 
   public function getCompletenameAttribute()
   {
@@ -94,8 +87,8 @@ class User extends Common
 
     $name = '';
     if (
-      (!is_null($this->realname) && !empty($this->realname)) ||
-      (!is_null($this->firstname) && !empty($this->firstname))
+        (!is_null($this->lastname) && !empty($this->lastname)) ||
+        (!is_null($this->firstname) && !empty($this->firstname))
     )
     {
       $names = [];
@@ -103,9 +96,9 @@ class User extends Common
       {
         $names[] = $this->firstname;
       }
-      if (!is_null($this->realname))
+      if (!is_null($this->lastname))
       {
-        $names[] = $this->realname;
+        $names[] = $this->lastname;
       }
       $name = implode(' ', $names);
     } else {

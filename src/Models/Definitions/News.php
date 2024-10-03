@@ -22,7 +22,7 @@ class News
       ],
       [
         'id'    => 255,
-        'title' => $translator->translate('news'."\004".'Type (to add an icon before alert title)'),
+        'title' => $translator->translate('news' . "\004" . 'Type (to add an icon before alert title)'),
         'type'  => 'dropdown',
         'name'  => 'type',
         'dbname' => 'type',
@@ -48,19 +48,19 @@ class News
       ],
       [
         'id'    => 7,
-        'title' => $translator->translate('news'."\004".'Can close alert'),
+        'title' => $translator->translate('news' . "\004" . 'Can close alert'),
         'type'  => 'boolean',
         'name'  => 'is_close_allowed',
       ],
       [
         'id'    => 8,
-        'title' => $translator->translate('news'."\004".'Show on login page'),
+        'title' => $translator->translate('news' . "\004" . 'Show on login page'),
         'type'  => 'boolean',
         'name'  => 'is_displayed_onlogin',
       ],
       [
         'id'    => 9,
-        'title' => $translator->translate('news'."\004".'Show on helpdesk page'),
+        'title' => $translator->translate('news' . "\004" . 'Show on helpdesk page'),
         'type'  => 'boolean',
         'name'  => 'is_displayed_onhelpdesk',
       ],
@@ -86,7 +86,7 @@ class News
       ],
       // [
       //   'id'    => 4,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -112,16 +112,16 @@ class News
     global $translator;
     return [
       1 => [
-        'title' => $translator->translate('news'."\004".'General'),
+        'title' => $translator->translate('news' . "\004" . 'General'),
       ],
       2 => [
-        'title' => $translator->translate('news'."\004".'Information'),
+        'title' => $translator->translate('news' . "\004" . 'Information'),
       ],
       3 => [
-        'title' => $translator->translate('news'."\004".'Warning'),
+        'title' => $translator->translate('news' . "\004" . 'Warning'),
       ],
       4 => [
-        'title' => $translator->translate('news'."\004".'Problem'),
+        'title' => $translator->translate('news' . "\004" . 'Problem'),
       ],
     ];
   }

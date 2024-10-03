@@ -33,8 +33,8 @@ class Software
         'title' => $translator->translate('Category'),
         'type'  => 'dropdown_remote',
         'name'  => 'category',
-        'dbname' => 'softwarecategories_id',
-        'itemtype' => '\App\Models\SoftwareCategory',
+        'dbname' => 'softwarecategory_id',
+        'itemtype' => '\App\Models\Softwarecategory',
       ],
       [
         'id'    => 23,
@@ -96,7 +96,7 @@ class Software
       // ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -139,7 +139,8 @@ class Software
          ]
       ];
 
-      if (Session::getLoginUserID()) {
+      if (Session::getLoginUserID())
+      {
          $newtab['joinparams']['condition'] .= getEntitiesRestrictRequest(' AND', 'NEWTABLE');
       }
       $tab[] = $newtab;
@@ -163,7 +164,7 @@ class Software
          ]
       ];
 
-      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
+      $tab = array_merge($tab, Softwarelicense::rawSearchOptionsToAdd());
 
       $name = _n('Version', 'Versions', Session::getPluralNumber());
       $tab[] = [
@@ -296,7 +297,7 @@ class Software
       //   'title' => $translator->translate('Number of installations'),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'nbinstallation',
-      //   'itemtype' => '\App\Models\SoftwareVersion',
+      //   'itemtype' => '\App\Models\Softwareversion',
       //   'count' => 'devices_count',
       // ],
       // [
@@ -304,7 +305,7 @@ class Software
       //   'title' => $translator->translate('Versions'),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'versions',
-      //   'itemtype' => '\App\Models\SoftwareVersion',
+      //   'itemtype' => '\App\Models\Softwareversion',
       //   'multiple' => true,
       // ],
 

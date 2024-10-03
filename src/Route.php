@@ -17,1793 +17,1802 @@ final class Route
     // The ping - pong ;)
     // $app->get($prefix . '/ping', \App\v1\Controllers\Ping::class . ':getPing');
 
-    $app->map(['POST'], '/dropdown', \App\Controllers\Dropdown::class . ':getAll');
-
-    $app->group($prefix . '/login', function (RouteCollectorProxy $login)
+    $app->group($prefix . '/api/v1', function (RouteCollectorProxy $v1)
     {
-      $login->map(['GET'], '', \App\Controllers\Login::class . ':getLogin');
-      $login->map(['POST'], '', \App\Controllers\Login::class . ':postLogin');
     });
 
-    $app->group($prefix . '/computers', function (RouteCollectorProxy $computers)
+    $app->map(['POST'], '/dropdown', \App\v1\Controllers\Dropdown::class . ':getAll');
+
+    $app->group('/login', function (RouteCollectorProxy $login)
     {
-      $computers->map(['GET'], '', \App\Controllers\Computer::class . ':getAll');
-      $computers->map(['POST'], '', \App\Controllers\Computer::class . ':postItem');
+      $login->map(['GET'], '', \App\v1\Controllers\Login::class . ':getLogin');
+      $login->map(['POST'], '', \App\v1\Controllers\Login::class . ':postLogin');
+    });
+
+    $app->group('/computers', function (RouteCollectorProxy $computers)
+    {
+      $computers->map(['GET'], '', \App\v1\Controllers\Computer::class . ':getAll');
+      $computers->map(['POST'], '', \App\v1\Controllers\Computer::class . ':postItem');
       $computers->group("/{id:[0-9]+}", function (RouteCollectorProxy $computerId)
       {
-        $computerId->map(['GET'], '', \App\Controllers\Computer::class . ':showItem');
-        $computerId->map(['POST'], '', \App\Controllers\Computer::class . ':updateItem');
-        $computerId->map(['GET'], '/operatingsystem', \App\Controllers\Computer::class . ':showOperatingSystem');
-        $computerId->map(['GET'], '/softwares', \App\Controllers\Computer::class . ':showSoftwares');
+        $computerId->map(['GET'], '', \App\v1\Controllers\Computer::class . ':showItem');
+        $computerId->map(['POST'], '', \App\v1\Controllers\Computer::class . ':updateItem');
+        $computerId->map(['GET'], '/operatingsystem', \App\v1\Controllers\Computer::class . ':showOperatingSystem');
+        $computerId->map(['GET'], '/softwares', \App\v1\Controllers\Computer::class . ':showSoftwares');
       });
     });
-    $app->group($prefix . '/monitors', function (RouteCollectorProxy $monitors)
+    $app->group('/monitors', function (RouteCollectorProxy $monitors)
     {
-      $monitors->map(['GET'], '', \App\Controllers\Monitor::class . ':getAll');
-      $monitors->map(['POST'], '', \App\Controllers\Monitor::class . ':postItem');
+      $monitors->map(['GET'], '', \App\v1\Controllers\Monitor::class . ':getAll');
+      $monitors->map(['POST'], '', \App\v1\Controllers\Monitor::class . ':postItem');
       $monitors->group("/{id:[0-9]+}", function (RouteCollectorProxy $monitorId)
       {
-        $monitorId->map(['GET'], '', \App\Controllers\Monitor::class . ':showItem');
-        $monitorId->map(['POST'], '', \App\Controllers\Monitor::class . ':updateItem');
+        $monitorId->map(['GET'], '', \App\v1\Controllers\Monitor::class . ':showItem');
+        $monitorId->map(['POST'], '', \App\v1\Controllers\Monitor::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/softwares', function (RouteCollectorProxy $softwares)
+    $app->group('/softwares', function (RouteCollectorProxy $softwares)
     {
-      $softwares->map(['GET'], '', \App\Controllers\Software::class . ':getAll');
-      $softwares->map(['POST'], '', \App\Controllers\Software::class . ':postItem');
+      $softwares->map(['GET'], '', \App\v1\Controllers\Software::class . ':getAll');
+      $softwares->map(['POST'], '', \App\v1\Controllers\Software::class . ':postItem');
       $softwares->group("/{id:[0-9]+}", function (RouteCollectorProxy $softwareId)
       {
-        $softwareId->map(['GET'], '', \App\Controllers\Software::class . ':showItem');
-        $softwareId->map(['POST'], '', \App\Controllers\Software::class . ':updateItem');
+        $softwareId->map(['GET'], '', \App\v1\Controllers\Software::class . ':showItem');
+        $softwareId->map(['POST'], '', \App\v1\Controllers\Software::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/networkequipments', function (RouteCollectorProxy $networkequipments)
+    $app->group('/networkequipments', function (RouteCollectorProxy $networkequipments)
     {
-      $networkequipments->map(['GET'], '', \App\Controllers\NetworkEquipment::class . ':getAll');
-      $networkequipments->map(['POST'], '', \App\Controllers\NetworkEquipment::class . ':postItem');
+      $networkequipments->map(['GET'], '', \App\v1\Controllers\Networkequipment::class . ':getAll');
+      $networkequipments->map(['POST'], '', \App\v1\Controllers\Networkequipment::class . ':postItem');
       $networkequipments->group("/{id:[0-9]+}", function (RouteCollectorProxy $networkequipmentId)
       {
-        $networkequipmentId->map(['GET'], '', \App\Controllers\NetworkEquipment::class . ':showItem');
-        $networkequipmentId->map(['POST'], '', \App\Controllers\NetworkEquipment::class . ':updateItem');
+        $networkequipmentId->map(['GET'], '', \App\v1\Controllers\Networkequipment::class . ':showItem');
+        $networkequipmentId->map(['POST'], '', \App\v1\Controllers\Networkequipment::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/peripherals', function (RouteCollectorProxy $peripherals)
+    $app->group('/peripherals', function (RouteCollectorProxy $peripherals)
     {
-      $peripherals->map(['GET'], '', \App\Controllers\Peripheral::class . ':getAll');
-      $peripherals->map(['POST'], '', \App\Controllers\Peripheral::class . ':postItem');
+      $peripherals->map(['GET'], '', \App\v1\Controllers\Peripheral::class . ':getAll');
+      $peripherals->map(['POST'], '', \App\v1\Controllers\Peripheral::class . ':postItem');
       $peripherals->group("/{id:[0-9]+}", function (RouteCollectorProxy $peripheralId)
       {
-        $peripheralId->map(['GET'], '', \App\Controllers\Peripheral::class . ':showItem');
-        $peripheralId->map(['POST'], '', \App\Controllers\Peripheral::class . ':updateItem');
+        $peripheralId->map(['GET'], '', \App\v1\Controllers\Peripheral::class . ':showItem');
+        $peripheralId->map(['POST'], '', \App\v1\Controllers\Peripheral::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/printers', function (RouteCollectorProxy $printers)
+    $app->group('/printers', function (RouteCollectorProxy $printers)
     {
-      $printers->map(['GET'], '', \App\Controllers\Printer::class . ':getAll');
-      $printers->map(['POST'], '', \App\Controllers\Printer::class . ':postItem');
+      $printers->map(['GET'], '', \App\v1\Controllers\Printer::class . ':getAll');
+      $printers->map(['POST'], '', \App\v1\Controllers\Printer::class . ':postItem');
       $printers->group("/{id:[0-9]+}", function (RouteCollectorProxy $printerId)
       {
-        $printerId->map(['GET'], '', \App\Controllers\Printer::class . ':showItem');
-        $printerId->map(['POST'], '', \App\Controllers\Printer::class . ':updateItem');
+        $printerId->map(['GET'], '', \App\v1\Controllers\Printer::class . ':showItem');
+        $printerId->map(['POST'], '', \App\v1\Controllers\Printer::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/cartridgeitems', function (RouteCollectorProxy $cartridgeitems)
+    $app->group('/cartridgeitems', function (RouteCollectorProxy $cartridgeitems)
     {
-      $cartridgeitems->map(['GET'], '', \App\Controllers\CartridgeItem::class . ':getAll');
-      $cartridgeitems->map(['POST'], '', \App\Controllers\CartridgeItem::class . ':postItem');
+      $cartridgeitems->map(['GET'], '', \App\v1\Controllers\Cartridgeitem::class . ':getAll');
+      $cartridgeitems->map(['POST'], '', \App\v1\Controllers\Cartridgeitem::class . ':postItem');
       $cartridgeitems->group("/{id:[0-9]+}", function (RouteCollectorProxy $cartridgeitemId)
       {
-        $cartridgeitemId->map(['GET'], '', \App\Controllers\CartridgeItem::class . ':showItem');
-        $cartridgeitemId->map(['POST'], '', \App\Controllers\CartridgeItem::class . ':updateItem');
+        $cartridgeitemId->map(['GET'], '', \App\v1\Controllers\Cartridgeitem::class . ':showItem');
+        $cartridgeitemId->map(['POST'], '', \App\v1\Controllers\Cartridgeitem::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/consumableitems', function (RouteCollectorProxy $consumableitems)
+    $app->group('/consumableitems', function (RouteCollectorProxy $consumableitems)
     {
-      $consumableitems->map(['GET'], '', \App\Controllers\ConsumableItem::class . ':getAll');
-      $consumableitems->map(['POST'], '', \App\Controllers\ConsumableItem::class . ':postItem');
+      $consumableitems->map(['GET'], '', \App\v1\Controllers\Consumableitem::class . ':getAll');
+      $consumableitems->map(['POST'], '', \App\v1\Controllers\Consumableitem::class . ':postItem');
       $consumableitems->group("/{id:[0-9]+}", function (RouteCollectorProxy $consumableitemId)
       {
-        $consumableitemId->map(['GET'], '', \App\Controllers\ConsumableItem::class . ':showItem');
-        $consumableitemId->map(['POST'], '', \App\Controllers\ConsumableItem::class . ':updateItem');
+        $consumableitemId->map(['GET'], '', \App\v1\Controllers\Consumableitem::class . ':showItem');
+        $consumableitemId->map(['POST'], '', \App\v1\Controllers\Consumableitem::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/phones', function (RouteCollectorProxy $phones)
+    $app->group('/phones', function (RouteCollectorProxy $phones)
     {
-      $phones->map(['GET'], '', \App\Controllers\Phone::class . ':getAll');
-      $phones->map(['POST'], '', \App\Controllers\Phone::class . ':postItem');
+      $phones->map(['GET'], '', \App\v1\Controllers\Phone::class . ':getAll');
+      $phones->map(['POST'], '', \App\v1\Controllers\Phone::class . ':postItem');
       $phones->group("/{id:[0-9]+}", function (RouteCollectorProxy $phoneId)
       {
-        $phoneId->map(['GET'], '', \App\Controllers\Phone::class . ':showItem');
-        $phoneId->map(['POST'], '', \App\Controllers\Phone::class . ':updateItem');
+        $phoneId->map(['GET'], '', \App\v1\Controllers\Phone::class . ':showItem');
+        $phoneId->map(['POST'], '', \App\v1\Controllers\Phone::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/racks', function (RouteCollectorProxy $racks)
+    $app->group('/racks', function (RouteCollectorProxy $racks)
     {
-      $racks->map(['GET'], '', \App\Controllers\Rack::class . ':getAll');
-      $racks->map(['POST'], '', \App\Controllers\Rack::class . ':postItem');
+      $racks->map(['GET'], '', \App\v1\Controllers\Rack::class . ':getAll');
+      $racks->map(['POST'], '', \App\v1\Controllers\Rack::class . ':postItem');
       $racks->group("/{id:[0-9]+}", function (RouteCollectorProxy $rackId)
       {
-        $rackId->map(['GET'], '', \App\Controllers\Rack::class . ':showItem');
-        $rackId->map(['POST'], '', \App\Controllers\Rack::class . ':updateItem');
+        $rackId->map(['GET'], '', \App\v1\Controllers\Rack::class . ':showItem');
+        $rackId->map(['POST'], '', \App\v1\Controllers\Rack::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/enclosures', function (RouteCollectorProxy $enclosures)
+    $app->group('/enclosures', function (RouteCollectorProxy $enclosures)
     {
-      $enclosures->map(['GET'], '', \App\Controllers\Enclosure::class . ':getAll');
-      $enclosures->map(['POST'], '', \App\Controllers\Enclosure::class . ':postItem');
+      $enclosures->map(['GET'], '', \App\v1\Controllers\Enclosure::class . ':getAll');
+      $enclosures->map(['POST'], '', \App\v1\Controllers\Enclosure::class . ':postItem');
       $enclosures->group("/{id:[0-9]+}", function (RouteCollectorProxy $enclosureId)
       {
-        $enclosureId->map(['GET'], '', \App\Controllers\Enclosure::class . ':showItem');
-        $enclosureId->map(['POST'], '', \App\Controllers\Enclosure::class . ':updateItem');
+        $enclosureId->map(['GET'], '', \App\v1\Controllers\Enclosure::class . ':showItem');
+        $enclosureId->map(['POST'], '', \App\v1\Controllers\Enclosure::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/pdus', function (RouteCollectorProxy $pdus)
+    $app->group('/pdus', function (RouteCollectorProxy $pdus)
     {
-      $pdus->map(['GET'], '', \App\Controllers\PDU::class . ':getAll');
-      $pdus->map(['POST'], '', \App\Controllers\PDU::class . ':postItem');
+      $pdus->map(['GET'], '', \App\v1\Controllers\Pdu::class . ':getAll');
+      $pdus->map(['POST'], '', \App\v1\Controllers\Pdu::class . ':postItem');
       $pdus->group("/{id:[0-9]+}", function (RouteCollectorProxy $pduId)
       {
-        $pduId->map(['GET'], '', \App\Controllers\PDU::class . ':showItem');
-        $pduId->map(['POST'], '', \App\Controllers\PDU::class . ':updateItem');
+        $pduId->map(['GET'], '', \App\v1\Controllers\Pdu::class . ':showItem');
+        $pduId->map(['POST'], '', \App\v1\Controllers\Pdu::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/passivedcequipments', function (RouteCollectorProxy $passivedcequipments)
+    $app->group('/passivedcequipments', function (RouteCollectorProxy $passivedcequipments)
     {
-      $passivedcequipments->map(['GET'], '', \App\Controllers\PassivedcEquipment::class . ':getAll');
-      $passivedcequipments->map(['POST'], '', \App\Controllers\PassivedcEquipment::class . ':postItem');
+      $passivedcequipments->map(['GET'], '', \App\v1\Controllers\Passivedcequipment::class . ':getAll');
+      $passivedcequipments->map(['POST'], '', \App\v1\Controllers\Passivedcequipment::class . ':postItem');
       $passivedcequipments->group("/{id:[0-9]+}", function (RouteCollectorProxy $passivedcequipmentId)
       {
-        $passivedcequipmentId->map(['GET'], '', \App\Controllers\PassivedcEquipment::class . ':showItem');
-        $passivedcequipmentId->map(['POST'], '', \App\Controllers\PassivedcEquipment::class . ':updateItem');
+        $passivedcequipmentId->map(['GET'], '', \App\v1\Controllers\Passivedcequipment::class . ':showItem');
+        $passivedcequipmentId->map(['POST'], '', \App\v1\Controllers\Passivedcequipment::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/item_devicesimcards', function (RouteCollectorProxy $item_devicesimcards)
+    $app->group('/itemdevicesimcards', function (RouteCollectorProxy $item_devicesimcards)
     {
-      $item_devicesimcards->map(['GET'], '', \App\Controllers\Item_DeviceSimcard::class . ':getAll');
-      $item_devicesimcards->map(['POST'], '', \App\Controllers\Item_DeviceSimcard::class . ':postItem');
+      $item_devicesimcards->map(['GET'], '', \App\v1\Controllers\ItemDevicesimcard::class . ':getAll');
+      $item_devicesimcards->map(['POST'], '', \App\v1\Controllers\ItemDevicesimcard::class . ':postItem');
       $item_devicesimcards->group("/{id:[0-9]+}", function (RouteCollectorProxy $item_devicesimcardId)
       {
-        $item_devicesimcardId->map(['GET'], '', \App\Controllers\Item_DeviceSimcard::class . ':showItem');
-        $item_devicesimcardId->map(['POST'], '', \App\Controllers\Item_DeviceSimcard::class . ':updateItem');
+        $item_devicesimcardId->map(['GET'], '', \App\v1\Controllers\ItemDevicesimcard::class . ':showItem');
+        $item_devicesimcardId->map(['POST'], '', \App\v1\Controllers\ItemDevicesimcard::class . ':updateItem');
       });
     });
 
-    $app->post('/itilfollowups', \App\Controllers\Itilfollowup::class . ':postItem');
+    $app->post('/followups', \App\v1\Controllers\Followup::class . ':postItem');
 
-    $app->group($prefix . '/tickets', function (RouteCollectorProxy $tickets)
+    $app->group('/tickets', function (RouteCollectorProxy $tickets)
     {
-      $tickets->map(['GET'], '', \App\Controllers\Ticket::class . ':getAll');
-      $tickets->map(['POST'], '', \App\Controllers\Ticket::class . ':postItem');
+      $tickets->map(['GET'], '', \App\v1\Controllers\Ticket::class . ':getAll');
+      $tickets->map(['POST'], '', \App\v1\Controllers\Ticket::class . ':postItem');
 
       $tickets->group("/{id:[0-9]+}", function (RouteCollectorProxy $ticketId)
       {
-        $ticketId->map(['GET'], '', \App\Controllers\Ticket::class . ':showItem');
-        $ticketId->map(['POST'], '', \App\Controllers\Ticket::class . ':updateItem');
+        $ticketId->map(['GET'], '', \App\v1\Controllers\Ticket::class . ':showItem');
+        $ticketId->map(['POST'], '', \App\v1\Controllers\Ticket::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/problems', function (RouteCollectorProxy $problems)
+    $app->group('/problems', function (RouteCollectorProxy $problems)
     {
-      $problems->map(['GET'], '', \App\Controllers\Problem::class . ':getAll');
-      $problems->map(['POST'], '', \App\Controllers\Problem::class . ':postItem');
+      $problems->map(['GET'], '', \App\v1\Controllers\Problem::class . ':getAll');
+      $problems->map(['POST'], '', \App\v1\Controllers\Problem::class . ':postItem');
 
       $problems->group("/{id:[0-9]+}", function (RouteCollectorProxy $problemId)
       {
-        $problemId->map(['GET'], '', \App\Controllers\Problem::class . ':showItem');
-        $problemId->map(['POST'], '', \App\Controllers\Problem::class . ':updateItem');
+        $problemId->map(['GET'], '', \App\v1\Controllers\Problem::class . ':showItem');
+        $problemId->map(['POST'], '', \App\v1\Controllers\Problem::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/changes', function (RouteCollectorProxy $changes)
+    $app->group('/changes', function (RouteCollectorProxy $changes)
     {
-      $changes->map(['GET'], '', \App\Controllers\Change::class . ':getAll');
-      $changes->map(['POST'], '', \App\Controllers\Change::class . ':postItem');
+      $changes->map(['GET'], '', \App\v1\Controllers\Change::class . ':getAll');
+      $changes->map(['POST'], '', \App\v1\Controllers\Change::class . ':postItem');
 
       $changes->group("/{id:[0-9]+}", function (RouteCollectorProxy $changeId)
       {
-        $changeId->map(['GET'], '', \App\Controllers\Change::class . ':showItem');
-        $changeId->map(['POST'], '', \App\Controllers\Change::class . ':updateItem');
+        $changeId->map(['GET'], '', \App\v1\Controllers\Change::class . ':showItem');
+        $changeId->map(['POST'], '', \App\v1\Controllers\Change::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/ticketrecurrents', function (RouteCollectorProxy $ticketrecurrents)
+    $app->group('/ticketrecurrents', function (RouteCollectorProxy $ticketrecurrents)
     {
-      $ticketrecurrents->map(['GET'], '', \App\Controllers\TicketRecurrent::class . ':getAll');
-      $ticketrecurrents->map(['POST'], '', \App\Controllers\TicketRecurrent::class . ':postItem');
+      $ticketrecurrents->map(['GET'], '', \App\v1\Controllers\Ticketrecurrent::class . ':getAll');
+      $ticketrecurrents->map(['POST'], '', \App\v1\Controllers\Ticketrecurrent::class . ':postItem');
 
       $ticketrecurrents->group("/{id:[0-9]+}", function (RouteCollectorProxy $ticketrecurrentId)
       {
-        $ticketrecurrentId->map(['GET'], '', \App\Controllers\TicketRecurrent::class . ':showItem');
-        $ticketrecurrentId->map(['POST'], '', \App\Controllers\TicketRecurrent::class . ':updateItem');
+        $ticketrecurrentId->map(['GET'], '', \App\v1\Controllers\Ticketrecurrent::class . ':showItem');
+        $ticketrecurrentId->map(['POST'], '', \App\v1\Controllers\Ticketrecurrent::class . ':updateItem');
       });
     });
 
 
-    $app->group($prefix . '/softwarelicenses', function (RouteCollectorProxy $softwarelicenses)
+    $app->group('/softwarelicenses', function (RouteCollectorProxy $softwarelicenses)
     {
-      $softwarelicenses->map(['GET'], '', \App\Controllers\SoftwareLicense::class . ':getAll');
-      $softwarelicenses->map(['POST'], '', \App\Controllers\SoftwareLicense::class . ':postItem');
+      $softwarelicenses->map(['GET'], '', \App\v1\Controllers\Softwarelicense::class . ':getAll');
+      $softwarelicenses->map(['POST'], '', \App\v1\Controllers\Softwarelicense::class . ':postItem');
       $softwarelicenses->group("/{id:[0-9]+}", function (RouteCollectorProxy $softwarelicenseId)
       {
-        $softwarelicenseId->map(['GET'], '', \App\Controllers\SoftwareLicense::class . ':showItem');
-        $softwarelicenseId->map(['POST'], '', \App\Controllers\SoftwareLicense::class . ':updateItem');
+        $softwarelicenseId->map(['GET'], '', \App\v1\Controllers\Softwarelicense::class . ':showItem');
+        $softwarelicenseId->map(['POST'], '', \App\v1\Controllers\Softwarelicense::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/budgets', function (RouteCollectorProxy $budgets)
+    $app->group('/budgets', function (RouteCollectorProxy $budgets)
     {
-      $budgets->map(['GET'], '', \App\Controllers\Budget::class . ':getAll');
-      $budgets->map(['POST'], '', \App\Controllers\Budget::class . ':postItem');
+      $budgets->map(['GET'], '', \App\v1\Controllers\Budget::class . ':getAll');
+      $budgets->map(['POST'], '', \App\v1\Controllers\Budget::class . ':postItem');
       $budgets->group("/{id:[0-9]+}", function (RouteCollectorProxy $budgetId)
       {
-        $budgetId->map(['GET'], '', \App\Controllers\Budget::class . ':showItem');
-        $budgetId->map(['POST'], '', \App\Controllers\Budget::class . ':updateItem');
+        $budgetId->map(['GET'], '', \App\v1\Controllers\Budget::class . ':showItem');
+        $budgetId->map(['POST'], '', \App\v1\Controllers\Budget::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/suppliers', function (RouteCollectorProxy $suppliers)
+    $app->group('/suppliers', function (RouteCollectorProxy $suppliers)
     {
-      $suppliers->map(['GET'], '', \App\Controllers\Supplier::class . ':getAll');
-      $suppliers->map(['POST'], '', \App\Controllers\Supplier::class . ':postItem');
+      $suppliers->map(['GET'], '', \App\v1\Controllers\Supplier::class . ':getAll');
+      $suppliers->map(['POST'], '', \App\v1\Controllers\Supplier::class . ':postItem');
       $suppliers->group("/{id:[0-9]+}", function (RouteCollectorProxy $supplierId)
       {
-        $supplierId->map(['GET'], '', \App\Controllers\Supplier::class . ':showItem');
-        $supplierId->map(['POST'], '', \App\Controllers\Supplier::class . ':updateItem');
+        $supplierId->map(['GET'], '', \App\v1\Controllers\Supplier::class . ':showItem');
+        $supplierId->map(['POST'], '', \App\v1\Controllers\Supplier::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/contacts', function (RouteCollectorProxy $contacts)
+    $app->group('/contacts', function (RouteCollectorProxy $contacts)
     {
-      $contacts->map(['GET'], '', \App\Controllers\Contact::class . ':getAll');
-      $contacts->map(['POST'], '', \App\Controllers\Contact::class . ':postItem');
+      $contacts->map(['GET'], '', \App\v1\Controllers\Contact::class . ':getAll');
+      $contacts->map(['POST'], '', \App\v1\Controllers\Contact::class . ':postItem');
       $contacts->group("/{id:[0-9]+}", function (RouteCollectorProxy $contactId)
       {
-        $contactId->map(['GET'], '', \App\Controllers\Contact::class . ':showItem');
-        $contactId->map(['POST'], '', \App\Controllers\Contact::class . ':updateItem');
+        $contactId->map(['GET'], '', \App\v1\Controllers\Contact::class . ':showItem');
+        $contactId->map(['POST'], '', \App\v1\Controllers\Contact::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/contracts', function (RouteCollectorProxy $contracts)
+    $app->group('/contracts', function (RouteCollectorProxy $contracts)
     {
-      $contracts->map(['GET'], '', \App\Controllers\Contract::class . ':getAll');
-      $contracts->map(['POST'], '', \App\Controllers\Contract::class . ':postItem');
+      $contracts->map(['GET'], '', \App\v1\Controllers\Contract::class . ':getAll');
+      $contracts->map(['POST'], '', \App\v1\Controllers\Contract::class . ':postItem');
       $contracts->group("/{id:[0-9]+}", function (RouteCollectorProxy $contractId)
       {
-        $contractId->map(['GET'], '', \App\Controllers\Contract::class . ':showItem');
-        $contractId->map(['POST'], '', \App\Controllers\Contract::class . ':updateItem');
+        $contractId->map(['GET'], '', \App\v1\Controllers\Contract::class . ':showItem');
+        $contractId->map(['POST'], '', \App\v1\Controllers\Contract::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/documents', function (RouteCollectorProxy $documents)
+    $app->group('/documents', function (RouteCollectorProxy $documents)
     {
-      $documents->map(['GET'], '', \App\Controllers\Document::class . ':getAll');
-      $documents->map(['POST'], '', \App\Controllers\Document::class . ':postItem');
+      $documents->map(['GET'], '', \App\v1\Controllers\Document::class . ':getAll');
+      $documents->map(['POST'], '', \App\v1\Controllers\Document::class . ':postItem');
       $documents->group("/{id:[0-9]+}", function (RouteCollectorProxy $documentId)
       {
-        $documentId->map(['GET'], '', \App\Controllers\Document::class . ':showItem');
-        $documentId->map(['POST'], '', \App\Controllers\Document::class . ':updateItem');
+        $documentId->map(['GET'], '', \App\v1\Controllers\Document::class . ':showItem');
+        $documentId->map(['POST'], '', \App\v1\Controllers\Document::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/lines', function (RouteCollectorProxy $lines)
+    $app->group('/lines', function (RouteCollectorProxy $lines)
     {
-      $lines->map(['GET'], '', \App\Controllers\Line::class . ':getAll');
-      $lines->map(['POST'], '', \App\Controllers\Line::class . ':postItem');
+      $lines->map(['GET'], '', \App\v1\Controllers\Line::class . ':getAll');
+      $lines->map(['POST'], '', \App\v1\Controllers\Line::class . ':postItem');
       $lines->group("/{id:[0-9]+}", function (RouteCollectorProxy $lineId)
       {
-        $lineId->map(['GET'], '', \App\Controllers\Line::class . ':showItem');
-        $lineId->map(['POST'], '', \App\Controllers\Line::class . ':updateItem');
+        $lineId->map(['GET'], '', \App\v1\Controllers\Line::class . ':showItem');
+        $lineId->map(['POST'], '', \App\v1\Controllers\Line::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/certificates', function (RouteCollectorProxy $certificates)
+    $app->group('/certificates', function (RouteCollectorProxy $certificates)
     {
-      $certificates->map(['GET'], '', \App\Controllers\Certificate::class . ':getAll');
-      $certificates->map(['POST'], '', \App\Controllers\Certificate::class . ':postItem');
+      $certificates->map(['GET'], '', \App\v1\Controllers\Certificate::class . ':getAll');
+      $certificates->map(['POST'], '', \App\v1\Controllers\Certificate::class . ':postItem');
       $certificates->group("/{id:[0-9]+}", function (RouteCollectorProxy $certificateId)
       {
-        $certificateId->map(['GET'], '', \App\Controllers\Certificate::class . ':showItem');
-        $certificateId->map(['POST'], '', \App\Controllers\Certificate::class . ':updateItem');
+        $certificateId->map(['GET'], '', \App\v1\Controllers\Certificate::class . ':showItem');
+        $certificateId->map(['POST'], '', \App\v1\Controllers\Certificate::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/datacenters', function (RouteCollectorProxy $datacenters)
+    $app->group('/datacenters', function (RouteCollectorProxy $datacenters)
     {
-      $datacenters->map(['GET'], '', \App\Controllers\Datacenter::class . ':getAll');
-      $datacenters->map(['POST'], '', \App\Controllers\Datacenter::class . ':postItem');
+      $datacenters->map(['GET'], '', \App\v1\Controllers\Datacenter::class . ':getAll');
+      $datacenters->map(['POST'], '', \App\v1\Controllers\Datacenter::class . ':postItem');
       $datacenters->group("/{id:[0-9]+}", function (RouteCollectorProxy $datacenterId)
       {
-        $datacenterId->map(['GET'], '', \App\Controllers\Datacenter::class . ':showItem');
-        $datacenterId->map(['POST'], '', \App\Controllers\Datacenter::class . ':updateItem');
+        $datacenterId->map(['GET'], '', \App\v1\Controllers\Datacenter::class . ':showItem');
+        $datacenterId->map(['POST'], '', \App\v1\Controllers\Datacenter::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/clusters', function (RouteCollectorProxy $clusters)
+    $app->group('/clusters', function (RouteCollectorProxy $clusters)
     {
-      $clusters->map(['GET'], '', \App\Controllers\Cluster::class . ':getAll');
-      $clusters->map(['POST'], '', \App\Controllers\Cluster::class . ':postItem');
+      $clusters->map(['GET'], '', \App\v1\Controllers\Cluster::class . ':getAll');
+      $clusters->map(['POST'], '', \App\v1\Controllers\Cluster::class . ':postItem');
       $clusters->group("/{id:[0-9]+}", function (RouteCollectorProxy $clusterId)
       {
-        $clusterId->map(['GET'], '', \App\Controllers\Cluster::class . ':showItem');
-        $clusterId->map(['POST'], '', \App\Controllers\Cluster::class . ':updateItem');
+        $clusterId->map(['GET'], '', \App\v1\Controllers\Cluster::class . ':showItem');
+        $clusterId->map(['POST'], '', \App\v1\Controllers\Cluster::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/domains', function (RouteCollectorProxy $domains)
+    $app->group('/domains', function (RouteCollectorProxy $domains)
     {
-      $domains->map(['GET'], '', \App\Controllers\Domain::class . ':getAll');
-      $domains->map(['POST'], '', \App\Controllers\Domain::class . ':postItem');
+      $domains->map(['GET'], '', \App\v1\Controllers\Domain::class . ':getAll');
+      $domains->map(['POST'], '', \App\v1\Controllers\Domain::class . ':postItem');
       $domains->group("/{id:[0-9]+}", function (RouteCollectorProxy $domainId)
       {
-        $domainId->map(['GET'], '', \App\Controllers\Domain::class . ':showItem');
-        $domainId->map(['POST'], '', \App\Controllers\Domain::class . ':updateItem');
+        $domainId->map(['GET'], '', \App\v1\Controllers\Domain::class . ':showItem');
+        $domainId->map(['POST'], '', \App\v1\Controllers\Domain::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/appliances', function (RouteCollectorProxy $appliances)
+    $app->group('/appliances', function (RouteCollectorProxy $appliances)
     {
-      $appliances->map(['GET'], '', \App\Controllers\Appliance::class . ':getAll');
-      $appliances->map(['POST'], '', \App\Controllers\Appliance::class . ':postItem');
+      $appliances->map(['GET'], '', \App\v1\Controllers\Appliance::class . ':getAll');
+      $appliances->map(['POST'], '', \App\v1\Controllers\Appliance::class . ':postItem');
       $appliances->group("/{id:[0-9]+}", function (RouteCollectorProxy $applianceId)
       {
-        $applianceId->map(['GET'], '', \App\Controllers\Appliance::class . ':showItem');
-        $applianceId->map(['POST'], '', \App\Controllers\Appliance::class . ':updateItem');
+        $applianceId->map(['GET'], '', \App\v1\Controllers\Appliance::class . ':showItem');
+        $applianceId->map(['POST'], '', \App\v1\Controllers\Appliance::class . ':updateItem');
       });
     });
 
 
-    $app->group($prefix . '/projects', function (RouteCollectorProxy $projects)
+    $app->group('/projects', function (RouteCollectorProxy $projects)
     {
-      $projects->map(['GET'], '', \App\Controllers\Project::class . ':getAll');
-      $projects->map(['POST'], '', \App\Controllers\Project::class . ':postItem');
+      $projects->map(['GET'], '', \App\v1\Controllers\Project::class . ':getAll');
+      $projects->map(['POST'], '', \App\v1\Controllers\Project::class . ':postItem');
       $projects->group("/{id:[0-9]+}", function (RouteCollectorProxy $projectId)
       {
-        $projectId->map(['GET'], '', \App\Controllers\Project::class . ':showItem');
-        $projectId->map(['POST'], '', \App\Controllers\Project::class . ':updateItem');
+        $projectId->map(['GET'], '', \App\v1\Controllers\Project::class . ':showItem');
+        $projectId->map(['POST'], '', \App\v1\Controllers\Project::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/reminders', function (RouteCollectorProxy $reminders)
+    $app->group('/reminders', function (RouteCollectorProxy $reminders)
     {
-      $reminders->map(['GET'], '', \App\Controllers\Reminder::class . ':getAll');
-      $reminders->map(['POST'], '', \App\Controllers\Reminder::class . ':postItem');
+      $reminders->map(['GET'], '', \App\v1\Controllers\Reminder::class . ':getAll');
+      $reminders->map(['POST'], '', \App\v1\Controllers\Reminder::class . ':postItem');
       $reminders->group("/{id:[0-9]+}", function (RouteCollectorProxy $reminderId)
       {
-        $reminderId->map(['GET'], '', \App\Controllers\Reminder::class . ':showItem');
-        $reminderId->map(['POST'], '', \App\Controllers\Reminder::class . ':updateItem');
+        $reminderId->map(['GET'], '', \App\v1\Controllers\Reminder::class . ':showItem');
+        $reminderId->map(['POST'], '', \App\v1\Controllers\Reminder::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/rssfeeds', function (RouteCollectorProxy $rssfeeds)
+    $app->group('/rssfeeds', function (RouteCollectorProxy $rssfeeds)
     {
-      $rssfeeds->map(['GET'], '', \App\Controllers\Rssfeed::class . ':getAll');
-      $rssfeeds->map(['POST'], '', \App\Controllers\Rssfeed::class . ':postItem');
+      $rssfeeds->map(['GET'], '', \App\v1\Controllers\Rssfeed::class . ':getAll');
+      $rssfeeds->map(['POST'], '', \App\v1\Controllers\Rssfeed::class . ':postItem');
       $rssfeeds->group("/{id:[0-9]+}", function (RouteCollectorProxy $rssfeedId)
       {
-        $rssfeedId->map(['GET'], '', \App\Controllers\Rssfeed::class . ':showItem');
-        $rssfeedId->map(['POST'], '', \App\Controllers\Rssfeed::class . ':updateItem');
+        $rssfeedId->map(['GET'], '', \App\v1\Controllers\Rssfeed::class . ':showItem');
+        $rssfeedId->map(['POST'], '', \App\v1\Controllers\Rssfeed::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/savedsearchs', function (RouteCollectorProxy $savedsearchs)
+    $app->group('/savedsearchs', function (RouteCollectorProxy $savedsearchs)
     {
-      $savedsearchs->map(['GET'], '', \App\Controllers\SavedSearch::class . ':getAll');
-      $savedsearchs->map(['POST'], '', \App\Controllers\SavedSearch::class . ':postItem');
+      $savedsearchs->map(['GET'], '', \App\v1\Controllers\Savedsearch::class . ':getAll');
+      $savedsearchs->map(['POST'], '', \App\v1\Controllers\Savedsearch::class . ':postItem');
       $savedsearchs->group("/{id:[0-9]+}", function (RouteCollectorProxy $savedsearchId)
       {
-        $savedsearchId->map(['GET'], '', \App\Controllers\SavedSearch::class . ':showItem');
-        $savedsearchId->map(['POST'], '', \App\Controllers\SavedSearch::class . ':updateItem');
+        $savedsearchId->map(['GET'], '', \App\v1\Controllers\Savedsearch::class . ':showItem');
+        $savedsearchId->map(['POST'], '', \App\v1\Controllers\Savedsearch::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/news', function (RouteCollectorProxy $news)
+    $app->group('/news', function (RouteCollectorProxy $news)
     {
-      $news->map(['GET'], '', \App\Controllers\News::class . ':getAll');
-      $news->map(['POST'], '', \App\Controllers\News::class . ':postItem');
+      $news->map(['GET'], '', \App\v1\Controllers\News::class . ':getAll');
+      $news->map(['POST'], '', \App\v1\Controllers\News::class . ':postItem');
       $news->group("/{id:[0-9]+}", function (RouteCollectorProxy $newsId)
       {
-        $newsId->map(['GET'], '', \App\Controllers\News::class . ':showItem');
-        $newsId->map(['POST'], '', \App\Controllers\News::class . ':updateItem');
+        $newsId->map(['GET'], '', \App\v1\Controllers\News::class . ':showItem');
+        $newsId->map(['POST'], '', \App\v1\Controllers\News::class . ':updateItem');
       });
     });
 
 
-    $app->group($prefix . '/users', function (RouteCollectorProxy $users)
+    $app->group('/users', function (RouteCollectorProxy $users)
     {
-      $users->map(['GET'], '', \App\Controllers\User::class . ':getAll');
-      $users->map(['POST'], '', \App\Controllers\User::class . ':postItem');
+      $users->map(['GET'], '', \App\v1\Controllers\User::class . ':getAll');
+      $users->map(['POST'], '', \App\v1\Controllers\User::class . ':postItem');
       $users->group("/{id:[0-9]+}", function (RouteCollectorProxy $userId)
       {
-        $userId->map(['GET'], '', \App\Controllers\User::class . ':showItem');
-        $userId->map(['POST'], '', \App\Controllers\User::class . ':updateItem');
+        $userId->map(['GET'], '', \App\v1\Controllers\User::class . ':showItem');
+        $userId->map(['POST'], '', \App\v1\Controllers\User::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/groups', function (RouteCollectorProxy $groups)
+    $app->group('/groups', function (RouteCollectorProxy $groups)
     {
-      $groups->map(['GET'], '', \App\Controllers\Group::class . ':getAll');
-      $groups->map(['POST'], '', \App\Controllers\Group::class . ':postItem');
+      $groups->map(['GET'], '', \App\v1\Controllers\Group::class . ':getAll');
+      $groups->map(['POST'], '', \App\v1\Controllers\Group::class . ':postItem');
       $groups->group("/{id:[0-9]+}", function (RouteCollectorProxy $groupId)
       {
-        $groupId->map(['GET'], '', \App\Controllers\Group::class . ':showItem');
-        $groupId->map(['POST'], '', \App\Controllers\Group::class . ':updateItem');
+        $groupId->map(['GET'], '', \App\v1\Controllers\Group::class . ':showItem');
+        $groupId->map(['POST'], '', \App\v1\Controllers\Group::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/entities', function (RouteCollectorProxy $entities)
+    $app->group('/entities', function (RouteCollectorProxy $entities)
     {
-      $entities->map(['GET'], '', \App\Controllers\Entity::class . ':getAll');
-      $entities->map(['POST'], '', \App\Controllers\Entity::class . ':postItem');
+      $entities->map(['GET'], '', \App\v1\Controllers\Entity::class . ':getAll');
+      $entities->map(['POST'], '', \App\v1\Controllers\Entity::class . ':postItem');
       $entities->group("/{id:[0-9]+}", function (RouteCollectorProxy $entityId)
       {
-        $entityId->map(['GET'], '', \App\Controllers\Entity::class . ':showItem');
-        $entityId->map(['POST'], '', \App\Controllers\Entity::class . ':updateItem');
+        $entityId->map(['GET'], '', \App\v1\Controllers\Entity::class . ':showItem');
+        $entityId->map(['POST'], '', \App\v1\Controllers\Entity::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/rules', function (RouteCollectorProxy $rules)
+    $app->group('/rules', function (RouteCollectorProxy $rules)
     {
       $rules->group("/tickets", function (RouteCollectorProxy $tickets)
       {
-        $tickets->map(['GET'], '', \App\Controllers\Rules\Ticket::class . ':getAll');
+        $tickets->map(['GET'], '', \App\v1\Controllers\Rules\Ticket::class . ':getAll');
       });
     });
-    $app->group($prefix . '/profiles', function (RouteCollectorProxy $profiles)
+    $app->group('/profiles', function (RouteCollectorProxy $profiles)
     {
-      $profiles->map(['GET'], '', \App\Controllers\Profile::class . ':getAll');
-      $profiles->map(['POST'], '', \App\Controllers\Profile::class . ':postItem');
+      $profiles->map(['GET'], '', \App\v1\Controllers\Profile::class . ':getAll');
+      $profiles->map(['POST'], '', \App\v1\Controllers\Profile::class . ':postItem');
       $profiles->group("/{id:[0-9]+}", function (RouteCollectorProxy $profileId)
       {
-        $profileId->map(['GET'], '', \App\Controllers\Profile::class . ':showItem');
-        $profileId->map(['POST'], '', \App\Controllers\Profile::class . ':updateItem');
+        $profileId->map(['GET'], '', \App\v1\Controllers\Profile::class . ':showItem');
+        $profileId->map(['POST'], '', \App\v1\Controllers\Profile::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/queuednotifications', function (RouteCollectorProxy $queuednotifications)
+    $app->group('/queuednotifications', function (RouteCollectorProxy $queuednotifications)
     {
-      $queuednotifications->map(['GET'], '', \App\Controllers\QueuedNotification::class . ':getAll');
-      $queuednotifications->map(['POST'], '', \App\Controllers\QueuedNotification::class . ':postItem');
+      $queuednotifications->map(['GET'], '', \App\v1\Controllers\Queuednotification::class . ':getAll');
+      $queuednotifications->map(['POST'], '', \App\v1\Controllers\Queuednotification::class . ':postItem');
       $queuednotifications->group("/{id:[0-9]+}", function (RouteCollectorProxy $queuednotificationId)
       {
-        $queuednotificationId->map(['GET'], '', \App\Controllers\QueuedNotification::class . ':showItem');
-        $queuednotificationId->map(['POST'], '', \App\Controllers\QueuedNotification::class . ':updateItem');
+        $queuednotificationId->map(['GET'], '', \App\v1\Controllers\Queuednotification::class . ':showItem');
+        $queuednotificationId->map(['POST'], '', \App\v1\Controllers\Queuednotification::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/events', function (RouteCollectorProxy $events)
+    $app->group('/events', function (RouteCollectorProxy $events)
     {
-      $events->map(['GET'], '', \App\Controllers\Event::class . ':getAll');
-      $events->map(['POST'], '', \App\Controllers\Event::class . ':postItem');
+      $events->map(['GET'], '', \App\v1\Controllers\Event::class . ':getAll');
+      $events->map(['POST'], '', \App\v1\Controllers\Event::class . ':postItem');
       $events->group("/{id:[0-9]+}", function (RouteCollectorProxy $eventId)
       {
-        $eventId->map(['GET'], '', \App\Controllers\Event::class . ':showItem');
-        $eventId->map(['POST'], '', \App\Controllers\Event::class . ':updateItem');
+        $eventId->map(['GET'], '', \App\v1\Controllers\Event::class . ':showItem');
+        $eventId->map(['POST'], '', \App\v1\Controllers\Event::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/forms', function (RouteCollectorProxy $forms)
+    $app->group('/forms', function (RouteCollectorProxy $forms)
     {
-      $forms->map(['GET'], '', \App\Controllers\Form::class . ':getAll');
-      $forms->map(['POST'], '', \App\Controllers\Form::class . ':postItem');
+      $forms->map(['GET'], '', \App\v1\Controllers\Form::class . ':getAll');
+      $forms->map(['POST'], '', \App\v1\Controllers\Form::class . ':postItem');
       $forms->group("/{id:[0-9]+}", function (RouteCollectorProxy $formId)
       {
-        $formId->map(['GET'], '', \App\Controllers\Form::class . ':showItem');
-        $formId->map(['POST'], '', \App\Controllers\Form::class . ':updateItem');
+        $formId->map(['GET'], '', \App\v1\Controllers\Form::class . ':showItem');
+        $formId->map(['POST'], '', \App\v1\Controllers\Form::class . ':updateItem');
       });
     });
-    $app->group($prefix . '/dropdowns', function (RouteCollectorProxy $dropdowns)
+    $app->group('/dropdowns', function (RouteCollectorProxy $dropdowns)
     {
       $dropdowns->group('/locations', function (RouteCollectorProxy $locations)
       {
-        $locations->map(['GET'], '', \App\Controllers\Location::class . ':getAll');
-        $locations->map(['POST'], '', \App\Controllers\Location::class . ':postItem');
+        $locations->map(['GET'], '', \App\v1\Controllers\Location::class . ':getAll');
+        $locations->map(['POST'], '', \App\v1\Controllers\Location::class . ':postItem');
         $locations->group("/{id:[0-9]+}", function (RouteCollectorProxy $locationId)
         {
-          $locationId->map(['GET'], '', \App\Controllers\Location::class . ':showItem');
-          $locationId->map(['POST'], '', \App\Controllers\Location::class . ':updateItem');
+          $locationId->map(['GET'], '', \App\v1\Controllers\Location::class . ':showItem');
+          $locationId->map(['POST'], '', \App\v1\Controllers\Location::class . ':updateItem');
         });
       });
       $dropdowns->group('/states', function (RouteCollectorProxy $states)
       {
-        $states->map(['GET'], '', \App\Controllers\State::class . ':getAll');
-        $states->map(['POST'], '', \App\Controllers\State::class . ':postItem');
+        $states->map(['GET'], '', \App\v1\Controllers\State::class . ':getAll');
+        $states->map(['POST'], '', \App\v1\Controllers\State::class . ':postItem');
         $states->group("/{id:[0-9]+}", function (RouteCollectorProxy $stateId)
         {
-          $stateId->map(['GET'], '', \App\Controllers\State::class . ':showItem');
-          $stateId->map(['POST'], '', \App\Controllers\State::class . ':updateItem');
+          $stateId->map(['GET'], '', \App\v1\Controllers\State::class . ':showItem');
+          $stateId->map(['POST'], '', \App\v1\Controllers\State::class . ':updateItem');
         });
       });
       $dropdowns->group('/manufacturers', function (RouteCollectorProxy $manufacturers)
       {
-        $manufacturers->map(['GET'], '', \App\Controllers\Manufacturer::class . ':getAll');
-        $manufacturers->map(['POST'], '', \App\Controllers\Manufacturer::class . ':postItem');
+        $manufacturers->map(['GET'], '', \App\v1\Controllers\Manufacturer::class . ':getAll');
+        $manufacturers->map(['POST'], '', \App\v1\Controllers\Manufacturer::class . ':postItem');
         $manufacturers->group("/{id:[0-9]+}", function (RouteCollectorProxy $manufacturerId)
         {
-          $manufacturerId->map(['GET'], '', \App\Controllers\Manufacturer::class . ':showItem');
-          $manufacturerId->map(['POST'], '', \App\Controllers\Manufacturer::class . ':updateItem');
+          $manufacturerId->map(['GET'], '', \App\v1\Controllers\Manufacturer::class . ':showItem');
+          $manufacturerId->map(['POST'], '', \App\v1\Controllers\Manufacturer::class . ':updateItem');
         });
       });
       $dropdowns->group('/blacklists', function (RouteCollectorProxy $blacklists)
       {
-        $blacklists->map(['GET'], '', \App\Controllers\Blacklist::class . ':getAll');
-        $blacklists->map(['POST'], '', \App\Controllers\Blacklist::class . ':postItem');
+        $blacklists->map(['GET'], '', \App\v1\Controllers\Blacklist::class . ':getAll');
+        $blacklists->map(['POST'], '', \App\v1\Controllers\Blacklist::class . ':postItem');
         $blacklists->group("/{id:[0-9]+}", function (RouteCollectorProxy $blacklistId)
         {
-          $blacklistId->map(['GET'], '', \App\Controllers\Blacklist::class . ':showItem');
-          $blacklistId->map(['POST'], '', \App\Controllers\Blacklist::class . ':updateItem');
+          $blacklistId->map(['GET'], '', \App\v1\Controllers\Blacklist::class . ':showItem');
+          $blacklistId->map(['POST'], '', \App\v1\Controllers\Blacklist::class . ':updateItem');
         });
       });
       $dropdowns->group('/blacklistedmailcontents', function (RouteCollectorProxy $blacklistedmailcontents)
       {
-        $blacklistedmailcontents->map(['GET'], '', \App\Controllers\BlacklistedMailContent::class . ':getAll');
-        $blacklistedmailcontents->map(['POST'], '', \App\Controllers\BlacklistedMailContent::class . ':postItem');
+        $blacklistedmailcontents->map(['GET'], '', \App\v1\Controllers\Blacklistedmailcontent::class . ':getAll');
+        $blacklistedmailcontents->map(['POST'], '', \App\v1\Controllers\Blacklistedmailcontent::class . ':postItem');
         $blacklistedmailcontents->group("/{id:[0-9]+}", function (RouteCollectorProxy $blacklistedmailcontentId)
         {
-          $blacklistedmailcontentId->map(['GET'], '', \App\Controllers\BlacklistedMailContent::class . ':showItem');
-          $blacklistedmailcontentId->map(['POST'], '', \App\Controllers\BlacklistedMailContent::class . ':updateItem');
+          $blacklistedmailcontentId->map(['GET'], '', \App\v1\Controllers\Blacklistedmailcontent::class . ':showItem');
+          $blacklistedmailcontentId->map(
+            ['POST'],
+            '',
+            \App\v1\Controllers\Blacklistedmailcontent::class . ':updateItem'
+          );
         });
       });
-      $dropdowns->group('/itilcategories', function (RouteCollectorProxy $itilcategories)
+      $dropdowns->group('/categories', function (RouteCollectorProxy $categories)
       {
-        $itilcategories->map(['GET'], '', \App\Controllers\ITILCategory::class . ':getAll');
-        $itilcategories->map(['POST'], '', \App\Controllers\ITILCategory::class . ':postItem');
-        $itilcategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $itilcategoryId)
+        $categories->map(['GET'], '', \App\v1\Controllers\Category::class . ':getAll');
+        $categories->map(['POST'], '', \App\v1\Controllers\Category::class . ':postItem');
+        $categories->group("/{id:[0-9]+}", function (RouteCollectorProxy $categoryId)
         {
-          $itilcategoryId->map(['GET'], '', \App\Controllers\ITILCategory::class . ':showItem');
-          $itilcategoryId->map(['POST'], '', \App\Controllers\ITILCategory::class . ':updateItem');
+          $categoryId->map(['GET'], '', \App\v1\Controllers\Category::class . ':showItem');
+          $categoryId->map(['POST'], '', \App\v1\Controllers\Category::class . ':updateItem');
         });
       });
       $dropdowns->group('/taskcategories', function (RouteCollectorProxy $taskcategories)
       {
-        $taskcategories->map(['GET'], '', \App\Controllers\TaskCategory::class . ':getAll');
-        $taskcategories->map(['POST'], '', \App\Controllers\TaskCategory::class . ':postItem');
+        $taskcategories->map(['GET'], '', \App\v1\Controllers\Taskcategory::class . ':getAll');
+        $taskcategories->map(['POST'], '', \App\v1\Controllers\Taskcategory::class . ':postItem');
         $taskcategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $taskcategoryId)
         {
-          $taskcategoryId->map(['GET'], '', \App\Controllers\TaskCategory::class . ':showItem');
-          $taskcategoryId->map(['POST'], '', \App\Controllers\TaskCategory::class . ':updateItem');
+          $taskcategoryId->map(['GET'], '', \App\v1\Controllers\Taskcategory::class . ':showItem');
+          $taskcategoryId->map(['POST'], '', \App\v1\Controllers\Taskcategory::class . ':updateItem');
         });
       });
       $dropdowns->group('/tasktemplates', function (RouteCollectorProxy $tasktemplates)
       {
-        $tasktemplates->map(['GET'], '', \App\Controllers\TaskTemplate::class . ':getAll');
-        $tasktemplates->map(['POST'], '', \App\Controllers\TaskTemplate::class . ':postItem');
+        $tasktemplates->map(['GET'], '', \App\v1\Controllers\Tasktemplate::class . ':getAll');
+        $tasktemplates->map(['POST'], '', \App\v1\Controllers\Tasktemplate::class . ':postItem');
         $tasktemplates->group("/{id:[0-9]+}", function (RouteCollectorProxy $tasktemplateId)
         {
-          $tasktemplateId->map(['GET'], '', \App\Controllers\TaskTemplate::class . ':showItem');
-          $tasktemplateId->map(['POST'], '', \App\Controllers\TaskTemplate::class . ':updateItem');
+          $tasktemplateId->map(['GET'], '', \App\v1\Controllers\Tasktemplate::class . ':showItem');
+          $tasktemplateId->map(['POST'], '', \App\v1\Controllers\Tasktemplate::class . ':updateItem');
         });
       });
       $dropdowns->group('/solutiontypes', function (RouteCollectorProxy $solutiontypes)
       {
-        $solutiontypes->map(['GET'], '', \App\Controllers\SolutionType::class . ':getAll');
-        $solutiontypes->map(['POST'], '', \App\Controllers\SolutionType::class . ':postItem');
+        $solutiontypes->map(['GET'], '', \App\v1\Controllers\Solutiontype::class . ':getAll');
+        $solutiontypes->map(['POST'], '', \App\v1\Controllers\Solutiontype::class . ':postItem');
         $solutiontypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $solutiontypeId)
         {
-          $solutiontypeId->map(['GET'], '', \App\Controllers\SolutionType::class . ':showItem');
-          $solutiontypeId->map(['POST'], '', \App\Controllers\SolutionType::class . ':updateItem');
+          $solutiontypeId->map(['GET'], '', \App\v1\Controllers\Solutiontype::class . ':showItem');
+          $solutiontypeId->map(['POST'], '', \App\v1\Controllers\Solutiontype::class . ':updateItem');
         });
       });
       $dropdowns->group('/solutiontemplates', function (RouteCollectorProxy $solutiontemplates)
       {
-        $solutiontemplates->map(['GET'], '', \App\Controllers\SolutionTemplate::class . ':getAll');
-        $solutiontemplates->map(['POST'], '', \App\Controllers\SolutionTemplate::class . ':postItem');
+        $solutiontemplates->map(['GET'], '', \App\v1\Controllers\Solutiontemplate::class . ':getAll');
+        $solutiontemplates->map(['POST'], '', \App\v1\Controllers\Solutiontemplate::class . ':postItem');
         $solutiontemplates->group("/{id:[0-9]+}", function (RouteCollectorProxy $solutiontemplateId)
         {
-          $solutiontemplateId->map(['GET'], '', \App\Controllers\SolutionTemplate::class . ':showItem');
-          $solutiontemplateId->map(['POST'], '', \App\Controllers\SolutionTemplate::class . ':updateItem');
+          $solutiontemplateId->map(['GET'], '', \App\v1\Controllers\Solutiontemplate::class . ':showItem');
+          $solutiontemplateId->map(['POST'], '', \App\v1\Controllers\Solutiontemplate::class . ':updateItem');
         });
       });
       $dropdowns->group('/requesttypes', function (RouteCollectorProxy $requesttypes)
       {
-        $requesttypes->map(['GET'], '', \App\Controllers\RequestType::class . ':getAll');
-        $requesttypes->map(['POST'], '', \App\Controllers\RequestType::class . ':postItem');
+        $requesttypes->map(['GET'], '', \App\v1\Controllers\Requesttype::class . ':getAll');
+        $requesttypes->map(['POST'], '', \App\v1\Controllers\Requesttype::class . ':postItem');
         $requesttypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $requesttypeId)
         {
-          $requesttypeId->map(['GET'], '', \App\Controllers\RequestType::class . ':showItem');
-          $requesttypeId->map(['POST'], '', \App\Controllers\RequestType::class . ':updateItem');
+          $requesttypeId->map(['GET'], '', \App\v1\Controllers\Requesttype::class . ':showItem');
+          $requesttypeId->map(['POST'], '', \App\v1\Controllers\Requesttype::class . ':updateItem');
         });
       });
       $dropdowns->group('/itilfollowuptemplates', function (RouteCollectorProxy $itilfollowuptemplates)
       {
-        $itilfollowuptemplates->map(['GET'], '', \App\Controllers\ITILFollowupTemplate::class . ':getAll');
-        $itilfollowuptemplates->map(['POST'], '', \App\Controllers\ITILFollowupTemplate::class . ':postItem');
+        $itilfollowuptemplates->map(['GET'], '', \App\v1\Controllers\Followuptemplate::class . ':getAll');
+        $itilfollowuptemplates->map(['POST'], '', \App\v1\Controllers\Followuptemplate::class . ':postItem');
         $itilfollowuptemplates->group("/{id:[0-9]+}", function (RouteCollectorProxy $itilfollowuptemplateId)
         {
-          $itilfollowuptemplateId->map(['GET'], '', \App\Controllers\ITILFollowupTemplate::class . ':showItem');
-          $itilfollowuptemplateId->map(['POST'], '', \App\Controllers\ITILFollowupTemplate::class . ':updateItem');
+          $itilfollowuptemplateId->map(['GET'], '', \App\v1\Controllers\Followuptemplate::class . ':showItem');
+          $itilfollowuptemplateId->map(['POST'], '', \App\v1\Controllers\Followuptemplate::class . ':updateItem');
         });
       });
       $dropdowns->group('/projectstates', function (RouteCollectorProxy $projectstates)
       {
-        $projectstates->map(['GET'], '', \App\Controllers\ProjectState::class . ':getAll');
-        $projectstates->map(['POST'], '', \App\Controllers\ProjectState::class . ':postItem');
+        $projectstates->map(['GET'], '', \App\v1\Controllers\Projectstate::class . ':getAll');
+        $projectstates->map(['POST'], '', \App\v1\Controllers\Projectstate::class . ':postItem');
         $projectstates->group("/{id:[0-9]+}", function (RouteCollectorProxy $projectstateId)
         {
-          $projectstateId->map(['GET'], '', \App\Controllers\ProjectState::class . ':showItem');
-          $projectstateId->map(['POST'], '', \App\Controllers\ProjectState::class . ':updateItem');
+          $projectstateId->map(['GET'], '', \App\v1\Controllers\Projectstate::class . ':showItem');
+          $projectstateId->map(['POST'], '', \App\v1\Controllers\Projectstate::class . ':updateItem');
         });
       });
       $dropdowns->group('/projecttypes', function (RouteCollectorProxy $projecttypes)
       {
-        $projecttypes->map(['GET'], '', \App\Controllers\ProjectType::class . ':getAll');
-        $projecttypes->map(['POST'], '', \App\Controllers\ProjectType::class . ':postItem');
+        $projecttypes->map(['GET'], '', \App\v1\Controllers\Projecttype::class . ':getAll');
+        $projecttypes->map(['POST'], '', \App\v1\Controllers\Projecttype::class . ':postItem');
         $projecttypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $projecttypeId)
         {
-          $projecttypeId->map(['GET'], '', \App\Controllers\ProjectType::class . ':showItem');
-          $projecttypeId->map(['POST'], '', \App\Controllers\ProjectType::class . ':updateItem');
+          $projecttypeId->map(['GET'], '', \App\v1\Controllers\Projecttype::class . ':showItem');
+          $projecttypeId->map(['POST'], '', \App\v1\Controllers\Projecttype::class . ':updateItem');
         });
       });
       $dropdowns->group('/projecttasktypes', function (RouteCollectorProxy $projecttasktypes)
       {
-        $projecttasktypes->map(['GET'], '', \App\Controllers\ProjectTaskType::class . ':getAll');
-        $projecttasktypes->map(['POST'], '', \App\Controllers\ProjectTaskType::class . ':postItem');
+        $projecttasktypes->map(['GET'], '', \App\v1\Controllers\Projecttasktype::class . ':getAll');
+        $projecttasktypes->map(['POST'], '', \App\v1\Controllers\Projecttasktype::class . ':postItem');
         $projecttasktypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $projecttasktypeId)
         {
-          $projecttasktypeId->map(['GET'], '', \App\Controllers\ProjectTaskType::class . ':showItem');
-          $projecttasktypeId->map(['POST'], '', \App\Controllers\ProjectTaskType::class . ':updateItem');
+          $projecttasktypeId->map(['GET'], '', \App\v1\Controllers\Projecttasktype::class . ':showItem');
+          $projecttasktypeId->map(['POST'], '', \App\v1\Controllers\Projecttasktype::class . ':updateItem');
         });
       });
       $dropdowns->group('/projecttasktemplates', function (RouteCollectorProxy $projecttasktemplates)
       {
-        $projecttasktemplates->map(['GET'], '', \App\Controllers\ProjectTaskTemplate::class . ':getAll');
-        $projecttasktemplates->map(['POST'], '', \App\Controllers\ProjectTaskTemplate::class . ':postItem');
+        $projecttasktemplates->map(['GET'], '', \App\v1\Controllers\Projecttasktemplate::class . ':getAll');
+        $projecttasktemplates->map(['POST'], '', \App\v1\Controllers\Projecttasktemplate::class . ':postItem');
         $projecttasktemplates->group("/{id:[0-9]+}", function (RouteCollectorProxy $projecttasktemplateId)
         {
-          $projecttasktemplateId->map(['GET'], '', \App\Controllers\ProjectTaskTemplate::class . ':showItem');
-          $projecttasktemplateId->map(['POST'], '', \App\Controllers\ProjectTaskTemplate::class . ':updateItem');
+          $projecttasktemplateId->map(['GET'], '', \App\v1\Controllers\Projecttasktemplate::class . ':showItem');
+          $projecttasktemplateId->map(['POST'], '', \App\v1\Controllers\Projecttasktemplate::class . ':updateItem');
         });
       });
       $dropdowns->group('/planningeventcategories', function (RouteCollectorProxy $planningeventcategories)
       {
-        $planningeventcategories->map(['GET'], '', \App\Controllers\PlanningEventCategory::class . ':getAll');
-        $planningeventcategories->map(['POST'], '', \App\Controllers\PlanningEventCategory::class . ':postItem');
+        $planningeventcategories->map(['GET'], '', \App\v1\Controllers\Planningeventcategory::class . ':getAll');
+        $planningeventcategories->map(['POST'], '', \App\v1\Controllers\Planningeventcategory::class . ':postItem');
         $planningeventcategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $planningeventcategoryId)
         {
-          $planningeventcategoryId->map(['GET'], '', \App\Controllers\PlanningEventCategory::class . ':showItem');
-          $planningeventcategoryId->map(['POST'], '', \App\Controllers\PlanningEventCategory::class . ':updateItem');
+          $planningeventcategoryId->map(['GET'], '', \App\v1\Controllers\Planningeventcategory::class . ':showItem');
+          $planningeventcategoryId->map(
+            ['POST'],
+            '',
+            \App\v1\Controllers\Planningeventcategory::class . ':updateItem'
+          );
         });
       });
-      $dropdowns->group('/planningexternaleventtemplates', function (RouteCollectorProxy $planningexternaleventtemplates)
+      $dropdowns->group('/planningexternaleventtemplates', function (RouteCollectorProxy $pe_eventtemplates)
       {
-        $planningexternaleventtemplates->map(['GET'], '', \App\Controllers\PlanningExternalEventTemplate::class . ':getAll');
-        $planningexternaleventtemplates->map(['POST'], '', \App\Controllers\PlanningExternalEventTemplate::class . ':postItem');
-        $planningexternaleventtemplates->group("/{id:[0-9]+}", function (RouteCollectorProxy $planningexternaleventtemplateId)
+        $pe_eventtemplates->map(['GET'], '', \App\v1\Controllers\Planningexternaleventtemplate::class . ':getAll');
+        $pe_eventtemplates->map(['POST'], '', \App\v1\Controllers\Planningexternaleventtemplate::class . ':postItem');
+        $pe_eventtemplates->group("/{id:[0-9]+}", function (RouteCollectorProxy $peetId)
         {
-          $planningexternaleventtemplateId->map(['GET'], '', \App\Controllers\PlanningExternalEventTemplate::class . ':showItem');
-          $planningexternaleventtemplateId->map(['POST'], '', \App\Controllers\PlanningExternalEventTemplate::class . ':updateItem');
+          $peetId->map(['GET'], '', \App\v1\Controllers\Planningexternaleventtemplate::class . ':showItem');
+          $peetId->map(['POST'], '', \App\v1\Controllers\Planningexternaleventtemplate::class . ':updateItem');
         });
       });
       $dropdowns->group('/computertypes', function (RouteCollectorProxy $computertypes)
       {
-        $computertypes->map(['GET'], '', \App\Controllers\ComputerType::class . ':getAll');
-        $computertypes->map(['POST'], '', \App\Controllers\ComputerType::class . ':postItem');
+        $computertypes->map(['GET'], '', \App\v1\Controllers\Computertype::class . ':getAll');
+        $computertypes->map(['POST'], '', \App\v1\Controllers\Computertype::class . ':postItem');
         $computertypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $computertypeId)
         {
-          $computertypeId->map(['GET'], '', \App\Controllers\ComputerType::class . ':showItem');
-          $computertypeId->map(['POST'], '', \App\Controllers\ComputerType::class . ':updateItem');
+          $computertypeId->map(['GET'], '', \App\v1\Controllers\Computertype::class . ':showItem');
+          $computertypeId->map(['POST'], '', \App\v1\Controllers\Computertype::class . ':updateItem');
         });
       });
       $dropdowns->group('/networkequipmenttypes', function (RouteCollectorProxy $networkequipmenttypes)
       {
-        $networkequipmenttypes->map(['GET'], '', \App\Controllers\NetworkEquipmentType::class . ':getAll');
-        $networkequipmenttypes->map(['POST'], '', \App\Controllers\NetworkEquipmentType::class . ':postItem');
+        $networkequipmenttypes->map(['GET'], '', \App\v1\Controllers\Networkequipmenttype::class . ':getAll');
+        $networkequipmenttypes->map(['POST'], '', \App\v1\Controllers\Networkequipmenttype::class . ':postItem');
         $networkequipmenttypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $networkequipmenttypeId)
         {
-          $networkequipmenttypeId->map(['GET'], '', \App\Controllers\NetworkEquipmentType::class . ':showItem');
-          $networkequipmenttypeId->map(['POST'], '', \App\Controllers\NetworkEquipmentType::class . ':updateItem');
+          $networkequipmenttypeId->map(['GET'], '', \App\v1\Controllers\Networkequipmenttype::class . ':showItem');
+          $networkequipmenttypeId->map(['POST'], '', \App\v1\Controllers\Networkequipmenttype::class . ':updateItem');
         });
       });
       $dropdowns->group('/printertypes', function (RouteCollectorProxy $printertypes)
       {
-        $printertypes->map(['GET'], '', \App\Controllers\PrinterType::class . ':getAll');
-        $printertypes->map(['POST'], '', \App\Controllers\PrinterType::class . ':postItem');
+        $printertypes->map(['GET'], '', \App\v1\Controllers\Printertype::class . ':getAll');
+        $printertypes->map(['POST'], '', \App\v1\Controllers\Printertype::class . ':postItem');
         $printertypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $printertypeId)
         {
-          $printertypeId->map(['GET'], '', \App\Controllers\PrinterType::class . ':showItem');
-          $printertypeId->map(['POST'], '', \App\Controllers\PrinterType::class . ':updateItem');
+          $printertypeId->map(['GET'], '', \App\v1\Controllers\Printertype::class . ':showItem');
+          $printertypeId->map(['POST'], '', \App\v1\Controllers\Printertype::class . ':updateItem');
         });
       });
       $dropdowns->group('/monitortypes', function (RouteCollectorProxy $monitortypes)
       {
-        $monitortypes->map(['GET'], '', \App\Controllers\MonitorType::class . ':getAll');
-        $monitortypes->map(['POST'], '', \App\Controllers\MonitorType::class . ':postItem');
+        $monitortypes->map(['GET'], '', \App\v1\Controllers\Monitortype::class . ':getAll');
+        $monitortypes->map(['POST'], '', \App\v1\Controllers\Monitortype::class . ':postItem');
         $monitortypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $monitortypeId)
         {
-          $monitortypeId->map(['GET'], '', \App\Controllers\MonitorType::class . ':showItem');
-          $monitortypeId->map(['POST'], '', \App\Controllers\MonitorType::class . ':updateItem');
+          $monitortypeId->map(['GET'], '', \App\v1\Controllers\Monitortype::class . ':showItem');
+          $monitortypeId->map(['POST'], '', \App\v1\Controllers\Monitortype::class . ':updateItem');
         });
       });
       $dropdowns->group('/peripheraltypes', function (RouteCollectorProxy $peripheraltypes)
       {
-        $peripheraltypes->map(['GET'], '', \App\Controllers\PeripheralType::class . ':getAll');
-        $peripheraltypes->map(['POST'], '', \App\Controllers\PeripheralType::class . ':postItem');
+        $peripheraltypes->map(['GET'], '', \App\v1\Controllers\Peripheraltype::class . ':getAll');
+        $peripheraltypes->map(['POST'], '', \App\v1\Controllers\Peripheraltype::class . ':postItem');
         $peripheraltypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $peripheraltypeId)
         {
-          $peripheraltypeId->map(['GET'], '', \App\Controllers\PeripheralType::class . ':showItem');
-          $peripheraltypeId->map(['POST'], '', \App\Controllers\PeripheralType::class . ':updateItem');
+          $peripheraltypeId->map(['GET'], '', \App\v1\Controllers\Peripheraltype::class . ':showItem');
+          $peripheraltypeId->map(['POST'], '', \App\v1\Controllers\Peripheraltype::class . ':updateItem');
         });
       });
       $dropdowns->group('/phonetypes', function (RouteCollectorProxy $phonetypes)
       {
-        $phonetypes->map(['GET'], '', \App\Controllers\PhoneType::class . ':getAll');
-        $phonetypes->map(['POST'], '', \App\Controllers\PhoneType::class . ':postItem');
+        $phonetypes->map(['GET'], '', \App\v1\Controllers\Phonetype::class . ':getAll');
+        $phonetypes->map(['POST'], '', \App\v1\Controllers\Phonetype::class . ':postItem');
         $phonetypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $phonetypeId)
         {
-          $phonetypeId->map(['GET'], '', \App\Controllers\PhoneType::class . ':showItem');
-          $phonetypeId->map(['POST'], '', \App\Controllers\PhoneType::class . ':updateItem');
+          $phonetypeId->map(['GET'], '', \App\v1\Controllers\Phonetype::class . ':showItem');
+          $phonetypeId->map(['POST'], '', \App\v1\Controllers\Phonetype::class . ':updateItem');
         });
       });
       $dropdowns->group('/softwarelicensetypes', function (RouteCollectorProxy $softwarelicensetypes)
       {
-        $softwarelicensetypes->map(['GET'], '', \App\Controllers\SoftwareLicenseType::class . ':getAll');
-        $softwarelicensetypes->map(['POST'], '', \App\Controllers\SoftwareLicenseType::class . ':postItem');
+        $softwarelicensetypes->map(['GET'], '', \App\v1\Controllers\Softwarelicensetype::class . ':getAll');
+        $softwarelicensetypes->map(['POST'], '', \App\v1\Controllers\Softwarelicensetype::class . ':postItem');
         $softwarelicensetypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $softwarelicensetypeId)
         {
-          $softwarelicensetypeId->map(['GET'], '', \App\Controllers\SoftwareLicenseType::class . ':showItem');
-          $softwarelicensetypeId->map(['POST'], '', \App\Controllers\SoftwareLicenseType::class . ':updateItem');
+          $softwarelicensetypeId->map(['GET'], '', \App\v1\Controllers\Softwarelicensetype::class . ':showItem');
+          $softwarelicensetypeId->map(['POST'], '', \App\v1\Controllers\Softwarelicensetype::class . ':updateItem');
         });
       });
       $dropdowns->group('/cartridgeitemtypes', function (RouteCollectorProxy $cartridgeitemtypes)
       {
-        $cartridgeitemtypes->map(['GET'], '', \App\Controllers\CartridgeItemType::class . ':getAll');
-        $cartridgeitemtypes->map(['POST'], '', \App\Controllers\CartridgeItemType::class . ':postItem');
+        $cartridgeitemtypes->map(['GET'], '', \App\v1\Controllers\Cartridgeitemtype::class . ':getAll');
+        $cartridgeitemtypes->map(['POST'], '', \App\v1\Controllers\Cartridgeitemtype::class . ':postItem');
         $cartridgeitemtypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $cartridgeitemtypeId)
         {
-          $cartridgeitemtypeId->map(['GET'], '', \App\Controllers\CartridgeItemType::class . ':showItem');
-          $cartridgeitemtypeId->map(['POST'], '', \App\Controllers\CartridgeItemType::class . ':updateItem');
+          $cartridgeitemtypeId->map(['GET'], '', \App\v1\Controllers\Cartridgeitemtype::class . ':showItem');
+          $cartridgeitemtypeId->map(['POST'], '', \App\v1\Controllers\Cartridgeitemtype::class . ':updateItem');
         });
       });
       $dropdowns->group('/consumableitemtypes', function (RouteCollectorProxy $consumableitemtypes)
       {
-        $consumableitemtypes->map(['GET'], '', \App\Controllers\ConsumableItemType::class . ':getAll');
-        $consumableitemtypes->map(['POST'], '', \App\Controllers\ConsumableItemType::class . ':postItem');
+        $consumableitemtypes->map(['GET'], '', \App\v1\Controllers\Consumableitemtype::class . ':getAll');
+        $consumableitemtypes->map(['POST'], '', \App\v1\Controllers\Consumableitemtype::class . ':postItem');
         $consumableitemtypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $consumableitemtypeId)
         {
-          $consumableitemtypeId->map(['GET'], '', \App\Controllers\ConsumableItemType::class . ':showItem');
-          $consumableitemtypeId->map(['POST'], '', \App\Controllers\ConsumableItemType::class . ':updateItem');
+          $consumableitemtypeId->map(['GET'], '', \App\v1\Controllers\Consumableitemtype::class . ':showItem');
+          $consumableitemtypeId->map(['POST'], '', \App\v1\Controllers\Consumableitemtype::class . ':updateItem');
         });
       });
       $dropdowns->group('/contracttypes', function (RouteCollectorProxy $contracttypes)
       {
-        $contracttypes->map(['GET'], '', \App\Controllers\ContractType::class . ':getAll');
-        $contracttypes->map(['POST'], '', \App\Controllers\ContractType::class . ':postItem');
+        $contracttypes->map(['GET'], '', \App\v1\Controllers\Contracttype::class . ':getAll');
+        $contracttypes->map(['POST'], '', \App\v1\Controllers\Contracttype::class . ':postItem');
         $contracttypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $contracttypeId)
         {
-          $contracttypeId->map(['GET'], '', \App\Controllers\ContractType::class . ':showItem');
-          $contracttypeId->map(['POST'], '', \App\Controllers\ContractType::class . ':updateItem');
+          $contracttypeId->map(['GET'], '', \App\v1\Controllers\Contracttype::class . ':showItem');
+          $contracttypeId->map(['POST'], '', \App\v1\Controllers\Contracttype::class . ':updateItem');
         });
       });
       $dropdowns->group('/contacttypes', function (RouteCollectorProxy $contacttypes)
       {
-        $contacttypes->map(['GET'], '', \App\Controllers\ContactType::class . ':getAll');
-        $contacttypes->map(['POST'], '', \App\Controllers\ContactType::class . ':postItem');
+        $contacttypes->map(['GET'], '', \App\v1\Controllers\Contacttype::class . ':getAll');
+        $contacttypes->map(['POST'], '', \App\v1\Controllers\Contacttype::class . ':postItem');
         $contacttypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $contacttypeId)
         {
-          $contacttypeId->map(['GET'], '', \App\Controllers\ContactType::class . ':showItem');
-          $contacttypeId->map(['POST'], '', \App\Controllers\ContactType::class . ':updateItem');
+          $contacttypeId->map(['GET'], '', \App\v1\Controllers\Contacttype::class . ':showItem');
+          $contacttypeId->map(['POST'], '', \App\v1\Controllers\Contacttype::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicegenerictype', function (RouteCollectorProxy $itemdevicegenerictype)
+      $dropdowns->group('/devicegenerictype', function (RouteCollectorProxy $devicegenerictype)
       {
-        $itemdevicegenerictype->map(['GET'], '', \App\Controllers\ItemDeviceGenericType::class . ':getAll');
-        $itemdevicegenerictype->map(['POST'], '', \App\Controllers\ItemDeviceGenericType::class . ':postItem');
-        $itemdevicegenerictype->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicegenerictypeId)
+        $devicegenerictype->map(['GET'], '', \App\v1\Controllers\Devicegenerictype::class . ':getAll');
+        $devicegenerictype->map(['POST'], '', \App\v1\Controllers\Devicegenerictype::class . ':postItem');
+        $devicegenerictype->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicegenerictypeId)
         {
-          $itemdevicegenerictypeId->map(['GET'], '', \App\Controllers\ItemDeviceGenericType::class . ':showItem');
-          $itemdevicegenerictypeId->map(['POST'], '', \App\Controllers\ItemDeviceGenericType::class . ':updateItem');
+          $devicegenerictypeId->map(['GET'], '', \App\v1\Controllers\Devicegenerictype::class . ':showItem');
+          $devicegenerictypeId->map(['POST'], '', \App\v1\Controllers\Devicegenerictype::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicesensortype', function (RouteCollectorProxy $itemdevicesensortype)
+      $dropdowns->group('/devicesensortype', function (RouteCollectorProxy $devicesensortype)
       {
-        $itemdevicesensortype->map(['GET'], '', \App\Controllers\ItemDeviceSensorType::class . ':getAll');
-        $itemdevicesensortype->map(['POST'], '', \App\Controllers\ItemDeviceSensorType::class . ':postItem');
-        $itemdevicesensortype->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicesensortypeId)
+        $devicesensortype->map(['GET'], '', \App\v1\Controllers\Devicesensortype::class . ':getAll');
+        $devicesensortype->map(['POST'], '', \App\v1\Controllers\Devicesensortype::class . ':postItem');
+        $devicesensortype->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicesensortypeId)
         {
-          $itemdevicesensortypeId->map(['GET'], '', \App\Controllers\ItemDeviceSensorType::class . ':showItem');
-          $itemdevicesensortypeId->map(['POST'], '', \App\Controllers\ItemDeviceSensorType::class . ':updateItem');
+          $devicesensortypeId->map(['GET'], '', \App\v1\Controllers\Devicesensortype::class . ':showItem');
+          $devicesensortypeId->map(['POST'], '', \App\v1\Controllers\Devicesensortype::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicememorytype', function (RouteCollectorProxy $itemdevicememorytype)
+      $dropdowns->group('/devicememorytype', function (RouteCollectorProxy $devicememorytype)
       {
-        $itemdevicememorytype->map(['GET'], '', \App\Controllers\ItemDeviceMemoryType::class . ':getAll');
-        $itemdevicememorytype->map(['POST'], '', \App\Controllers\ItemDeviceMemoryType::class . ':postItem');
-        $itemdevicememorytype->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicememorytypeId)
+        $devicememorytype->map(['GET'], '', \App\v1\Controllers\Devicememorytype::class . ':getAll');
+        $devicememorytype->map(['POST'], '', \App\v1\Controllers\Devicememorytype::class . ':postItem');
+        $devicememorytype->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicememorytypeId)
         {
-          $itemdevicememorytypeId->map(['GET'], '', \App\Controllers\ItemDeviceMemoryType::class . ':showItem');
-          $itemdevicememorytypeId->map(['POST'], '', \App\Controllers\ItemDeviceMemoryType::class . ':updateItem');
+          $devicememorytypeId->map(['GET'], '', \App\v1\Controllers\Devicememorytype::class . ':showItem');
+          $devicememorytypeId->map(['POST'], '', \App\v1\Controllers\Devicememorytype::class . ':updateItem');
         });
       });
       $dropdowns->group('/suppliertypes', function (RouteCollectorProxy $suppliertypes)
       {
-        $suppliertypes->map(['GET'], '', \App\Controllers\SupplierType::class . ':getAll');
-        $suppliertypes->map(['POST'], '', \App\Controllers\SupplierType::class . ':postItem');
+        $suppliertypes->map(['GET'], '', \App\v1\Controllers\Suppliertype::class . ':getAll');
+        $suppliertypes->map(['POST'], '', \App\v1\Controllers\Suppliertype::class . ':postItem');
         $suppliertypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $suppliertypeId)
         {
-          $suppliertypeId->map(['GET'], '', \App\Controllers\SupplierType::class . ':showItem');
-          $suppliertypeId->map(['POST'], '', \App\Controllers\SupplierType::class . ':updateItem');
+          $suppliertypeId->map(['GET'], '', \App\v1\Controllers\Suppliertype::class . ':showItem');
+          $suppliertypeId->map(['POST'], '', \App\v1\Controllers\Suppliertype::class . ':updateItem');
         });
       });
       $dropdowns->group('/interfacetypes', function (RouteCollectorProxy $interfacetypes)
       {
-        $interfacetypes->map(['GET'], '', \App\Controllers\InterfaceType::class . ':getAll');
-        $interfacetypes->map(['POST'], '', \App\Controllers\InterfaceType::class . ':postItem');
+        $interfacetypes->map(['GET'], '', \App\v1\Controllers\Interfacetype::class . ':getAll');
+        $interfacetypes->map(['POST'], '', \App\v1\Controllers\Interfacetype::class . ':postItem');
         $interfacetypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $interfacetypeId)
         {
-          $interfacetypeId->map(['GET'], '', \App\Controllers\InterfaceType::class . ':showItem');
-          $interfacetypeId->map(['POST'], '', \App\Controllers\InterfaceType::class . ':updateItem');
+          $interfacetypeId->map(['GET'], '', \App\v1\Controllers\Interfacetype::class . ':showItem');
+          $interfacetypeId->map(['POST'], '', \App\v1\Controllers\Interfacetype::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicecasetype', function (RouteCollectorProxy $itemdevicecasetype)
+      $dropdowns->group('/devicecasetype', function (RouteCollectorProxy $devicecasetype)
       {
-        $itemdevicecasetype->map(['GET'], '', \App\Controllers\ItemDeviceCaseType::class . ':getAll');
-        $itemdevicecasetype->map(['POST'], '', \App\Controllers\ItemDeviceCaseType::class . ':postItem');
-        $itemdevicecasetype->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicecasetypeId)
+        $devicecasetype->map(['GET'], '', \App\v1\Controllers\Devicecasetype::class . ':getAll');
+        $devicecasetype->map(['POST'], '', \App\v1\Controllers\Devicecasetype::class . ':postItem');
+        $devicecasetype->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicecasetypeId)
         {
-          $itemdevicecasetypeId->map(['GET'], '', \App\Controllers\ItemDeviceCaseType::class . ':showItem');
-          $itemdevicecasetypeId->map(['POST'], '', \App\Controllers\ItemDeviceCaseType::class . ':updateItem');
+          $devicecasetypeId->map(['GET'], '', \App\v1\Controllers\Devicecasetype::class . ':showItem');
+          $devicecasetypeId->map(['POST'], '', \App\v1\Controllers\Devicecasetype::class . ':updateItem');
         });
       });
       $dropdowns->group('/phonepowersupplies', function (RouteCollectorProxy $phonepowersupplies)
       {
-        $phonepowersupplies->map(['GET'], '', \App\Controllers\PhonePowerSupply::class . ':getAll');
-        $phonepowersupplies->map(['POST'], '', \App\Controllers\PhonePowerSupply::class . ':postItem');
+        $phonepowersupplies->map(['GET'], '', \App\v1\Controllers\Phonepowersupply::class . ':getAll');
+        $phonepowersupplies->map(['POST'], '', \App\v1\Controllers\Phonepowersupply::class . ':postItem');
         $phonepowersupplies->group("/{id:[0-9]+}", function (RouteCollectorProxy $phonepowersupplyId)
         {
-          $phonepowersupplyId->map(['GET'], '', \App\Controllers\PhonePowerSupply::class . ':showItem');
-          $phonepowersupplyId->map(['POST'], '', \App\Controllers\PhonePowerSupply::class . ':updateItem');
+          $phonepowersupplyId->map(['GET'], '', \App\v1\Controllers\Phonepowersupply::class . ':showItem');
+          $phonepowersupplyId->map(['POST'], '', \App\v1\Controllers\Phonepowersupply::class . ':updateItem');
         });
       });
       $dropdowns->group('/filesystems', function (RouteCollectorProxy $filesystems)
       {
-        $filesystems->map(['GET'], '', \App\Controllers\FileSystem::class . ':getAll');
-        $filesystems->map(['POST'], '', \App\Controllers\FileSystem::class . ':postItem');
+        $filesystems->map(['GET'], '', \App\v1\Controllers\Filesystem::class . ':getAll');
+        $filesystems->map(['POST'], '', \App\v1\Controllers\Filesystem::class . ':postItem');
         $filesystems->group("/{id:[0-9]+}", function (RouteCollectorProxy $filesystemId)
         {
-          $filesystemId->map(['GET'], '', \App\Controllers\FileSystem::class . ':showItem');
-          $filesystemId->map(['POST'], '', \App\Controllers\FileSystem::class . ':updateItem');
+          $filesystemId->map(['GET'], '', \App\v1\Controllers\Filesystem::class . ':showItem');
+          $filesystemId->map(['POST'], '', \App\v1\Controllers\Filesystem::class . ':updateItem');
         });
       });
       $dropdowns->group('/certificatetypes', function (RouteCollectorProxy $certificatetypes)
       {
-        $certificatetypes->map(['GET'], '', \App\Controllers\CertificateType::class . ':getAll');
-        $certificatetypes->map(['POST'], '', \App\Controllers\CertificateType::class . ':postItem');
+        $certificatetypes->map(['GET'], '', \App\v1\Controllers\Certificatetype::class . ':getAll');
+        $certificatetypes->map(['POST'], '', \App\v1\Controllers\Certificatetype::class . ':postItem');
         $certificatetypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $certificatetypeId)
         {
-          $certificatetypeId->map(['GET'], '', \App\Controllers\CertificateType::class . ':showItem');
-          $certificatetypeId->map(['POST'], '', \App\Controllers\CertificateType::class . ':updateItem');
+          $certificatetypeId->map(['GET'], '', \App\v1\Controllers\Certificatetype::class . ':showItem');
+          $certificatetypeId->map(['POST'], '', \App\v1\Controllers\Certificatetype::class . ':updateItem');
         });
       });
       $dropdowns->group('/budgettypes', function (RouteCollectorProxy $budgettypes)
       {
-        $budgettypes->map(['GET'], '', \App\Controllers\BudgetType::class . ':getAll');
-        $budgettypes->map(['POST'], '', \App\Controllers\BudgetType::class . ':postItem');
+        $budgettypes->map(['GET'], '', \App\v1\Controllers\Budgettype::class . ':getAll');
+        $budgettypes->map(['POST'], '', \App\v1\Controllers\Budgettype::class . ':postItem');
         $budgettypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $budgettypeId)
         {
-          $budgettypeId->map(['GET'], '', \App\Controllers\BudgetType::class . ':showItem');
-          $budgettypeId->map(['POST'], '', \App\Controllers\BudgetType::class . ':updateItem');
+          $budgettypeId->map(['GET'], '', \App\v1\Controllers\Budgettype::class . ':showItem');
+          $budgettypeId->map(['POST'], '', \App\v1\Controllers\Budgettype::class . ':updateItem');
         });
       });
       $dropdowns->group('/devicesimcardtypes', function (RouteCollectorProxy $devicesimcardtypes)
       {
-        $devicesimcardtypes->map(['GET'], '', \App\Controllers\ItemDeviceSimcardType::class . ':getAll');
-        $devicesimcardtypes->map(['POST'], '', \App\Controllers\ItemDeviceSimcardType::class . ':postItem');
+        $devicesimcardtypes->map(['GET'], '', \App\v1\Controllers\Devicesimcardtype::class . ':getAll');
+        $devicesimcardtypes->map(['POST'], '', \App\v1\Controllers\Devicesimcardtype::class . ':postItem');
         $devicesimcardtypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicesimcardtypeId)
         {
-          $devicesimcardtypeId->map(['GET'], '', \App\Controllers\ItemDeviceSimcardType::class . ':showItem');
-          $devicesimcardtypeId->map(['POST'], '', \App\Controllers\ItemDeviceSimcardType::class . ':updateItem');
+          $devicesimcardtypeId->map(['GET'], '', \App\v1\Controllers\Devicesimcardtype::class . ':showItem');
+          $devicesimcardtypeId->map(['POST'], '', \App\v1\Controllers\Devicesimcardtype::class . ':updateItem');
         });
       });
       $dropdowns->group('/linetypes', function (RouteCollectorProxy $linetypes)
       {
-        $linetypes->map(['GET'], '', \App\Controllers\LineType::class . ':getAll');
-        $linetypes->map(['POST'], '', \App\Controllers\LineType::class . ':postItem');
+        $linetypes->map(['GET'], '', \App\v1\Controllers\Linetype::class . ':getAll');
+        $linetypes->map(['POST'], '', \App\v1\Controllers\Linetype::class . ':postItem');
         $linetypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $linetypeId)
         {
-          $linetypeId->map(['GET'], '', \App\Controllers\LineType::class . ':showItem');
-          $linetypeId->map(['POST'], '', \App\Controllers\LineType::class . ':updateItem');
+          $linetypeId->map(['GET'], '', \App\v1\Controllers\Linetype::class . ':showItem');
+          $linetypeId->map(['POST'], '', \App\v1\Controllers\Linetype::class . ':updateItem');
         });
       });
       $dropdowns->group('/racktypes', function (RouteCollectorProxy $racktypes)
       {
-        $racktypes->map(['GET'], '', \App\Controllers\RackType::class . ':getAll');
-        $racktypes->map(['POST'], '', \App\Controllers\RackType::class . ':postItem');
+        $racktypes->map(['GET'], '', \App\v1\Controllers\Racktype::class . ':getAll');
+        $racktypes->map(['POST'], '', \App\v1\Controllers\Racktype::class . ':postItem');
         $racktypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $racktypeId)
         {
-          $racktypeId->map(['GET'], '', \App\Controllers\RackType::class . ':showItem');
-          $racktypeId->map(['POST'], '', \App\Controllers\RackType::class . ':updateItem');
+          $racktypeId->map(['GET'], '', \App\v1\Controllers\Racktype::class . ':showItem');
+          $racktypeId->map(['POST'], '', \App\v1\Controllers\Racktype::class . ':updateItem');
         });
       });
       $dropdowns->group('/pdutypes', function (RouteCollectorProxy $pdutypes)
       {
-        $pdutypes->map(['GET'], '', \App\Controllers\PDUType::class . ':getAll');
-        $pdutypes->map(['POST'], '', \App\Controllers\PDUType::class . ':postItem');
+        $pdutypes->map(['GET'], '', \App\v1\Controllers\Pdutype::class . ':getAll');
+        $pdutypes->map(['POST'], '', \App\v1\Controllers\Pdutype::class . ':postItem');
         $pdutypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $pdutypeId)
         {
-          $pdutypeId->map(['GET'], '', \App\Controllers\PDUType::class . ':showItem');
-          $pdutypeId->map(['POST'], '', \App\Controllers\PDUType::class . ':updateItem');
+          $pdutypeId->map(['GET'], '', \App\v1\Controllers\Pdutype::class . ':showItem');
+          $pdutypeId->map(['POST'], '', \App\v1\Controllers\Pdutype::class . ':updateItem');
         });
       });
       $dropdowns->group('/passivedcequipmenttypes', function (RouteCollectorProxy $passivedcequipmenttypes)
       {
-        $passivedcequipmenttypes->map(['GET'], '', \App\Controllers\PassivedcEquipmentType::class . ':getAll');
-        $passivedcequipmenttypes->map(['POST'], '', \App\Controllers\PassivedcEquipmentType::class . ':postItem');
-        $passivedcequipmenttypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $passivedcequipmenttypeId)
+        $passivedcequipmenttypes->map(['GET'], '', \App\v1\Controllers\Passivedcequipmenttype::class . ':getAll');
+        $passivedcequipmenttypes->map(['POST'], '', \App\v1\Controllers\Passivedcequipmenttype::class . ':postItem');
+        $passivedcequipmenttypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $pcetId)
         {
-          $passivedcequipmenttypeId->map(['GET'], '', \App\Controllers\PassivedcEquipmentType::class . ':showItem');
-          $passivedcequipmenttypeId->map(['POST'], '', \App\Controllers\PassivedcEquipmentType::class . ':updateItem');
+          $pcetId->map(['GET'], '', \App\v1\Controllers\Passivedcequipmenttype::class . ':showItem');
+          $pcetId->map(['POST'], '', \App\v1\Controllers\Passivedcequipmenttype::class . ':updateItem');
         });
       });
       $dropdowns->group('/clustertypes', function (RouteCollectorProxy $clustertypes)
       {
-        $clustertypes->map(['GET'], '', \App\Controllers\ClusterType::class . ':getAll');
-        $clustertypes->map(['POST'], '', \App\Controllers\ClusterType::class . ':postItem');
+        $clustertypes->map(['GET'], '', \App\v1\Controllers\Clustertype::class . ':getAll');
+        $clustertypes->map(['POST'], '', \App\v1\Controllers\Clustertype::class . ':postItem');
         $clustertypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $clustertypeId)
         {
-          $clustertypeId->map(['GET'], '', \App\Controllers\ClusterType::class . ':showItem');
-          $clustertypeId->map(['POST'], '', \App\Controllers\ClusterType::class . ':updateItem');
+          $clustertypeId->map(['GET'], '', \App\v1\Controllers\Clustertype::class . ':showItem');
+          $clustertypeId->map(['POST'], '', \App\v1\Controllers\Clustertype::class . ':updateItem');
         });
       });
       $dropdowns->group('/computermodels', function (RouteCollectorProxy $computermodels)
       {
-        $computermodels->map(['GET'], '', \App\Controllers\ComputerModel::class . ':getAll');
-        $computermodels->map(['POST'], '', \App\Controllers\ComputerModel::class . ':postItem');
+        $computermodels->map(['GET'], '', \App\v1\Controllers\Computermodel::class . ':getAll');
+        $computermodels->map(['POST'], '', \App\v1\Controllers\Computermodel::class . ':postItem');
         $computermodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $computermodelId)
         {
-          $computermodelId->map(['GET'], '', \App\Controllers\ComputerModel::class . ':showItem');
-          $computermodelId->map(['POST'], '', \App\Controllers\ComputerModel::class . ':updateItem');
+          $computermodelId->map(['GET'], '', \App\v1\Controllers\Computermodel::class . ':showItem');
+          $computermodelId->map(['POST'], '', \App\v1\Controllers\Computermodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/networkequipmentmodels', function (RouteCollectorProxy $networkequipmentmodels)
       {
-        $networkequipmentmodels->map(['GET'], '', \App\Controllers\NetworkEquipmentModel::class . ':getAll');
-        $networkequipmentmodels->map(['POST'], '', \App\Controllers\NetworkEquipmentModel::class . ':postItem');
+        $networkequipmentmodels->map(['GET'], '', \App\v1\Controllers\Networkequipmentmodel::class . ':getAll');
+        $networkequipmentmodels->map(['POST'], '', \App\v1\Controllers\Networkequipmentmodel::class . ':postItem');
         $networkequipmentmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $networkequipmentmodelId)
         {
-          $networkequipmentmodelId->map(['GET'], '', \App\Controllers\NetworkEquipmentModel::class . ':showItem');
-          $networkequipmentmodelId->map(['POST'], '', \App\Controllers\NetworkEquipmentModel::class . ':updateItem');
+          $networkequipmentmodelId->map(['GET'], '', \App\v1\Controllers\Networkequipmentmodel::class . ':showItem');
+          $networkequipmentmodelId->map(['POST'], '', \App\v1\Controllers\Networkequipmentmodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/printermodels', function (RouteCollectorProxy $printermodels)
       {
-        $printermodels->map(['GET'], '', \App\Controllers\PrinterModel::class . ':getAll');
-        $printermodels->map(['POST'], '', \App\Controllers\PrinterModel::class . ':postItem');
+        $printermodels->map(['GET'], '', \App\v1\Controllers\Printermodel::class . ':getAll');
+        $printermodels->map(['POST'], '', \App\v1\Controllers\Printermodel::class . ':postItem');
         $printermodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $printermodelId)
         {
-          $printermodelId->map(['GET'], '', \App\Controllers\PrinterModel::class . ':showItem');
-          $printermodelId->map(['POST'], '', \App\Controllers\PrinterModel::class . ':updateItem');
+          $printermodelId->map(['GET'], '', \App\v1\Controllers\Printermodel::class . ':showItem');
+          $printermodelId->map(['POST'], '', \App\v1\Controllers\Printermodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/monitormodels', function (RouteCollectorProxy $monitormodels)
       {
-        $monitormodels->map(['GET'], '', \App\Controllers\MonitorModel::class . ':getAll');
-        $monitormodels->map(['POST'], '', \App\Controllers\MonitorModel::class . ':postItem');
+        $monitormodels->map(['GET'], '', \App\v1\Controllers\Monitormodel::class . ':getAll');
+        $monitormodels->map(['POST'], '', \App\v1\Controllers\Monitormodel::class . ':postItem');
         $monitormodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $monitormodelId)
         {
-          $monitormodelId->map(['GET'], '', \App\Controllers\MonitorModel::class . ':showItem');
-          $monitormodelId->map(['POST'], '', \App\Controllers\MonitorModel::class . ':updateItem');
+          $monitormodelId->map(['GET'], '', \App\v1\Controllers\Monitormodel::class . ':showItem');
+          $monitormodelId->map(['POST'], '', \App\v1\Controllers\Monitormodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/peripheralmodels', function (RouteCollectorProxy $peripheralmodels)
       {
-        $peripheralmodels->map(['GET'], '', \App\Controllers\PeripheralModel::class . ':getAll');
-        $peripheralmodels->map(['POST'], '', \App\Controllers\PeripheralModel::class . ':postItem');
+        $peripheralmodels->map(['GET'], '', \App\v1\Controllers\Peripheralmodel::class . ':getAll');
+        $peripheralmodels->map(['POST'], '', \App\v1\Controllers\Peripheralmodel::class . ':postItem');
         $peripheralmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $peripheralmodelId)
         {
-          $peripheralmodelId->map(['GET'], '', \App\Controllers\PeripheralModel::class . ':showItem');
-          $peripheralmodelId->map(['POST'], '', \App\Controllers\PeripheralModel::class . ':updateItem');
+          $peripheralmodelId->map(['GET'], '', \App\v1\Controllers\Peripheralmodel::class . ':showItem');
+          $peripheralmodelId->map(['POST'], '', \App\v1\Controllers\Peripheralmodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/phonemodels', function (RouteCollectorProxy $phonemodels)
       {
-        $phonemodels->map(['GET'], '', \App\Controllers\PhoneModel::class . ':getAll');
-        $phonemodels->map(['POST'], '', \App\Controllers\PhoneModel::class . ':postItem');
+        $phonemodels->map(['GET'], '', \App\v1\Controllers\Phonemodel::class . ':getAll');
+        $phonemodels->map(['POST'], '', \App\v1\Controllers\Phonemodel::class . ':postItem');
         $phonemodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $phonemodelId)
         {
-          $phonemodelId->map(['GET'], '', \App\Controllers\PhoneModel::class . ':showItem');
-          $phonemodelId->map(['POST'], '', \App\Controllers\PhoneModel::class . ':updateItem');
+          $phonemodelId->map(['GET'], '', \App\v1\Controllers\Phonemodel::class . ':showItem');
+          $phonemodelId->map(['POST'], '', \App\v1\Controllers\Phonemodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicecasemodels', function (RouteCollectorProxy $itemdevicecasemodels)
+      $dropdowns->group('/devicecasemodels', function (RouteCollectorProxy $devicecasemodels)
       {
-        $itemdevicecasemodels->map(['GET'], '', \App\Controllers\ItemDeviceCaseModel::class . ':getAll');
-        $itemdevicecasemodels->map(['POST'], '', \App\Controllers\ItemDeviceCaseModel::class . ':postItem');
-        $itemdevicecasemodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicecasemodelId)
+        $devicecasemodels->map(['GET'], '', \App\v1\Controllers\Devicecasemodel::class . ':getAll');
+        $devicecasemodels->map(['POST'], '', \App\v1\Controllers\Devicecasemodel::class . ':postItem');
+        $devicecasemodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicecasemodelId)
         {
-          $itemdevicecasemodelId->map(['GET'], '', \App\Controllers\ItemDeviceCaseModel::class . ':showItem');
-          $itemdevicecasemodelId->map(['POST'], '', \App\Controllers\ItemDeviceCaseModel::class . ':updateItem');
+          $devicecasemodelId->map(['GET'], '', \App\v1\Controllers\Devicecasemodel::class . ':showItem');
+          $devicecasemodelId->map(['POST'], '', \App\v1\Controllers\Devicecasemodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicecontrolmodels', function (RouteCollectorProxy $itemdevicecontrolmodels)
+      $dropdowns->group('/devicecontrolmodels', function (RouteCollectorProxy $devicecontrolmodels)
       {
-        $itemdevicecontrolmodels->map(['GET'], '', \App\Controllers\ItemDeviceControlModel::class . ':getAll');
-        $itemdevicecontrolmodels->map(['POST'], '', \App\Controllers\ItemDeviceControlModel::class . ':postItem');
-        $itemdevicecontrolmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicecontrolmodelId)
+        $devicecontrolmodels->map(['GET'], '', \App\v1\Controllers\Devicecontrolmodel::class . ':getAll');
+        $devicecontrolmodels->map(['POST'], '', \App\v1\Controllers\Devicecontrolmodel::class . ':postItem');
+        $devicecontrolmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicecontrolmodelId)
         {
-          $itemdevicecontrolmodelId->map(['GET'], '', \App\Controllers\ItemDeviceControlModel::class . ':showItem');
-          $itemdevicecontrolmodelId->map(['POST'], '', \App\Controllers\ItemDeviceControlModel::class . ':updateItem');
+          $devicecontrolmodelId->map(['GET'], '', \App\v1\Controllers\Devicecontrolmodel::class . ':showItem');
+          $devicecontrolmodelId->map(['POST'], '', \App\v1\Controllers\Devicecontrolmodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicedrivemodels', function (RouteCollectorProxy $itemdevicedrivemodels)
+      $dropdowns->group('/devicedrivemodels', function (RouteCollectorProxy $devicedrivemodels)
       {
-        $itemdevicedrivemodels->map(['GET'], '', \App\Controllers\ItemDeviceDriveModel::class . ':getAll');
-        $itemdevicedrivemodels->map(['POST'], '', \App\Controllers\ItemDeviceDriveModel::class . ':postItem');
-        $itemdevicedrivemodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicedrivemodelId)
+        $devicedrivemodels->map(['GET'], '', \App\v1\Controllers\Devicedrivemodel::class . ':getAll');
+        $devicedrivemodels->map(['POST'], '', \App\v1\Controllers\Devicedrivemodel::class . ':postItem');
+        $devicedrivemodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicedrivemodelId)
         {
-          $itemdevicedrivemodelId->map(['GET'], '', \App\Controllers\ItemDeviceDriveModel::class . ':showItem');
-          $itemdevicedrivemodelId->map(['POST'], '', \App\Controllers\ItemDeviceDriveModel::class . ':updateItem');
+          $devicedrivemodelId->map(['GET'], '', \App\v1\Controllers\Devicedrivemodel::class . ':showItem');
+          $devicedrivemodelId->map(['POST'], '', \App\v1\Controllers\Devicedrivemodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicegenericmodels', function (RouteCollectorProxy $itemdevicegenericmodels)
+      $dropdowns->group('/devicegenericmodels', function (RouteCollectorProxy $devicegenericmodels)
       {
-        $itemdevicegenericmodels->map(['GET'], '', \App\Controllers\ItemDeviceGenericModel::class . ':getAll');
-        $itemdevicegenericmodels->map(['POST'], '', \App\Controllers\ItemDeviceGenericModel::class . ':postItem');
-        $itemdevicegenericmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicegenericmodelId)
+        $devicegenericmodels->map(['GET'], '', \App\v1\Controllers\Devicegenericmodel::class . ':getAll');
+        $devicegenericmodels->map(['POST'], '', \App\v1\Controllers\Devicegenericmodel::class . ':postItem');
+        $devicegenericmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicegenericmodelId)
         {
-          $itemdevicegenericmodelId->map(['GET'], '', \App\Controllers\ItemDeviceGenericModel::class . ':showItem');
-          $itemdevicegenericmodelId->map(['POST'], '', \App\Controllers\ItemDeviceGenericModel::class . ':updateItem');
+          $devicegenericmodelId->map(['GET'], '', \App\v1\Controllers\Devicegenericmodel::class . ':showItem');
+          $devicegenericmodelId->map(['POST'], '', \App\v1\Controllers\Devicegenericmodel::class . ':updateitem');
         });
       });
-      $dropdowns->group('/itemdevicegraphiccardmodels', function (RouteCollectorProxy $itemdevicegraphiccardmodels)
+      $dropdowns->group('/devicegraphiccardmodels', function (RouteCollectorProxy $devicegraphiccardmodels)
       {
-        $itemdevicegraphiccardmodels->map(['GET'], '', \App\Controllers\ItemDeviceGraphicCardModel::class . ':getAll');
-        $itemdevicegraphiccardmodels->map(['POST'], '', \App\Controllers\ItemDeviceGraphicCardModel::class . ':postItem');
-        $itemdevicegraphiccardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicegraphiccardmodelId)
+        $devicegraphiccardmodels->map(['GET'], '', \App\v1\Controllers\Devicegraphiccardmodel::class . ':getAll');
+        $devicegraphiccardmodels->map(['POST'], '', \App\v1\Controllers\Devicegraphiccardmodel::class . ':postItem');
+        $devicegraphiccardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $dgcmId)
         {
-          $itemdevicegraphiccardmodelId->map(['GET'], '', \App\Controllers\ItemDeviceGraphicCardModel::class . ':showItem');
-          $itemdevicegraphiccardmodelId->map(['POST'], '', \App\Controllers\ItemDeviceGraphicCardModel::class . ':updateItem');
+          $dgcmId->map(['GET'], '', \App\v1\Controllers\Devicegraphiccardmodel::class . ':showItem');
+          $dgcmId->map(['POST'], '', \App\v1\Controllers\Devicegraphiccardmodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdeviceharddrivemodels', function (RouteCollectorProxy $itemdeviceharddrivemodels)
+      $dropdowns->group('/deviceharddrivemodels', function (RouteCollectorProxy $deviceharddrivemodels)
       {
-        $itemdeviceharddrivemodels->map(['GET'], '', \App\Controllers\ItemDeviceHardDriveModel::class . ':getAll');
-        $itemdeviceharddrivemodels->map(['POST'], '', \App\Controllers\ItemDeviceHardDriveModel::class . ':postItem');
-        $itemdeviceharddrivemodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdeviceharddrivemodelId)
+        $deviceharddrivemodels->map(['GET'], '', \App\v1\Controllers\Deviceharddrivemodel::class . ':getAll');
+        $deviceharddrivemodels->map(['POST'], '', \App\v1\Controllers\Deviceharddrivemodel::class . ':postItem');
+        $deviceharddrivemodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $deviceharddrivemodelId)
         {
-          $itemdeviceharddrivemodelId->map(['GET'], '', \App\Controllers\ItemDeviceHardDriveModel::class . ':showItem');
-          $itemdeviceharddrivemodelId->map(['POST'], '', \App\Controllers\ItemDeviceHardDriveModel::class . ':updateItem');
+          $deviceharddrivemodelId->map(['GET'], '', \App\v1\Controllers\Deviceharddrivemodel::class . ':showItem');
+          $deviceharddrivemodelId->map(['POST'], '', \App\v1\Controllers\Deviceharddrivemodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicememorymodels', function (RouteCollectorProxy $itemdevicememorymodels)
+      $dropdowns->group('/devicememorymodels', function (RouteCollectorProxy $devicememorymodels)
       {
-        $itemdevicememorymodels->map(['GET'], '', \App\Controllers\ItemDeviceMemoryModel::class . ':getAll');
-        $itemdevicememorymodels->map(['POST'], '', \App\Controllers\ItemDeviceMemoryModel::class . ':postItem');
-        $itemdevicememorymodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicememorymodelId)
+        $devicememorymodels->map(['GET'], '', \App\v1\Controllers\Devicememorymodel::class . ':getAll');
+        $devicememorymodels->map(['POST'], '', \App\v1\Controllers\Devicememorymodel::class . ':postItem');
+        $devicememorymodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicememorymodelId)
         {
-          $itemdevicememorymodelId->map(['GET'], '', \App\Controllers\ItemDeviceMemoryModel::class . ':showItem');
-          $itemdevicememorymodelId->map(['POST'], '', \App\Controllers\ItemDeviceMemoryModel::class . ':updateItem');
+          $devicememorymodelId->map(['GET'], '', \App\v1\Controllers\Devicememorymodel::class . ':showItem');
+          $devicememorymodelId->map(['POST'], '', \App\v1\Controllers\Devicememorymodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicemotherboardmodels', function (RouteCollectorProxy $itemdevicemotherboardmodels)
+      $dropdowns->group('/devicemotherboardmodels', function (RouteCollectorProxy $devicemotherboardmodels)
       {
-        $itemdevicemotherboardmodels->map(['GET'], '', \App\Controllers\ItemDeviceMotherBoardModel::class . ':getAll');
-        $itemdevicemotherboardmodels->map(['POST'], '', \App\Controllers\ItemDeviceMotherBoardModel::class . ':postItem');
-        $itemdevicemotherboardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicemotherboardmodelId)
+        $devicemotherboardmodels->map(['GET'], '', \App\v1\Controllers\Devicemotherboardmodel::class . ':getAll');
+        $devicemotherboardmodels->map(['POST'], '', \App\v1\Controllers\Devicemotherboardmodel::class . ':postItem');
+        $devicemotherboardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $dmmId)
         {
-          $itemdevicemotherboardmodelId->map(['GET'], '', \App\Controllers\ItemDeviceMotherBoardModel::class . ':showItem');
-          $itemdevicemotherboardmodelId->map(['POST'], '', \App\Controllers\ItemDeviceMotherBoardModel::class . ':updateItem');
+          $dmmId->map(['GET'], '', \App\v1\Controllers\Devicemotherboardmodel::class . ':showItem');
+          $dmmId->map(['POST'], '', \App\v1\Controllers\Devicemotherboardmodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicenetworkcardmodels', function (RouteCollectorProxy $itemdevicenetworkcardmodels)
+      $dropdowns->group('/devicenetworkcardmodels', function (RouteCollectorProxy $devicenetworkcardmodels)
       {
-        $itemdevicenetworkcardmodels->map(['GET'], '', \App\Controllers\ItemDeviceNetworkCardModel::class . ':getAll');
-        $itemdevicenetworkcardmodels->map(['POST'], '', \App\Controllers\ItemDeviceNetworkCardModel::class . ':postItem');
-        $itemdevicenetworkcardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicenetworkcardmodelId)
+        $devicenetworkcardmodels->map(['GET'], '', \App\v1\Controllers\Devicenetworkcardmodel::class . ':getAll');
+        $devicenetworkcardmodels->map(['POST'], '', \App\v1\Controllers\Devicenetworkcardmodel::class . ':postItem');
+        $devicenetworkcardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $dncmId)
         {
-          $itemdevicenetworkcardmodelId->map(['GET'], '', \App\Controllers\ItemDeviceNetworkCardModel::class . ':showItem');
-          $itemdevicenetworkcardmodelId->map(['POST'], '', \App\Controllers\ItemDeviceNetworkCardModel::class . ':updateItem');
+          $dncmId->map(['GET'], '', \App\v1\Controllers\Devicenetworkcardmodel::class . ':showItem');
+          $dncmId->map(['POST'], '', \App\v1\Controllers\Devicenetworkcardmodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicepcimodels', function (RouteCollectorProxy $itemdevicepcimodels)
+      $dropdowns->group('/devicepcimodels', function (RouteCollectorProxy $devicepcimodels)
       {
-        $itemdevicepcimodels->map(['GET'], '', \App\Controllers\ItemDevicePciModel::class . ':getAll');
-        $itemdevicepcimodels->map(['POST'], '', \App\Controllers\ItemDevicePciModel::class . ':postItem');
-        $itemdevicepcimodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicepcimodelId)
+        $devicepcimodels->map(['GET'], '', \App\v1\Controllers\Devicepcimodel::class . ':getAll');
+        $devicepcimodels->map(['POST'], '', \App\v1\Controllers\Devicepcimodel::class . ':postItem');
+        $devicepcimodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicepcimodelId)
         {
-          $itemdevicepcimodelId->map(['GET'], '', \App\Controllers\ItemDevicePciModel::class . ':showItem');
-          $itemdevicepcimodelId->map(['POST'], '', \App\Controllers\ItemDevicePciModel::class . ':updateItem');
+          $devicepcimodelId->map(['GET'], '', \App\v1\Controllers\Devicepcimodel::class . ':showItem');
+          $devicepcimodelId->map(['POST'], '', \App\v1\Controllers\Devicepcimodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicepowersupplymodels', function (RouteCollectorProxy $itemdevicepowersupplymodels)
+      $dropdowns->group('/devicepowersupplymodels', function (RouteCollectorProxy $devicepowersupplymodels)
       {
-        $itemdevicepowersupplymodels->map(['GET'], '', \App\Controllers\ItemDevicePowerSupplyModel::class . ':getAll');
-        $itemdevicepowersupplymodels->map(['POST'], '', \App\Controllers\ItemDevicePowerSupplyModel::class . ':postItem');
-        $itemdevicepowersupplymodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicepowersupplymodelId)
+        $devicepowersupplymodels->map(['GET'], '', \App\v1\Controllers\Devicepowersupplymodel::class . ':getAll');
+        $devicepowersupplymodels->map(['POST'], '', \App\v1\Controllers\Devicepowersupplymodel::class . ':postItem');
+        $devicepowersupplymodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $dpsmId)
         {
-          $itemdevicepowersupplymodelId->map(['GET'], '', \App\Controllers\ItemDevicePowerSupplyModel::class . ':showItem');
-          $itemdevicepowersupplymodelId->map(['POST'], '', \App\Controllers\ItemDevicePowerSupplyModel::class . ':updateItem');
+          $dpsmId->map(['GET'], '', \App\v1\Controllers\Devicepowersupplymodel::class . ':showItem');
+          $dpsmId->map(['POST'], '', \App\v1\Controllers\Devicepowersupplymodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdeviceprocessormodels', function (RouteCollectorProxy $itemdeviceprocessormodels)
+      $dropdowns->group('/deviceprocessormodels', function (RouteCollectorProxy $deviceprocessormodels)
       {
-        $itemdeviceprocessormodels->map(['GET'], '', \App\Controllers\ItemDeviceProcessorModel::class . ':getAll');
-        $itemdeviceprocessormodels->map(['POST'], '', \App\Controllers\ItemDeviceProcessorModel::class . ':postItem');
-        $itemdeviceprocessormodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdeviceprocessormodelId)
+        $deviceprocessormodels->map(['GET'], '', \App\v1\Controllers\Deviceprocessormodel::class . ':getAll');
+        $deviceprocessormodels->map(['POST'], '', \App\v1\Controllers\Deviceprocessormodel::class . ':postItem');
+        $deviceprocessormodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $deviceprocessormodelId)
         {
-          $itemdeviceprocessormodelId->map(['GET'], '', \App\Controllers\ItemDeviceProcessorModel::class . ':showItem');
-          $itemdeviceprocessormodelId->map(['POST'], '', \App\Controllers\ItemDeviceProcessorModel::class . ':updateItem');
+          $deviceprocessormodelId->map(['GET'], '', \App\v1\Controllers\Deviceprocessormodel::class . ':showItem');
+          $deviceprocessormodelId->map(['POST'], '', \App\v1\Controllers\Deviceprocessormodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicesoundcardmodels', function (RouteCollectorProxy $itemdevicesoundcardmodels)
+      $dropdowns->group('/devicesoundcardmodels', function (RouteCollectorProxy $devicesoundcardmodels)
       {
-        $itemdevicesoundcardmodels->map(['GET'], '', \App\Controllers\ItemDeviceSoundCardModel::class . ':getAll');
-        $itemdevicesoundcardmodels->map(['POST'], '', \App\Controllers\ItemDeviceSoundCardModel::class . ':postItem');
-        $itemdevicesoundcardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicesoundcardmodelId)
+        $devicesoundcardmodels->map(['GET'], '', \App\v1\Controllers\Devicesoundcardmodel::class . ':getAll');
+        $devicesoundcardmodels->map(['POST'], '', \App\v1\Controllers\Devicesoundcardmodel::class . ':postItem');
+        $devicesoundcardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicesoundcardmodelId)
         {
-          $itemdevicesoundcardmodelId->map(['GET'], '', \App\Controllers\ItemDeviceSoundCardModel::class . ':showItem');
-          $itemdevicesoundcardmodelId->map(['POST'], '', \App\Controllers\ItemDeviceSoundCardModel::class . ':updateItem');
+          $devicesoundcardmodelId->map(['GET'], '', \App\v1\Controllers\Devicesoundcardmodel::class . ':showItem');
+          $devicesoundcardmodelId->map(['POST'], '', \App\v1\Controllers\Devicesoundcardmodel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/itemdevicesensormodels', function (RouteCollectorProxy $itemdevicesensormodels)
+      $dropdowns->group('/devicesensormodels', function (RouteCollectorProxy $devicesensormodels)
       {
-        $itemdevicesensormodels->map(['GET'], '', \App\Controllers\ItemDeviceSensorModel::class . ':getAll');
-        $itemdevicesensormodels->map(['POST'], '', \App\Controllers\ItemDeviceSensorModel::class . ':postItem');
-        $itemdevicesensormodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicesensormodelId)
+        $devicesensormodels->map(['GET'], '', \App\v1\Controllers\Devicesensormodel::class . ':getAll');
+        $devicesensormodels->map(['POST'], '', \App\v1\Controllers\Devicesensormodel::class . ':postItem');
+        $devicesensormodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicesensormodelId)
         {
-          $itemdevicesensormodelId->map(['GET'], '', \App\Controllers\ItemDeviceSensorModel::class . ':showItem');
-          $itemdevicesensormodelId->map(['POST'], '', \App\Controllers\ItemDeviceSensorModel::class . ':updateItem');
+          $devicesensormodelId->map(['GET'], '', \App\v1\Controllers\Devicesensormodel::class . ':showItem');
+          $devicesensormodelId->map(['POST'], '', \App\v1\Controllers\Devicesensormodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/rackmodels', function (RouteCollectorProxy $rackmodels)
       {
-        $rackmodels->map(['GET'], '', \App\Controllers\RackModel::class . ':getAll');
-        $rackmodels->map(['POST'], '', \App\Controllers\RackModel::class . ':postItem');
+        $rackmodels->map(['GET'], '', \App\v1\Controllers\Rackmodel::class . ':getAll');
+        $rackmodels->map(['POST'], '', \App\v1\Controllers\Rackmodel::class . ':postItem');
         $rackmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $rackmodelId)
         {
-          $rackmodelId->map(['GET'], '', \App\Controllers\RackModel::class . ':showItem');
-          $rackmodelId->map(['POST'], '', \App\Controllers\RackModel::class . ':updateItem');
+          $rackmodelId->map(['GET'], '', \App\v1\Controllers\Rackmodel::class . ':showItem');
+          $rackmodelId->map(['POST'], '', \App\v1\Controllers\Rackmodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/enclosuremodels', function (RouteCollectorProxy $enclosuremodels)
       {
-        $enclosuremodels->map(['GET'], '', \App\Controllers\EnclosureModel::class . ':getAll');
-        $enclosuremodels->map(['POST'], '', \App\Controllers\EnclosureModel::class . ':postItem');
+        $enclosuremodels->map(['GET'], '', \App\v1\Controllers\Enclosuremodel::class . ':getAll');
+        $enclosuremodels->map(['POST'], '', \App\v1\Controllers\Enclosuremodel::class . ':postItem');
         $enclosuremodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $enclosuremodelId)
         {
-          $enclosuremodelId->map(['GET'], '', \App\Controllers\EnclosureModel::class . ':showItem');
-          $enclosuremodelId->map(['POST'], '', \App\Controllers\EnclosureModel::class . ':updateItem');
+          $enclosuremodelId->map(['GET'], '', \App\v1\Controllers\Enclosuremodel::class . ':showItem');
+          $enclosuremodelId->map(['POST'], '', \App\v1\Controllers\Enclosuremodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/pdumodels', function (RouteCollectorProxy $pdumodels)
       {
-        $pdumodels->map(['GET'], '', \App\Controllers\PDUModel::class . ':getAll');
-        $pdumodels->map(['POST'], '', \App\Controllers\PDUModel::class . ':postItem');
+        $pdumodels->map(['GET'], '', \App\v1\Controllers\Pdumodel::class . ':getAll');
+        $pdumodels->map(['POST'], '', \App\v1\Controllers\Pdumodel::class . ':postItem');
         $pdumodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $pdumodelId)
         {
-          $pdumodelId->map(['GET'], '', \App\Controllers\PDUModel::class . ':showItem');
-          $pdumodelId->map(['POST'], '', \App\Controllers\PDUModel::class . ':updateItem');
+          $pdumodelId->map(['GET'], '', \App\v1\Controllers\Pdumodel::class . ':showItem');
+          $pdumodelId->map(['POST'], '', \App\v1\Controllers\Pdumodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/passivedcequipmentmodels', function (RouteCollectorProxy $passivedcequipmentmodels)
       {
-        $passivedcequipmentmodels->map(['GET'], '', \App\Controllers\PassivedcEquipmentModel::class . ':getAll');
-        $passivedcequipmentmodels->map(['POST'], '', \App\Controllers\PassivedcEquipmentModel::class . ':postItem');
-        $passivedcequipmentmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $passivedcequipmentmodelId)
+        $passivedcequipmentmodels->map(['GET'], '', \App\v1\Controllers\Passivedcequipmentmodel::class . ':getAll');
+        $passivedcequipmentmodels->map(['POST'], '', \App\v1\Controllers\Passivedcequipmentmodel::class . ':postItem');
+        $passivedcequipmentmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $pcemId)
         {
-          $passivedcequipmentmodelId->map(['GET'], '', \App\Controllers\PassivedcEquipmentModel::class . ':showItem');
-          $passivedcequipmentmodelId->map(['POST'], '', \App\Controllers\PassivedcEquipmentModel::class . ':updateItem');
+          $pcemId->map(['GET'], '', \App\v1\Controllers\Passivedcequipmentmodel::class . ':showItem');
+          $pcemId->map(['POST'], '', \App\v1\Controllers\Passivedcequipmentmodel::class . ':updateItem');
         });
       });
       $dropdowns->group('/virtualmachinetypes', function (RouteCollectorProxy $virtualmachinetypes)
       {
-        $virtualmachinetypes->map(['GET'], '', \App\Controllers\VirtualMachineType::class . ':getAll');
-        $virtualmachinetypes->map(['POST'], '', \App\Controllers\VirtualMachineType::class . ':postItem');
+        $virtualmachinetypes->map(['GET'], '', \App\v1\Controllers\Virtualmachinetype::class . ':getAll');
+        $virtualmachinetypes->map(['POST'], '', \App\v1\Controllers\Virtualmachinetype::class . ':postItem');
         $virtualmachinetypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $virtualmachinetypeId)
         {
-          $virtualmachinetypeId->map(['GET'], '', \App\Controllers\VirtualMachineType::class . ':showItem');
-          $virtualmachinetypeId->map(['POST'], '', \App\Controllers\VirtualMachineType::class . ':updateItem');
+          $virtualmachinetypeId->map(['GET'], '', \App\v1\Controllers\Virtualmachinetype::class . ':showItem');
+          $virtualmachinetypeId->map(['POST'], '', \App\v1\Controllers\Virtualmachinetype::class . ':updateItem');
         });
       });
       $dropdowns->group('/virtualmachinesystems', function (RouteCollectorProxy $virtualmachinesystems)
       {
-        $virtualmachinesystems->map(['GET'], '', \App\Controllers\VirtualMachineSystem::class . ':getAll');
-        $virtualmachinesystems->map(['POST'], '', \App\Controllers\VirtualMachineSystem::class . ':postItem');
+        $virtualmachinesystems->map(['GET'], '', \App\v1\Controllers\Virtualmachinesystem::class . ':getAll');
+        $virtualmachinesystems->map(['POST'], '', \App\v1\Controllers\Virtualmachinesystem::class . ':postItem');
         $virtualmachinesystems->group("/{id:[0-9]+}", function (RouteCollectorProxy $virtualmachinesystemId)
         {
-          $virtualmachinesystemId->map(['GET'], '', \App\Controllers\VirtualMachineSystem::class . ':showItem');
-          $virtualmachinesystemId->map(['POST'], '', \App\Controllers\VirtualMachineSystem::class . ':updateItem');
+          $virtualmachinesystemId->map(['GET'], '', \App\v1\Controllers\Virtualmachinesystem::class . ':showItem');
+          $virtualmachinesystemId->map(['POST'], '', \App\v1\Controllers\Virtualmachinesystem::class . ':updateItem');
         });
       });
       $dropdowns->group('/virtualmachinestates', function (RouteCollectorProxy $virtualmachinestates)
       {
-        $virtualmachinestates->map(['GET'], '', \App\Controllers\VirtualMachineState::class . ':getAll');
-        $virtualmachinestates->map(['POST'], '', \App\Controllers\VirtualMachineState::class . ':postItem');
+        $virtualmachinestates->map(['GET'], '', \App\v1\Controllers\Virtualmachinestate::class . ':getAll');
+        $virtualmachinestates->map(['POST'], '', \App\v1\Controllers\Virtualmachinestate::class . ':postItem');
         $virtualmachinestates->group("/{id:[0-9]+}", function (RouteCollectorProxy $virtualmachinestateId)
         {
-          $virtualmachinestateId->map(['GET'], '', \App\Controllers\VirtualMachineState::class . ':showItem');
-          $virtualmachinestateId->map(['POST'], '', \App\Controllers\VirtualMachineState::class . ':updateItem');
+          $virtualmachinestateId->map(['GET'], '', \App\v1\Controllers\Virtualmachinestate::class . ':showItem');
+          $virtualmachinestateId->map(['POST'], '', \App\v1\Controllers\Virtualmachinestate::class . ':updateItem');
         });
       });
       $dropdowns->group('/documentcategories', function (RouteCollectorProxy $documentcategories)
       {
-        $documentcategories->map(['GET'], '', \App\Controllers\DocumentCategory::class . ':getAll');
-        $documentcategories->map(['POST'], '', \App\Controllers\DocumentCategory::class . ':postItem');
+        $documentcategories->map(['GET'], '', \App\v1\Controllers\Documentcategory::class . ':getAll');
+        $documentcategories->map(['POST'], '', \App\v1\Controllers\Documentcategory::class . ':postItem');
         $documentcategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $documentcategoryId)
         {
-          $documentcategoryId->map(['GET'], '', \App\Controllers\DocumentCategory::class . ':showItem');
-          $documentcategoryId->map(['POST'], '', \App\Controllers\DocumentCategory::class . ':updateItem');
+          $documentcategoryId->map(['GET'], '', \App\v1\Controllers\Documentcategory::class . ':showItem');
+          $documentcategoryId->map(['POST'], '', \App\v1\Controllers\Documentcategory::class . ':updateItem');
         });
       });
       $dropdowns->group('/documenttypes', function (RouteCollectorProxy $documenttypes)
       {
-        $documenttypes->map(['GET'], '', \App\Controllers\DocumentType::class . ':getAll');
-        $documenttypes->map(['POST'], '', \App\Controllers\DocumentType::class . ':postItem');
+        $documenttypes->map(['GET'], '', \App\v1\Controllers\Documenttype::class . ':getAll');
+        $documenttypes->map(['POST'], '', \App\v1\Controllers\Documenttype::class . ':postItem');
         $documenttypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $documenttypeId)
         {
-          $documenttypeId->map(['GET'], '', \App\Controllers\DocumentType::class . ':showItem');
-          $documenttypeId->map(['POST'], '', \App\Controllers\DocumentType::class . ':updateItem');
+          $documenttypeId->map(['GET'], '', \App\v1\Controllers\Documenttype::class . ':showItem');
+          $documenttypeId->map(['POST'], '', \App\v1\Controllers\Documenttype::class . ':updateItem');
         });
       });
       $dropdowns->group('/businesscriticities', function (RouteCollectorProxy $businesscriticities)
       {
-        $businesscriticities->map(['GET'], '', \App\Controllers\BusinessCriticity::class . ':getAll');
-        $businesscriticities->map(['POST'], '', \App\Controllers\BusinessCriticity::class . ':postItem');
+        $businesscriticities->map(['GET'], '', \App\v1\Controllers\Businesscriticity::class . ':getAll');
+        $businesscriticities->map(['POST'], '', \App\v1\Controllers\Businesscriticity::class . ':postItem');
         $businesscriticities->group("/{id:[0-9]+}", function (RouteCollectorProxy $businesscriticityId)
         {
-          $businesscriticityId->map(['GET'], '', \App\Controllers\BusinessCriticity::class . ':showItem');
-          $businesscriticityId->map(['POST'], '', \App\Controllers\BusinessCriticity::class . ':updateItem');
+          $businesscriticityId->map(['GET'], '', \App\v1\Controllers\Businesscriticity::class . ':showItem');
+          $businesscriticityId->map(['POST'], '', \App\v1\Controllers\Businesscriticity::class . ':updateItem');
         });
       });
       $dropdowns->group('/knowbaseitemcategories', function (RouteCollectorProxy $knowbaseitemcategories)
       {
-        $knowbaseitemcategories->map(['GET'], '', \App\Controllers\KnowbaseItemCategory::class . ':getAll');
-        $knowbaseitemcategories->map(['POST'], '', \App\Controllers\KnowbaseItemCategory::class . ':postItem');
+        $knowbaseitemcategories->map(['GET'], '', \App\v1\Controllers\Knowbaseitemcategory::class . ':getAll');
+        $knowbaseitemcategories->map(['POST'], '', \App\v1\Controllers\Knowbaseitemcategory::class . ':postItem');
         $knowbaseitemcategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $knowbaseitemcategoryId)
         {
-          $knowbaseitemcategoryId->map(['GET'], '', \App\Controllers\KnowbaseItemCategory::class . ':showItem');
-          $knowbaseitemcategoryId->map(['POST'], '', \App\Controllers\KnowbaseItemCategory::class . ':updateItem');
+          $knowbaseitemcategoryId->map(['GET'], '', \App\v1\Controllers\Knowbaseitemcategory::class . ':showItem');
+          $knowbaseitemcategoryId->map(['POST'], '', \App\v1\Controllers\Knowbaseitemcategory::class . ':updateItem');
         });
       });
       $dropdowns->group('/calendars', function (RouteCollectorProxy $calendars)
       {
-        $calendars->map(['GET'], '', \App\Controllers\Calendar::class . ':getAll');
-        $calendars->map(['POST'], '', \App\Controllers\Calendar::class . ':postItem');
+        $calendars->map(['GET'], '', \App\v1\Controllers\Calendar::class . ':getAll');
+        $calendars->map(['POST'], '', \App\v1\Controllers\Calendar::class . ':postItem');
         $calendars->group("/{id:[0-9]+}", function (RouteCollectorProxy $calendarId)
         {
-          $calendarId->map(['GET'], '', \App\Controllers\Calendar::class . ':showItem');
-          $calendarId->map(['POST'], '', \App\Controllers\Calendar::class . ':updateItem');
+          $calendarId->map(['GET'], '', \App\v1\Controllers\Calendar::class . ':showItem');
+          $calendarId->map(['POST'], '', \App\v1\Controllers\Calendar::class . ':updateItem');
         });
       });
       $dropdowns->group('/holidays', function (RouteCollectorProxy $holidays)
       {
-        $holidays->map(['GET'], '', \App\Controllers\Holiday::class . ':getAll');
-        $holidays->map(['POST'], '', \App\Controllers\Holiday::class . ':postItem');
+        $holidays->map(['GET'], '', \App\v1\Controllers\Holiday::class . ':getAll');
+        $holidays->map(['POST'], '', \App\v1\Controllers\Holiday::class . ':postItem');
         $holidays->group("/{id:[0-9]+}", function (RouteCollectorProxy $holidayId)
         {
-          $holidayId->map(['GET'], '', \App\Controllers\Holiday::class . ':showItem');
-          $holidayId->map(['POST'], '', \App\Controllers\Holiday::class . ':updateItem');
+          $holidayId->map(['GET'], '', \App\v1\Controllers\Holiday::class . ':showItem');
+          $holidayId->map(['POST'], '', \App\v1\Controllers\Holiday::class . ':updateItem');
         });
       });
       $dropdowns->group('/operatingsystems', function (RouteCollectorProxy $operatingsystems)
       {
-        $operatingsystems->map(['GET'], '', \App\Controllers\OperatingSystem::class . ':getAll');
-        $operatingsystems->map(['POST'], '', \App\Controllers\OperatingSystem::class . ':postItem');
+        $operatingsystems->map(['GET'], '', \App\v1\Controllers\Operatingsystem::class . ':getAll');
+        $operatingsystems->map(['POST'], '', \App\v1\Controllers\Operatingsystem::class . ':postItem');
         $operatingsystems->group("/{id:[0-9]+}", function (RouteCollectorProxy $operatingsystemId)
         {
-          $operatingsystemId->map(['GET'], '', \App\Controllers\OperatingSystem::class . ':showItem');
-          $operatingsystemId->map(['POST'], '', \App\Controllers\OperatingSystem::class . ':updateItem');
+          $operatingsystemId->map(['GET'], '', \App\v1\Controllers\Operatingsystem::class . ':showItem');
+          $operatingsystemId->map(['POST'], '', \App\v1\Controllers\Operatingsystem::class . ':updateItem');
         });
       });
       $dropdowns->group('/operatingsystemversions', function (RouteCollectorProxy $operatingsystemversions)
       {
-        $operatingsystemversions->map(['GET'], '', \App\Controllers\OperatingSystemVersion::class . ':getAll');
-        $operatingsystemversions->map(['POST'], '', \App\Controllers\OperatingSystemVersion::class . ':postItem');
-        $operatingsystemversions->group("/{id:[0-9]+}", function (RouteCollectorProxy $operatingsystemversionId)
+        $operatingsystemversions->map(['GET'], '', \App\v1\Controllers\Operatingsystemversion::class . ':getAll');
+        $operatingsystemversions->map(['POST'], '', \App\v1\Controllers\Operatingsystemversion::class . ':postItem');
+        $operatingsystemversions->group("/{id:[0-9]+}", function (RouteCollectorProxy $osvId)
         {
-          $operatingsystemversionId->map(['GET'], '', \App\Controllers\OperatingSystemVersion::class . ':showItem');
-          $operatingsystemversionId->map(['POST'], '', \App\Controllers\OperatingSystemVersion::class . ':updateItem');
+          $osvId->map(['GET'], '', \App\v1\Controllers\Operatingsystemversion::class . ':showItem');
+          $osvId->map(['POST'], '', \App\v1\Controllers\Operatingsystemversion::class . ':updateItem');
         });
       });
-      $dropdowns->group('/operatingsystemservicepacks', function (RouteCollectorProxy $operatingsystemservicepacks)
+      $dropdowns->group('/operatingsystemservicepacks', function (RouteCollectorProxy $ossp)
       {
-        $operatingsystemservicepacks->map(['GET'], '', \App\Controllers\OperatingSystemServicePack::class . ':getAll');
-        $operatingsystemservicepacks->map(['POST'], '', \App\Controllers\OperatingSystemServicePack::class . ':postItem');
-        $operatingsystemservicepacks->group("/{id:[0-9]+}", function (RouteCollectorProxy $operatingsystemservicepackId)
+        $ossp->map(['GET'], '', \App\v1\Controllers\Operatingsystemservicepack::class . ':getAll');
+        $ossp->map(['POST'], '', \App\v1\Controllers\Operatingsystemservicepack::class . ':postItem');
+        $ossp->group("/{id:[0-9]+}", function (RouteCollectorProxy $osspId)
         {
-          $operatingsystemservicepackId->map(['GET'], '', \App\Controllers\OperatingSystemServicePack::class . ':showItem');
-          $operatingsystemservicepackId->map(['POST'], '', \App\Controllers\OperatingSystemServicePack::class . ':updateItem');
+          $osspId->map(['GET'], '', \App\v1\Controllers\Operatingsystemservicepack::class . ':showItem');
+          $osspId->map(['POST'], '', \App\v1\Controllers\Operatingsystemservicepack::class . ':updateItem');
         });
       });
-      $dropdowns->group('/operatingsystemarchitectures', function (RouteCollectorProxy $operatingsystemarchitectures)
+      $dropdowns->group('/operatingsystemarchitectures', function (RouteCollectorProxy $osa)
       {
-        $operatingsystemarchitectures->map(['GET'], '', \App\Controllers\OperatingSystemArchitecture::class . ':getAll');
-        $operatingsystemarchitectures->map(['POST'], '', \App\Controllers\OperatingSystemArchitecture::class . ':postItem');
-        $operatingsystemarchitectures->group("/{id:[0-9]+}", function (RouteCollectorProxy $operatingsystemarchitectureId)
+        $osa->map(['GET'], '', \App\v1\Controllers\Operatingsystemarchitecture::class . ':getAll');
+        $osa->map(['POST'], '', \App\v1\Controllers\Operatingsystemarchitecture::class . ':postItem');
+        $osa->group("/{id:[0-9]+}", function (RouteCollectorProxy $osaId)
         {
-          $operatingsystemarchitectureId->map(['GET'], '', \App\Controllers\OperatingSystemArchitecture::class . ':showItem');
-          $operatingsystemarchitectureId->map(['POST'], '', \App\Controllers\OperatingSystemArchitecture::class . ':updateItem');
+          $osaId->map(['GET'], '', \App\v1\Controllers\Operatingsystemarchitecture::class . ':showItem');
+          $osaId->map(['POST'], '', \App\v1\Controllers\Operatingsystemarchitecture::class . ':updateItem');
         });
       });
-      $dropdowns->group('/operatingsystemeditions', function (RouteCollectorProxy $operatingsystemeditions)
+      $dropdowns->group('/operatingsystemeditions', function (RouteCollectorProxy $ose)
       {
-        $operatingsystemeditions->map(['GET'], '', \App\Controllers\OperatingSystemEdition::class . ':getAll');
-        $operatingsystemeditions->map(['POST'], '', \App\Controllers\OperatingSystemEdition::class . ':postItem');
-        $operatingsystemeditions->group("/{id:[0-9]+}", function (RouteCollectorProxy $operatingsystemeditionId)
+        $ose->map(['GET'], '', \App\v1\Controllers\Operatingsystemedition::class . ':getAll');
+        $ose->map(['POST'], '', \App\v1\Controllers\Operatingsystemedition::class . ':postItem');
+        $ose->group("/{id:[0-9]+}", function (RouteCollectorProxy $oseId)
         {
-          $operatingsystemeditionId->map(['GET'], '', \App\Controllers\OperatingSystemEdition::class . ':showItem');
-          $operatingsystemeditionId->map(['POST'], '', \App\Controllers\OperatingSystemEdition::class . ':updateItem');
+          $oseId->map(['GET'], '', \App\v1\Controllers\Operatingsystemedition::class . ':showItem');
+          $oseId->map(['POST'], '', \App\v1\Controllers\Operatingsystemedition::class . ':updateItem');
         });
       });
-      $dropdowns->group('/operatingsystemkernels', function (RouteCollectorProxy $operatingsystemkernels)
+      $dropdowns->group('/operatingsystemkernels', function (RouteCollectorProxy $osk)
       {
-        $operatingsystemkernels->map(['GET'], '', \App\Controllers\OperatingSystemKernel::class . ':getAll');
-        $operatingsystemkernels->map(['POST'], '', \App\Controllers\OperatingSystemKernel::class . ':postItem');
-        $operatingsystemkernels->group("/{id:[0-9]+}", function (RouteCollectorProxy $operatingsystemkernelId)
+        $osk->map(['GET'], '', \App\v1\Controllers\Operatingsystemkernel::class . ':getAll');
+        $osk->map(['POST'], '', \App\v1\Controllers\Operatingsystemkernel::class . ':postItem');
+        $osk->group("/{id:[0-9]+}", function (RouteCollectorProxy $oskId)
         {
-          $operatingsystemkernelId->map(['GET'], '', \App\Controllers\OperatingSystemKernel::class . ':showItem');
-          $operatingsystemkernelId->map(['POST'], '', \App\Controllers\OperatingSystemKernel::class . ':updateItem');
+          $oskId->map(['GET'], '', \App\v1\Controllers\Operatingsystemkernel::class . ':showItem');
+          $oskId->map(['POST'], '', \App\v1\Controllers\Operatingsystemkernel::class . ':updateItem');
         });
       });
-      $dropdowns->group('/operatingsystemkernelversions', function (RouteCollectorProxy $operatingsystemkernelversions)
+      $dropdowns->group('/operatingsystemkernelversions', function (RouteCollectorProxy $oskv)
       {
-        $operatingsystemkernelversions->map(['GET'], '', \App\Controllers\OperatingSystemKernelVersion::class . ':getAll');
-        $operatingsystemkernelversions->map(['POST'], '', \App\Controllers\OperatingSystemKernelVersion::class . ':postItem');
-        $operatingsystemkernelversions->group("/{id:[0-9]+}", function (RouteCollectorProxy $operatingsystemkernelversionId)
+        $oskv->map(['GET'], '', \App\v1\Controllers\Operatingsystemkernelversion::class . ':getAll');
+        $oskv->map(['POST'], '', \App\v1\Controllers\Operatingsystemkernelversion::class . ':postItem');
+        $oskv->group("/{id:[0-9]+}", function (RouteCollectorProxy $oskvId)
         {
-          $operatingsystemkernelversionId->map(['GET'], '', \App\Controllers\OperatingSystemKernelVersion::class . ':showItem');
-          $operatingsystemkernelversionId->map(['POST'], '', \App\Controllers\OperatingSystemKernelVersion::class . ':updateItem');
+          $oskvId->map(['GET'], '', \App\v1\Controllers\Operatingsystemkernelversion::class . ':showItem');
+          $oskvId->map(['POST'], '', \App\v1\Controllers\Operatingsystemkernelversion::class . ':updateItem');
         });
       });
       $dropdowns->group('/autoupdatesystems', function (RouteCollectorProxy $autoupdatesystems)
       {
-        $autoupdatesystems->map(['GET'], '', \App\Controllers\AutoUpdateSystem::class . ':getAll');
-        $autoupdatesystems->map(['POST'], '', \App\Controllers\AutoUpdateSystem::class . ':postItem');
+        $autoupdatesystems->map(['GET'], '', \App\v1\Controllers\Autoupdatesystem::class . ':getAll');
+        $autoupdatesystems->map(['POST'], '', \App\v1\Controllers\Autoupdatesystem::class . ':postItem');
         $autoupdatesystems->group("/{id:[0-9]+}", function (RouteCollectorProxy $autoupdatesystemId)
         {
-          $autoupdatesystemId->map(['GET'], '', \App\Controllers\AutoUpdateSystem::class . ':showItem');
-          $autoupdatesystemId->map(['POST'], '', \App\Controllers\AutoUpdateSystem::class . ':updateItem');
+          $autoupdatesystemId->map(['GET'], '', \App\v1\Controllers\Autoupdatesystem::class . ':showItem');
+          $autoupdatesystemId->map(['POST'], '', \App\v1\Controllers\Autoupdatesystem::class . ':updateItem');
         });
       });
       $dropdowns->group('/networkinterfaces', function (RouteCollectorProxy $networkinterfaces)
       {
-        $networkinterfaces->map(['GET'], '', \App\Controllers\NetworkInterface::class . ':getAll');
-        $networkinterfaces->map(['POST'], '', \App\Controllers\NetworkInterface::class . ':postItem');
+        $networkinterfaces->map(['GET'], '', \App\v1\Controllers\Networkinterface::class . ':getAll');
+        $networkinterfaces->map(['POST'], '', \App\v1\Controllers\Networkinterface::class . ':postItem');
         $networkinterfaces->group("/{id:[0-9]+}", function (RouteCollectorProxy $networkinterfaceId)
         {
-          $networkinterfaceId->map(['GET'], '', \App\Controllers\NetworkInterface::class . ':showItem');
-          $networkinterfaceId->map(['POST'], '', \App\Controllers\NetworkInterface::class . ':updateItem');
+          $networkinterfaceId->map(['GET'], '', \App\v1\Controllers\Networkinterface::class . ':showItem');
+          $networkinterfaceId->map(['POST'], '', \App\v1\Controllers\Networkinterface::class . ':updateItem');
         });
       });
       $dropdowns->group('/netpoints', function (RouteCollectorProxy $netpoints)
       {
-        $netpoints->map(['GET'], '', \App\Controllers\Netpoint::class . ':getAll');
-        $netpoints->map(['POST'], '', \App\Controllers\Netpoint::class . ':postItem');
+        $netpoints->map(['GET'], '', \App\v1\Controllers\Netpoint::class . ':getAll');
+        $netpoints->map(['POST'], '', \App\v1\Controllers\Netpoint::class . ':postItem');
         $netpoints->group("/{id:[0-9]+}", function (RouteCollectorProxy $netpointId)
         {
-          $netpointId->map(['GET'], '', \App\Controllers\Netpoint::class . ':showItem');
-          $netpointId->map(['POST'], '', \App\Controllers\Netpoint::class . ':updateItem');
+          $netpointId->map(['GET'], '', \App\v1\Controllers\Netpoint::class . ':showItem');
+          $netpointId->map(['POST'], '', \App\v1\Controllers\Netpoint::class . ':updateItem');
         });
       });
       $dropdowns->group('/networks', function (RouteCollectorProxy $networks)
       {
-        $networks->map(['GET'], '', \App\Controllers\Network::class . ':getAll');
-        $networks->map(['POST'], '', \App\Controllers\Network::class . ':postItem');
+        $networks->map(['GET'], '', \App\v1\Controllers\Network::class . ':getAll');
+        $networks->map(['POST'], '', \App\v1\Controllers\Network::class . ':postItem');
         $networks->group("/{id:[0-9]+}", function (RouteCollectorProxy $networkId)
         {
-          $networkId->map(['GET'], '', \App\Controllers\Network::class . ':showItem');
-          $networkId->map(['POST'], '', \App\Controllers\Network::class . ':updateItem');
+          $networkId->map(['GET'], '', \App\v1\Controllers\Network::class . ':showItem');
+          $networkId->map(['POST'], '', \App\v1\Controllers\Network::class . ':updateItem');
         });
       });
       $dropdowns->group('/vlans', function (RouteCollectorProxy $vlans)
       {
-        $vlans->map(['GET'], '', \App\Controllers\Vlan::class . ':getAll');
-        $vlans->map(['POST'], '', \App\Controllers\Vlan::class . ':postItem');
+        $vlans->map(['GET'], '', \App\v1\Controllers\Vlan::class . ':getAll');
+        $vlans->map(['POST'], '', \App\v1\Controllers\Vlan::class . ':postItem');
         $vlans->group("/{id:[0-9]+}", function (RouteCollectorProxy $vlanId)
         {
-          $vlanId->map(['GET'], '', \App\Controllers\Vlan::class . ':showItem');
-          $vlanId->map(['POST'], '', \App\Controllers\Vlan::class . ':updateItem');
+          $vlanId->map(['GET'], '', \App\v1\Controllers\Vlan::class . ':showItem');
+          $vlanId->map(['POST'], '', \App\v1\Controllers\Vlan::class . ':updateItem');
         });
       });
       $dropdowns->group('/lineoperators', function (RouteCollectorProxy $lineoperators)
       {
-        $lineoperators->map(['GET'], '', \App\Controllers\LineOperator::class . ':getAll');
-        $lineoperators->map(['POST'], '', \App\Controllers\LineOperator::class . ':postItem');
+        $lineoperators->map(['GET'], '', \App\v1\Controllers\Lineoperator::class . ':getAll');
+        $lineoperators->map(['POST'], '', \App\v1\Controllers\Lineoperator::class . ':postItem');
         $lineoperators->group("/{id:[0-9]+}", function (RouteCollectorProxy $lineoperatorId)
         {
-          $lineoperatorId->map(['GET'], '', \App\Controllers\LineOperator::class . ':showItem');
-          $lineoperatorId->map(['POST'], '', \App\Controllers\LineOperator::class . ':updateItem');
+          $lineoperatorId->map(['GET'], '', \App\v1\Controllers\Lineoperator::class . ':showItem');
+          $lineoperatorId->map(['POST'], '', \App\v1\Controllers\Lineoperator::class . ':updateItem');
         });
       });
       $dropdowns->group('/domaintypes', function (RouteCollectorProxy $domaintypes)
       {
-        $domaintypes->map(['GET'], '', \App\Controllers\DomainType::class . ':getAll');
-        $domaintypes->map(['POST'], '', \App\Controllers\DomainType::class . ':postItem');
+        $domaintypes->map(['GET'], '', \App\v1\Controllers\Domaintype::class . ':getAll');
+        $domaintypes->map(['POST'], '', \App\v1\Controllers\Domaintype::class . ':postItem');
         $domaintypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $domaintypeId)
         {
-          $domaintypeId->map(['GET'], '', \App\Controllers\DomainType::class . ':showItem');
-          $domaintypeId->map(['POST'], '', \App\Controllers\DomainType::class . ':updateItem');
+          $domaintypeId->map(['GET'], '', \App\v1\Controllers\Domaintype::class . ':showItem');
+          $domaintypeId->map(['POST'], '', \App\v1\Controllers\Domaintype::class . ':updateItem');
         });
       });
       $dropdowns->group('/domainrelations', function (RouteCollectorProxy $domainrelations)
       {
-        $domainrelations->map(['GET'], '', \App\Controllers\DomainRelation::class . ':getAll');
-        $domainrelations->map(['POST'], '', \App\Controllers\DomainRelation::class . ':postItem');
+        $domainrelations->map(['GET'], '', \App\v1\Controllers\Domainrelation::class . ':getAll');
+        $domainrelations->map(['POST'], '', \App\v1\Controllers\Domainrelation::class . ':postItem');
         $domainrelations->group("/{id:[0-9]+}", function (RouteCollectorProxy $domainrelationId)
         {
-          $domainrelationId->map(['GET'], '', \App\Controllers\DomainRelation::class . ':showItem');
-          $domainrelationId->map(['POST'], '', \App\Controllers\DomainRelation::class . ':updateItem');
+          $domainrelationId->map(['GET'], '', \App\v1\Controllers\Domainrelation::class . ':showItem');
+          $domainrelationId->map(['POST'], '', \App\v1\Controllers\Domainrelation::class . ':updateItem');
         });
       });
       $dropdowns->group('/domainrecordtypes', function (RouteCollectorProxy $domainrecordtypes)
       {
-        $domainrecordtypes->map(['GET'], '', \App\Controllers\DomainRecordType::class . ':getAll');
-        $domainrecordtypes->map(['POST'], '', \App\Controllers\DomainRecordType::class . ':postItem');
+        $domainrecordtypes->map(['GET'], '', \App\v1\Controllers\Domainrecordtype::class . ':getAll');
+        $domainrecordtypes->map(['POST'], '', \App\v1\Controllers\Domainrecordtype::class . ':postItem');
         $domainrecordtypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $domainrecordtypeId)
         {
-          $domainrecordtypeId->map(['GET'], '', \App\Controllers\DomainRecordType::class . ':showItem');
-          $domainrecordtypeId->map(['POST'], '', \App\Controllers\DomainRecordType::class . ':updateItem');
+          $domainrecordtypeId->map(['GET'], '', \App\v1\Controllers\Domainrecordtype::class . ':showItem');
+          $domainrecordtypeId->map(['POST'], '', \App\v1\Controllers\Domainrecordtype::class . ':updateItem');
         });
       });
       $dropdowns->group('/ipnetworks', function (RouteCollectorProxy $ipnetworks)
       {
-        $ipnetworks->map(['GET'], '', \App\Controllers\IPNetwork::class . ':getAll');
-        $ipnetworks->map(['POST'], '', \App\Controllers\IPNetwork::class . ':postItem');
+        $ipnetworks->map(['GET'], '', \App\v1\Controllers\Ipnetwork::class . ':getAll');
+        $ipnetworks->map(['POST'], '', \App\v1\Controllers\Ipnetwork::class . ':postItem');
         $ipnetworks->group("/{id:[0-9]+}", function (RouteCollectorProxy $ipnetworkId)
         {
-          $ipnetworkId->map(['GET'], '', \App\Controllers\IPNetwork::class . ':showItem');
-          $ipnetworkId->map(['POST'], '', \App\Controllers\IPNetwork::class . ':updateItem');
+          $ipnetworkId->map(['GET'], '', \App\v1\Controllers\Ipnetwork::class . ':showItem');
+          $ipnetworkId->map(['POST'], '', \App\v1\Controllers\Ipnetwork::class . ':updateItem');
         });
       });
       $dropdowns->group('/fqdns', function (RouteCollectorProxy $fqdns)
       {
-        $fqdns->map(['GET'], '', \App\Controllers\FQDN::class . ':getAll');
-        $fqdns->map(['POST'], '', \App\Controllers\FQDN::class . ':postItem');
+        $fqdns->map(['GET'], '', \App\v1\Controllers\Fqdn::class . ':getAll');
+        $fqdns->map(['POST'], '', \App\v1\Controllers\Fqdn::class . ':postItem');
         $fqdns->group("/{id:[0-9]+}", function (RouteCollectorProxy $fqdnId)
         {
-          $fqdnId->map(['GET'], '', \App\Controllers\FQDN::class . ':showItem');
-          $fqdnId->map(['POST'], '', \App\Controllers\FQDN::class . ':updateItem');
+          $fqdnId->map(['GET'], '', \App\v1\Controllers\Fqdn::class . ':showItem');
+          $fqdnId->map(['POST'], '', \App\v1\Controllers\Fqdn::class . ':updateItem');
         });
       });
       $dropdowns->group('/wifinetworks', function (RouteCollectorProxy $wifinetworks)
       {
-        $wifinetworks->map(['GET'], '', \App\Controllers\WifiNetwork::class . ':getAll');
-        $wifinetworks->map(['POST'], '', \App\Controllers\WifiNetwork::class . ':postItem');
+        $wifinetworks->map(['GET'], '', \App\v1\Controllers\Wifinetwork::class . ':getAll');
+        $wifinetworks->map(['POST'], '', \App\v1\Controllers\Wifinetwork::class . ':postItem');
         $wifinetworks->group("/{id:[0-9]+}", function (RouteCollectorProxy $wifinetworkId)
         {
-          $wifinetworkId->map(['GET'], '', \App\Controllers\WifiNetwork::class . ':showItem');
-          $wifinetworkId->map(['POST'], '', \App\Controllers\WifiNetwork::class . ':updateItem');
+          $wifinetworkId->map(['GET'], '', \App\v1\Controllers\Wifinetwork::class . ':showItem');
+          $wifinetworkId->map(['POST'], '', \App\v1\Controllers\Wifinetwork::class . ':updateItem');
         });
       });
       $dropdowns->group('/networknames', function (RouteCollectorProxy $networknames)
       {
-        $networknames->map(['GET'], '', \App\Controllers\NetworkName::class . ':getAll');
-        $networknames->map(['POST'], '', \App\Controllers\NetworkName::class . ':postItem');
+        $networknames->map(['GET'], '', \App\v1\Controllers\Networkname::class . ':getAll');
+        $networknames->map(['POST'], '', \App\v1\Controllers\Networkname::class . ':postItem');
         $networknames->group("/{id:[0-9]+}", function (RouteCollectorProxy $networknameId)
         {
-          $networknameId->map(['GET'], '', \App\Controllers\NetworkName::class . ':showItem');
-          $networknameId->map(['POST'], '', \App\Controllers\NetworkName::class . ':updateItem');
+          $networknameId->map(['GET'], '', \App\v1\Controllers\Networkname::class . ':showItem');
+          $networknameId->map(['POST'], '', \App\v1\Controllers\Networkname::class . ':updateItem');
         });
       });
       $dropdowns->group('/softwarecategories', function (RouteCollectorProxy $softwarecategories)
       {
-        $softwarecategories->map(['GET'], '', \App\Controllers\SoftwareCategory::class . ':getAll');
-        $softwarecategories->map(['POST'], '', \App\Controllers\SoftwareCategory::class . ':postItem');
+        $softwarecategories->map(['GET'], '', \App\v1\Controllers\Softwarecategory::class . ':getAll');
+        $softwarecategories->map(['POST'], '', \App\v1\Controllers\Softwarecategory::class . ':postItem');
         $softwarecategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $softwarecategoryId)
         {
-          $softwarecategoryId->map(['GET'], '', \App\Controllers\SoftwareCategory::class . ':showItem');
-          $softwarecategoryId->map(['POST'], '', \App\Controllers\SoftwareCategory::class . ':updateItem');
+          $softwarecategoryId->map(['GET'], '', \App\v1\Controllers\Softwarecategory::class . ':showItem');
+          $softwarecategoryId->map(['POST'], '', \App\v1\Controllers\Softwarecategory::class . ':updateItem');
         });
       });
       $dropdowns->group('/usertitles', function (RouteCollectorProxy $usertitles)
       {
-        $usertitles->map(['GET'], '', \App\Controllers\UserTitle::class . ':getAll');
-        $usertitles->map(['POST'], '', \App\Controllers\UserTitle::class . ':postItem');
+        $usertitles->map(['GET'], '', \App\v1\Controllers\Usertitle::class . ':getAll');
+        $usertitles->map(['POST'], '', \App\v1\Controllers\Usertitle::class . ':postItem');
         $usertitles->group("/{id:[0-9]+}", function (RouteCollectorProxy $usertitleId)
         {
-          $usertitleId->map(['GET'], '', \App\Controllers\UserTitle::class . ':showItem');
-          $usertitleId->map(['POST'], '', \App\Controllers\UserTitle::class . ':updateItem');
+          $usertitleId->map(['GET'], '', \App\v1\Controllers\Usertitle::class . ':showItem');
+          $usertitleId->map(['POST'], '', \App\v1\Controllers\Usertitle::class . ':updateItem');
         });
       });
       $dropdowns->group('/usercategories', function (RouteCollectorProxy $usercategories)
       {
-        $usercategories->map(['GET'], '', \App\Controllers\UserCategory::class . ':getAll');
-        $usercategories->map(['POST'], '', \App\Controllers\UserCategory::class . ':postItem');
+        $usercategories->map(['GET'], '', \App\v1\Controllers\Usercategory::class . ':getAll');
+        $usercategories->map(['POST'], '', \App\v1\Controllers\Usercategory::class . ':postItem');
         $usercategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $usercategoryId)
         {
-          $usercategoryId->map(['GET'], '', \App\Controllers\UserCategory::class . ':showItem');
-          $usercategoryId->map(['POST'], '', \App\Controllers\UserCategory::class . ':updateItem');
+          $usercategoryId->map(['GET'], '', \App\v1\Controllers\Usercategory::class . ':showItem');
+          $usercategoryId->map(['POST'], '', \App\v1\Controllers\Usercategory::class . ':updateItem');
         });
       });
       $dropdowns->group('/rulerightparameters', function (RouteCollectorProxy $rulerightparameters)
       {
-        $rulerightparameters->map(['GET'], '', \App\Controllers\RuleRightParameter::class . ':getAll');
-        $rulerightparameters->map(['POST'], '', \App\Controllers\RuleRightParameter::class . ':postItem');
+        $rulerightparameters->map(['GET'], '', \App\v1\Controllers\Rulerightparameter::class . ':getAll');
+        $rulerightparameters->map(['POST'], '', \App\v1\Controllers\Rulerightparameter::class . ':postItem');
         $rulerightparameters->group("/{id:[0-9]+}", function (RouteCollectorProxy $rulerightparameterId)
         {
-          $rulerightparameterId->map(['GET'], '', \App\Controllers\RuleRightParameter::class . ':showItem');
-          $rulerightparameterId->map(['POST'], '', \App\Controllers\RuleRightParameter::class . ':updateItem');
+          $rulerightparameterId->map(['GET'], '', \App\v1\Controllers\Rulerightparameter::class . ':showItem');
+          $rulerightparameterId->map(['POST'], '', \App\v1\Controllers\Rulerightparameter::class . ':updateItem');
         });
       });
       $dropdowns->group('/fieldblacklists', function (RouteCollectorProxy $fieldblacklists)
       {
-        $fieldblacklists->map(['GET'], '', \App\Controllers\Fieldblacklist::class . ':getAll');
-        $fieldblacklists->map(['POST'], '', \App\Controllers\Fieldblacklist::class . ':postItem');
+        $fieldblacklists->map(['GET'], '', \App\v1\Controllers\Fieldblacklist::class . ':getAll');
+        $fieldblacklists->map(['POST'], '', \App\v1\Controllers\Fieldblacklist::class . ':postItem');
         $fieldblacklists->group("/{id:[0-9]+}", function (RouteCollectorProxy $fieldblacklistId)
         {
-          $fieldblacklistId->map(['GET'], '', \App\Controllers\Fieldblacklist::class . ':showItem');
-          $fieldblacklistId->map(['POST'], '', \App\Controllers\Fieldblacklist::class . ':updateItem');
+          $fieldblacklistId->map(['GET'], '', \App\v1\Controllers\Fieldblacklist::class . ':showItem');
+          $fieldblacklistId->map(['POST'], '', \App\v1\Controllers\Fieldblacklist::class . ':updateItem');
         });
       });
       $dropdowns->group('/ssovariables', function (RouteCollectorProxy $ssovariables)
       {
-        $ssovariables->map(['GET'], '', \App\Controllers\SsoVariable::class . ':getAll');
-        $ssovariables->map(['POST'], '', \App\Controllers\SsoVariable::class . ':postItem');
+        $ssovariables->map(['GET'], '', \App\v1\Controllers\Ssovariable::class . ':getAll');
+        $ssovariables->map(['POST'], '', \App\v1\Controllers\Ssovariable::class . ':postItem');
         $ssovariables->group("/{id:[0-9]+}", function (RouteCollectorProxy $ssovariableId)
         {
-          $ssovariableId->map(['GET'], '', \App\Controllers\SsoVariable::class . ':showItem');
-          $ssovariableId->map(['POST'], '', \App\Controllers\SsoVariable::class . ':updateItem');
+          $ssovariableId->map(['GET'], '', \App\v1\Controllers\Ssovariable::class . ':showItem');
+          $ssovariableId->map(['POST'], '', \App\v1\Controllers\Ssovariable::class . ':updateItem');
         });
       });
       $dropdowns->group('/plugs', function (RouteCollectorProxy $plugs)
       {
-        $plugs->map(['GET'], '', \App\Controllers\Plug::class . ':getAll');
-        $plugs->map(['POST'], '', \App\Controllers\Plug::class . ':postItem');
+        $plugs->map(['GET'], '', \App\v1\Controllers\Plug::class . ':getAll');
+        $plugs->map(['POST'], '', \App\v1\Controllers\Plug::class . ':postItem');
         $plugs->group("/{id:[0-9]+}", function (RouteCollectorProxy $plugId)
         {
-          $plugId->map(['GET'], '', \App\Controllers\Plug::class . ':showItem');
-          $plugId->map(['POST'], '', \App\Controllers\Plug::class . ':updateItem');
+          $plugId->map(['GET'], '', \App\v1\Controllers\Plug::class . ':showItem');
+          $plugId->map(['POST'], '', \App\v1\Controllers\Plug::class . ':updateItem');
         });
       });
       $dropdowns->group('/appliancetypes', function (RouteCollectorProxy $appliancetypes)
       {
-        $appliancetypes->map(['GET'], '', \App\Controllers\ApplianceType::class . ':getAll');
-        $appliancetypes->map(['POST'], '', \App\Controllers\ApplianceType::class . ':postItem');
+        $appliancetypes->map(['GET'], '', \App\v1\Controllers\Appliancetype::class . ':getAll');
+        $appliancetypes->map(['POST'], '', \App\v1\Controllers\Appliancetype::class . ':postItem');
         $appliancetypes->group("/{id:[0-9]+}", function (RouteCollectorProxy $appliancetypeId)
         {
-          $appliancetypeId->map(['GET'], '', \App\Controllers\ApplianceType::class . ':showItem');
-          $appliancetypeId->map(['POST'], '', \App\Controllers\ApplianceType::class . ':updateItem');
+          $appliancetypeId->map(['GET'], '', \App\v1\Controllers\Appliancetype::class . ':showItem');
+          $appliancetypeId->map(['POST'], '', \App\v1\Controllers\Appliancetype::class . ':updateItem');
         });
       });
       $dropdowns->group('/applianceenvironments', function (RouteCollectorProxy $applianceenvironments)
       {
-        $applianceenvironments->map(['GET'], '', \App\Controllers\ApplianceEnvironment::class . ':getAll');
-        $applianceenvironments->map(['POST'], '', \App\Controllers\ApplianceEnvironment::class . ':postItem');
+        $applianceenvironments->map(['GET'], '', \App\v1\Controllers\Applianceenvironment::class . ':getAll');
+        $applianceenvironments->map(['POST'], '', \App\v1\Controllers\Applianceenvironment::class . ':postItem');
         $applianceenvironments->group("/{id:[0-9]+}", function (RouteCollectorProxy $applianceenvironmentId)
         {
-          $applianceenvironmentId->map(['GET'], '', \App\Controllers\ApplianceEnvironment::class . ':showItem');
-          $applianceenvironmentId->map(['POST'], '', \App\Controllers\ApplianceEnvironment::class . ':updateItem');
+          $applianceenvironmentId->map(['GET'], '', \App\v1\Controllers\Applianceenvironment::class . ':showItem');
+          $applianceenvironmentId->map(['POST'], '', \App\v1\Controllers\Applianceenvironment::class . ':updateItem');
         });
       });
       $dropdowns->group('/oauthimapapplications', function (RouteCollectorProxy $oauthimapapplications)
       {
-        $oauthimapapplications->map(['GET'], '', \App\Controllers\OauthimapApplication::class . ':getAll');
-        $oauthimapapplications->map(['POST'], '', \App\Controllers\OauthimapApplication::class . ':postItem');
+        $oauthimapapplications->map(['GET'], '', \App\v1\Controllers\OauthimapApplication::class . ':getAll');
+        $oauthimapapplications->map(['POST'], '', \App\v1\Controllers\OauthimapApplication::class . ':postItem');
         $oauthimapapplications->group("/{id:[0-9]+}", function (RouteCollectorProxy $oauthimapapplicationId)
         {
-          $oauthimapapplicationId->map(['GET'], '', \App\Controllers\OauthimapApplication::class . ':showItem');
-          $oauthimapapplicationId->map(['POST'], '', \App\Controllers\OauthimapApplication::class . ':updateItem');
+          $oauthimapapplicationId->map(['GET'], '', \App\v1\Controllers\OauthimapApplication::class . ':showItem');
+          $oauthimapapplicationId->map(['POST'], '', \App\v1\Controllers\OauthimapApplication::class . ':updateItem');
         });
       });
       $dropdowns->group('/formcreatorcategories', function (RouteCollectorProxy $formcreatorcategories)
       {
-        $formcreatorcategories->map(['GET'], '', \App\Controllers\FormcreatorCategory::class . ':getAll');
-        $formcreatorcategories->map(['POST'], '', \App\Controllers\FormcreatorCategory::class . ':postItem');
+        $formcreatorcategories->map(['GET'], '', \App\v1\Controllers\FormcreatorCategory::class . ':getAll');
+        $formcreatorcategories->map(['POST'], '', \App\v1\Controllers\FormcreatorCategory::class . ':postItem');
         $formcreatorcategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $formcreatorcategoryId)
         {
-          $formcreatorcategoryId->map(['GET'], '', \App\Controllers\FormcreatorCategory::class . ':showItem');
-          $formcreatorcategoryId->map(['POST'], '', \App\Controllers\FormcreatorCategory::class . ':updateItem');
+          $formcreatorcategoryId->map(['GET'], '', \App\v1\Controllers\FormcreatorCategory::class . ':showItem');
+          $formcreatorcategoryId->map(['POST'], '', \App\v1\Controllers\FormcreatorCategory::class . ':updateItem');
         });
       });
     });
 
-    $app->group($prefix . '/devices', function (RouteCollectorProxy $devices)
+    $app->group('/devices', function (RouteCollectorProxy $devices)
     {
-      $devices->group('/itemdevicepowersupplies', function (RouteCollectorProxy $itemdevicepowersupplies)
+      $devices->group('/devicepowersupplies', function (RouteCollectorProxy $devicepowersupplies)
       {
-        $itemdevicepowersupplies->map(['GET'], '', \App\Controllers\ItemDevicePowerSupply::class . ':getAll');
-        $itemdevicepowersupplies->map(['POST'], '', \App\Controllers\ItemDevicePowerSupply::class . ':postItem');
-        $itemdevicepowersupplies->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicepowersupplyId)
+        $devicepowersupplies->map(['GET'], '', \App\v1\Controllers\Devicepowersupply::class . ':getAll');
+        $devicepowersupplies->map(['POST'], '', \App\v1\Controllers\Devicepowersupply::class . ':postItem');
+        $devicepowersupplies->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicepowersupplyId)
         {
-          $itemdevicepowersupplyId->map(['GET'], '', \App\Controllers\ItemDevicePowerSupply::class . ':showItem');
-          $itemdevicepowersupplyId->map(['POST'], '', \App\Controllers\ItemDevicePowerSupply::class . ':updateItem');
+          $devicepowersupplyId->map(['GET'], '', \App\v1\Controllers\Devicepowersupply::class . ':showItem');
+          $devicepowersupplyId->map(['POST'], '', \App\v1\Controllers\Devicepowersupply::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicebatteries', function (RouteCollectorProxy $itemdevicebatteries)
+      $devices->group('/devicebatteries', function (RouteCollectorProxy $devicebatteries)
       {
-        $itemdevicebatteries->map(['GET'], '', \App\Controllers\ItemDeviceBattery::class . ':getAll');
-        $itemdevicebatteries->map(['POST'], '', \App\Controllers\ItemDeviceBattery::class . ':postItem');
-        $itemdevicebatteries->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicebatteryId)
+        $devicebatteries->map(['GET'], '', \App\v1\Controllers\Devicebattery::class . ':getAll');
+        $devicebatteries->map(['POST'], '', \App\v1\Controllers\Devicebattery::class . ':postItem');
+        $devicebatteries->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicebatteryId)
         {
-          $itemdevicebatteryId->map(['GET'], '', \App\Controllers\ItemDeviceBattery::class . ':showItem');
-          $itemdevicebatteryId->map(['POST'], '', \App\Controllers\ItemDeviceBattery::class . ':updateItem');
+          $devicebatteryId->map(['GET'], '', \App\v1\Controllers\Devicebattery::class . ':showItem');
+          $devicebatteryId->map(['POST'], '', \App\v1\Controllers\Devicebattery::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicecases', function (RouteCollectorProxy $itemdevicecases)
+      $devices->group('/devicecases', function (RouteCollectorProxy $devicecases)
       {
-        $itemdevicecases->map(['GET'], '', \App\Controllers\ItemDeviceCase::class . ':getAll');
-        $itemdevicecases->map(['POST'], '', \App\Controllers\ItemDeviceCase::class . ':postItem');
-        $itemdevicecases->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicecaseId)
+        $devicecases->map(['GET'], '', \App\v1\Controllers\Devicecase::class . ':getAll');
+        $devicecases->map(['POST'], '', \App\v1\Controllers\Devicecase::class . ':postItem');
+        $devicecases->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicecaseId)
         {
-          $itemdevicecaseId->map(['GET'], '', \App\Controllers\ItemDeviceCase::class . ':showItem');
-          $itemdevicecaseId->map(['POST'], '', \App\Controllers\ItemDeviceCase::class . ':updateItem');
+          $devicecaseId->map(['GET'], '', \App\v1\Controllers\Devicecase::class . ':showItem');
+          $devicecaseId->map(['POST'], '', \App\v1\Controllers\Devicecase::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicesensors', function (RouteCollectorProxy $itemdevicesensors)
+      $devices->group('/devicesensors', function (RouteCollectorProxy $devicesensors)
       {
-        $itemdevicesensors->map(['GET'], '', \App\Controllers\ItemDeviceSensor::class . ':getAll');
-        $itemdevicesensors->map(['POST'], '', \App\Controllers\ItemDeviceSensor::class . ':postItem');
-        $itemdevicesensors->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicesensorId)
+        $devicesensors->map(['GET'], '', \App\v1\Controllers\Devicesensor::class . ':getAll');
+        $devicesensors->map(['POST'], '', \App\v1\Controllers\Devicesensor::class . ':postItem');
+        $devicesensors->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicesensorId)
         {
-          $itemdevicesensorId->map(['GET'], '', \App\Controllers\ItemDeviceSensor::class . ':showItem');
-          $itemdevicesensorId->map(['POST'], '', \App\Controllers\ItemDeviceSensor::class . ':updateItem');
+          $devicesensorId->map(['GET'], '', \App\v1\Controllers\Devicesensor::class . ':showItem');
+          $devicesensorId->map(['POST'], '', \App\v1\Controllers\Devicesensor::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicesimcards', function (RouteCollectorProxy $itemdevicesimcards)
+      $devices->group('/devicesimcards', function (RouteCollectorProxy $devicesimcards)
       {
-        $itemdevicesimcards->map(['GET'], '', \App\Controllers\ItemDeviceSimcard::class . ':getAll');
-        $itemdevicesimcards->map(['POST'], '', \App\Controllers\ItemDeviceSimcard::class . ':postItem');
-        $itemdevicesimcards->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicesimcardId)
+        $devicesimcards->map(['GET'], '', \App\v1\Controllers\Devicesimcard::class . ':getAll');
+        $devicesimcards->map(['POST'], '', \App\v1\Controllers\Devicesimcard::class . ':postItem');
+        $devicesimcards->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicesimcardId)
         {
-          $itemdevicesimcardId->map(['GET'], '', \App\Controllers\ItemDeviceSimcard::class . ':showItem');
-          $itemdevicesimcardId->map(['POST'], '', \App\Controllers\ItemDeviceSimcard::class . ':updateItem');
+          $devicesimcardId->map(['GET'], '', \App\v1\Controllers\Devicesimcard::class . ':showItem');
+          $devicesimcardId->map(['POST'], '', \App\v1\Controllers\Devicesimcard::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicegraphiccards', function (RouteCollectorProxy $itemdevicegraphiccards)
+      $devices->group('/devicegraphiccards', function (RouteCollectorProxy $devicegraphiccards)
       {
-        $itemdevicegraphiccards->map(['GET'], '', \App\Controllers\ItemDeviceGraphicCard::class . ':getAll');
-        $itemdevicegraphiccards->map(['POST'], '', \App\Controllers\ItemDeviceGraphicCard::class . ':postItem');
-        $itemdevicegraphiccards->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicegraphiccardId)
+        $devicegraphiccards->map(['GET'], '', \App\v1\Controllers\Devicegraphiccard::class . ':getAll');
+        $devicegraphiccards->map(['POST'], '', \App\v1\Controllers\Devicegraphiccard::class . ':postItem');
+        $devicegraphiccards->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicegraphiccardId)
         {
-          $itemdevicegraphiccardId->map(['GET'], '', \App\Controllers\ItemDeviceGraphicCard::class . ':showItem');
-          $itemdevicegraphiccardId->map(['POST'], '', \App\Controllers\ItemDeviceGraphicCard::class . ':updateItem');
+          $devicegraphiccardId->map(['GET'], '', \App\v1\Controllers\Devicegraphiccard::class . ':showItem');
+          $devicegraphiccardId->map(['POST'], '', \App\v1\Controllers\Devicegraphiccard::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicemotherboards', function (RouteCollectorProxy $itemdevicemotherboards)
+      $devices->group('/devicemotherboards', function (RouteCollectorProxy $devicemotherboards)
       {
-        $itemdevicemotherboards->map(['GET'], '', \App\Controllers\ItemDeviceMotherBoard::class . ':getAll');
-        $itemdevicemotherboards->map(['POST'], '', \App\Controllers\ItemDeviceMotherBoard::class . ':postItem');
-        $itemdevicemotherboards->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicemotherboardId)
+        $devicemotherboards->map(['GET'], '', \App\v1\Controllers\Devicemotherboard::class . ':getAll');
+        $devicemotherboards->map(['POST'], '', \App\v1\Controllers\Devicemotherboard::class . ':postItem');
+        $devicemotherboards->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicemotherboardId)
         {
-          $itemdevicemotherboardId->map(['GET'], '', \App\Controllers\ItemDeviceMotherBoard::class . ':showItem');
-          $itemdevicemotherboardId->map(['POST'], '', \App\Controllers\ItemDeviceMotherBoard::class . ':updateItem');
+          $devicemotherboardId->map(['GET'], '', \App\v1\Controllers\Devicemotherboard::class . ':showItem');
+          $devicemotherboardId->map(['POST'], '', \App\v1\Controllers\Devicemotherboard::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicenetworkcards', function (RouteCollectorProxy $itemdevicenetworkcards)
+      $devices->group('/devicenetworkcards', function (RouteCollectorProxy $devicenetworkcards)
       {
-        $itemdevicenetworkcards->map(['GET'], '', \App\Controllers\ItemDeviceNetworkCard::class . ':getAll');
-        $itemdevicenetworkcards->map(['POST'], '', \App\Controllers\ItemDeviceNetworkCard::class . ':postItem');
-        $itemdevicenetworkcards->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicenetworkcardId)
+        $devicenetworkcards->map(['GET'], '', \App\v1\Controllers\Devicenetworkcard::class . ':getAll');
+        $devicenetworkcards->map(['POST'], '', \App\v1\Controllers\Devicenetworkcard::class . ':postItem');
+        $devicenetworkcards->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicenetworkcardId)
         {
-          $itemdevicenetworkcardId->map(['GET'], '', \App\Controllers\ItemDeviceNetworkCard::class . ':showItem');
-          $itemdevicenetworkcardId->map(['POST'], '', \App\Controllers\ItemDeviceNetworkCard::class . ':updateItem');
+          $devicenetworkcardId->map(['GET'], '', \App\v1\Controllers\Devicenetworkcard::class . ':showItem');
+          $devicenetworkcardId->map(['POST'], '', \App\v1\Controllers\Devicenetworkcard::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicesoundcardmodels', function (RouteCollectorProxy $itemdevicesoundcardmodels)
+      $devices->group('/devicesoundcardmodels', function (RouteCollectorProxy $devicesoundcardmodels)
       {
-        $itemdevicesoundcardmodels->map(['GET'], '', \App\Controllers\ItemDeviceSoundCard::class . ':getAll');
-        $itemdevicesoundcardmodels->map(['POST'], '', \App\Controllers\ItemDeviceSoundCard::class . ':postItem');
-        $itemdevicesoundcardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicesoundcardmodelId)
+        $devicesoundcardmodels->map(['GET'], '', \App\v1\Controllers\Devicesoundcard::class . ':getAll');
+        $devicesoundcardmodels->map(['POST'], '', \App\v1\Controllers\Devicesoundcard::class . ':postItem');
+        $devicesoundcardmodels->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicesoundcardmodelId)
         {
-          $itemdevicesoundcardmodelId->map(['GET'], '', \App\Controllers\ItemDeviceSoundCard::class . ':showItem');
-          $itemdevicesoundcardmodelId->map(['POST'], '', \App\Controllers\ItemDeviceSoundCard::class . ':updateItem');
+          $devicesoundcardmodelId->map(['GET'], '', \App\v1\Controllers\Devicesoundcard::class . ':showItem');
+          $devicesoundcardmodelId->map(['POST'], '', \App\v1\Controllers\Devicesoundcard::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicegenerics', function (RouteCollectorProxy $itemdevicegenerics)
+      $devices->group('/devicegenerics', function (RouteCollectorProxy $devicegenerics)
       {
-        $itemdevicegenerics->map(['GET'], '', \App\Controllers\ItemDeviceGeneric::class . ':getAll');
-        $itemdevicegenerics->map(['POST'], '', \App\Controllers\ItemDeviceGeneric::class . ':postItem');
-        $itemdevicegenerics->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicegenericId)
+        $devicegenerics->map(['GET'], '', \App\v1\Controllers\Devicegeneric::class . ':getAll');
+        $devicegenerics->map(['POST'], '', \App\v1\Controllers\Devicegeneric::class . ':postItem');
+        $devicegenerics->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicegenericId)
         {
-          $itemdevicegenericId->map(['GET'], '', \App\Controllers\ItemDeviceGeneric::class . ':showItem');
-          $itemdevicegenericId->map(['POST'], '', \App\Controllers\ItemDeviceGeneric::class . ':updateItem');
+          $devicegenericId->map(['GET'], '', \App\v1\Controllers\Devicegeneric::class . ':showItem');
+          $devicegenericId->map(['POST'], '', \App\v1\Controllers\Devicegeneric::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicecontrols', function (RouteCollectorProxy $itemdevicecontrols)
+      $devices->group('/devicecontrols', function (RouteCollectorProxy $devicecontrols)
       {
-        $itemdevicecontrols->map(['GET'], '', \App\Controllers\ItemDeviceControl::class . ':getAll');
-        $itemdevicecontrols->map(['POST'], '', \App\Controllers\ItemDeviceControl::class . ':postItem');
-        $itemdevicecontrols->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicecontrolId)
+        $devicecontrols->map(['GET'], '', \App\v1\Controllers\Devicecontrol::class . ':getAll');
+        $devicecontrols->map(['POST'], '', \App\v1\Controllers\Devicecontrol::class . ':postItem');
+        $devicecontrols->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicecontrolId)
         {
-          $itemdevicecontrolId->map(['GET'], '', \App\Controllers\ItemDeviceControl::class . ':showItem');
-          $itemdevicecontrolId->map(['POST'], '', \App\Controllers\ItemDeviceControl::class . ':updateItem');
+          $devicecontrolId->map(['GET'], '', \App\v1\Controllers\Devicecontrol::class . ':showItem');
+          $devicecontrolId->map(['POST'], '', \App\v1\Controllers\Devicecontrol::class . ':updateItem');
         });
       });
-      $devices->group('/itemdeviceharddrives', function (RouteCollectorProxy $itemdeviceharddrives)
+      $devices->group('/deviceharddrives', function (RouteCollectorProxy $deviceharddrives)
       {
-        $itemdeviceharddrives->map(['GET'], '', \App\Controllers\ItemDeviceHardDrive::class . ':getAll');
-        $itemdeviceharddrives->map(['POST'], '', \App\Controllers\ItemDeviceHardDrive::class . ':postItem');
-        $itemdeviceharddrives->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdeviceharddriveId)
+        $deviceharddrives->map(['GET'], '', \App\v1\Controllers\Deviceharddrive::class . ':getAll');
+        $deviceharddrives->map(['POST'], '', \App\v1\Controllers\Deviceharddrive::class . ':postItem');
+        $deviceharddrives->group("/{id:[0-9]+}", function (RouteCollectorProxy $deviceharddriveId)
         {
-          $itemdeviceharddriveId->map(['GET'], '', \App\Controllers\ItemDeviceHardDrive::class . ':showItem');
-          $itemdeviceharddriveId->map(['POST'], '', \App\Controllers\ItemDeviceHardDrive::class . ':updateItem');
+          $deviceharddriveId->map(['GET'], '', \App\v1\Controllers\Deviceharddrive::class . ':showItem');
+          $deviceharddriveId->map(['POST'], '', \App\v1\Controllers\Deviceharddrive::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicefirmwares', function (RouteCollectorProxy $itemdevicefirmwares)
+      $devices->group('/devicefirmwares', function (RouteCollectorProxy $devicefirmwares)
       {
-        $itemdevicefirmwares->map(['GET'], '', \App\Controllers\ItemDeviceFirmware::class . ':getAll');
-        $itemdevicefirmwares->map(['POST'], '', \App\Controllers\ItemDeviceFirmware::class . ':postItem');
-        $itemdevicefirmwares->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicefirmwareId)
+        $devicefirmwares->map(['GET'], '', \App\v1\Controllers\Devicefirmware::class . ':getAll');
+        $devicefirmwares->map(['POST'], '', \App\v1\Controllers\Devicefirmware::class . ':postItem');
+        $devicefirmwares->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicefirmwareId)
         {
-          $itemdevicefirmwareId->map(['GET'], '', \App\Controllers\ItemDeviceFirmware::class . ':showItem');
-          $itemdevicefirmwareId->map(['POST'], '', \App\Controllers\ItemDeviceFirmware::class . ':updateItem');
+          $devicefirmwareId->map(['GET'], '', \App\v1\Controllers\Devicefirmware::class . ':showItem');
+          $devicefirmwareId->map(['POST'], '', \App\v1\Controllers\Devicefirmware::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicedrives', function (RouteCollectorProxy $itemdevicedrives)
+      $devices->group('/devicedrives', function (RouteCollectorProxy $devicedrives)
       {
-        $itemdevicedrives->map(['GET'], '', \App\Controllers\ItemDeviceDrive::class . ':getAll');
-        $itemdevicedrives->map(['POST'], '', \App\Controllers\ItemDeviceDrive::class . ':postItem');
-        $itemdevicedrives->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicedriveId)
+        $devicedrives->map(['GET'], '', \App\v1\Controllers\Devicedrive::class . ':getAll');
+        $devicedrives->map(['POST'], '', \App\v1\Controllers\Devicedrive::class . ':postItem');
+        $devicedrives->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicedriveId)
         {
-          $itemdevicedriveId->map(['GET'], '', \App\Controllers\ItemDeviceDrive::class . ':showItem');
-          $itemdevicedriveId->map(['POST'], '', \App\Controllers\ItemDeviceDrive::class . ':updateItem');
+          $devicedriveId->map(['GET'], '', \App\v1\Controllers\Devicedrive::class . ':showItem');
+          $devicedriveId->map(['POST'], '', \App\v1\Controllers\Devicedrive::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicememories', function (RouteCollectorProxy $itemdevicememories)
+      $devices->group('/devicememories', function (RouteCollectorProxy $devicememories)
       {
-        $itemdevicememories->map(['GET'], '', \App\Controllers\ItemDeviceMemory::class . ':getAll');
-        $itemdevicememories->map(['POST'], '', \App\Controllers\ItemDeviceMemory::class . ':postItem');
-        $itemdevicememories->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicememoryId)
+        $devicememories->map(['GET'], '', \App\v1\Controllers\Devicememory::class . ':getAll');
+        $devicememories->map(['POST'], '', \App\v1\Controllers\Devicememory::class . ':postItem');
+        $devicememories->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicememoryId)
         {
-          $itemdevicememoryId->map(['GET'], '', \App\Controllers\ItemDeviceMemory::class . ':showItem');
-          $itemdevicememoryId->map(['POST'], '', \App\Controllers\ItemDeviceMemory::class . ':updateItem');
+          $devicememoryId->map(['GET'], '', \App\v1\Controllers\Devicememory::class . ':showItem');
+          $devicememoryId->map(['POST'], '', \App\v1\Controllers\Devicememory::class . ':updateItem');
         });
       });
-      $devices->group('/itemdeviceprocessors', function (RouteCollectorProxy $itemdeviceprocessors)
+      $devices->group('/deviceprocessors', function (RouteCollectorProxy $deviceprocessors)
       {
-        $itemdeviceprocessors->map(['GET'], '', \App\Controllers\ItemDeviceProcessor::class . ':getAll');
-        $itemdeviceprocessors->map(['POST'], '', \App\Controllers\ItemDeviceProcessor::class . ':postItem');
-        $itemdeviceprocessors->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdeviceprocessorId)
+        $deviceprocessors->map(['GET'], '', \App\v1\Controllers\Deviceprocessor::class . ':getAll');
+        $deviceprocessors->map(['POST'], '', \App\v1\Controllers\Deviceprocessor::class . ':postItem');
+        $deviceprocessors->group("/{id:[0-9]+}", function (RouteCollectorProxy $deviceprocessorId)
         {
-          $itemdeviceprocessorId->map(['GET'], '', \App\Controllers\ItemDeviceProcessor::class . ':showItem');
-          $itemdeviceprocessorId->map(['POST'], '', \App\Controllers\ItemDeviceProcessor::class . ':updateItem');
+          $deviceprocessorId->map(['GET'], '', \App\v1\Controllers\Deviceprocessor::class . ':showItem');
+          $deviceprocessorId->map(['POST'], '', \App\v1\Controllers\Deviceprocessor::class . ':updateItem');
         });
       });
-      $devices->group('/itemdevicepcis', function (RouteCollectorProxy $itemdevicepcis)
+      $devices->group('/devicepcis', function (RouteCollectorProxy $devicepcis)
       {
-        $itemdevicepcis->map(['GET'], '', \App\Controllers\ItemDevicePci::class . ':getAll');
-        $itemdevicepcis->map(['POST'], '', \App\Controllers\ItemDevicePci::class . ':postItem');
-        $itemdevicepcis->group("/{id:[0-9]+}", function (RouteCollectorProxy $itemdevicepciId)
+        $devicepcis->map(['GET'], '', \App\v1\Controllers\Devicepci::class . ':getAll');
+        $devicepcis->map(['POST'], '', \App\v1\Controllers\Devicepci::class . ':postItem');
+        $devicepcis->group("/{id:[0-9]+}", function (RouteCollectorProxy $devicepciId)
         {
-          $itemdevicepciId->map(['GET'], '', \App\Controllers\ItemDevicePci::class . ':showItem');
-          $itemdevicepciId->map(['POST'], '', \App\Controllers\ItemDevicePci::class . ':updateItem');
+          $devicepciId->map(['GET'], '', \App\v1\Controllers\Devicepci::class . ':showItem');
+          $devicepciId->map(['POST'], '', \App\v1\Controllers\Devicepci::class . ':updateItem');
         });
       });
     });
 
-    $app->group($prefix . '/notifications', function (RouteCollectorProxy $notifications)
+    $app->group('/notifications', function (RouteCollectorProxy $notifications)
     {
       $notifications->group('/notificationtemplates', function (RouteCollectorProxy $notificationtemplates)
       {
-        $notificationtemplates->map(['GET'], '', \App\Controllers\NotificationTemplate::class . ':getAll');
-        $notificationtemplates->map(['POST'], '', \App\Controllers\NotificationTemplate::class . ':postItem');
+        $notificationtemplates->map(['GET'], '', \App\v1\Controllers\Notificationtemplate::class . ':getAll');
+        $notificationtemplates->map(['POST'], '', \App\v1\Controllers\Notificationtemplate::class . ':postItem');
         $notificationtemplates->group("/{id:[0-9]+}", function (RouteCollectorProxy $notificationtemplateId)
         {
-          $notificationtemplateId->map(['GET'], '', \App\Controllers\NotificationTemplate::class . ':showItem');
-          $notificationtemplateId->map(['POST'], '', \App\Controllers\NotificationTemplate::class . ':updateItem');
+          $notificationtemplateId->map(['GET'], '', \App\v1\Controllers\Notificationtemplate::class . ':showItem');
+          $notificationtemplateId->map(['POST'], '', \App\v1\Controllers\Notificationtemplate::class . ':updateItem');
         });
       });
       $notifications->group('/notifications', function (RouteCollectorProxy $notifications)
       {
-        $notifications->map(['GET'], '', \App\Controllers\Notification::class . ':getAll');
-        $notifications->map(['POST'], '', \App\Controllers\Notification::class . ':postItem');
+        $notifications->map(['GET'], '', \App\v1\Controllers\Notification::class . ':getAll');
+        $notifications->map(['POST'], '', \App\v1\Controllers\Notification::class . ':postItem');
         $notifications->group("/{id:[0-9]+}", function (RouteCollectorProxy $notificationId)
         {
-          $notificationId->map(['GET'], '', \App\Controllers\Notification::class . ':showItem');
-          $notificationId->map(['POST'], '', \App\Controllers\Notification::class . ':updateItem');
+          $notificationId->map(['GET'], '', \App\v1\Controllers\Notification::class . ':showItem');
+          $notificationId->map(['POST'], '', \App\v1\Controllers\Notification::class . ':updateItem');
         });
       });
     });
 
-    $app->group($prefix . '/slms', function (RouteCollectorProxy $slms)
+    $app->group('/slms', function (RouteCollectorProxy $slms)
     {
-      $slms->map(['GET'], '', \App\Controllers\Slm::class . ':getAll');
-      $slms->map(['POST'], '', \App\Controllers\Slm::class . ':postItem');
+      $slms->map(['GET'], '', \App\v1\Controllers\Slm::class . ':getAll');
+      $slms->map(['POST'], '', \App\v1\Controllers\Slm::class . ':postItem');
       $slms->group("/{id:[0-9]+}", function (RouteCollectorProxy $slmId)
       {
-        $slmId->map(['GET'], '', \App\Controllers\Slm::class . ':showItem');
-        $slmId->map(['POST'], '', \App\Controllers\Slm::class . ':updateItem');
+        $slmId->map(['GET'], '', \App\v1\Controllers\Slm::class . ':showItem');
+        $slmId->map(['POST'], '', \App\v1\Controllers\Slm::class . ':updateItem');
       });
     });
 
-    $app->group($prefix . '/fieldunicities', function (RouteCollectorProxy $fieldunicities)
+    $app->group('/fieldunicities', function (RouteCollectorProxy $fieldunicities)
     {
-      $fieldunicities->map(['GET'], '', \App\Controllers\Fieldunicity::class . ':getAll');
-      $fieldunicities->map(['POST'], '', \App\Controllers\Fieldunicity::class . ':postItem');
+      $fieldunicities->map(['GET'], '', \App\v1\Controllers\Fieldunicity::class . ':getAll');
+      $fieldunicities->map(['POST'], '', \App\v1\Controllers\Fieldunicity::class . ':postItem');
       $fieldunicities->group("/{id:[0-9]+}", function (RouteCollectorProxy $fieldunicityId)
       {
-        $fieldunicityId->map(['GET'], '', \App\Controllers\Fieldunicity::class . ':showItem');
-        $fieldunicityId->map(['POST'], '', \App\Controllers\Fieldunicity::class . ':updateItem');
+        $fieldunicityId->map(['GET'], '', \App\v1\Controllers\Fieldunicity::class . ':showItem');
+        $fieldunicityId->map(['POST'], '', \App\v1\Controllers\Fieldunicity::class . ':updateItem');
       });
     });
 
-    $app->group($prefix . '/crontasks', function (RouteCollectorProxy $crontasks)
+    $app->group('/crontasks', function (RouteCollectorProxy $crontasks)
     {
-      $crontasks->map(['GET'], '', \App\Controllers\Crontask::class . ':getAll');
-      $crontasks->map(['POST'], '', \App\Controllers\Crontask::class . ':postItem');
+      $crontasks->map(['GET'], '', \App\v1\Controllers\Crontask::class . ':getAll');
+      $crontasks->map(['POST'], '', \App\v1\Controllers\Crontask::class . ':postItem');
       $crontasks->group("/{id:[0-9]+}", function (RouteCollectorProxy $crontaskId)
       {
-        $crontaskId->map(['GET'], '', \App\Controllers\Crontask::class . ':showItem');
-        $crontaskId->map(['POST'], '', \App\Controllers\Crontask::class . ':updateItem');
+        $crontaskId->map(['GET'], '', \App\v1\Controllers\Crontask::class . ':showItem');
+        $crontaskId->map(['POST'], '', \App\v1\Controllers\Crontask::class . ':updateItem');
       });
     });
 
-    $app->group($prefix . '/links', function (RouteCollectorProxy $links)
+    $app->group('/links', function (RouteCollectorProxy $links)
     {
-      $links->map(['GET'], '', \App\Controllers\Link::class . ':getAll');
-      $links->map(['POST'], '', \App\Controllers\Link::class . ':postItem');
+      $links->map(['GET'], '', \App\v1\Controllers\Link::class . ':getAll');
+      $links->map(['POST'], '', \App\v1\Controllers\Link::class . ':postItem');
       $links->group("/{id:[0-9]+}", function (RouteCollectorProxy $linkId)
       {
-        $linkId->map(['GET'], '', \App\Controllers\Link::class . ':showItem');
-        $linkId->map(['POST'], '', \App\Controllers\Link::class . ':updateItem');
+        $linkId->map(['GET'], '', \App\v1\Controllers\Link::class . ':showItem');
+        $linkId->map(['POST'], '', \App\v1\Controllers\Link::class . ':updateItem');
       });
     });
-
-
-
   }
 }

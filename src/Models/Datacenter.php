@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Datacenter extends Common
 {
-  protected $table = 'glpi_datacenters';
   protected $definition = '\App\Models\Definitions\Datacenter';
   protected $titles = ['Data center', 'Data centers'];
   protected $icon = 'warehouse';
@@ -26,8 +25,6 @@ class Datacenter extends Common
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
-
-
 }

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contact extends Common
 {
-  protected $table = 'glpi_contacts';
   protected $definition = '\App\Models\Definitions\Contact';
   protected $titles = ['Contact', 'Contacts'];
   protected $icon = 'user tie';
@@ -29,12 +28,10 @@ class Contact extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\ContactType', 'contacttypes_id');
+    return $this->belongsTo('\App\Models\Contacttype');
   }
   public function title(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\UserTitle', 'usertitles_id');
+    return $this->belongsTo('\App\Models\Usertitle');
   }
-
-
 }

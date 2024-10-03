@@ -19,8 +19,8 @@ class Document
         'title' => $translator->translate('Heading'),
         'type'  => 'dropdown_remote',
         'name'  => 'categorie',
-        'dbname' => 'documentcategories_id',
-        'itemtype' => '\App\Models\DocumentCategory',
+        'dbname' => 'documentcategory_id',
+        'itemtype' => '\App\Models\Documentcategory',
       ],
       [
         'id'    => 3,
@@ -50,7 +50,11 @@ class Document
       ],
       [
         'id'    => 20,
-        'title' => sprintf($translator->translate('%1$s (%2$s)'), $translator->translate('Checksum'), $translator->translate('SHA1')),
+        'title' => sprintf(
+          $translator->translate('%1$s (%2$s)'),
+          $translator->translate('Checksum'),
+          $translator->translate('SHA1')
+        ),
         'type'  => 'input',
         'name'  => 'sha1sum',
         'readonly'  => 'readonly',
@@ -63,7 +67,7 @@ class Document
       ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',

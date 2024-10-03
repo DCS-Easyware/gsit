@@ -2,7 +2,7 @@
 
 namespace App\Models\Definitions;
 
-class BlacklistedMailContent
+class Blacklistedmailcontent
 {
   public static function getDefinition()
   {

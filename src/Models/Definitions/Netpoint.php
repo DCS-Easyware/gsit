@@ -52,7 +52,7 @@ class Netpoint
       [
         'title' => $translator->translatePlural('Network outlet', 'Network outlets', 1),
         'icon' => 'laptop house',
-        'link' => $rootUrl.'/operatingsystem',
+        'link' => $rootUrl . '/operatingsystem',
       ],
       [
         'title' => $translator->translate('Historical'),

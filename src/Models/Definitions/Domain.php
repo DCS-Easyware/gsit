@@ -19,8 +19,8 @@ class Domain
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'domaintypes_id',
-        'itemtype' => '\App\Models\DomainType',
+        'dbname' => 'domaintype_id',
+        'itemtype' => '\App\Models\Domaintype',
       ],
       [
         'id'    => 3,
@@ -77,7 +77,7 @@ class Domain
       ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Software extends Common
 {
-  protected $table = 'glpi_softwares';
+  protected $table = 'softwares';
   protected $definition = '\App\Models\Definitions\Software';
   protected $titles = ['Software', 'Software'];
   protected $icon = 'cube';
@@ -50,46 +50,46 @@ class Software extends Common
 
   public function category(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\SoftwareCategory', 'softwarecategories_id');
+    return $this->belongsTo('\App\Models\Softwarecategory');
   }
 
   public function manufacturer(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Manufacturer', 'manufacturers_id');
+    return $this->belongsTo('\App\Models\Manufacturer');
   }
 
   // public function nbinstallation(): HasMany
   // {
-  //   return $this->hasMany('\App\Models\SoftwareVersion', 'softwares_id')->withCount('devices');
+  //   return $this->hasMany('\App\Models\Softwareversion')->withCount('devices');
   // }
 
   public function versions(): HasMany
   {
-    return $this->hasMany('\App\Models\SoftwareVersion', 'softwares_id');
+    return $this->hasMany('\App\Models\Softwareversion');
   }
 
   public function groupstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id_tech');
+    return $this->belongsTo('\App\Models\Group', 'group_id_tech');
   }
 
   public function userstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_tech');
+    return $this->belongsTo('\App\Models\User', 'user_id_tech');
   }
 
   public function user(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User');
   }
 
   public function group(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id');
+    return $this->belongsTo('\App\Models\Group');
   }
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
 }

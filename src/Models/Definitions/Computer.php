@@ -19,7 +19,7 @@ class Computer
         'title' => $translator->translate('Status'),
         'type'  => 'dropdown_remote',
         'name'  => 'state',
-        'dbname' => 'states_id',
+        'dbname' => 'state_id',
         'itemtype' => '\App\Models\State',
       ],
       [
@@ -27,7 +27,7 @@ class Computer
         'title' => $translator->translatePlural('Location', 'Locations', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'location',
-        'dbname' => 'locations_id',
+        'dbname' => 'location_id',
         'itemtype' => '\App\Models\Location',
       ],
       [
@@ -35,8 +35,8 @@ class Computer
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'computertypes_id',
-        'itemtype' => '\App\Models\ComputerType',
+        'dbname' => 'computertype_id',
+        'itemtype' => '\App\Models\Computertype',
       ],
       [
         'id'    => 24,
@@ -51,7 +51,7 @@ class Computer
         'title' => $translator->translatePlural('Manufacturer', 'Manufacturers', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'manufacturer',
-        'dbname' => 'manufacturers_id',
+        'dbname' => 'manufacturer_id',
         'itemtype' => '\App\Models\Manufacturer',
       ],
       [
@@ -67,8 +67,8 @@ class Computer
         'title' => $translator->translatePlural('Model', 'Models', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'model',
-        'dbname' => 'computermodels_id',
-        'itemtype' => '\App\Models\ComputerModel',
+        'dbname' => 'computermodel_id',
+        'itemtype' => '\App\Models\Computermodel',
       ],
       [
         'id'    => 8,
@@ -99,7 +99,7 @@ class Computer
         'title' => $translator->translatePlural('User', 'Users', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'user',
-        'dbname' => 'users_id',
+        'dbname' => 'user_id',
         'itemtype' => '\App\Models\User',
       ],
       [
@@ -107,7 +107,7 @@ class Computer
         'title' => $translator->translatePlural('Group', 'Groups', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'group',
-        'dbname' => 'groups_id',
+        'dbname' => 'group_id',
         'itemtype' => '\App\Models\Group',
       ],
       [
@@ -115,7 +115,7 @@ class Computer
         'title' => $translator->translate('Network', 'Networks', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'network',
-        'dbname' => 'networks_id',
+        'dbname' => 'network_id',
         'itemtype' => '\App\Models\Network',
       ],
       [
@@ -129,8 +129,8 @@ class Computer
         'title' => $translator->translate('Update Source', 'Update Sources', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'autoupdatesystem',
-        'dbname' => 'autoupdatesystems_id',
-        'itemtype' => '\App\Models\AutoUpdateSystem',
+        'dbname' => 'autoupdatesystem_id',
+        'itemtype' => '\App\Models\Autoupdatesystem',
       ],
       [
         'id'    => 16,
@@ -142,14 +142,14 @@ class Computer
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'udpated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
     ];
@@ -162,7 +162,7 @@ class Computer
       [
         'title' => $translator->translatePlural('Operating system', 'Operating systems', 1),
         'icon' => 'laptop house',
-        'link' => $rootUrl.'/operatingsystem',
+        'link' => $rootUrl . '/operatingsystem',
       ],
       [
         'title' => $translator->translatePlural('Component', 'Components', 2),
@@ -177,7 +177,7 @@ class Computer
       [
         'title' => $translator->translatePlural('Software', 'Software', 2),
         'icon' => 'cube',
-        'link' => $rootUrl.'/softwares',
+        'link' => $rootUrl . '/softwares',
       ],
       [
         'title' => $translator->translatePlural('Connection', 'Connections', 2),

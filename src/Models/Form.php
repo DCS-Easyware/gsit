@@ -28,5 +28,4 @@ class Form extends Common
   {
     return $this->belongsTo('\App\Models\FormCategory', 'plugin_formcreator_categories_id');
   }
-
 }

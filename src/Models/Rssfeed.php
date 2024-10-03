@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Rssfeed extends Common
 {
-  protected $table = 'glpi_rssfeeds';
   protected $definition = '\App\Models\Definitions\Rssfeed';
   protected $titles = ['RSS feed', 'RSS feed'];
   protected $icon = 'rss';
@@ -27,7 +26,6 @@ class Rssfeed extends Common
 
   public function user(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User');
   }
-
 }

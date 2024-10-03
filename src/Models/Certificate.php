@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Certificate extends Common
 {
-  protected $table = 'glpi_certificates';
   protected $definition = '\App\Models\Definitions\Certificate';
   protected $titles = ['Certificate', 'Certificates'];
   protected $icon = 'certificate';
@@ -47,43 +46,41 @@ class Certificate extends Common
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\CertificateType', 'certificatetypes_id');
+    return $this->belongsTo('\App\Models\Certificatetype');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\State');
   }
 
   public function user(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User');
   }
 
   public function group(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id');
+    return $this->belongsTo('\App\Models\Group');
   }
 
   public function userstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_tech');
+    return $this->belongsTo('\App\Models\User', 'user_id_tech');
   }
 
   public function groupstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id_tech');
+    return $this->belongsTo('\App\Models\Group', 'group_id_tech');
   }
 
   public function manufacturer(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Manufacturer', 'manufacturers_id');
+    return $this->belongsTo('\App\Models\Manufacturer');
   }
-
-
 }

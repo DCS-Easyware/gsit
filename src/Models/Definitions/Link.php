@@ -41,7 +41,7 @@ class Link
       ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -70,28 +70,33 @@ class Link
   }
 
   public static function getValidTags()
-    {
+  {
     global $translator;
 
     $tags = ['[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
-    '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-    '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]'];
+      '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
+      '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]'
+    ];
 
     $ret = '';
 
     $count = count($tags);
     $i = 0;
 
-    foreach ($tags as $tag) {
+    foreach ($tags as $tag)
+    {
       $ret = $ret . $tag;
       $ret = $ret . "&nbsp;";
       $i++;
-      if (($i%8 == 0) && ($count > 1)) {
+      if (($i % 8 == 0) && ($count > 1))
+      {
         $ret = $ret . "<br>";
       }
     }
 
-    $ret = $ret . "<br>" . $translator->translate('or') . "<br>[FIELD:<i>" . $translator->translate('field name in DB') . "</i>] (" . $translator->translate('Example:') . " [FIELD:name], [FIELD:content], ...)";
+    $ret = $ret . "<br>" . $translator->translate('or') . "<br>[FIELD:<i>" .
+           $translator->translate('field name in DB') . "</i>] (" . $translator->translate('Example:') .
+           " [FIELD:name], [FIELD:content], ...)";
 
     return $ret;
   }

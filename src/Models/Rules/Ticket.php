@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Ticket extends \App\Models\Common
 {
-  protected $table = 'glpi_rules';
+  protected $table = 'rules';
   protected $definition = '\App\Models\Definitions\Rule';
   protected $titles = ['Business rules for tickets', 'Business rules for tickets'];
   protected $icon = 'magic';
@@ -25,7 +25,8 @@ class Ticket extends \App\Models\Common
   {
     parent::boot();
 
-    static::addGlobalScope('ticketfilter', function (Builder $builder) {
+    static::addGlobalScope('ticketfilter', function (Builder $builder)
+    {
       $builder->where('sub_type', 'RuleTicket');
     });
   }

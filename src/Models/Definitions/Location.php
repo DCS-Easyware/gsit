@@ -42,7 +42,7 @@ class Location
       ],
       [
         'id'    => 104,
-        'title' => $translator->translate('location'."\004".'State'),
+        'title' => $translator->translate('location' . "\004" . 'State'),
         'type'  => 'input',
         'name'  => 'state',
       ],
@@ -90,7 +90,7 @@ class Location
       ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',

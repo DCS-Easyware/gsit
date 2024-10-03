@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Common
 {
-  protected $table = 'glpi_projects';
   protected $definition = '\App\Models\Definitions\Project';
   protected $titles = ['Project', 'Projects'];
   protected $icon = 'columns';
@@ -36,22 +35,21 @@ class Project extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\ProjectType', 'projecttypes_id');
+    return $this->belongsTo('\App\Models\Projecttype');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\ProjectState', 'projectstates_id');
+    return $this->belongsTo('\App\Models\Projectstate');
   }
 
   public function user(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User');
   }
 
   public function group(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id');
+    return $this->belongsTo('\App\Models\Group');
   }
-
 }

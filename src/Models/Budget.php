@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Budget extends Common
 {
-  protected $table = 'glpi_budgets';
   protected $definition = '\App\Models\Definitions\Budget';
   protected $titles = ['Budget', 'Budgets'];
   protected $icon = 'calculator';
@@ -29,13 +28,11 @@ class Budget extends Common
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\BudgetType', 'budgettypes_id');
+    return $this->belongsTo('\App\Models\Budgettype');
   }
-
-
 }

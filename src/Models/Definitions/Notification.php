@@ -42,7 +42,7 @@ class Notification
       ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -112,7 +112,8 @@ class Notification
     asort($types);
 
     $newTypes = [];
-    foreach (array_keys($types) as $key) {
+    foreach (array_keys($types) as $key)
+    {
       $newTypes[$key]['title'] = $types[$key];
     }
 
@@ -240,8 +241,10 @@ class Notification
 
 
     $newEvents = [];
-    foreach (array_keys($events) as $keyItem) {
-      foreach (array_keys($events[$keyItem]) as $key) {
+    foreach (array_keys($events) as $keyItem)
+    {
+      foreach (array_keys($events[$keyItem]) as $key)
+      {
         $newEvents[$keyItem][$key]['title'] = $events[$keyItem][$key];
       }
       asort($newEvents[$keyItem]);

@@ -1,0 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+// phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+
+use Phinx\Migration\AbstractMigration;
+use Phinx\Migration\Manager\Environment;
+use Phinx\Config\Config;
+use App\v1\Controllers\Toolbox;
+
+final class ProblemsMigration extends AbstractMigration
+{
+  public function change()
+  {
+    $configArray = require('phinx.php');
+    $environments = array_keys($configArray['environments']);
+    if (in_array('old', $environments))
+    {
+      // Migration of database
+
+      $config = Config::fromPhp('phinx.php');
+      $environment = new Environment('old', $config->getEnvironment('old'));
+      $pdo = $environment->getAdapter()->getConnection();
+    } else {
+      return;
+    }
+    $item = $this->table('problems');
+
+    if ($this->isMigratingUp())
+    {
+      $stmt = $pdo->query('SELECT * FROM glpi_problems');
+      $rows = $stmt->fetchAll();
+      foreach ($rows as $row)
+      {
+        $data = [
+          [
+            'id'                  => $row['id'],
+            'entity_id'           => $row['entities_id'],
+            'is_recursive'        => $row['is_recursive'],
+            'is_deleted'          => $row['is_deleted'],
+            'status'              => $row['status'],
+            'content'             => Toolbox::convertHtmlToMarkdown($row['content']),
+            'updated_at'          => $row['date_mod'],
+            'date'                => $row['date'],
+            'solvedate'           => $row['solvedate'],
+            'closedate'           => $row['closedate'],
+            'time_to_resolve'     => $row['time_to_resolve'],
+            'user_id_recipient'   => $row['users_id_recipient'],
+            'user_id_lastupdater' => $row['users_id_lastupdater'],
+            'urgency'             => $row['urgency'],
+            'impact'              => $row['impact'],
+            'priority'            => $row['priority'],
+            'category_id'         => $row['itilcategories_id'],
+            'impactcontent'       => $row['impactcontent'],
+            'causecontent'        => $row['causecontent'],
+            'symptomcontent'      => $row['symptomcontent'],
+            'actiontime'          => $row['actiontime'],
+            'begin_waiting_date'  => $row['begin_waiting_date'],
+            'waiting_duration'    => $row['waiting_duration'],
+            'close_delay_stat'    => $row['close_delay_stat'],
+            'solve_delay_stat'    => $row['solve_delay_stat'],
+            'created_at'          => $row['date_creation'],
+          ]
+        ];
+        $item->insert($data)
+             ->saveData();
+      }
+    } else {
+      // rollback
+      $item->truncate();
+    }
+  }
+}

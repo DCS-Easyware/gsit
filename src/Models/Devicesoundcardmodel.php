@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Devicesoundcardmodel extends Common
+{
+  protected $definition = '\App\Models\Definitions\Devicesoundcardmodel';
+  protected $titles = ['Device sound card model', 'Device sound card models'];
+  protected $icon = 'edit';
+}

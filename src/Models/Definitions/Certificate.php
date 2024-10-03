@@ -47,8 +47,8 @@ class Certificate
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'certificatetypes_id',
-        'itemtype' => '\App\Models\CertificateType',
+        'dbname' => 'certificatetype_id',
+        'itemtype' => '\App\Models\Certificatetype',
       ],
       [
         'id'    => 8,
@@ -100,7 +100,11 @@ class Certificate
       ],
       [
         'id'    => 23,
-        'title' => sprintf($translator->translate('%1$s (%2$s)'), $translator->translatePlural('Manufacturer', 'Manufacturers', 1), $translator->translate('Root CA')),
+        'title' => sprintf(
+          $translator->translate('%1$s (%2$s)'),
+          $translator->translatePlural('Manufacturer', 'Manufacturers', 1),
+          $translator->translate('Root CA')
+        ),
         'type'  => 'dropdown_remote',
         'name'  => 'manufacturer',
         'dbname' => 'manufacturers_id',
@@ -158,7 +162,7 @@ class Certificate
       // ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',

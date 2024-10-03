@@ -11,5 +11,4 @@ class OauthimapApplication extends Common
   protected $definition = '\App\Models\Definitions\OauthimapApplication';
   protected $titles = ['Oauth IMAP application', 'Oauth IMAP applications'];
   protected $icon = 'edit';
-
 }

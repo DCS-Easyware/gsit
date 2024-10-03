@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class State extends Common
 {
-  protected $table = 'glpi_states';
   protected $definition = '\App\Models\Definitions\State';
   protected $titles = ['Status of items', 'Statuses of items'];
   protected $icon = 'edit';
@@ -26,6 +25,6 @@ class State extends Common
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\State');
   }
 }

@@ -24,7 +24,7 @@ class Datacenter
       ],
       // [
       //   'id'     => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -36,7 +36,7 @@ class Datacenter
         'name'  => 'date_mod',
         'readonly'  => 'readonly',
       ],
-        [
+      [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',

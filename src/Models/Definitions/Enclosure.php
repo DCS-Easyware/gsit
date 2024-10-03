@@ -36,7 +36,7 @@ class Enclosure
         'type'  => 'dropdown_remote',
         'name'  => 'model',
         'dbname' => 'enclosuremodels_id',
-        'itemtype' => '\App\Models\EnclosureModel',
+        'itemtype' => '\App\Models\Enclosuremodel',
       ],
       [
         'id'    => 5,
@@ -84,7 +84,7 @@ class Enclosure
       // ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',

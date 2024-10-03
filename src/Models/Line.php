@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Line extends Common
 {
-  protected $table = 'glpi_lines';
   protected $definition = '\App\Models\Definitions\Line';
   protected $titles = ['Line', 'Lines'];
   protected $icon = 'phone';
@@ -41,33 +40,31 @@ class Line extends Common
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\LineType', 'linetypes_id');
+    return $this->belongsTo('\App\Models\Linetype');
   }
 
   public function operator(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\LineOperator', 'lineoperators_id');
+    return $this->belongsTo('\App\Models\Lineoperator');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\State');
   }
 
   public function user(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User');
   }
 
   public function group(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id');
+    return $this->belongsTo('\App\Models\Group');
   }
-
-
 }

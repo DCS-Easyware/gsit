@@ -66,19 +66,27 @@ class Group
       ],
       [
         'id'    => 17,
-        'title' => sprintf($translator->translate('%1$s %2$s'), $translator->translate('Can contain'), $translator->translatePlural('Item', 'Items', 2)),
+        'title' => sprintf(
+          $translator->translate('%1$s %2$s'),
+          $translator->translate('Can contain'),
+          $translator->translatePlural('Item', 'Items', 2)
+        ),
         'type'  => 'boolean',
         'name'  => 'is_itemgroup',
       ],
       [
         'id'    => 15,
-        'title' => sprintf($translator->translate('%1$s %2$s'), $translator->translate('Can contain'), $translator->translatePlural('User', 'Users', 2)),
+        'title' => sprintf(
+          $translator->translate('%1$s %2$s'),
+          $translator->translate('Can contain'),
+          $translator->translatePlural('User', 'Users', 2)
+        ),
         'type'  => 'boolean',
         'name'  => 'is_usergroup',
       ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'entity',
       //   'dbname' => 'entities_id',
@@ -132,7 +140,8 @@ class Group
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      if (AuthLDAP::useAuthLdap()) {
+      if (AuthLDAP::useAuthLdap())
+      {
       $tab[] = [
         'id'                 => '3',
         'table'              => $this->getTable(),

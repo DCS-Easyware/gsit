@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Peripheral extends Common
 {
-  protected $table = 'glpi_peripherals';
   protected $definition = '\App\Models\Definitions\Peripheral';
   protected $titles = ['Device', 'Devices'];
   protected $icon = 'usb';
@@ -54,52 +53,51 @@ class Peripheral extends Common
 
   public function type(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\PeripheralType', 'peripheraltypes_id');
+    return $this->belongsTo('\App\Models\Peripheraltype');
   }
 
   public function model(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\PeripheralModel', 'peripheralmodels_id');
+    return $this->belongsTo('\App\Models\Peripheralmodel');
   }
 
   public function state(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\State', 'states_id');
+    return $this->belongsTo('\App\Models\State');
   }
 
   public function manufacturer(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Manufacturer', 'manufacturers_id');
+    return $this->belongsTo('\App\Models\Manufacturer');
   }
 
   public function user(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id');
+    return $this->belongsTo('\App\Models\User');
   }
 
   public function group(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id');
+    return $this->belongsTo('\App\Models\Group');
   }
 
   public function network(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Network', 'networks_id');
+    return $this->belongsTo('\App\Models\Network');
   }
 
   public function groupstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Group', 'groups_id_tech');
+    return $this->belongsTo('\App\Models\Group');
   }
 
   public function userstech(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_tech');
+    return $this->belongsTo('\App\Models\User', 'user_id_tech');
   }
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
-
 }

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Ticket extends Common
 {
-  protected $table = 'glpi_tickets';
   protected $definition = '\App\Models\Definitions\Ticket';
   protected $titles = ['Ticket', 'Tickets'];
   protected $icon = 'hands helping';
@@ -21,7 +20,7 @@ class Ticket extends Common
     'techniciangroup',
     'usersidlastupdater',
     'usersidrecipient',
-    'itilcategorie',
+    'category',
   ];
 
   protected $visible = [
@@ -33,7 +32,7 @@ class Ticket extends Common
     'techniciangroup',
     'usersidlastupdater',
     'usersidrecipient',
-    'itilcategorie',
+    'category',
   ];
 
   protected $with = [
@@ -45,7 +44,7 @@ class Ticket extends Common
     'techniciangroup:id,name',
     'usersidlastupdater:id,name',
     'usersidrecipient:id,name',
-    'itilcategorie:id,name',
+    'category:id,name',
   ];
 
 
@@ -78,52 +77,51 @@ class Ticket extends Common
     // static::restoring(function ($model)
     // {
     // });
-
   }
 
   public function requester()
   {
-    return $this->belongsToMany('\App\Models\User', 'glpi_tickets_users', 'tickets_id', 'users_id')->wherePivot('type', 1);
+    return $this->belongsToMany('\App\Models\User')->wherePivot('type', 1);
   }
 
   public function requestergroup()
   {
-    return $this->belongsToMany('\App\Models\Group', 'glpi_groups_tickets', 'tickets_id', 'groups_id')->wherePivot('type', 1);
+    return $this->belongsToMany('\App\Models\Group')->wherePivot('type', 1);
   }
 
   public function watcher()
   {
-    return $this->belongsToMany('\App\Models\User', 'glpi_tickets_users', 'tickets_id', 'users_id')->wherePivot('type', 3);
+    return $this->belongsToMany('\App\Models\User')->wherePivot('type', 3);
   }
 
   public function watchergroup()
   {
-    return $this->belongsToMany('\App\Models\Group', 'glpi_groups_tickets', 'tickets_id', 'groups_id')->wherePivot('type', 3);
+    return $this->belongsToMany('\App\Models\Group')->wherePivot('type', 3);
   }
 
   public function technician()
   {
-    return $this->belongsToMany('\App\Models\User', 'glpi_tickets_users', 'tickets_id', 'users_id')->wherePivot('type', 2);
+    return $this->belongsToMany('\App\Models\User')->wherePivot('type', 2);
   }
 
   public function techniciangroup()
   {
-    return $this->belongsToMany('\App\Models\Group', 'glpi_groups_tickets', 'tickets_id', 'groups_id')->wherePivot('type', 2);
+    return $this->belongsToMany('\App\Models\Group')->wherePivot('type', 2);
   }
 
   public function usersidlastupdater(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_lastupdater');
+    return $this->belongsTo('\App\Models\User', 'user_id_lastupdater');
   }
 
   public function usersidrecipient(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\User', 'users_id_recipient');
+    return $this->belongsTo('\App\Models\User', 'user_id_recipient');
   }
 
-  public function itilcategorie(): BelongsTo
+  public function category(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\ITILCategory', 'itilcategories_id');
+    return $this->belongsTo('\App\Models\Category', 'category_id');
   }
 
   public function getFeeds($id)
@@ -132,28 +130,31 @@ class Ticket extends Common
 
     $statesDef = $this->definition::getStatusArray();
 
-    $itemtypes = ['Ticket', 'App\Models\Ticket'];
+    $itemtypes = ['Ticket', 'App\Models\Ticket', 'App\Models\Ticket'];
 
     // Get followups
-    $followups = \App\Models\Itilfollowup::whereIn('itemtype', $itemtypes)->where('items_id', $id)->get();
+    $followups = \App\Models\Followup::whereIn('item_type', $itemtypes)->where('item_id', $id)->get();
     foreach ($followups as $followup)
     {
-      
       $feeds[] = [
         "user"     => $followup->user->completename,
         "usertype" => "tech",
         "type"     => "followup",
-        "date"     => $followup['date_creation'],
+        "date"     => $followup['created_at'],
         "summary"  => "added a followup",
-        "content"  => \App\Controllers\Toolbox::convertMarkdownToHtml($followup['content']),
+        "content"  => \App\v1\Controllers\Toolbox::convertMarkdownToHtml($followup['content']),
         "time"     => null,
       ];
     }
     // Get important events:
     // * state changes
     // * user / group attribution
-    
-    $states = \App\Models\Log::whereIn('itemtype', $itemtypes)->where('items_id', $id)->where('id_search_option', 12)->get();
+
+    $states = \App\Models\Log::
+        whereIn('item_type', $itemtypes)
+      ->where('item_id', $id)
+      ->where('id_search_option', 12)
+      ->get();
     foreach ($states as $state)
     {
       $userActionSpl = explode(" (", $state['user_name']);
@@ -162,14 +163,19 @@ class Ticket extends Common
         "user"     => $userActionSpl[0],
         "usertype" => "tech",
         "type"     => "event",
-        "date"     => $state['date_mod'],
-        "summary"  => "changed state to <span class=\"ui " . $stateDef['color'] . " text\"><i class=\"" . $stateDef['icon'] . " icon\"></i>" . $stateDef['title'] . "</span>",
+        "date"     => $state['updated_at'],
+        "summary"  => "changed state to <span class=\"ui " . $stateDef['color'] .
+                      " text\"><i class=\"" . $stateDef['icon'] . " icon\"></i>" . $stateDef['title'] . "</span>",
         "content"  => "",
         "time"     => null,
       ];
     }
 
-    $userAttributes = \App\Models\Log::whereIn('itemtype', $itemtypes)->where('items_id', $id)->where('id_search_option', 5)->get();
+    $userAttributes = \App\Models\Log::
+        whereIn('item_type', $itemtypes)
+      ->where('item_id', $id)
+      ->where('id_search_option', 5)
+      ->get();
     foreach ($userAttributes as $userAttr)
     {
       $userActionSpl = explode(" (", $userAttr['user_name']);
@@ -179,14 +185,18 @@ class Ticket extends Common
         "user"     => $userActionSpl[0],
         "usertype" => "tech",
         "type"     => "event",
-        "date"     => $userAttr['date_mod'],
+        "date"     => $userAttr['updated_at'],
         "summary"  => "add attribution to the user " . $userSpl[0],
         "content"  => "",
         "time"     => null,
       ];
     }
 
-    $groupAttributes = \App\Models\Log::whereIn('itemtype', $itemtypes)->where('items_id', $id)->where('id_search_option', 8)->get();
+    $groupAttributes = \App\Models\Log::
+        whereIn('item_type', $itemtypes)
+      ->where('item_id', $id)
+      ->where('id_search_option', 8)
+      ->get();
     foreach ($groupAttributes as $groupAttr)
     {
       $userActionSpl = explode(" (", $groupAttr['user_name']);
@@ -197,7 +207,7 @@ class Ticket extends Common
           "user"     => $userActionSpl[0],
           "usertype" => "tech",
           "type"     => "event",
-          "date"     => $groupAttr['date_mod'],
+          "date"     => $groupAttr['updated_at'],
           "summary"  => "add (+) attribution to the group " . $groupSpl[0],
           "content"  => "",
           "time"     => null,
@@ -208,7 +218,7 @@ class Ticket extends Common
           "user"     => $userActionSpl[0],
           "usertype" => "tech",
           "type"     => "event",
-          "date"     => $groupAttr['date_mod'],
+          "date"     => $groupAttr['updated_at'],
           "summary"  => "delete (-) attribution to the group " . $groupSpl[0],
           "content"  => "",
           "time"     => null,
@@ -217,7 +227,10 @@ class Ticket extends Common
     }
 
     // sort
-    usort($feeds, function ($a, $b) {return $a['date'] > $b['date'];});
+    usort($feeds, function ($a, $b)
+    {
+      return $a['date'] > $b['date'];
+    });
 
     return $feeds;
 

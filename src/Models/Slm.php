@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Slm extends Common
 {
-  protected $table = 'glpi_slms';
   protected $definition = '\App\Models\Definitions\Slm';
   protected $titles = ['Service level', 'Service levels'];
   protected $icon = 'edit';
@@ -26,7 +25,6 @@ class Slm extends Common
 
   public function calendar(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Calendar', 'calendars_id');
+    return $this->belongsTo('\App\Models\Calendar');
   }
-
 }

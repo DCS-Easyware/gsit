@@ -48,7 +48,7 @@ class Fieldunicity
       ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -98,7 +98,7 @@ class Fieldunicity
     $types['Contact'] = $translator->translatePlural('Contact', 'Contacts', 1);
     $types['Contract'] = $translator->translatePlural('Contract', 'Contracts', 1);
     $types['Monitor'] = $translator->translatePlural('Monitor', 'Monitors', 1);
-    $types['NetworkEquipment'] = $translator->translatePlural('Network device', 'Network devices', 1);
+    $types['Networkequipment'] = $translator->translatePlural('Network device', 'Network devices', 1);
     $types['Peripheral'] = $translator->translatePlural('Device', 'Devices', 1);
     $types['Infocom'] = $translator->translate('Financial and administrative information');
     $types['Phone'] = $translator->translatePlural('Phone', 'Phones', 1);
@@ -111,13 +111,14 @@ class Fieldunicity
     $types['SoftwareLicense'] = $translator->translatePlural('License', 'Licenses', 1);
     $types['Cluster'] = $translator->translatePlural('Cluster', 'Clusters', 1);
     $types['User'] = $translator->translatePlural('User', 'Users', 1);
-    $types['Item_DeviceSimcard'] = $translator->translatePlural('Simcard', 'Simcards', 1);
+    $types['ItemDeviceSimcard'] = $translator->translatePlural('Simcard', 'Simcards', 1);
     $types['Certificate'] = $translator->translatePlural('Certificate', 'Certificates', 1);
 
     asort($types);
 
     $newTypes = [];
-    foreach (array_keys($types) as $key) {
+    foreach (array_keys($types) as $key)
+    {
       $newTypes[$key]['title'] = $types[$key];
     }
 

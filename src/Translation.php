@@ -4,12 +4,12 @@ namespace App;
 
 use Laminas\I18n\Translator\Translator;
 
-final class translation
+final class Translation
 {
   public $languages = [
     //Code       Name in native lang          LANG FILE      jquery tinymce english name            standard plural number
     'ar_SA'  => ['العَرَبِيَّةُ',                     'ar_SA.mo',    'ar',    'ar', 'arabic',               103],
-    //'az_AZ'  => ['Azerbaijani',               'az_AZ.mo',    'az',    'az', 'azeri',                2], //asked on transifex, not present
+    //'az_AZ'  => ['Azerbaijani',               'az_AZ.mo',    'az',    'az', 'azeri',              2], //asked on transifex, not present
     'bg_BG'  => ['Български',                 'bg_BG.mo',    'bg',    'bg', 'bulgarian',            2],
     'id_ID'  => ['Bahasa Indonesia',          'id_ID.mo',    'id',    'id', 'indonesian',           2],
     'ms_MY'  => ['Bahasa Melayu',             'ms_MY.mo',    'ms',    'ms', 'malay',                2],

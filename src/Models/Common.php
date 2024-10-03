@@ -15,8 +15,8 @@ class Common extends Model
   protected $icon = '';
   protected $table = null;
 
-  const CREATED_AT = 'date_creation';
-  const UPDATED_AT = 'date_mod';
+  // public const CREATED_AT = 'date_creation';
+  // public const UPDATED_AT = 'date_mod';
 
   public static function booted()
   {
@@ -30,28 +30,30 @@ class Common extends Model
       }
     });
 
-    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes)
+    {
       $model->changesOnPivotUpdated($relationName, $pivotIds, 'add');
     });
 
-    static::pivotDetached(function ($model, $relationName, $pivotIds) {
+    static::pivotDetached(function ($model, $relationName, $pivotIds)
+    {
       $model->changesOnPivotUpdated($relationName, $pivotIds, 'delete');
     });
   }
 
-  function getTitle($nb = 1)
+  public function getTitle($nb = 1)
   {
     global $translator;
 
     return $translator->translatePlural($this->titles[0], $this->titles[1], $nb);
   }
 
-  function getIcon()
+  public function getIcon()
   {
     return $this->icon;
   }
 
-  function getNameFromID($id)
+  public function getNameFromID($id)
   {
     return $id;
     $items = $this->find(['id' => $id], [], 1);
@@ -78,7 +80,7 @@ class Common extends Model
   //   }
   // }
 
-  function getDropdownValues()
+  public function getDropdownValues()
   {
     $items = $this->orderBy('name')->get();
     $data = [];
@@ -92,7 +94,7 @@ class Common extends Model
     return $data;
   }
 
-  function getDefinitions()
+  public function getDefinitions()
   {
     if (is_null($this->definition))
     {
@@ -101,7 +103,7 @@ class Common extends Model
     return call_user_func($this->definition . '::getDefinition');
   }
 
-  function getRelatedPages($rootUrl)
+  public function getRelatedPages($rootUrl)
   {
     if (is_null($this->definition) || !method_exists($this->definition, 'getRelatedPages'))
     {
@@ -115,12 +117,13 @@ class Common extends Model
    *
    * @return array
    */
-  function getFormData($myItem)
+  public function getFormData($myItem)
   {
     $def = $this->getDefinitions();
     foreach ($def as &$field)
     {
-      if ($field['type'] == 'dropdown_remote') {
+      if ($field['type'] == 'dropdown_remote')
+      {
         if (is_null($myItem->{$field['name']}) || $myItem->{$field['name']} == false)
         {
           $field['value'] = 0;
@@ -128,7 +131,8 @@ class Common extends Model
         }
         elseif (isset($field['multiple']))
         {
-          // if ($field['name'] == 'requester'){
+          // if ($field['name'] == 'requester')
+          // {
           // print_r($myItem->{$field['name']});
           // }
           // TODO manage multiple select
@@ -148,13 +152,14 @@ class Common extends Model
           $field['value'] = $myItem->{$field['name']}->id;
           $field['valuename'] = $myItem->{$field['name']}->name;
         }
-      } elseif ($field['type'] == 'textarea') {
+      } elseif ($field['type'] == 'textarea')
+      {
         if (is_null($myItem->{$field['name']}))
         {
           $field['value'] = '';
         } else {
           // We convert html to markdown
-          $field['value'] = \App\Controllers\Toolbox::convertHtmlToMarkdown($myItem->{$field['name']});
+          $field['value'] = \App\v1\Controllers\Toolbox::convertHtmlToMarkdown($myItem->{$field['name']});
         }
       } else {
         $field['value'] = $myItem->{$field['name']};
@@ -204,8 +209,8 @@ class Common extends Model
           break;
         }
       }
-  
-      \App\Controllers\Log::addEntry(
+
+      \App\v1\Controllers\Log::addEntry(
         $this,
         '{username} changed ' . $key . ' to "{new_value}"',
         $newValue,
@@ -241,7 +246,7 @@ class Common extends Model
       foreach ($pivotIds as $id)
       {
         $myItem = $item->find($id);
-        \App\Controllers\Log::addEntry(
+        \App\v1\Controllers\Log::addEntry(
           $this,
           '{username} Add ' . $title . ' to "{new_value}"',
           $myItem->name,
@@ -255,7 +260,7 @@ class Common extends Model
       foreach ($pivotIds as $id)
       {
         $myItem = $item->find($id);
-        \App\Controllers\Log::addEntry(
+        \App\v1\Controllers\Log::addEntry(
           $this,
           '{username} delete ' . $title . ' to "{new_value}"',
           null,

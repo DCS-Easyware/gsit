@@ -40,7 +40,7 @@ class Supplier
       ],
       [
         'id'    => 12,
-        'title' => $translator->translate('location'."\004".'State'),
+        'title' => $translator->translate('location' . "\004" . 'State'),
         'type'  => 'input',
         'name'  => 'state',
       ],
@@ -73,8 +73,8 @@ class Supplier
         'title' => $translator->translatePlural('Third party type', 'Third party types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'suppliertypes_id',
-        'itemtype' => '\App\Models\SupplierType',
+        'dbname' => 'suppliertype_id',
+        'itemtype' => '\App\Models\Suppliertype',
       ],
       [
         'id'    => 16,
@@ -84,16 +84,16 @@ class Supplier
       ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
       // ],
       [
-          'id'    => 86,
-          'title' => $translator->translate('Child entities'),
-          'type'  => 'boolean',
-          'name'  => 'is_recursive',
+        'id'    => 86,
+        'title' => $translator->translate('Child entities'),
+        'type'  => 'boolean',
+        'name'  => 'is_recursive',
       ],
       [
         'id'    => 19,
@@ -118,7 +118,8 @@ class Supplier
          'name'               => __('Characteristics')
       ];
 
-      if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
+      if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE)
+      {
          $name1 = 'firstname';
          $name2 = 'name';
       } else {

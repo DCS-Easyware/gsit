@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Netpoint extends Common
 {
-  protected $table = 'glpi_netpoints';
   protected $definition = '\App\Models\Definitions\Netpoint';
   protected $titles = ['Network outlet', 'Network outlets'];
   protected $icon = 'edit';
@@ -26,7 +25,6 @@ class Netpoint extends Common
 
   public function location(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Location', 'locations_id');
+    return $this->belongsTo('\App\Models\Location');
   }
-
 }

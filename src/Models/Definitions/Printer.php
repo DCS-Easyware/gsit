@@ -35,16 +35,16 @@ class Printer
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'type',
-        'dbname' => 'printertypes_id',
-        'itemtype' => '\App\Models\PrinterType',
+        'dbname' => 'printertype_id',
+        'itemtype' => '\App\Models\Printertype',
       ],
       [
         'id'    => 40,
         'title' => $translator->translatePlural('Model', 'Models', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'model',
-        'dbname' => 'printermodels_id',
-        'itemtype' => '\App\Models\PrinterModel',
+        'dbname' => 'printermodel_id',
+        'itemtype' => '\App\Models\Printermodel',
       ],
       [
         'id'    => 5,
@@ -147,7 +147,7 @@ class Printer
         'title' => $translator->translate('Network', 'Networks', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'network',
-        'dbname' => 'networks_id',
+        'dbname' => 'network_id',
         'itemtype' => '\App\Models\Network',
       ],
       [
@@ -182,7 +182,7 @@ class Printer
       // ],
       // [
       //   'id'    => 80,
-      //   'title' => $translator->translate('Entity'),
+      //   'title' => $translator->translatePlural('Entity', 'Entities', 1),
       //   'type'  => 'dropdown_remote',
       //   'name'  => 'completename',
       //   'itemtype' => '\App\Models\Entity',
@@ -265,7 +265,7 @@ class Printer
       [
         'title' => $translator->translatePlural('Operating system', 'Operating systems', 2),
         'icon' => 'laptop house',
-        'link' => $rootUrl.'/operatingsystem',
+        'link' => $rootUrl . '/operatingsystem',
       ],
       [
         'title' => $translator->translatePlural('Software', 'Softwares', 2),
