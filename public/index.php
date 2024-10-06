@@ -8,8 +8,6 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
 
 require __DIR__ . '/../vendor/autoload.php';
-include('../config/config_db.php');
-$DB = new DB();
 // Load lang
 $lang = new \App\Translation();
 $translator = $lang->loadLanguage();
@@ -78,14 +76,16 @@ $app->add(new Tuupola\Middleware\JwtAuthentication([
 
 
 $capsule = new Capsule();
+$dbConfig = include('../phinx.php');
+$myDatabase = $dbConfig['environments'][$dbConfig['environments']['default_environment']];
 $configdb = [
-  'driver' => 'mysql',
-  'host' => $DB->dbhost,
-  'database' => $DB->dbdefault,
-  'username' => $DB->dbuser,
-  'password' => $DB->dbpassword,
-  'charset' => 'utf8',
-  'collation' => 'utf8_unicode_ci',
+  'driver'    => $myDatabase['adapter'],
+  'host'      => $myDatabase['host'],
+  'database'  => $myDatabase['name'],
+  'username'  => $myDatabase['user'],
+  'password'  => $myDatabase['pass'],
+  'charset'   => $myDatabase['charset'],
+  'collation' => $myDatabase['collation'],
 ];
 $capsule->addConnection($configdb);
 $capsule->setEventDispatcher(new Dispatcher(new Container()));

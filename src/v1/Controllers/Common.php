@@ -154,7 +154,6 @@ class Common
 
   protected function commonShowITILItem(Request $request, Response $response, $args, $item): Response
   {
-
     $globalViewData = [
       'title'    => 'GSIT - ' . $item->getTitle(1),
       'menu'     => \App\v1\Controllers\Menu::getMenu($request),

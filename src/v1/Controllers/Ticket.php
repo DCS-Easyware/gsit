@@ -199,6 +199,61 @@ final class Ticket extends Common
     // return $this->commonUpdateItem($request, $response, $args, $item);
   }
 
+  public function showHistory(Request $request, Response $response, $args)
+  {
+    $item = new \App\Models\Ticket();
+
+    $globalViewData = [
+      'title'    => 'GSIT - ' . $item->getTitle(1),
+      'menu'     => \App\v1\Controllers\Menu::getMenu($request),
+      'rootpath' => \App\v1\Controllers\Toolbox::getRootPath($request),
+    ];
+    $session = new \SlimSession\Helper();
+
+    if ($session->exists('message'))
+    {
+      $globalViewData['message'] = $session->message;
+      $session->delete('message');
+    }
+
+    $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
+    $renderer->setLayout('layout.php');
+
+    // Load the item
+    // $item->loadId($args['id']);
+    $myItem = $item->find($args['id']);
+
+    $logs = \App\Models\Log::
+        where('item_type', 'App\v1\Models\Ticket')
+      ->where('item_id', $myItem->id)
+      ->get();
+
+// id: 1
+// item_type: App\v1\Models\User
+// item_id: 6
+// itemtype_link: Profile_User
+// linked_action: 17
+// user_name: glpi
+// updated_at: 2012-01-24 10:21:20
+// id_search_option: 0
+// old_value: 
+// new_value: post-only, Root entity, D
+
+
+    // form data
+    $viewData = [
+      'name'         => $item->getTitle(1),
+      'fields'       => $item->getFormData($myItem),
+      'feeds'        => $item->getFeeds($args['id']), //[
+      'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
+      'icon'         => $item->getIcon(),
+      'color'        => $myItem->getColor(),
+      'content'      => \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content),
+      'history'      => $logs,
+    ];
+    return $renderer->render($response, 'subitem/history.php', $viewData);
+  }
+
   /**
     * Compute Priority
     *

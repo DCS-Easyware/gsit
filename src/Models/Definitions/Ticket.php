@@ -438,7 +438,7 @@ class Ticket
     return $tab;
   }
 
-  public static function getRelatedPages()
+  public static function getRelatedPages($rootUrl)
   {
     global $translator;
     return [
@@ -490,7 +490,7 @@ class Ticket
       [
         'title' => $translator->translate('Historical'),
         'icon' => 'history',
-        'link' => '',
+        'link' => $rootUrl . '/history',
       ],
     ];
   }
