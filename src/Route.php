@@ -1818,5 +1818,16 @@ final class Route
         $linkId->map(['POST'], '', \App\v1\Controllers\Link::class . ':updateItem');
       });
     });
+
+    $app->group('/mailcollectors', function (RouteCollectorProxy $mailcollectors)
+    {
+      $mailcollectors->map(['GET'], '', \App\v1\Controllers\Mailcollector::class . ':getAll');
+      $mailcollectors->map(['POST'], '', \App\v1\Controllers\Mailcollector::class . ':postItem');
+      $mailcollectors->group("/{id:[0-9]+}", function (RouteCollectorProxy $mailcollectorId)
+      {
+        $mailcollectorId->map(['GET'], '', \App\v1\Controllers\Mailcollector::class . ':showItem');
+        $mailcollectorId->map(['POST'], '', \App\v1\Controllers\Mailcollector::class . ':updateItem');
+      });
+    });
   }
 }

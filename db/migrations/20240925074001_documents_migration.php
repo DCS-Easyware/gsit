@@ -41,23 +41,23 @@ final class DocumentsMigration extends AbstractMigration
         {
           $data[] = [
             'id'                  => $row['id'],
-            'name'                => $row['name'],
-            'comment'             => $row['comment'],
             'entity_id'           => $row['entities_id'],
             'is_recursive'        => $row['is_recursive'],
+            'name'                => $row['name'],
             'filename'            => $row['filename'],
             'filepath'            => $row['filepath'],
             'documentcategory_id' => $row['documentcategories_id'],
             'mime'                => $row['mime'],
-            'is_deleted'          => $row['is_deleted'],
+            'updated_at'          => $row['date_mod'],
+            'comment'             => $row['comment'],
             'link'                => $row['link'],
             'user_id'             => $row['users_id'],
             'ticket_id'           => $row['tickets_id'],
             'sha1sum'             => $row['sha1sum'],
             'is_blacklisted'      => $row['is_blacklisted'],
             'tag'                 => $row['tag'],
-            'updated_at'          => $row['date_mod'],
             'created_at'          => $row['date_creation'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ];
         }
         $item->insert($data)
@@ -67,5 +67,13 @@ final class DocumentsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

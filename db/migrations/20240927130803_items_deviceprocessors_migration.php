@@ -41,7 +41,6 @@ final class ItemsDeviceprocessorsMigration extends AbstractMigration
             'deviceprocessor_id'  => $row['deviceprocessors_id'],
             'frequency'           => $row['frequency'],
             'serial'              => $row['serial'],
-            'is_deleted'          => $row['is_deleted'],
             'is_dynamic'          => $row['is_dynamic'],
             'nbcores'             => $row['nbcores'],
             'nbthreads'           => $row['nbthreads'],
@@ -49,8 +48,9 @@ final class ItemsDeviceprocessorsMigration extends AbstractMigration
             'is_recursive'        => $row['is_recursive'],
             'busID'               => $row['busID'],
             'otherserial'         => $row['otherserial'],
-            'location_id'           => $row['locations_id'],
-            'state_id'              => $row['states_id'],
+            'location_id'         => $row['locations_id'],
+            'state_id'            => $row['states_id'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -60,5 +60,13 @@ final class ItemsDeviceprocessorsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

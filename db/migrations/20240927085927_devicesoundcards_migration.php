@@ -36,7 +36,7 @@ final class DevicesoundcardsMigration extends AbstractMigration
         $data = [
           [
             'id'                      => $row['id'],
-            'name'             => $row['designation'],
+            'name'                    => $row['designation'],
             'type'                    => $row['type'],
             'comment'                 => $row['comment'],
             'manufacturer_id'         => $row['manufacturers_id'],

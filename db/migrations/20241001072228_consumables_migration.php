@@ -35,6 +35,7 @@ final class ConsumablesMigration extends AbstractMigration
       {
         $data = [
           [
+            'id'                => $row['id'],
             'entity_id'         => $row['entities_id'],
             'consumableitem_id' => $row['consumableitems_id'],
             'date_in'           => $row['date_in'],

@@ -36,9 +36,9 @@ final class KnowbaseitemtranslationsMigration extends AbstractMigration
         $data = [
           [
             'id'              => $row['id'],
-            'name'            => $row['name'],
             'knowbaseitem_id' => $row['knowbaseitems_id'],
             'language'        => $row['language'],
+            'name'            => $row['name'],
             'answer'          => $row['answer'],
             'user_id'         => $row['users_id'],
             'updated_at'      => $row['date_mod'],

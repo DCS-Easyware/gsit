@@ -36,10 +36,9 @@ final class SuppliersMigration extends AbstractMigration
         $data = [
           [
             'id'              => $row['id'],
-            'name'            => $row['name'],
-            'comment'         => $row['comment'],
             'entity_id'       => $row['entities_id'],
             'is_recursive'    => $row['is_recursive'],
+            'name'            => $row['name'],
             'suppliertype_id' => $row['suppliertypes_id'],
             'address'         => $row['address'],
             'postcode'        => $row['postcode'],
@@ -48,12 +47,13 @@ final class SuppliersMigration extends AbstractMigration
             'country'         => $row['country'],
             'website'         => $row['website'],
             'phonenumber'     => $row['phonenumber'],
-            'is_deleted'      => $row['is_deleted'],
+            'comment'         => $row['comment'],
             'fax'             => $row['fax'],
             'email'           => $row['email'],
-            'is_active'       => $row['is_active'],
             'updated_at'      => $row['date_mod'],
             'created_at'      => $row['date_creation'],
+            'is_active'       => $row['is_active'],
+            'deleted_at'      => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -63,5 +63,13 @@ final class SuppliersMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

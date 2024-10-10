@@ -37,19 +37,19 @@ final class BudgetsMigration extends AbstractMigration
           [
             'id'            => $row['id'],
             'name'          => $row['name'],
-            'comment'       => $row['comment'],
             'entity_id'     => $row['entities_id'],
             'is_recursive'  => $row['is_recursive'],
-            'is_deleted'    => $row['is_deleted'],
+            'comment'       => $row['comment'],
             'begin_date'    => $row['begin_date'],
             'end_date'      => $row['end_date'],
             'value'         => $row['value'],
             'is_template'   => $row['is_template'],
             'template_name' => $row['template_name'],
-            'location_id'   => $row['locations_id'],
-            'budgettype_id' => $row['budgettypes_id'],
             'updated_at'    => $row['date_mod'],
             'created_at'    => $row['date_creation'],
+            'location_id'   => $row['locations_id'],
+            'budgettype_id' => $row['budgettypes_id'],
+            'deleted_at'    => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -59,5 +59,13 @@ final class BudgetsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

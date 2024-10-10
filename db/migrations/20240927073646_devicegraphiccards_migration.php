@@ -36,7 +36,7 @@ final class DevicegraphiccardsMigration extends AbstractMigration
         $data = [
           [
             'id'                        => $row['id'],
-            'name'               => $row['designation'],
+            'name'                      => $row['designation'],
             'interfacetype_id'          => $row['interfacetypes_id'],
             'comment'                   => $row['comment'],
             'manufacturer_id'           => $row['manufacturers_id'],

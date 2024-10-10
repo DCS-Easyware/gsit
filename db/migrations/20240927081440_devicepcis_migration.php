@@ -36,7 +36,7 @@ final class DevicepcisMigration extends AbstractMigration
         $data = [
           [
             'id'                        => $row['id'],
-            'name'               => $row['designation'],
+            'name'                      => $row['designation'],
             'comment'                   => $row['comment'],
             'manufacturer_id'           => $row['manufacturers_id'],
             'devicenetworkcardmodel_id' => $row['devicenetworkcardmodels_id'],

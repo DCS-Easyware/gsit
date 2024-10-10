@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Devicesimcard extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Devicesimcard';
   protected $titles = ['Simcard', 'Simcards'];
   protected $icon = 'edit';

@@ -36,7 +36,7 @@ final class DevicefirmwaresMigration extends AbstractMigration
         $data = [
           [
             'id'                      => $row['id'],
-            'name'             => $row['designation'],
+            'name'                    => $row['designation'],
             'comment'                 => $row['comment'],
             'manufacturer_id'         => $row['manufacturers_id'],
             'date'                    => $row['date'],

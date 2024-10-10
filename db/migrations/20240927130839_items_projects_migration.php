@@ -37,8 +37,8 @@ final class ItemsProjectsMigration extends AbstractMigration
           [
             'id'          => $row['id'],
             'project_id'  => $row['projects_id'],
-            'item_id'     => $row['items_id'],
             'item_type'   => $row['itemtype'],
+            'item_id'     => $row['items_id'],
           ]
         ];
         $item->insert($data)

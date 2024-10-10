@@ -39,6 +39,7 @@ final class TicketrecurrentsMigration extends AbstractMigration
             'name'                => $row['name'],
             'comment'             => $row['comment'],
             'entity_id'           => $row['entities_id'],
+            'is_recursive'        => $row['is_recursive'],
             'is_active'           => $row['is_active'],
             'tickettemplate_id'   => $row['tickettemplates_id'],
             'begin_date'          => $row['begin_date'],

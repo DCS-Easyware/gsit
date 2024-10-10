@@ -36,7 +36,7 @@ final class DeviceharddrivesMigration extends AbstractMigration
         $data = [
           [
             'id'                      => $row['id'],
-            'name'             => $row['designation'],
+            'name'                    => $row['designation'],
             'rpm'                     => $row['rpm'],
             'interfacetype_id'        => $row['interfacetypes_id'],
             'cache'                   => $row['cache'],

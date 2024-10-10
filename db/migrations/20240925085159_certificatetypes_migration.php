@@ -36,12 +36,12 @@ final class CertificatetypesMigration extends AbstractMigration
         $data = [
           [
             'id'            => $row['id'],
-            'name'          => $row['name'],
-            'comment'       => $row['comment'],
             'entity_id'     => $row['entities_id'],
             'is_recursive'  => $row['is_recursive'],
-            'updated_at'    => $row['date_mod'],
+            'name'          => $row['name'],
+            'comment'       => $row['comment'],
             'created_at'    => $row['date_creation'],
+            'updated_at'    => $row['date_mod'],
           ]
         ];
         $item->insert($data)

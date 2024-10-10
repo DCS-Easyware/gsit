@@ -36,10 +36,9 @@ final class NetworkequipmentsMigration extends AbstractMigration
         $data = [
           [
             'id'                        => $row['id'],
-            'name'                      => $row['name'],
-            'comment'                   => $row['comment'],
             'entity_id'                 => $row['entities_id'],
             'is_recursive'              => $row['is_recursive'],
+            'name'                      => $row['name'],
             'ram'                       => $row['ram'],
             'serial'                    => $row['serial'],
             'otherserial'               => $row['otherserial'],
@@ -47,12 +46,13 @@ final class NetworkequipmentsMigration extends AbstractMigration
             'contact_num'               => $row['contact_num'],
             'user_id_tech'              => $row['users_id_tech'],
             'group_id_tech'             => $row['groups_id_tech'],
+            'updated_at'                => $row['date_mod'],
+            'comment'                   => $row['comment'],
             'location_id'               => $row['locations_id'],
             'network_id'                => $row['networks_id'],
             'networkequipmenttype_id'   => $row['networkequipmenttypes_id'],
             'networkequipmentmodel_id'  => $row['networkequipmentmodels_id'],
             'manufacturer_id'           => $row['manufacturers_id'],
-            'is_deleted'                => $row['is_deleted'],
             'is_template'               => $row['is_template'],
             'template_name'             => $row['template_name'],
             'user_id'                   => $row['users_id'],
@@ -60,8 +60,8 @@ final class NetworkequipmentsMigration extends AbstractMigration
             'state_id'                  => $row['states_id'],
             'ticket_tco'                => $row['ticket_tco'],
             'is_dynamic'                => $row['is_dynamic'],
-            'updated_at'                => $row['date_mod'],
             'created_at'                => $row['date_creation'],
+            'deleted_at'                => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -71,5 +71,13 @@ final class NetworkequipmentsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

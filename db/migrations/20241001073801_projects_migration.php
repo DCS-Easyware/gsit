@@ -57,11 +57,11 @@ final class ProjectsMigration extends AbstractMigration
             'show_on_global_gantt'  => $row['show_on_global_gantt'],
             'content'               => $row['content'],
             'comment'               => $row['comment'],
-            'is_deleted'            => $row['is_deleted'],
             'created_at'            => $row['date_creation'],
             'projecttemplate_id'    => $row['projecttemplates_id'],
             'is_template'           => $row['is_template'],
             'template_name'         => $row['template_name'],
+            'deleted_at'            => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -71,5 +71,13 @@ final class ProjectsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

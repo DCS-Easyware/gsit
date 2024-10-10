@@ -36,9 +36,9 @@ final class ContractcostsMigration extends AbstractMigration
         $data = [
           [
             'id'            => $row['id'],
+            'contract_id'   => $row['contracts_id'],
             'name'          => $row['name'],
             'comment'       => $row['comment'],
-            'contract_id'   => $row['contracts_id'],
             'begin_date'    => $row['begin_date'],
             'end_date'      => $row['end_date'],
             'cost'          => $row['cost'],

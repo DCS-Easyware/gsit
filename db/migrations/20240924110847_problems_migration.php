@@ -36,9 +36,9 @@ final class ProblemsMigration extends AbstractMigration
         $data = [
           [
             'id'                  => $row['id'],
+            'name'                => $row['name'],
             'entity_id'           => $row['entities_id'],
             'is_recursive'        => $row['is_recursive'],
-            'is_deleted'          => $row['is_deleted'],
             'status'              => $row['status'],
             'content'             => Toolbox::convertHtmlToMarkdown($row['content']),
             'updated_at'          => $row['date_mod'],
@@ -61,6 +61,7 @@ final class ProblemsMigration extends AbstractMigration
             'close_delay_stat'    => $row['close_delay_stat'],
             'solve_delay_stat'    => $row['solve_delay_stat'],
             'created_at'          => $row['date_creation'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -70,5 +71,13 @@ final class ProblemsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

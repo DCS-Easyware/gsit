@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Form extends Common
 {
+  use SoftDeletes;
+
   protected $table = 'glpi_plugin_formcreator_forms';
   protected $definition = '\App\Models\Definitions\Form';
   protected $titles = ['Form', 'Forms'];

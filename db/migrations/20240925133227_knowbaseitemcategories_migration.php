@@ -36,12 +36,12 @@ final class KnowbaseitemcategoriesMigration extends AbstractMigration
         $data = [
           [
             'id'                      => $row['id'],
-            'name'                    => $row['name'],
-            'comment'                 => $row['comment'],
             'entity_id'               => $row['entities_id'],
             'is_recursive'            => $row['is_recursive'],
             'knowbaseitemcategory_id' => $row['knowbaseitemcategories_id'],
+            'name'                    => $row['name'],
             'completename'            => $row['completename'],
+            'comment'                 => $row['comment'],
             'level'                   => $row['level'],
             'sons_cache'              => $row['sons_cache'],
             'ancestors_cache'         => $row['ancestors_cache'],

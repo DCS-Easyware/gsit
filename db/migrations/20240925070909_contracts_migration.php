@@ -36,10 +36,9 @@ final class ContractsMigration extends AbstractMigration
         $data = [
           [
             'id'                  => $row['id'],
-            'name'                => $row['name'],
-            'comment'             => $row['comment'],
             'entity_id'           => $row['entities_id'],
             'is_recursive'        => $row['is_recursive'],
+            'name'                => $row['name'],
             'num'                 => $row['num'],
             'contracttype_id'     => $row['contracttypes_id'],
             'begin_date'          => $row['begin_date'],
@@ -47,8 +46,8 @@ final class ContractsMigration extends AbstractMigration
             'notice'              => $row['notice'],
             'periodicity'         => $row['periodicity'],
             'billing'             => $row['billing'],
+            'comment'             => $row['comment'],
             'accounting_number'   => $row['accounting_number'],
-            'is_deleted'          => $row['is_deleted'],
             'week_begin_hour'     => $row['week_begin_hour'],
             'week_end_hour'       => $row['week_end_hour'],
             'saturday_begin_hour' => $row['saturday_begin_hour'],
@@ -65,6 +64,7 @@ final class ContractsMigration extends AbstractMigration
             'state_id'            => $row['states_id'],
             'updated_at'          => $row['date_mod'],
             'created_at'          => $row['date_creation'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -74,5 +74,13 @@ final class ContractsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

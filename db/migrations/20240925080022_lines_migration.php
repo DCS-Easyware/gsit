@@ -37,10 +37,8 @@ final class LinesMigration extends AbstractMigration
           [
             'id'              => $row['id'],
             'name'            => $row['name'],
-            'comment'         => $row['comment'],
             'entity_id'       => $row['entities_id'],
             'is_recursive'    => $row['is_recursive'],
-            'is_deleted'      => $row['is_deleted'],
             'caller_num'      => $row['caller_num'],
             'caller_name'     => $row['caller_name'],
             'user_id'         => $row['users_id'],
@@ -49,8 +47,10 @@ final class LinesMigration extends AbstractMigration
             'location_id'     => $row['locations_id'],
             'state_id'        => $row['states_id'],
             'linetype_id'     => $row['linetypes_id'],
-            'updated_at'      => $row['date_mod'],
             'created_at'      => $row['date_creation'],
+            'updated_at'      => $row['date_mod'],
+            'comment'         => $row['comment'],
+            'deleted_at'      => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -60,5 +60,13 @@ final class LinesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

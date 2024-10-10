@@ -76,10 +76,10 @@ final class TicketsMigration extends AbstractMigration
               'solve_delay_stat'            => $row['solve_delay_stat'],
               'takeintoaccount_delay_stat'  => $row['takeintoaccount_delay_stat'],
               'actiontime'                  => $row['actiontime'],
-              'is_deleted'                  => $row['is_deleted'],
               'location_id'                 => $row['locations_id'],
               'validation_percent'          => $row['validation_percent'],
-              'created_at'                  => $row['date_creation']
+              'created_at'                  => $row['date_creation'],
+              'deleted_at'                  => self::convertIsDeleted($row['is_deleted']),
             ]
           ];
 
@@ -91,5 +91,13 @@ final class TicketsMigration extends AbstractMigration
       // rollback
       $followups->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

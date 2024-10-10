@@ -36,8 +36,6 @@ final class SoftwarelicensesMigration extends AbstractMigration
         $data = [
           [
             'id'                      => $row['id'],
-            'name'                    => $row['name'],
-            'comment'                 => $row['comment'],
             'software_id'             => $row['softwares_id'],
             'softwarelicense_id'      => $row['softwarelicenses_id'],
             'completename'            => $row['completename'],
@@ -46,16 +44,15 @@ final class SoftwarelicensesMigration extends AbstractMigration
             'is_recursive'            => $row['is_recursive'],
             'number'                  => $row['number'],
             'softwarelicensetype_id'  => $row['softwarelicensetypes_id'],
+            'name'                    => $row['name'],
             'serial'                  => $row['serial'],
             'otherserial'             => $row['otherserial'],
             'softwareversion_id_buy'  => $row['softwareversions_id_buy'],
             'softwareversion_id_use'  => $row['softwareversions_id_use'],
             'expire'                  => $row['expire'],
+            'comment'                 => $row['comment'],
             'updated_at'              => $row['date_mod'],
             'is_valid'                => $row['is_valid'],
-            'is_template'             => $row['is_template'],
-            'template_name'           => $row['template_name'],
-            'is_deleted'              => $row['is_deleted'],
             'created_at'              => $row['date_creation'],
             'location_id'             => $row['locations_id'],
             'user_id_tech'            => $row['users_id_tech'],
@@ -63,11 +60,14 @@ final class SoftwarelicensesMigration extends AbstractMigration
             'group_id_tech'           => $row['groups_id_tech'],
             'group_id'                => $row['groups_id'],
             'is_helpdesk_visible'     => $row['is_helpdesk_visible'],
+            'is_template'             => $row['is_template'],
+            'template_name'           => $row['template_name'],
             'state_id'                => $row['states_id'],
             'manufacturer_id'         => $row['manufacturers_id'],
             'contact'                 => $row['contact'],
             'contact_num'             => $row['contact_num'],
             'allow_overquota'         => $row['allow_overquota'],
+            'deleted_at'              => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -77,5 +77,13 @@ final class SoftwarelicensesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

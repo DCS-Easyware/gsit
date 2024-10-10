@@ -40,7 +40,6 @@ final class ProjecttasktemplatesMigration extends AbstractMigration
             'is_recursive'        => $row['is_recursive'],
             'name'                => $row['name'],
             'description'         => $row['description'],
-            'comment'             => $row['comment'],
             'project_id'          => $row['projects_id'],
             'projecttask_id'      => $row['projecttasks_id'],
             'plan_start_date'     => $row['plan_start_date'],
@@ -54,6 +53,7 @@ final class ProjecttasktemplatesMigration extends AbstractMigration
             'user_id'             => $row['users_id'],
             'percent_done'        => $row['percent_done'],
             'is_milestone'        => $row['is_milestone'],
+            'comment'             => $row['comments'],
             'updated_at'          => $row['date_mod'],
             'created_at'          => $row['date_creation'],
           ]

@@ -42,7 +42,7 @@ final class ReservationitemsMigration extends AbstractMigration
             'item_id'       => $row['items_id'],
             'comment'       => $row['comment'],
             'is_active'     => $row['is_active'],
-            'is_deleted'    => $row['is_deleted'],
+            'deleted_at'        => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -52,5 +52,13 @@ final class ReservationitemsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OauthimapApplication extends Common
 {
+  use SoftDeletes;
+
   protected $table = 'glpi_plugin_oauthimap_applications';
   protected $definition = '\App\Models\Definitions\OauthimapApplication';
   protected $titles = ['Oauth IMAP application', 'Oauth IMAP applications'];

@@ -40,9 +40,9 @@ final class CalendarsMigration extends AbstractMigration
             'entity_id'       => $row['entities_id'],
             'is_recursive'    => $row['is_recursive'],
             'comment'         => $row['comment'],
+            'updated_at'      => $row['date_mod'],
             'cache_duration'  => $row['cache_duration'],
             'created_at'      => $row['date_creation'],
-            'updated_at'      => $row['date_mod'],
           ]
         ];
         $item->insert($data)

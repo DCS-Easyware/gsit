@@ -36,7 +36,7 @@ final class DevicepowersuppliesMigration extends AbstractMigration
         $data = [
           [
             'id'                        => $row['id'],
-            'name'               => $row['designation'],
+            'name'                      => $row['designation'],
             'power'                     => $row['power'],
             'is_atx'                    => $row['is_atx'],
             'comment'                   => $row['comment'],

@@ -36,7 +36,7 @@ final class DevicecontrolsMigration extends AbstractMigration
         $data = [
           [
             'id'                    => $row['id'],
-            'name'           => $row['designation'],
+            'name'                  => $row['designation'],
             'is_raid'               => $row['is_raid'],
             'comment'               => $row['comment'],
             'manufacturer_id'       => $row['manufacturers_id'],

@@ -36,10 +36,9 @@ final class ContactsMigration extends AbstractMigration
         $data = [
           [
             'id'              => $row['id'],
-            'name'            => $row['name'],
-            'comment'         => $row['comment'],
             'entity_id'       => $row['entities_id'],
             'is_recursive'    => $row['is_recursive'],
+            'name'            => $row['name'],
             'firstname'       => $row['firstname'],
             'phone'           => $row['phone'],
             'phone2'          => $row['phone2'],
@@ -47,7 +46,7 @@ final class ContactsMigration extends AbstractMigration
             'fax'             => $row['fax'],
             'email'           => $row['email'],
             'contacttype_id'  => $row['contacttypes_id'],
-            'is_deleted'      => $row['is_deleted'],
+            'comment'         => $row['comment'],
             'usertitle_id'    => $row['usertitles_id'],
             'address'         => $row['address'],
             'postcode'        => $row['postcode'],
@@ -56,6 +55,7 @@ final class ContactsMigration extends AbstractMigration
             'country'         => $row['country'],
             'updated_at'      => $row['date_mod'],
             'created_at'      => $row['date_creation'],
+            'deleted_at'      => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -65,5 +65,13 @@ final class ContactsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

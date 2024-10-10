@@ -36,8 +36,8 @@ final class KnowbaseitemsMigration extends AbstractMigration
         $data = [
           [
             'id'                      => $row['id'],
-            'name'                    => $row['name'],
             'knowbaseitemcategory_id' => $row['knowbaseitemcategories_id'],
+            'name'                    => $row['name'],
             'answer'                  => $row['answer'],
             'is_faq'                  => $row['is_faq'],
             'user_id'                 => $row['users_id'],
@@ -46,6 +46,7 @@ final class KnowbaseitemsMigration extends AbstractMigration
             'updated_at'              => $row['date_mod'],
             'begin_date'              => $row['begin_date'],
             'end_date'                => $row['end_date'],
+            'created_at'              => $row['date_mod'],
           ]
         ];
         $item->insert($data)

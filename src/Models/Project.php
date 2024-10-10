@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Project';
   protected $titles = ['Project', 'Projects'];
   protected $icon = 'columns';

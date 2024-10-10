@@ -37,12 +37,11 @@ final class CertificatesMigration extends AbstractMigration
           [
             'id'                  => $row['id'],
             'name'                => $row['name'],
-            'comment'             => $row['comment'],
             'serial'              => $row['serial'],
             'otherserial'         => $row['otherserial'],
             'entity_id'           => $row['entities_id'],
             'is_recursive'        => $row['is_recursive'],
-            'is_deleted'          => $row['is_deleted'],
+            'comment'             => $row['comment'],
             'is_template'         => $row['is_template'],
             'template_name'       => $row['template_name'],
             'certificatetype_id'  => $row['certificatetypes_id'],
@@ -52,6 +51,8 @@ final class CertificatesMigration extends AbstractMigration
             'group_id_tech'       => $row['groups_id_tech'],
             'location_id'         => $row['locations_id'],
             'manufacturer_id'     => $row['manufacturers_id'],
+            'contact'             => $row['contact'],
+            'contact_num'         => $row['contact_num'],
             'user_id'             => $row['users_id'],
             'group_id'            => $row['groups_id'],
             'is_autosign'         => $row['is_autosign'],
@@ -60,8 +61,9 @@ final class CertificatesMigration extends AbstractMigration
             'command'             => $row['command'],
             'certificate_request' => $row['certificate_request'],
             'certificate_item'    => $row['certificate_item'],
-            'updated_at'          => $row['date_mod'],
             'created_at'          => $row['date_creation'],
+            'updated_at'          => $row['date_mod'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -71,5 +73,13 @@ final class CertificatesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

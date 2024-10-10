@@ -40,7 +40,6 @@ final class AppliancesMigration extends AbstractMigration
             'comment'                   => $row['comment'],
             'entity_id'                 => $row['entities_id'],
             'is_recursive'              => $row['is_recursive'],
-            'is_deleted'                => $row['is_deleted'],
             'appliancetype_id'          => $row['appliancetypes_id'],
             'location_id'               => $row['locations_id'],
             'manufacturer_id'           => $row['manufacturers_id'],
@@ -55,7 +54,8 @@ final class AppliancesMigration extends AbstractMigration
             'otherserial'               => $row['otherserial'],
             'is_helpdesk_visible'       => $row['is_helpdesk_visible'],
             'updated_at'                => $row['date_mod'],
-            'created_at'                => $row['date_creation'],
+            'created_at'                => $row['date_mod'],
+            'deleted_at'                => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -65,5 +65,13 @@ final class AppliancesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

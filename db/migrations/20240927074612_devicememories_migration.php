@@ -36,7 +36,7 @@ final class DevicememoriesMigration extends AbstractMigration
         $data = [
           [
             'id'                    => $row['id'],
-            'name'           => $row['designation'],
+            'name'                  => $row['designation'],
             'frequence'             => $row['frequence'],
             'comment'               => $row['comment'],
             'manufacturer_id'       => $row['manufacturers_id'],

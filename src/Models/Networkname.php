@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Networkname extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Networkname';
   protected $titles = ['Network name', 'Network names'];
   protected $icon = 'edit';

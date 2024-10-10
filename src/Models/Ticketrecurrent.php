@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticketrecurrent extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Ticketrecurrent';
   protected $titles = ['Recurrent ticket', 'Recurrent tickets'];
   protected $icon = 'stopwatch';

@@ -42,8 +42,8 @@ final class LinksMigration extends AbstractMigration
             'link'          => $row['link'],
             'data'          => $row['data'],
             'open_window'   => $row['open_window'],
-            'updated_at'    => $row['updated_at'],
-            'created_at'    => $row['created_at'],
+            'updated_at'    => $row['date_mod'],
+            'created_at'    => $row['date_creation'],
           ]
         ];
         $item->insert($data)

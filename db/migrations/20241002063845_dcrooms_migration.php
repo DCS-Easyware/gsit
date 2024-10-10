@@ -44,9 +44,9 @@ final class DcroomsMigration extends AbstractMigration
             'vis_rows'      => $row['vis_rows'],
             'blueprint'     => $row['blueprint'],
             'datacenter_id' => $row['datacenters_id'],
-            'is_deleted'    => $row['is_deleted'],
             'updated_at'    => $row['date_mod'],
             'created_at'    => $row['date_creation'],
+            'deleted_at'    => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -56,5 +56,13 @@ final class DcroomsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

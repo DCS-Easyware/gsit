@@ -55,7 +55,6 @@ final class UsersMigration extends AbstractMigration
             'last_login'                      => $row['last_login'],
             'updated_at'                      => $row['date_mod'],
             'synchronized_at'                 => $row['date_sync'],
-            'is_deleted'                      => $row['is_deleted'],
             'profile_id'                      => $row['profiles_id'],
             'entity_id'                       => $row['entities_id'],
             'usertitle_id'                    => $row['usertitles_id'],
@@ -124,6 +123,7 @@ final class UsersMigration extends AbstractMigration
             'default_dashboard_assets'        => $row['default_dashboard_assets'] ?? null,
             'default_dashboard_helpdesk'      => $row['default_dashboard_helpdesk'] ?? null,
             'default_dashboard_mini_ticket'   => $row['default_dashboard_mini_ticket'] ?? null,
+            'deleted_at'                      => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
 
@@ -134,5 +134,13 @@ final class UsersMigration extends AbstractMigration
       // rollback
       $followups->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

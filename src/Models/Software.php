@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Software extends Common
 {
+  use SoftDeletes;
+
   protected $table = 'softwares';
   protected $definition = '\App\Models\Definitions\Software';
   protected $titles = ['Software', 'Software'];

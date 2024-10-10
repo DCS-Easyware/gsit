@@ -39,8 +39,8 @@ final class KnowbaseitemsItemsMigration extends AbstractMigration
             'knowbaseitem_id' => $row['knowbaseitems_id'],
             'item_type'       => $row['itemtype'],
             'item_id'         => $row['items_id'],
-            'updated_at'      => $row['date_mod'],
             'created_at'      => $row['date_creation'],
+            'updated_at'      => $row['date_mod'],
           ]
         ];
         $item->insert($data)

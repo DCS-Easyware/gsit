@@ -25,7 +25,7 @@ final class IpnetworksVlansMigration extends AbstractMigration
     } else {
       return;
     }
-    $item = $this->table('ipnetwork_vlan');
+    $item = $this->table('ipnetworks_vlans');
 
     if ($this->isMigratingUp())
     {

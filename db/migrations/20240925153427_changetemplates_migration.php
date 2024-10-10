@@ -37,9 +37,9 @@ final class ChangetemplatesMigration extends AbstractMigration
           [
             'id'            => $row['id'],
             'name'          => $row['name'],
-            'comment'       => $row['comment'],
             'entity_id'     => $row['entities_id'],
             'is_recursive'  => $row['is_recursive'],
+            'comment'       => $row['comment'],
           ]
         ];
         $item->insert($data)

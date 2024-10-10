@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Printer extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Printer';
   protected $titles = ['Printer', 'Printers'];
   protected $icon = 'print';

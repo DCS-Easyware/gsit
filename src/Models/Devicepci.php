@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Devicepci extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Devicepci';
   protected $titles = ['PCI device', 'PCI devices'];
   protected $icon = 'edit';

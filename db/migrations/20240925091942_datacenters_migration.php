@@ -40,9 +40,9 @@ final class DatacentersMigration extends AbstractMigration
             'entity_id'     => $row['entities_id'],
             'is_recursive'  => $row['is_recursive'],
             'location_id'   => $row['locations_id'],
-            'is_deleted'    => $row['is_deleted'],
             'updated_at'    => $row['date_mod'],
             'created_at'    => $row['date_creation'],
+            'deleted_at'    => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -52,5 +52,13 @@ final class DatacentersMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

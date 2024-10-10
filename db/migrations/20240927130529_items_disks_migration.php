@@ -45,7 +45,6 @@ final class ItemsDisksMigration extends AbstractMigration
             'filesystem_id'         => $row['filesystems_id'],
             'totalsize'             => $row['totalsize'],
             'freesize'              => $row['freesize'],
-            'is_deleted'            => $row['is_deleted'],
             'is_dynamic'            => $row['is_dynamic'],
             'encryption_status'     => $row['encryption_status'],
             'encryption_tool'       => $row['encryption_tool'],
@@ -53,6 +52,7 @@ final class ItemsDisksMigration extends AbstractMigration
             'encryption_type'       => $row['encryption_type'],
             'updated_at'            => $row['date_mod'],
             'created_at'            => $row['date_creation'],
+            'deleted_at'            => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -62,5 +62,13 @@ final class ItemsDisksMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

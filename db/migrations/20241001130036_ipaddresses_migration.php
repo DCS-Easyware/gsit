@@ -45,10 +45,10 @@ final class IpaddressesMigration extends AbstractMigration
             'binary_1'      => $row['binary_1'],
             'binary_2'      => $row['binary_2'],
             'binary_3'      => $row['binary_3'],
-            'is_deleted'    => $row['is_deleted'],
             'is_dynamic'    => $row['is_dynamic'],
             'mainitem_id'   => $row['mainitems_id'],
             'mainitem_type' => $row['mainitemtype'],
+            'deleted_at'    => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -58,5 +58,13 @@ final class IpaddressesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

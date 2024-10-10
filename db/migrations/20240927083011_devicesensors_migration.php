@@ -36,7 +36,7 @@ final class DevicesensorsMigration extends AbstractMigration
         $data = [
           [
             'id'                    => $row['id'],
-            'name'           => $row['designation'],
+            'name'                  => $row['designation'],
             'devicesensortype_id'   => $row['devicesensortypes_id'],
             'devicesensormodel_id'  => $row['devicesensormodels_id'],
             'comment'               => $row['comment'],

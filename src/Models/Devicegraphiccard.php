@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Devicegraphiccard extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Devicegraphiccard';
   protected $titles = ['Graphics card', 'Graphics cards'];
   protected $icon = 'edit';

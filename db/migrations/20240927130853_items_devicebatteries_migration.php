@@ -40,7 +40,6 @@ final class ItemsDevicebatteriesMigration extends AbstractMigration
             'item_type'           => $row['itemtype'],
             'devicebattery_id'    => $row['devicebatteries_id'],
             'manufacturing_date'  => $row['manufacturing_date'],
-            'is_deleted'          => $row['is_deleted'],
             'is_dynamic'          => $row['is_dynamic'],
             'entity_id'           => $row['entities_id'],
             'is_recursive'        => $row['is_recursive'],
@@ -48,6 +47,7 @@ final class ItemsDevicebatteriesMigration extends AbstractMigration
             'otherserial'         => $row['otherserial'],
             'location_id'         => $row['locations_id'],
             'state_id'            => $row['states_id'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -57,5 +57,13 @@ final class ItemsDevicebatteriesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

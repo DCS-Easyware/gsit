@@ -37,8 +37,12 @@ final class DocumenttypesMigration extends AbstractMigration
           [
             'id'                  => $row['id'],
             'name'                => $row['name'],
-            'comment'             => $row['comment'],
+            'ext'                 => $row['ext'],
+            'icon'                => $row['icon'],
+            'mime'                => $row['mime'],
+            'is_uploadable'       => $row['is_uploadable'],
             'updated_at'          => $row['date_mod'],
+            'comment'             => $row['comment'],
             'created_at'          => $row['date_creation'],
           ]
         ];

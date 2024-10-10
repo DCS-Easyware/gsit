@@ -25,7 +25,7 @@ final class OlalevelcriteriaMigration extends AbstractMigration
     } else {
       return;
     }
-    $item = $this->table('olalevelcriteria');
+    $item = $this->table('olalevelcriterias');
 
     if ($this->isMigratingUp())
     {

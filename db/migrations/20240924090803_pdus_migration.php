@@ -37,7 +37,6 @@ final class PdusMigration extends AbstractMigration
           [
             'id'                => $row['id'],
             'name'              => $row['name'],
-            'comment'           => $row['comment'],
             'entity_id'         => $row['entities_id'],
             'is_recursive'      => $row['is_recursive'],
             'location_id'       => $row['locations_id'],
@@ -48,12 +47,13 @@ final class PdusMigration extends AbstractMigration
             'group_id_tech'     => $row['groups_id_tech'],
             'is_template'       => $row['is_template'],
             'template_name'     => $row['template_name'],
-            'is_deleted'        => $row['is_deleted'],
             'state_id'          => $row['states_id'],
+            'comment'           => $row['comment'],
             'manufacturer_id'   => $row['manufacturers_id'],
             'pdutype_id'        => $row['pdutypes_id'],
             'updated_at'        => $row['date_mod'],
             'created_at'        => $row['date_creation'],
+            'deleted_at'        => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -63,5 +63,13 @@ final class PdusMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

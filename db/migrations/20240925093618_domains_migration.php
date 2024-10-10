@@ -37,7 +37,6 @@ final class DomainsMigration extends AbstractMigration
           [
             'id'              => $row['id'],
             'name'            => $row['name'],
-            'comment'         => $row['comment'],
             'entity_id'       => $row['entities_id'],
             'is_recursive'    => $row['is_recursive'],
             'domaintype_id'   => $row['domaintypes_id'],
@@ -45,9 +44,10 @@ final class DomainsMigration extends AbstractMigration
             'user_id_tech'    => $row['users_id_tech'],
             'group_id_tech'   => $row['groups_id_tech'],
             'others'          => $row['others'],
-            'is_deleted'      => $row['is_deleted'],
+            'comment'         => $row['comment'],
             'updated_at'      => $row['date_mod'],
             'created_at'      => $row['date_creation'],
+            'deleted_at'      => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -57,5 +57,13 @@ final class DomainsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

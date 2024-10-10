@@ -42,10 +42,10 @@ final class NetworknamesMigration extends AbstractMigration
             'name'        => $row['name'],
             'comment'     => $row['comment'],
             'fqdn_id'     => $row['fqdns_id'],
-            'is_deleted'  => $row['is_deleted'],
             'is_dynamic'  => $row['is_dynamic'],
             'updated_at'  => $row['date_mod'],
             'created_at'  => $row['date_creation'],
+            'deleted_at'  => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -55,5 +55,13 @@ final class NetworknamesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

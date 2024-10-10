@@ -29,14 +29,17 @@ final class DevicenetworkcardsMigration extends AbstractMigration
 
     if ($this->isMigratingUp())
     {
-      $stmt = $pdo->query('SELECT * FROM glpi_devicenetworkcardmodels');
+      $stmt = $pdo->query('SELECT * FROM glpi_devicenetworkcards');
       $rows = $stmt->fetchAll();
       foreach ($rows as $row)
       {
+        if (is_null($row['manufacturers_id'])) $row['manufacturers_id']=0;
+        if (is_null($row['entities_id'])) $row['entities_id']=0;
+        if (is_null($row['is_recursive'])) $row['is_recursive']=0;
         $data = [
           [
             'id'                        => $row['id'],
-            'name'               => $row['designation'],
+            'name'                      => $row['designation'],
             'bandwidth'                 => $row['bandwidth'],
             'comment'                   => $row['comment'],
             'manufacturer_id'           => $row['manufacturers_id'],

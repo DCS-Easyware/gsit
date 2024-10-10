@@ -39,8 +39,8 @@ final class ComputersItemsMigration extends AbstractMigration
             'item_id'     => $row['items_id'],
             'computer_id' => $row['computers_id'],
             'item_type'   => $row['itemtype'],
-            'is_deleted'  => $row['is_deleted'],
             'is_dynamic'  => $row['is_dynamic'],
+            'deleted_at'  => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -50,5 +50,13 @@ final class ComputersItemsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

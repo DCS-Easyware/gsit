@@ -36,11 +36,11 @@ final class ItemsSoftwarelicensesMigration extends AbstractMigration
         $data = [
           [
             'id'                  => $row['id'],
-            'item_type'           => $row['itemtype'],
             'item_id'             => $row['items_id'],
+            'item_type'           => $row['itemtype'],
             'softwarelicense_id'  => $row['softwarelicenses_id'],
-            'is_deleted'          => $row['is_deleted'],
             'is_dynamic'          => $row['is_dynamic'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -50,5 +50,13 @@ final class ItemsSoftwarelicensesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

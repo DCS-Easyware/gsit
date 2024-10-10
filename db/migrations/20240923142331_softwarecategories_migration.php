@@ -43,8 +43,6 @@ final class SoftwarecategoriesMigration extends AbstractMigration
             'level'               => $row['level'],
             'ancestors_cache'     => $row['ancestors_cache'],
             'sons_cache'          => $row['sons_cache'],
-            'updated_at'          => null,
-            'created_at'          => null,
           ]
         ];
         $item->insert($data)

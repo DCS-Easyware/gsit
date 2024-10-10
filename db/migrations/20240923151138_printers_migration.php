@@ -36,10 +36,10 @@ final class PrintersMigration extends AbstractMigration
         $data = [
           [
             'id'                  => $row['id'],
-            'name'                => $row['name'],
-            'comment'             => $row['comment'],
             'entity_id'           => $row['entities_id'],
             'is_recursive'        => $row['is_recursive'],
+            'name'                => $row['name'],
+            'updated_at'          => $row['date_mod'],
             'contact'             => $row['contact'],
             'contact_num'         => $row['contact_num'],
             'user_id_tech'        => $row['users_id_tech'],
@@ -51,6 +51,7 @@ final class PrintersMigration extends AbstractMigration
             'have_usb'            => $row['have_usb'],
             'have_wifi'           => $row['have_wifi'],
             'have_ethernet'       => $row['have_ethernet'],
+            'comment'             => $row['comment'],
             'memory_size'         => $row['memory_size'],
             'location_id'         => $row['locations_id'],
             'network_id'          => $row['networks_id'],
@@ -58,7 +59,6 @@ final class PrintersMigration extends AbstractMigration
             'printermodel_id'     => $row['printermodels_id'],
             'manufacturer_id'     => $row['manufacturers_id'],
             'is_global'           => $row['is_global'],
-            'is_deleted'          => $row['is_deleted'],
             'is_template'         => $row['is_template'],
             'template_name'       => $row['template_name'],
             'init_pages_counter'  => $row['init_pages_counter'],
@@ -68,8 +68,8 @@ final class PrintersMigration extends AbstractMigration
             'state_id'            => $row['states_id'],
             'ticket_tco'          => $row['ticket_tco'],
             'is_dynamic'          => $row['is_dynamic'],
-            'updated_at'          => $row['date_mod'],
             'created_at'          => $row['date_creation'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -79,5 +79,13 @@ final class PrintersMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

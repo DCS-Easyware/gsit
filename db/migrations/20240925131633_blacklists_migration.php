@@ -36,10 +36,10 @@ final class BlacklistsMigration extends AbstractMigration
         $data = [
           [
             'id'          => $row['id'],
-            'name'        => $row['name'],
-            'comment'     => $row['comment'],
             'type'        => $row['type'],
+            'name'        => $row['name'],
             'value'       => $row['value'],
+            'comment'     => $row['comment'],
             'updated_at'  => $row['date_mod'],
             'created_at'  => $row['date_creation'],
           ]

@@ -46,11 +46,11 @@ final class DocumentsItemsMigration extends AbstractMigration
             'item_type'         => $row['itemtype'],
             'entity_id'         => $row['entities_id'],
             'is_recursive'      => $row['is_recursive'],
+            'updated_at'        => $row['date_mod'],
             'user_id'           => $row['users_id'],
             'timeline_position' => $row['timeline_position'],
-            'date'              => $row['date'],
-            'updated_at'        => $row['date_mod'],
             'created_at'        => $row['date_creation'],
+            'date'              => $row['date'],
           ];
         }
         $item->insert($data)

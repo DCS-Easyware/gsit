@@ -39,7 +39,6 @@ final class ItemsDevicesimcardsMigration extends AbstractMigration
             'item_id'           => $row['items_id'],
             'item_type'         => $row['itemtype'],
             'devicesimcard_id'  => $row['devicesimcards_id'],
-            'is_deleted'        => $row['is_deleted'],
             'is_dynamic'        => $row['is_dynamic'],
             'entity_id'         => $row['entities_id'],
             'is_recursive'      => $row['is_recursive'],
@@ -55,6 +54,7 @@ final class ItemsDevicesimcardsMigration extends AbstractMigration
             'puk'               => $row['puk'],
             'puk2'              => $row['puk2'],
             'msin'              => $row['msin'],
+            'deleted_at'        => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -64,5 +64,13 @@ final class ItemsDevicesimcardsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

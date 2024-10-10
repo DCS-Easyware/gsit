@@ -37,16 +37,15 @@ final class NotificationsMigration extends AbstractMigration
           [
             'id'              => $row['id'],
             'name'            => $row['name'],
-            'comment'         => $row['comment'],
             'entity_id'       => $row['entities_id'],
             'item_type'       => $row['itemtype'],
             'event'           => $row['event'],
+            'comment'         => $row['comment'],
             'is_recursive'    => $row['is_recursive'],
             'is_active'       => $row['is_active'],
-            'allow_response'  => $row['allow_response'],
             'updated_at'      => $row['date_mod'],
             'created_at'      => $row['date_creation'],
-
+            'allow_response'  => $row['allow_response'],
           ]
         ];
         $item->insert($data)

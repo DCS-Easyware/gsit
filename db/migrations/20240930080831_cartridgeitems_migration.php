@@ -45,11 +45,11 @@ final class CartridgeitemsMigration extends AbstractMigration
             'manufacturer_id'       => $row['manufacturers_id'],
             'user_id_tech'          => $row['users_id_tech'],
             'group_id_tech'         => $row['groups_id_tech'],
-            'is_deleted'            => $row['is_deleted'],
             'comment'               => $row['comment'],
             'alarm_threshold'       => $row['alarm_threshold'],
             'updated_at'            => $row['date_mod'],
             'created_at'            => $row['date_creation'],
+            'deleted_at'            => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -59,5 +59,13 @@ final class CartridgeitemsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

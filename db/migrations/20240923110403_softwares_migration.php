@@ -46,7 +46,6 @@ final class SoftwaresMigration extends AbstractMigration
             'is_update'             => $row['is_update'],
             'software_id'           => $row['softwares_id'],
             'manufacturer_id'       => $row['manufacturers_id'],
-            'is_deleted'            => $row['is_deleted'],
             'is_template'           => $row['is_template'],
             'template_name'         => $row['template_name'],
             'updated_at'            => $row['date_mod'],
@@ -57,6 +56,7 @@ final class SoftwaresMigration extends AbstractMigration
             'softwarecategory_id'   => $row['softwarecategories_id'],
             'is_valid'              => $row['is_valid'],
             'created_at'            => $row['date_creation'],
+            'deleted_at'            => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -66,5 +66,13 @@ final class SoftwaresMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

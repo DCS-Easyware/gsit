@@ -55,7 +55,6 @@ final class RacksMigration extends AbstractMigration
             'number_units'      => $row['number_units'],
             'is_template'       => $row['is_template'],
             'template_name'     => $row['template_name'],
-            'is_deleted'        => $row['is_deleted'],
             'dcroom_id'         => $row['dcrooms_id'],
             'room_orientation'  => $row['room_orientation'],
             'position'          => $row['position'],
@@ -65,6 +64,7 @@ final class RacksMigration extends AbstractMigration
             'max_weight'        => $row['max_weight'],
             'updated_at'        => $row['date_mod'],
             'created_at'        => $row['date_creation'],
+            'deleted_at'        => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -74,5 +74,13 @@ final class RacksMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

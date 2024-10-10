@@ -36,7 +36,7 @@ final class DevicegenericsMigration extends AbstractMigration
         $data = [
           [
             'id'                    => $row['id'],
-            'name'           => $row['designation'],
+            'name'                  => $row['designation'],
             'devicegenerictype_id'  => $row['devicegenerictypes_id'],
             'comment'               => $row['comment'],
             'manufacturer_id'       => $row['manufacturers_id'],

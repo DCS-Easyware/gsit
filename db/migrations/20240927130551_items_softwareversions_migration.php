@@ -36,15 +36,15 @@ final class ItemsSoftwareversionsMigration extends AbstractMigration
         $data = [
           [
             'id'                  => $row['id'],
-            'item_type'           => $row['itemtype'],
             'item_id'             => $row['items_id'],
+            'item_type'           => $row['itemtype'],
             'softwareversion_id'  => $row['softwareversions_id'],
+            'is_deleted_item'     => $row['is_deleted_item'],
             'is_template_item'    => $row['is_template_item'],
             'entity_id'           => $row['entities_id'],
-            'is_deleted_item'     => $row['is_deleted_item'],
             'is_dynamic'          => $row['is_dynamic'],
-            'is_deleted'          => $row['is_deleted'],
             'date_install'        => $row['date_install'],
+            'deleted_at'          => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -54,5 +54,13 @@ final class ItemsSoftwareversionsMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

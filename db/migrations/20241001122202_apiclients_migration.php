@@ -48,6 +48,7 @@ final class ApiclientsMigration extends AbstractMigration
             'app_token_date'    => $row['app_token_date'],
             'dolog_method'      => $row['dolog_method'],
             'comment'           => $row['comment'],
+            'created_at'        => $row['date_mod'],
           ]
         ];
         $item->insert($data)

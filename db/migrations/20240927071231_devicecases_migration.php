@@ -36,9 +36,9 @@ final class DevicecasesMigration extends AbstractMigration
         $data = [
           [
             'id'                  => $row['id'],
-            'name'         => $row['designation'],
-            'comment'             => $row['comment'],
+            'name'                => $row['designation'],
             'devicecasetype_id'   => $row['devicecasetypes_id'],
+            'comment'             => $row['comment'],
             'manufacturer_id'     => $row['manufacturers_id'],
             'entity_id'           => $row['entities_id'],
             'is_recursive'        => $row['is_recursive'],

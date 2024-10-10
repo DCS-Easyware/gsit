@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Domain extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Domain';
   protected $titles = ['Domain', 'Domains'];
   protected $icon = 'globe americas';

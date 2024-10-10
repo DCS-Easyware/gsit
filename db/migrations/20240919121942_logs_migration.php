@@ -49,6 +49,7 @@ final class LogsMigration extends AbstractMigration
             'id_search_option'  => $row['id_search_option'],
             'old_value'         => $row['old_value'],
             'new_value'         => $row['new_value'],
+            'created_at'        => $row['date_mod'],
           ];
         }
         $item->insert($data)

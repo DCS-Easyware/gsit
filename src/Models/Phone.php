@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Phone extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Phone';
   protected $titles = ['Phone', 'Phones'];
   protected $icon = 'phone';

@@ -68,6 +68,7 @@ final class TransfersMigration extends AbstractMigration
             'updated_at'          => $row['date_mod'],
             'comment'             => $row['comment'],
             'keep_disk'           => $row['keep_disk'],
+            'created_at'          => $row['date_mod'],
           ]
         ];
         $item->insert($data)

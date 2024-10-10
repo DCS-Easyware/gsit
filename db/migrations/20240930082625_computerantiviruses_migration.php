@@ -42,12 +42,12 @@ final class ComputerantivirusesMigration extends AbstractMigration
             'antivirus_version' => $row['antivirus_version'],
             'signature_version' => $row['signature_version'],
             'is_active'         => $row['is_active'],
-            'is_deleted'        => $row['is_deleted'],
             'is_uptodate'       => $row['is_uptodate'],
             'is_dynamic'        => $row['is_dynamic'],
             'date_expiration'   => $row['date_expiration'],
             'updated_at'        => $row['date_mod'],
             'created_at'        => $row['date_creation'],
+            'deleted_at'        => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
         $item->insert($data)
@@ -57,5 +57,13 @@ final class ComputerantivirusesMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Deviceprocessor extends Common
 {
+  use SoftDeletes;
+
   protected $definition = '\App\Models\Definitions\Deviceprocessor';
   protected $titles = ['Processor', 'Processors'];
   protected $icon = 'edit';

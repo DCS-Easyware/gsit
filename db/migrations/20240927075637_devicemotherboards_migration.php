@@ -36,7 +36,7 @@ final class DevicemotherboardsMigration extends AbstractMigration
         $data = [
           [
             'id'                        => $row['id'],
-            'name'               => $row['designation'],
+            'name'                      => $row['designation'],
             'chipset'                   => $row['chipset'],
             'comment'                   => $row['comment'],
             'manufacturer_id'           => $row['manufacturers_id'],

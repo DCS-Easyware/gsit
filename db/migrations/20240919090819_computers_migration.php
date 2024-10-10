@@ -54,7 +54,6 @@ final class ComputersMigration extends AbstractMigration
             'is_template'           => $row['is_template'],
             'template_name'         => $row['template_name'],
             'manufacturer_id'       => $row['manufacturers_id'],
-            'is_deleted'            => $row['is_deleted'],
             'is_dynamic'            => $row['is_dynamic'],
             'user_id'               => $row['users_id'],
             'group_id'              => $row['groups_id'],
@@ -63,6 +62,7 @@ final class ComputersMigration extends AbstractMigration
             'uuid'                  => $row['uuid'],
             'created_at'            => $row['date_creation'],
             'is_recursive'          => $row['is_recursive'],
+            'deleted_at'            => self::convertIsDeleted($row['is_deleted']),
           ]
         ];
 
@@ -73,5 +73,13 @@ final class ComputersMigration extends AbstractMigration
       // rollback
       $item->truncate();
     }
+  }
+
+  public function convertIsDeleted($is_deleted) {
+    if ($is_deleted == 1) {
+      return date('Y-m-d H:i:s', time());
+    }
+
+    return null;
   }
 }

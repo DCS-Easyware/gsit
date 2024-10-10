@@ -43,7 +43,6 @@ final class NotepadsMigration extends AbstractMigration
             'user_id'             => $row['users_id'],
             'user_id_lastupdater' => $row['users_id_lastupdater'],
             'content'             => $row['content'],
-
           ]
         ];
         $item->insert($data)
