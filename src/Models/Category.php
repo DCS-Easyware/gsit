@@ -15,14 +15,14 @@ class Category extends Common
   protected $icon = 'edit';
 
   protected $appends = [
-    'category',
-    'users',
-    'groups',
-    'knowbaseitemcategories',
-    'tickettemplatesDemand',
-    'tickettemplatesIncident',
-    'changetemplates',
-    'problemtemplates',
+    // 'category',
+    // 'users',
+    // 'groups',
+    // 'knowbaseitemcategories',
+    // 'tickettemplatesDemand',
+    // 'tickettemplatesIncident',
+    // 'changetemplates',
+    // 'problemtemplates',
   ];
 
   protected $visible = [

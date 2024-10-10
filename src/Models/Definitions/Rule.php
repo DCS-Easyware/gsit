@@ -46,4 +46,36 @@ class Rule
       ],
     ];
   }
+
+  public static function getRelatedPages($rootUrl)
+  {
+    global $translator;
+    return [
+      [
+        'title' => $translator->translatePlural('Rule', 'Rules', 1),
+        'icon' => 'home',
+        'link' => $rootUrl,
+      ],
+      [
+        'title' => $translator->translatePlural('Criterion', 'Criteria', 2),
+        'icon' => 'brain',
+        'link' => $rootUrl . '/criteria',
+      ],
+      [
+        'title' => $translator->translatePlural('Action', 'Actions', 2),
+        'icon' => 'running',
+        'link' => '', // $rootUrl . '/actions',
+      ],
+      [
+        'title' => $translator->translate('Testing'),
+        'icon' => 'vial',
+        'link' => '', // $rootUrl . '/testing',
+      ],
+      [
+        'title' => $translator->translate('Historical'),
+        'icon' => 'history',
+        'link' => '', // $rootUrl . '/history',
+      ],
+    ];
+  }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -127,16 +128,20 @@ class Ticket extends Common
     return $this->belongsTo('\App\Models\Category', 'category_id');
   }
 
+  public function problems(): BelongsToMany
+  {
+    return $this->belongsToMany('\App\Models\Problem');
+  }
+
   public function getFeeds($id)
   {
+    global $translator;
     $feeds = [];
 
     $statesDef = $this->definition::getStatusArray();
 
-    $itemtypes = ['Ticket', 'App\Models\Ticket', 'App\Models\Ticket'];
-
     // Get followups
-    $followups = \App\Models\Followup::whereIn('item_type', $itemtypes)->where('item_id', $id)->get();
+    $followups = \App\Models\Followup::where('item_type', 'App\Models\Ticket')->where('item_id', $id)->get();
     foreach ($followups as $followup)
     {
       $feeds[] = [
@@ -144,88 +149,77 @@ class Ticket extends Common
         "usertype" => "tech",
         "type"     => "followup",
         "date"     => $followup['created_at'],
-        "summary"  => "added a followup",
+        "summary"  => $translator->translate('added a followup'),
         "content"  => \App\v1\Controllers\Toolbox::convertMarkdownToHtml($followup['content']),
         "time"     => null,
       ];
     }
-    // Get important events:
-    // * state changes
-    // * user / group attribution
+    // Get important events in logs :
 
-    $states = \App\Models\Log::
-        whereIn('item_type', $itemtypes)
+    $logs = \App\Models\Log::
+      where('item_type', 'App\Models\Ticket')
       ->where('item_id', $id)
-      ->where('id_search_option', 12)
+      ->whereIn('id_search_option', [12, 5, 8])
       ->get();
-    foreach ($states as $state)
+    foreach ($logs as $log)
     {
-      $userActionSpl = explode(" (", $state['user_name']);
-      $stateDef = $statesDef[$state['new_value']];
-      $feeds[] = [
-        "user"     => $userActionSpl[0],
-        "usertype" => "tech",
-        "type"     => "event",
-        "date"     => $state['updated_at'],
-        "summary"  => "changed state to <span class=\"ui " . $stateDef['color'] .
-                      " text\"><i class=\"" . $stateDef['icon'] . " icon\"></i>" . $stateDef['title'] . "</span>",
-        "content"  => "",
-        "time"     => null,
-      ];
-    }
-
-    $userAttributes = \App\Models\Log::
-        whereIn('item_type', $itemtypes)
-      ->where('item_id', $id)
-      ->where('id_search_option', 5)
-      ->get();
-    foreach ($userAttributes as $userAttr)
-    {
-      $userActionSpl = explode(" (", $userAttr['user_name']);
-      $userSpl = explode(" (", $userAttr['new_value']);
-
-      $feeds[] = [
-        "user"     => $userActionSpl[0],
-        "usertype" => "tech",
-        "type"     => "event",
-        "date"     => $userAttr['updated_at'],
-        "summary"  => "add attribution to the user " . $userSpl[0],
-        "content"  => "",
-        "time"     => null,
-      ];
-    }
-
-    $groupAttributes = \App\Models\Log::
-        whereIn('item_type', $itemtypes)
-      ->where('item_id', $id)
-      ->where('id_search_option', 8)
-      ->get();
-    foreach ($groupAttributes as $groupAttr)
-    {
-      $userActionSpl = explode(" (", $groupAttr['user_name']);
-      if (!is_null($groupAttr['new_value']))
+      if ($log->id_search_option == 12)
       {
-        $groupSpl = explode(" (", $groupAttr['new_value']);
+        $userActionSpl = explode(" (", $log->user_name);
+        $stateDef = $statesDef[$log->new_value];
         $feeds[] = [
           "user"     => $userActionSpl[0],
           "usertype" => "tech",
           "type"     => "event",
-          "date"     => $groupAttr['updated_at'],
-          "summary"  => "add (+) attribution to the group " . $groupSpl[0],
+          "date"     => $log->updated_at,
+          "summary"  => $translator->translate('changed state to') . " <span class=\"ui " . $stateDef['color'] .
+                        " text\"><i class=\"" . $stateDef['icon'] . " icon\"></i>" . $stateDef['title'] . "</span>",
           "content"  => "",
           "time"     => null,
         ];
-      } else {
-        $groupSpl = explode(" (", $groupAttr['old_value']);
+      }
+      elseif ($log->id_search_option == 5)
+      {
+        $userActionSpl = explode(" (", $log->user_name);
+        $userSpl = explode(" (", $log->new_value);
+
         $feeds[] = [
           "user"     => $userActionSpl[0],
           "usertype" => "tech",
           "type"     => "event",
-          "date"     => $groupAttr['updated_at'],
-          "summary"  => "delete (-) attribution to the group " . $groupSpl[0],
+          "date"     => $log->updated_at,
+          "summary"  => $translator->translate('add attribution to the user') . ' ' . $userSpl[0],
           "content"  => "",
           "time"     => null,
         ];
+      }
+      elseif ($log->id_search_option == 8)
+      {
+        $userActionSpl = explode(" (", $log->user_name);
+        if (!is_null($log->new_value))
+        {
+          $groupSpl = explode(" (", $log->new_value);
+          $feeds[] = [
+            "user"     => $userActionSpl[0],
+            "usertype" => "tech",
+            "type"     => "event",
+            "date"     => $log->updated_at,
+            "summary"  => $translator->translate('add (+) attribution to the group') . ' ' . $groupSpl[0],
+            "content"  => "",
+            "time"     => null,
+          ];
+        } else {
+          $groupSpl = explode(" (", $log->old_value);
+          $feeds[] = [
+            "user"     => $userActionSpl[0],
+            "usertype" => "tech",
+            "type"     => "event",
+            "date"     => $log->updated_at,
+            "summary"  => $translator->translate('delete (-) attribution to the group') . ' ' . $groupSpl[0],
+            "content"  => "",
+            "time"     => null,
+          ];
+        }
       }
     }
 
@@ -234,38 +228,7 @@ class Ticket extends Common
     {
       return $a['date'] > $b['date'];
     });
-
     return $feeds;
-
-    // return [
-    //   [
-    //     "user"     => "David Durieux",
-    //     "usertype" => "tech",
-    //     "type"     => "followup",
-    //     "date"     => "5 days ago",
-    //     "summary"  => "added a followup",
-    //     "content"  => "Pouvez-vous préciser l'erreur que vous avez?",
-    //     "time"     => 75,
-    //   ],
-    //   [
-    //     "user"     => "Joe Henderson",
-    //     "usertype" => "user",
-    //     "type"     => "followup",
-    //     "date"     => "3 days ago",
-    //     "summary"  => "added a followup",
-    //     "content"  => "finalement c'est bon, ça refonctionne",
-    //     "time"     => null,
-    //   ],
-    //   [
-    //     "user"     => "David Durieux",
-    //     "usertype" => "tech",
-    //     "type"     => "state",
-    //     "date"     => "2 days ago",
-    //     "summary"  => "set state as closed",
-    //     "content"  => null,
-    //     "time"     => null,
-    //   ],
-    // ];
   }
 
   /**

@@ -4,7 +4,7 @@ namespace App\v1\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Views\PhpRenderer;
+use Slim\Views\Twig;
 
 class Common
 {
@@ -24,15 +24,7 @@ class Common
   {
     $params = $request->getQueryParams();
     $page = 1;
-
-    $globalViewData = [
-      'title'    => 'GSIT - ' . $item->getTitle(2),
-      'menu'     => \App\v1\Controllers\Menu::getMenu($request),
-      'rootpath' => \App\v1\Controllers\Toolbox::getRootPath($request),
-    ];
-
-    $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
-    $renderer->setLayout('layout.php');
+    $view = Twig::fromRequest($request);
 
     $search = new \App\v1\Controllers\Search();
     $url = $this->getUrlWithoutQuery($request);
@@ -41,31 +33,26 @@ class Common
       $page = (int) $params['page'];
     }
 
-    $viewData = $search->getData($item, $url, $page, $params);
-    $headers = [
-      'title' => $item->getTitle(2),
-      'icon'  => $item->getIcon(),
-    ];
+    $fields = $search->getData($item, $url, $page, $params);
 
-    $renderData = [
-      'fields' => $viewData,
-      'headers' => [
-        'title' => $item->getTitle(2),
-        'icon'  => $item->getIcon(),
-      ],
-      'definition' => $item->getDefinitions(),
-    ];
-    return $renderer->render($response, 'search.php', $renderData);
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(2));
+    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
+    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
+    $viewData->addIconId($item->getIcon());
+
+    $viewData->addData('fields', $fields);
+
+    $viewData->addData('definition', $item->getDefinitions());
+
+    return $view->render($response, 'search.html.twig', (array)$viewData);
   }
 
   protected function commonShowItem(Request $request, Response $response, $args, $item): Response
   {
+    global $translator;
+    $view = Twig::fromRequest($request);
 
-    $globalViewData = [
-      'title'    => 'GSIT - ' . $item->getTitle(1),
-      'menu'     => \App\v1\Controllers\Menu::getMenu($request),
-      'rootpath' => \App\v1\Controllers\Toolbox::getRootPath($request),
-    ];
     $session = new \SlimSession\Helper();
 
     if ($session->exists('message'))
@@ -74,22 +61,24 @@ class Common
       $session->delete('message');
     }
 
-    $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
-    $renderer->setLayout('layout.php');
-
-    // Load the item
-    // $item->loadId($args['id']);
     $myItem = $item->find($args['id']);
 
     // form data
-    $viewData = [
-      'name'         => $item->getTitle(1),
-      'fields'       => $item->getFormData($myItem),
-      'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
-      'icon'         => $item->getIcon(),
-    ];
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
+    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
+    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
+    $viewData->addHeaderName($item->getTitle(1));
+    $viewData->addHeaderId($myItem->id);
+    $viewData->addIconId($item->getIcon());
 
-    return $renderer->render($response, 'genericForm.php', $viewData);
+    $viewData->addRelatedPages($item->getRelatedPages($this->getUrlWithoutQuery($request)));
+
+    $viewData->addData('fields', $item->getFormData($myItem));
+
+    $viewData->addTranslation('savebutton', $translator->translate('Save'));
+
+    return $view->render($response, 'genericForm.html.twig', (array)$viewData);
   }
 
   public function commonUpdateItem(Request $request, Response $response, $args, $item): Response
@@ -154,36 +143,59 @@ class Common
 
   protected function commonShowITILItem(Request $request, Response $response, $args, $item): Response
   {
-    $globalViewData = [
-      'title'    => 'GSIT - ' . $item->getTitle(1),
-      'menu'     => \App\v1\Controllers\Menu::getMenu($request),
-      'rootpath' => \App\v1\Controllers\Toolbox::getRootPath($request),
-    ];
+    global $translator;
+    $view = Twig::fromRequest($request);
+
     $session = new \SlimSession\Helper();
-
-    if ($session->exists('message'))
-    {
-      $globalViewData['message'] = $session->message;
-      $session->delete('message');
-    }
-
-    $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
-    $renderer->setLayout('layout.php');
 
     // Load the item
     // $item->loadId($args['id']);
     $myItem = $item->find($args['id']);
 
     // form data
-    $viewData = [
-      'name'         => $item->getTitle(1),
-      'fields'       => $item->getFormData($myItem),
-      'feeds'        => $item->getFeeds($args['id']), //[
-      'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
-      'icon'         => $item->getIcon(),
-      'color'        => $myItem->getColor(),
-      'content'      => \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content),
-    ];
-    return $renderer->render($response, 'ITILForm.php', $viewData);
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
+    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
+    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
+    $viewData->addHeaderName($item->getTitle(1));
+    $viewData->addHeaderId($myItem->id);
+    $viewData->addIconId($item->getIcon());
+    $viewData->addColorId($myItem->getColor());
+
+    $viewData->addRelatedPages($item->getRelatedPages($this->getUrlWithoutQuery($request)));
+
+    $viewData->addData('fields', $item->getFormData($myItem));
+    $viewData->addData('feeds', $item->getFeeds($args['id']));
+    $viewData->addData('content', \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content));
+
+    $viewData->addTranslation('description', $translator->translate('Description'));
+    $viewData->addTranslation('feeds', $translator->translate('Feeds'));
+    $viewData->addTranslation('followup', $translator->translatePlural('Followup', 'Followups', 1));
+    $viewData->addTranslation('solution', $translator->translatePlural('Solution', 'Solutions', 1));
+    $viewData->addTranslation('template', $translator->translatePlural('Template', 'Templates', 1));
+    $viewData->addTranslation('private', $translator->translate('Private'));
+    $viewData->addTranslation('sourcefollow', $translator->translate('Source of followup'));
+    $viewData->addTranslation('category', $translator->translatePlural('Category', 'Categories', 1));
+    $viewData->addTranslation('status', $translator->translate('Status'));
+    $viewData->addTranslation('duration', $translator->translate('Duration'));
+    $viewData->addTranslation('seconds', $translator->translatePlural('Second', 'Seconds', 2));
+    $viewData->addTranslation('minutes', $translator->translatePlural('Minute', 'Minutes', 2));
+    $viewData->addTranslation('hours', $translator->translatePlural('Hour', 'Hours', 2));
+    $viewData->addTranslation('user', $translator->translatePlural('User', 'Users', 1));
+    $viewData->addTranslation('group', $translator->translatePlural('Group', 'Groups', 1));
+    $viewData->addTranslation('addfollowup', $translator->translate('Add followup'));
+    $viewData->addTranslation('timespent', $translator->translate('Time spent'));
+    $viewData->addTranslation('savebutton', $translator->translate('Save'));
+    $viewData->addTranslation('selectvalue', $translator->translate('Select value...'));
+    $viewData->addTranslation('yes', $translator->translate('Yes'));
+    $viewData->addTranslation('no', $translator->translate('No'));
+
+    if ($session->exists('message'))
+    {
+      $viewData->addMessage($session->message);
+      // $session->delete('message');
+    }
+
+    return $view->render($response, 'ITILForm.html.twig', (array)$viewData);
   }
 }

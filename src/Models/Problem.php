@@ -15,24 +15,28 @@ class Problem extends Common
   protected $icon = 'exclamation triangle';
 
   protected $appends = [
-    'itilcategorie',
-    'usersidlastupdater',
-    'usersidrecipient',
+    // 'category',
+    // 'usersidlastupdater',
+    // 'usersidrecipient',
   ];
 
   protected $visible = [
-    'itilcategorie',
+    'id',
+    'name',
+    'created_at',
+    'updated_at',
+    'category',
     'usersidlastupdater',
     'usersidrecipient',
   ];
 
   protected $with = [
-    'itilcategorie:id,name',
+    'category:id,name',
     'usersidlastupdater:id,name',
     'usersidrecipient:id,name',
   ];
 
-  public function itilcategorie(): BelongsTo
+  public function category(): BelongsTo
   {
     return $this->belongsTo('\App\Models\Category');
   }

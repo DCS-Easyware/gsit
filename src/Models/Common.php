@@ -87,7 +87,7 @@ class Common extends Model
     foreach ($items as $item)
     {
       $data[] = [
-        "name"  => $item->name,
+        "name"  => '[' . $item->id . ']' . $item->name,
         "value" => $item->id
       ];
     }
@@ -182,7 +182,7 @@ class Common extends Model
     $casts = $this->getCasts();
     foreach ($changes as $key => $newValue)
     {
-      if (in_array($key, ['created_at', 'date_mod']))
+      if (in_array($key, ['created_at', 'updated_at']))
       {
         continue;
       }
@@ -226,6 +226,7 @@ class Common extends Model
    */
   public function changesOnPivotUpdated($name, $pivotIds, $type = 'add')
   {
+    return;
     // get the id_search_option
     $definitions = $this->getDefinitions();
     $idSearchOption = 0;

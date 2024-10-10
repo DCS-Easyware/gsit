@@ -15,13 +15,13 @@ class User extends Common
   protected $icon = 'user';
 
   protected $appends = [
-    'category',
-    'title',
-    'location',
-    'entity',
-    'profile',
-    'supervisor',
-    'group',
+    // 'category',
+    // 'title',
+    // 'location',
+    // 'entity',
+    // 'profile',
+    // 'supervisor',
+    // 'group',
     'completename',
   ];
 

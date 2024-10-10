@@ -37,7 +37,7 @@ final class ItemsSoftwareversionsMigration extends AbstractMigration
           [
             'id'                  => $row['id'],
             'item_id'             => $row['items_id'],
-            'item_type'           => $row['itemtype'],
+            'item_type'           => 'App\\Models\\' . $row['itemtype'],
             'softwareversion_id'  => $row['softwareversions_id'],
             'is_deleted_item'     => $row['is_deleted_item'],
             'is_template_item'    => $row['is_template_item'],

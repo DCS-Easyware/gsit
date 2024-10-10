@@ -1,0 +1,46 @@
+<div class="ui sticky" style="background-color: #ffffff">
+  <div style="height: 1px"></div>
+  <div class="ui {{ header.color }} dividing header">
+    <i class="big {{ header.icon }} icon"></i>
+    <div class="content">
+      {{ header.name }}
+      | 
+      id <i>{{ header.id }}</i>
+      {% if data.feeds is defined %}
+        | 
+        {% for item in data.fields %}
+          {% if item.name == 'status' %}
+            <span class="ui {{ item.values[item.value].color }} text">
+              <i class="{{ item.values[item.value].icon }} icon"></i>
+              {{ item.values[item.value].title }}
+            </span>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      <div class="sub header">
+        {% if data.fields|length > 0 %}
+          {{ data.fields|first.value }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% if relatedPages|length > 0 %}
+  <div class="ui equal width labeled icon menu">
+    {% for item in relatedPages %}
+      {% if item.link != '' %}
+        <a class="item" href="{{ item.link }}">
+          <i class="icon {% if get_uri() == item.link %}orange{% else %}blue{% endif %} {{ item.icon }}"></i>
+          <span class="ui {% if get_uri() == item.link %}orange{% else %}blue{% endif %} {{ item.icon }} text">{{ item.title }}</span>
+          <!-- <div class="floating ui blue label">22</div> -->
+        </a>
+      {% else %}
+        <a class="item" href="{{ item.link }}">
+          <i class="icon {% if get_uri() == item.link %}orange{% else %}grey{% endif %} {{ item.icon }}"></i>
+          <span class="ui {% if get_uri() == item.link %}orange{% else %}grey{% endif %} {{ item.icon }} text">{{ item.title }}</span>
+          <!-- <div class="floating ui blue label">22</div> -->
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}

@@ -1,0 +1,229 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+  <div class="ui internally celled grid">
+    <div class="row">
+      <div class="twelve wide column">
+        <form class="ui form {{ color }} segment">
+          <div class="field">
+            <label>{{ translation.description }}</label>
+            <div class="itilcontent">
+              {{ data.content | raw }}
+            </div>
+          </div>
+        </form>
+        <!-- Tabs: followup, solutions -->
+        <div class="ui secondary menu">
+          <a class="item active" data-tab="feeds">{{ translation.feeds }}</a>
+          <a class="yellow item" data-tab="followup">{{ translation.followup }}</a>
+          <a class="blue item" data-tab="solution">{{ translation.solution }}</a>
+        </div>
+        <div class="ui tab segment" hidden data-tab="feeds">
+        </div>
+        <div class="ui active tab yellow segment" data-tab="followup">
+          <form method="post" action="/gsit/followups" class="ui form">
+            <div class="ui grid">
+              <div class="eleven wide column">
+                <div id="editorfollowup"></div>
+                <textarea rows="3" name="followup" style="display: none"></textarea>
+<script type="text/javascript">
+editorfollowup = new toastui.Editor({
+  el: document.querySelector('#editorfollowup'),
+  initialEditType: 'markdown',
+  previewStyle: 'vertical',
+  initialEditType: 'wysiwyg',
+  height: '200px',
+  minHeight: '200px',
+  events: {
+    blur: () => {
+      document.querySelector(`textarea[name='followup']`).value = editorfollowup.getMarkdown();
+    },
+  },
+});
+</script>
+              </div>
+              <div class="five wide column">
+                <div class="field">
+                  <label>{{ translation.template }}</label>
+                  <select name="template">
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>{{ translation.private }}</label>
+                  <div class="ui fitted mini toggle checkbox">
+                    <input type="checkbox" name="private"> <label></label>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label>{{ translation.sourcefollow }}</label>
+                  <select name="source">
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="ui grid">
+              <div class="five wide column">
+                <div class="field">
+                  <label>{{ translation.category }}</label>
+                  <select name="category">
+                  </select>
+                </div>
+                <div class="field">
+                  <label>{{ translation.status }}</label>
+                  <select name="status">
+                  </select>
+                </div>
+              </div>
+              <div class="five wide column">
+                <div class="field" style="width: 100px;margin-left: auto;margin-right: auto;">
+                  <label>{{ translation.duration }}</label>
+                  <div class="ui right labeled input">
+                    <input type="number" name="time"  min="0">
+                    <div class="ui grey inverted label">
+                      <div class="ui labeled dropdown button">
+                        <input type="hidden" name="timetype">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">{{ translation.seconds }}</div>
+                        <div class="menu">
+                          <div class="item" data-value="seconds">{{ translation.seconds }}</div>
+                          <div class="item" data-value="minutes">{{ translation.minutes }}</div>
+                          <div class="item" data-value="hours">{{ translation.hours }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="six wide column">
+                <div class="field">
+                  <label>{{ translation.user }}</label>
+                  <select name="user">
+                  </select>
+                </div>
+                <div class="field">
+                  <label>{{ translation.group }}</label>
+                  <select name="group">
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div style="text-align: center;">
+              <button class="ui primary button" type="submit">{{ translation.addfollowup }}</button>
+            </div>
+          </form>
+        </div>
+        <div class="ui tab segment" data-tab="solution">
+          TODO
+        </div>
+
+        <!-- Feeds -->
+        <div class="ui connected feed">
+          {% for feed in data.feeds %}
+            <div class="event">
+              <div class="label">
+                {% if feed.type == 'event' %}
+                  <i class="circular colored inverted exchange alternate brown icon"></i>
+                {% elseif feed.usertype == 'tech' %}
+                  <i class="circular colored inverted headset olive icon"></i>
+                {% else %}
+                  <i class="circular colored inverted user blue icon"></i>
+                {% endif %}
+                <!-- <img src="/images/avatar/small/elliot.jpg"> -->
+              </div>
+              <div class="content">
+                <div class="summary">
+                  <a class="user">
+                    {{ feed.user }}
+                  </a> {{ feed.summary | raw }}
+                  <div class="date">
+                    {{ feed.date }}
+                  </div>
+                </div>
+                {% if not feed.content is null %}
+                  <div class="extra text">
+                    {{ feed.content | raw }}
+                  </div>
+                {% endif %}
+                {% if not feed.time is null %}
+                  <div class="meta">
+                    <a class="like">
+                      {{ translation.timespent }}: {{ feed.time }} {{ translation.seconds }}
+                    </a>
+                  </div>
+                  {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="four wide column" style="padding-top: 0px;">
+        <form method="post" class="ui form">
+          <button
+            class="ui primary button right floated"
+            style="position: fixed; top: 20px; z-index: 999; margin-left: 220px;"
+            type="submit"
+          >
+            {{ translation.savebutton }}
+          </button>
+          {% set displaygroup = '' %}
+        {% for item in data.fields %}
+          {% if item.name != 'content' %}
+            {% if displaygroup != '' and displaygroup != item.displaygroup %}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if displaygroup == '' or displaygroup != item.displaygroup %}
+            <div class="ui form teal segment">
+              <a class="ui teal right ribbon label" style="text-transform: capitalize" data-value="{{ item.displaygroup }}">
+                {{ item.displaygroup }}
+              </a>
+              <div name="{{ item.displaygroup }}" class="field" style="display: block">
+            {% endif %}
+            {% set displaygroup = item.displaygroup %}
+            {{ include('fields.html.twig') }}
+          {% endif %}
+        {% endfor %}
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+toggle = function() {
+
+  // selector cache
+  var
+    $buttons = $('.ribbon'),
+    // alias
+    handler = {
+      activate: function() {
+        $panel = $(this).attr('data-value');
+        console.log($panel);
+        if ($('[name="'+$panel+'"]').css('display') == 'block') {
+          $('[name="'+$panel+'"]').css('display', 'none');
+          $(this).removeClass('teal').addClass('grey');
+          $(this).parent().removeClass('teal').addClass('grey');
+        } else {
+          $('[name="'+$panel+'"]').css('display', 'block');
+          $(this).removeClass('grey').addClass('teal');
+          $(this).parent().removeClass('grey').addClass('teal');
+        }
+        console.log('test1');
+      }
+    };
+
+  $buttons
+    .on('click', handler.activate);
+};
+
+$(document)
+  .ready(toggle);
+
+</script>
+
+{{ include('footer.html.twig') }}

@@ -20,11 +20,17 @@ class Softwareversion extends Common
   ];
 
   protected $with = [
+    'software:id,name'
   ];
 
   // We get all devices
   public function devices()
   {
     return $this->belongsToMany('\App\Models\Computer', 'item_softwareversion', 'softwareversion_id', 'item_id');
+  }
+
+  public function software(): BelongsTo
+  {
+    return $this->belongsTo('App\Models\Software');
   }
 }

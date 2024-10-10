@@ -38,7 +38,12 @@ final class Route
         $computerId->map(['GET'], '', \App\v1\Controllers\Computer::class . ':showItem');
         $computerId->map(['POST'], '', \App\v1\Controllers\Computer::class . ':updateItem');
         $computerId->map(['GET'], '/operatingsystem', \App\v1\Controllers\Computer::class . ':showOperatingSystem');
-        $computerId->map(['GET'], '/softwares', \App\v1\Controllers\Computer::class . ':showSoftwares');
+
+        $computerId->group('/', function (RouteCollectorProxy $sub)
+        {
+          $sub->map(['GET'], 'softwares', \App\v1\Controllers\Computer::class . ':showSoftwares');
+
+        });
       });
     });
     $app->group('/monitors', function (RouteCollectorProxy $monitors)
@@ -185,6 +190,8 @@ final class Route
         $ticketId->map(['POST'], '', \App\v1\Controllers\Ticket::class . ':updateItem');
         $ticketId->group('/', function (RouteCollectorProxy $sub)
         {
+          $sub->map(['GET'], 'problem', \App\v1\Controllers\Ticket::class . ':showProblem');
+          $sub->map(['POST'], 'problem', \App\v1\Controllers\Ticket::class . ':postProblem');
           $sub->map(['GET'], 'history', \App\v1\Controllers\Ticket::class . ':showHistory');
         });
       });
@@ -433,6 +440,15 @@ final class Route
       $rules->group("/tickets", function (RouteCollectorProxy $tickets)
       {
         $tickets->map(['GET'], '', \App\v1\Controllers\Rules\Ticket::class . ':getAll');
+        $tickets->group("/{id:[0-9]+}", function (RouteCollectorProxy $ticketId)
+        {
+          $ticketId->map(['GET'], '', \App\v1\Controllers\Rules\Ticket::class . ':showItem');
+
+          $ticketId->group('/', function (RouteCollectorProxy $sub)
+          {
+            $sub->map(['GET'], 'criteria', \App\v1\Controllers\Rules\Ticket::class . ':showCriteria');
+          });  
+        });
       });
     });
     $app->group('/profiles', function (RouteCollectorProxy $profiles)

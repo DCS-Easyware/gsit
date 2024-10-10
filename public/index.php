@@ -6,6 +6,8 @@ use Symfony\Component\ErrorHandler\ErrorHandler as SymfonyErrorHandler;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
+use Slim\Views\Twig;
+use Slim\Views\TwigMiddleware;
 
 require __DIR__ . '/../vendor/autoload.php';
 // Load lang
@@ -17,6 +19,12 @@ $app = AppFactory::create();
 
 $app->addRoutingMiddleware();
 $app->setBasePath('/gsit');
+
+// Create Twig
+$twig = Twig::create('../src/v1/Views');
+
+// Add Twig-View Middleware
+$app->add(TwigMiddleware::create($app, $twig));
 
 // See https://github.com/tuupola/slim-jwt-auth
 $container = $app->getContainer();

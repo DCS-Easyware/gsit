@@ -16,39 +16,39 @@ class Software extends Common
   protected $icon = 'cube';
 
   protected $appends = [
-    'category',
-    'manufacturer',
-    // 'nbinstallation',
-    'versions',
-    'groupstech',
-    'userstech',
-    'user',
-    'group',
-    'location',
+    // 'category',
+    // 'manufacturer',
+    // // 'nbinstallation',
+    // 'versions',
+    // 'groupstech',
+    // 'userstech',
+    // 'user',
+    // 'group',
+    // 'location',
   ];
 
   protected $visible = [
-    'category',
-    'manufacturer',
-    // 'nbinstallation',
-    'versions',
-    'groupstech',
-    'userstech',
-    'user',
-    'group',
-    'location',
+    // 'category',
+    // 'manufacturer',
+    // // 'nbinstallation',
+    // 'versions',
+    // 'groupstech',
+    // 'userstech',
+    // 'user',
+    // 'group',
+    // 'location',
   ];
 
   protected $with = [
-    'category:id,name',
-    'manufacturer:id,name',
-    // 'nbinstallation.devices',
-    'versions',
-    'groupstech:id,name',
-    'userstech:id,name',
-    'user:id,name',
-    'group:id,name',
-    'location:id,name',
+    // 'category:id,name',
+    // 'manufacturer:id,name',
+    // // 'nbinstallation.devices',
+    // // 'versions',
+    // 'groupstech:id,name',
+    // 'userstech:id,name',
+    // 'user:id,name',
+    // 'group:id,name',
+    // 'location:id,name',
   ];
 
   public function category(): BelongsTo

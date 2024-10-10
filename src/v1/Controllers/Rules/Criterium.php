@@ -2,7 +2,7 @@
 
 namespace App\v1\Controllers\Rules;
 
-final class Criteria
+final class Criterium
 {
   /**
    * Try to match a defined rule

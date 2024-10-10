@@ -13,6 +13,7 @@ class Ticket
         'title' => $translator->translate('Title'),
         'type'  => 'input',
         'name'  => 'name',
+        'displaygroup' => 'main',
       ],
       [
         'id'    => 21,
@@ -27,67 +28,7 @@ class Ticket
         'name'  => 'status',
         'dbname'  => 'status',
         'values' => self::getStatusArray(),
-      ],
-      [
-        'id'    => 10,
-        'title' => $translator->translate('Urgency'),
-        'type'  => 'dropdown',
-        'name'  => 'urgency',
-        'dbname'  => 'urgency',
-        'values' => self::getUrgencyArray(),
-      ],
-      [
-        'id'    => 11,
-        'title' => $translator->translate('Impact'),
-        'type'  => 'dropdown',
-        'name'  => 'impact',
-        'dbname'  => 'impact',
-        'values' => self::getImpactArray(),
-      ],
-      [
-        'id'    => 3,
-        'title' => $translator->translate('Priority'),
-        'type'  => 'dropdown',
-        'name'  => 'priority',
-        'dbname'  => 'priority',
-        'values' => self::getPriorityArray(),
-      ],
-      [
-        'id'    => 15,
-        'title' => $translator->translate('Opening date'),
-        'type'  => 'datetime',
-        'name'  => 'date',
-      ],
-      [
-        'id'    => 16,
-        'title' => $translator->translate('Closing date'),
-        'type'  => 'datetime',
-        'name'  => 'closedate',
-      ],
-      [
-        'id'    => 18,
-        'title' => $translator->translate('Time to resolve'),
-        'type'  => 'datetime',
-        'name'  => 'time_to_resolve',
-      ],
-      // [
-      //   'id'    => 82,
-      //   'title' => $translator->translate('Time to resolve exceeded'),
-      //   'type'  => 'boolean',
-      //   'name'  => 'is_late',
-      // ],
-      [
-        'id'    => 17,
-        'title' => $translator->translate('Resolution date'),
-        'type'  => 'datetime',
-        'name'  => 'solvedate',
-      ],
-      [
-        'id'    => 19,
-        'title' => $translator->translate('Last update'),
-        'type'  => 'datetime',
-        'name'  => 'date_mod',
-        'readonly'  => 'readonly',
+        'displaygroup' => 'main',
       ],
       [
         'id'    => 7,
@@ -96,6 +37,7 @@ class Ticket
         'name'  => 'category',
         'dbname' => 'categorie_id',
         'itemtype' => '\App\Models\Category',
+        'displaygroup' => 'main',
       ],
       [
         'id'    => 45,
@@ -110,6 +52,77 @@ class Ticket
         ),
         // 'type'  => 'input',
         // 'name'  => 'actiontime',
+        'displaygroup' => 'main',
+      ],
+      [
+        'id'    => 10,
+        'title' => $translator->translate('Urgency'),
+        'type'  => 'dropdown',
+        'name'  => 'urgency',
+        'dbname'  => 'urgency',
+        'values' => self::getUrgencyArray(),
+        'displaygroup' => 'priority',
+      ],
+      [
+        'id'    => 11,
+        'title' => $translator->translate('Impact'),
+        'type'  => 'dropdown',
+        'name'  => 'impact',
+        'dbname'  => 'impact',
+        'values' => self::getImpactArray(),
+        'displaygroup' => 'priority',
+      ],
+      [
+        'id'    => 3,
+        'title' => $translator->translate('Priority'),
+        'type'  => 'dropdown',
+        'name'  => 'priority',
+        'dbname'  => 'priority',
+        'values' => self::getPriorityArray(),
+        'displaygroup' => 'priority',
+      ],
+      [
+        'id'    => 15,
+        'title' => $translator->translate('Opening date'),
+        'type'  => 'datetime',
+        'name'  => 'date',
+        'displaygroup' => 'dates',
+      ],
+      [
+        'id'    => 16,
+        'title' => $translator->translate('Closing date'),
+        'type'  => 'datetime',
+        'name'  => 'closedate',
+        'displaygroup' => 'dates',
+      ],
+      [
+        'id'    => 18,
+        'title' => $translator->translate('Time to resolve'),
+        'type'  => 'datetime',
+        'name'  => 'time_to_resolve',
+        'displaygroup' => 'dates',
+      ],
+      // [
+      //   'id'    => 82,
+      //   'title' => $translator->translate('Time to resolve exceeded'),
+      //   'type'  => 'boolean',
+      //   'name'  => 'is_late',
+      //   'displaygroup' => 'dates',
+      // ],
+      [
+        'id'    => 17,
+        'title' => $translator->translate('Resolution date'),
+        'type'  => 'datetime',
+        'name'  => 'solvedate',
+        'displaygroup' => 'dates',
+      ],
+      [
+        'id'    => 19,
+        'title' => $translator->translate('Last update'),
+        'type'  => 'datetime',
+        'name'  => 'date_mod',
+        'readonly'  => 'readonly',
+        'displaygroup' => 'dates',
       ],
       [
         'id'    => 64,
@@ -118,6 +131,7 @@ class Ticket
         'name'  => 'usersidlastupdater',
         'dbname' => 'users_id_lastupdater',
         'itemtype' => '\App\Models\User',
+        'displaygroup' => 'contributor',
       ],
       [
         'id'    => 4,
@@ -127,6 +141,7 @@ class Ticket
         'itemtype' => '\App\Models\User',
         'multiple' => true,
         'pivot' => ['type' => 1],
+        'displaygroup' => 'contributor',
       ],
       [
         'id'    => 71,
@@ -136,6 +151,7 @@ class Ticket
         'itemtype' => '\App\Models\Group',
         'multiple' => true,
         'pivot' => ['type' => 1],
+        'displaygroup' => 'contributor',
       ],
       [
         'id'    => 22,
@@ -144,6 +160,7 @@ class Ticket
         'name'  => 'usersidrecipient',
         'dbname'  => 'users_id_recipient',
         'itemtype' => '\App\Models\User',
+        'displaygroup' => 'contributor',
       ],
       [
         'id'    => 66,
@@ -153,6 +170,7 @@ class Ticket
         'itemtype' => '\App\Models\User',
         'multiple' => true,
         'pivot' => ['type' => 3],
+        'displaygroup' => 'contributor',
       ],
       [
         'id'    => 65,
@@ -162,6 +180,7 @@ class Ticket
         'itemtype' => '\App\Models\Group',
         'multiple' => true,
         'pivot' => ['type' => 3],
+        'displaygroup' => 'contributor',
       ],
       [
         'id'    => 5,
@@ -171,6 +190,7 @@ class Ticket
         'itemtype' => '\App\Models\User',
         'multiple' => true,
         'pivot' => ['type' => 2],
+        'displaygroup' => 'contributor',
       ],
       // [ TODO supplier
       //   'id'    => 6,
@@ -188,6 +208,7 @@ class Ticket
         'itemtype' => '\App\Models\Group',
         'multiple' => true,
         'pivot' => ['type' => 2],
+        'displaygroup' => 'contributor',
       ],
       /**/
     ];
@@ -443,6 +464,11 @@ class Ticket
     global $translator;
     return [
       [
+        'title' => $translator->translatePlural('Ticket', 'Tickets', 1),
+        'icon' => 'home',
+        'link' => $rootUrl,
+      ],
+      [
         'title' => $translator->translate('Statistics'),
         'icon' => 'chartline',
         'link' => '',
@@ -480,7 +506,7 @@ class Ticket
       [
         'title' => $translator->translatePlural('Problem', 'Problems', 2),
         'icon' => 'drafting compass',
-        'link' => '',
+        'link' => $rootUrl . '/problem',
       ],
       [
         'title' => $translator->translatePlural('Change', 'Changes', 2),

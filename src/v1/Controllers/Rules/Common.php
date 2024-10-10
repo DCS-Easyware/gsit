@@ -16,6 +16,9 @@ class Common extends \App\v1\Controllers\Common
   ///Criterias affected to this rule
   public $criteriaDefinition    = [];
 
+  public $regex_results = [];
+  public $criterias_results = [];
+
   protected $criteriaDefinitionModel = null;
   protected $actionsDefinitionModel = null;
 
@@ -46,7 +49,6 @@ class Common extends \App\v1\Controllers\Common
 
   public function processAllRules($input = [], $output = [], $params = [], $options = [])
   {
-
     $p['condition']     = 0;
     $p['only_criteria'] = null;
 
@@ -76,7 +78,7 @@ class Common extends \App\v1\Controllers\Common
         if ($rule->is_active)
         {
           // Load criteria and actions
-          // $this->actions = \App\Models\Rules\Action::where('rules_id', $rule->id)->get();
+          // $this->actions = \App\Models\Rules\Action::where('rule_id', $rule->id)->get();
 
           $output["_rule_process"] = false;
           $this->process($rule, $input, $output, $params, $p);
@@ -129,11 +131,11 @@ class Common extends \App\v1\Controllers\Common
     // }
   }
 
-  function executeActions($rule, $output, $params, array $input = [])
+  public function executeActions($rule, $output, $params, array $input = [])
   {
 
     // Load actions from DB
-    $actions = \App\Models\Rules\Action::where('rules_id', $rule->id)->get();
+    $actions = \App\Models\Rules\Ruleaction::where('rule_id', $rule->id)->get();
     // Load actions definitions
     $this->actionsDefinition = $this->actionsDefinitionModel::get();
 
@@ -143,11 +145,11 @@ class Common extends \App\v1\Controllers\Common
       {
         switch ($action->action_type)
         {
-          case "assign" :
+          case "assign":
             $output[$action->field] = $action->value;
               break;
 
-          case "append" :
+          case "append":
             // print_r($action);
 
 
@@ -164,8 +166,8 @@ class Common extends \App\v1\Controllers\Common
             $output[$this->actionsDefinition[$action->field]["appendto"]][] = $value;
               break;
 
-          case "regex_result" :
-          case "append_regex_result" :
+          case "regex_result":
+          case "append_regex_result":
             //Regex result : assign value from the regex
             //Append regex result : append result from a regex
             if (isset($this->regex_results[0]))
@@ -207,47 +209,46 @@ class Common extends \App\v1\Controllers\Common
    *
    * @return boolean if criteria match
   **/
-  function checkCriterias($rule, $input)
+  public function checkCriterias($rule, $input)
   {
+    // Load criteria from DB
+    $criteria = \App\Models\Rules\Rulecriterium::where('rule_id', $rule->id)->get();
+    // Load criteria definitions
+    $this->criteriaDefinition = $this->criteriaDefinitionModel::get();
+
     if ($rule->match == self::AND_MATCHING)
     {
       $doactions = true;
 
-      // Load criteria from DB
-      $criterias = \App\Models\Rules\Criteria::where('rules_id', $rule->id)->get();
-      // Load criteria definitions
-      $this->criteriaDefinition = $this->criteriaDefinitionModel::get();
-
-      foreach ($criterias as $criterion)
+      foreach ($criteria as $criterium)
       {
-
         // $definition_criterion = $this->getCriteria($criterion->fields['criteria']);
         // if (!isset($definition_criterion['is_global']) || !$definition_criterion['is_global'])
         // {
-          $doactions &= $this->checkCriteria($criterion, $input);
-          if (!$doactions)
-          {
-            break;
-          }
+        $doactions &= $this->checkCriteria($criterium, $input);
+        if (!$doactions)
+        {
+          break;
+        }
         // }
       }
     } else { // OR MATCHING
       $doactions = false;
-      foreach ($this->criterias as $criterion)
+      foreach ($criteria as $criterion)
       {
-        $definition_criterion = $this->getCriteria($criterion->fields['criteria']);
+        // $definition_criterion = $this->getCriteria($criterion->fields['criteria']);
 
-        if (
-            !isset($definition_criterion['is_global']) ||
-            !$definition_criterion['is_global']
-        )
-        {
+        // if (
+        //     !isset($definition_criterion['is_global']) ||
+        //     !$definition_criterion['is_global']
+        // )
+        // {
           $doactions |= $this->checkCriteria($criterion, $input);
           if ($doactions)
           {
             break;
           }
-        }
+        // }
       }
     }
 
@@ -265,9 +266,8 @@ class Common extends \App\v1\Controllers\Common
    * @param $criterium  criterium to check
    * @param &$input     the input data used to check criteria
   **/
-  function checkCriteria($criterion, &$input)
+  public function checkCriteria($criterion, &$input)
   {
-
     $partial_regex_result = [];
     // Undefine criteria field : set to blank
     if (!isset($input[$criterion->criteria]))
@@ -280,12 +280,11 @@ class Common extends \App\v1\Controllers\Common
     {
       $value = $this->getCriteriaValue(
         $criterion->criteria,
-        // $criteria->condition,
-        '',
-        $input[$criterion->criteria]
+        $criterion->condition,
+        $input[$criterion->criteria],
       );
 
-      $res   = \App\v1\Controllers\Rules\Criteria::match(
+      $res = \App\v1\Controllers\Rules\Criterium::match(
         $criterion,
         $value,
         $this->criterias_results,
@@ -296,7 +295,7 @@ class Common extends \App\v1\Controllers\Common
       // Negative condition : Need to match all condition (never be)
       if (
           in_array(
-            $criteria->condition,
+            $criterion->condition,
             [
               self::PATTERN_IS_NOT,
               self::PATTERN_NOT_CONTAIN,
@@ -307,11 +306,11 @@ class Common extends \App\v1\Controllers\Common
       )
       {
         $res = true;
-        foreach ($input[$criteria->criteria] as $tmp)
+        foreach ($input[$criterion->criteria] as $tmp)
         {
-          $value = $this->getCriteriaValue($criteria->criteria, $criteria->condition, $tmp);
+          $value = $this->getCriteriaValue($criterion->criteria, $criterion->condition, $tmp);
 
-          $res &= RuleCriteria::match($criteria, $value, $this->criterias_results, $partial_regex_result);
+          $res &= \App\v1\Controllers\Rules\Criterium::match($criteria, $value, $this->criterias_results, $partial_regex_result);
           if (!$res)
           {
             break;
@@ -320,11 +319,11 @@ class Common extends \App\v1\Controllers\Common
       } else {
         // Positive condition : Need to match one
         $res = false;
-        foreach ($input[$criteria->criteria] as $crit)
+        foreach ($input[$criterion->criteria] as $crit)
         {
-          $value = $this->getCriteriaValue($criteria->criteria, $criteria->condition, $crit);
+          $value = $this->getCriteriaValue($criterion->criteria, $criterion->condition, $crit);
 
-          $res |= RuleCriteria::match($criteria, $value, $this->criterias_results, $partial_regex_result);
+          $res |= \App\v1\Controllers\Rules\Criterium::match($criteria, $value, $this->criterias_results, $partial_regex_result);
         }
       }
     }
@@ -358,7 +357,7 @@ class Common extends \App\v1\Controllers\Common
    * @param $condition condition used
    * @param $value     the pattern
   **/
-  function getCriteriaValue($key, $condition, $value)
+  public function getCriteriaValue($key, $condition, $value)
   {
     if (
         !in_array(
@@ -381,14 +380,13 @@ class Common extends \App\v1\Controllers\Common
         switch ($crit['type'])
         {
           case "dropdown":
-            $tmp = Dropdown::getDropdownName($crit["table"], $value, false, false);
-            //$tmp = Dropdown::getDropdownName($crit["table"], $value);
-            // return empty string to be able to check if set
-            if ($tmp == '&nbsp;')
+            $item = new $crit['model']();
+            $myItem = $item->find($value);
+            if (is_null($myItem))
             {
-                return '';
+              return '';
             }
-              return $tmp;
+              return $myItem->name;
 
           case "dropdown_assign":
           case "dropdown_users":
@@ -399,13 +397,16 @@ class Common extends \App\v1\Controllers\Common
               return Dropdown::getYesNo($value);
 
           case "dropdown_impact":
-              return Ticket::getImpactName($value);
+            $impacts = \App\Models\Definitions\Ticket::getImpactArray();
+              return $impacts[$value]['title'];
 
           case "dropdown_urgency":
-              return Ticket::getUrgencyName($value);
+            $urgencies = \App\Models\Definitions\Ticket::getUrgencyArray();
+              return $urgencies[$value]['title'];
 
           case "dropdown_priority":
-              return Ticket::getPriorityName($value);
+              $priorities = \App\Models\Definitions\Ticket::getPriorityArray();
+              return $priorities[$value]['title'];
         }
       }
     }
@@ -415,7 +416,7 @@ class Common extends \App\v1\Controllers\Common
   /**
    * @param $input
   **/
-  function findWithGlobalCriteria($input)
+  public function findWithGlobalCriteria($input)
   {
     return true;
   }

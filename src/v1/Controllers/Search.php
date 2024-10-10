@@ -42,6 +42,11 @@ final class Search extends Common
     }
 
     $cnt = $item->count();
+
+    if (get_class($item) == "App\Models\Ticket")
+    {
+      $item = $item->orderBy('id', 'desc');
+    }
     $items = $item->offset($start)->take($limit)->get();
     $itemDbData = $this->prepareValues($newItemDef, $items, $uri);
 

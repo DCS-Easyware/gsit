@@ -4,21 +4,20 @@ namespace App\v1\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Views\PhpRenderer;
+use Slim\Views\Twig;
 
 final class Login extends Common
 {
   public function getLogin(Request $request, Response $response, $args): Response
   {
-    $globalViewData = [
+    $view = Twig::fromRequest($request);
+
+    $viewData = [
       'title'    => 'GSIT - ' . 'Login page',
       'rootpath' => \App\v1\Controllers\Toolbox::getRootPath($request),
     ];
 
-    $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
-    // $renderer->setLayout('login.php');
-
-    return $renderer->render($response, 'login.php', $globalViewData);
+    return $view->render($response, 'login.html.twig', $viewData);
   }
 
   public function postLogin(Request $request, Response $response, $args): Response

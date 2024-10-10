@@ -23,14 +23,6 @@ class Computer
         'itemtype' => '\App\Models\State',
       ],
       [
-        'id'    => 3,
-        'title' => $translator->translatePlural('Location', 'Locations', 1),
-        'type'  => 'dropdown_remote',
-        'name'  => 'location',
-        'dbname' => 'location_id',
-        'itemtype' => '\App\Models\Location',
-      ],
-      [
         'id'    => 4,
         'title' => $translator->translatePlural('Type', 'Types', 1),
         'type'  => 'dropdown_remote',
@@ -39,11 +31,11 @@ class Computer
         'itemtype' => '\App\Models\Computertype',
       ],
       [
-        'id'    => 24,
-        'title' => $translator->translate('Technician in charge of the hardware'),
+        'id'    => 70,
+        'title' => $translator->translatePlural('User', 'Users', 1),
         'type'  => 'dropdown_remote',
-        'name'  => 'userstech',
-        'dbname' => 'users_id_tech',
+        'name'  => 'user',
+        'dbname' => 'user_id',
         'itemtype' => '\App\Models\User',
       ],
       [
@@ -55,14 +47,6 @@ class Computer
         'itemtype' => '\App\Models\Manufacturer',
       ],
       [
-        'id'    => 49,
-        'title' => $translator->translate('Group in charge of the hardware'),
-        'type'  => 'dropdown_remote',
-        'name'  => 'groupstech',
-        'dbname' => 'groups_id_tech',
-        'itemtype' => '\App\Models\Group',
-      ],
-      [
         'id'    => 40,
         'title' => $translator->translatePlural('Model', 'Models', 1),
         'type'  => 'dropdown_remote',
@@ -71,22 +55,10 @@ class Computer
         'itemtype' => '\App\Models\Computermodel',
       ],
       [
-        'id'    => 8,
-        'title' => $translator->translate('Alternate username number'),
-        'type'  => 'input',
-        'name'  => 'contact_num',
-      ],
-      [
         'id'    => 5,
         'title' => $translator->translate('Serial number'),
         'type'  => 'input',
         'name'  => 'serial',
-      ],
-      [
-        'id'    => 7,
-        'title' => $translator->translate('Alternate username'),
-        'type'  => 'input',
-        'name'  => 'contact',
       ],
       [
         'id'    => 6,
@@ -95,12 +67,40 @@ class Computer
         'name'  => 'otherserial',
       ],
       [
-        'id'    => 70,
-        'title' => $translator->translatePlural('User', 'Users', 1),
+        'id'    => 3,
+        'title' => $translator->translatePlural('Location', 'Locations', 1),
         'type'  => 'dropdown_remote',
-        'name'  => 'user',
-        'dbname' => 'user_id',
+        'name'  => 'location',
+        'dbname' => 'location_id',
+        'itemtype' => '\App\Models\Location',
+      ],
+      [
+        'id'    => 24,
+        'title' => $translator->translate('Technician in charge of the hardware'),
+        'type'  => 'dropdown_remote',
+        'name'  => 'userstech',
+        'dbname' => 'users_id_tech',
         'itemtype' => '\App\Models\User',
+      ],
+      [
+        'id'    => 49,
+        'title' => $translator->translate('Group in charge of the hardware'),
+        'type'  => 'dropdown_remote',
+        'name'  => 'groupstech',
+        'dbname' => 'groups_id_tech',
+        'itemtype' => '\App\Models\Group',
+      ],
+      [
+        'id'    => 7,
+        'title' => $translator->translate('Alternate username'),
+        'type'  => 'input',
+        'name'  => 'contact',
+      ],
+      [
+        'id'    => 8,
+        'title' => $translator->translate('Alternate username number'),
+        'type'  => 'input',
+        'name'  => 'contact_num',
       ],
       [
         'id'    => 71,
@@ -159,6 +159,11 @@ class Computer
   {
     global $translator;
     return [
+      [
+        'title' => $translator->translatePlural('Computer', 'Computers', 1),
+        'icon' => 'home',
+        'link' => $rootUrl,
+      ],
       [
         'title' => $translator->translatePlural('Operating system', 'Operating systems', 1),
         'icon' => 'laptop house',

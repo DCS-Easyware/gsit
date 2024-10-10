@@ -1,0 +1,84 @@
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $('.ui.dropdown')
+        .dropdown({
+        })
+    ;
+    $('.remotedropdown')
+      .dropdown({
+        // minCharacters: 2,
+        saveRemoteData: false,
+        // preserveHTML : false,
+        apiSettings: {
+          encodeParameters: false,
+          cache: false,
+          url: '{url}',
+          method: 'post',
+          beforeSend: function(settings) {
+            // cancel request if no itemtype
+            if(!$(this).data('itemtype')) {
+              return false;
+            }
+            settings.data.itemtype = $(this).data('itemtype');
+            settings.data = JSON.stringify(settings.data);
+            return settings;
+          }          
+        }      
+      });
+
+    $('table').tablesort();
+
+    $('.searchfield')
+      .dropdown({
+        action: 'activate',
+        onChange: function(text, value, element) {
+          type = element[0].attributes['data-type'].value;
+          if (type === 'input') {
+            $('#search-input').prop({
+              hidden: false
+            });
+            $('#search-input input').prop({
+              name: 'value'
+            });
+            $('#search-dropdown').prop({
+              hidden: true
+            });
+            $('#search-dropdown input').removeProp('name');
+          } else {
+            itemtype = element[0].attributes['data-itemtype'].value;
+            $('#search-input').prop({
+              hidden: true
+            });
+            $('#search-input input').removeProp('name');
+            $('#search-dropdown').prop({
+              hidden: false,
+            });
+            $('#search-dropdown').data('itemtype', itemtype);
+            $('#search-dropdown input').prop({
+              name: 'value'
+            });
+          }
+        }
+      });
+
+      $('.menu .item')
+        .tab();
+
+      {% for m in message %}
+        $.toast({
+          title: 'Action',
+          message: '{{ m }}',
+          showProgress: 'top',
+          classProgress: 'green',
+          progressUp: true,
+        });
+      {% endfor %}
+
+      $('.ui.sticky')
+        .sticky();
+  </script>
+</body>
+</html>
+

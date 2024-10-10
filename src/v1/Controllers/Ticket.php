@@ -4,7 +4,7 @@ namespace App\v1\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Views\PhpRenderer;
+use Slim\Views\Twig;
 use Slim\Routing\RouteContext;
 
 final class Ticket extends Common
@@ -21,18 +21,17 @@ final class Ticket extends Common
     return $this->commonShowITILItem($request, $response, $args, $item);
   }
 
-  public function updateItem(Request $request, Response $response, $args): void
+  public function updateItem(Request $request, Response $response, $args): Response
   {
-
     $data = (object) $request->getParsedBody();
     $this->saveItem($data, $args['id']);
 
     $uri = $request->getUri();
-    header('Location: ' . (string) $uri);
-    exit();
+    return $response
+      ->withHeader('Location', (string) $uri)
+      ->withStatus(302);
 
     // Old code
-
 
     $myItem = \App\Models\Ticket::find($args['id']);
     $currentUrgency = $myItem->urgency;
@@ -138,7 +137,6 @@ final class Ticket extends Common
       }
     }
 
-
     $rule = new \App\v1\Controllers\Rules\Ticket();
     $updateData = $rule->processAllRules(
       $input
@@ -199,28 +197,83 @@ final class Ticket extends Common
     // return $this->commonUpdateItem($request, $response, $args, $item);
   }
 
+  public function showProblem(Request $request, Response $response, $args)
+  {
+    global $translator;
+    $item = new \App\Models\Ticket();
+    $view = Twig::fromRequest($request);
+
+    $myItem = $item::with(['problems'])->find($args['id']);
+
+    $rootUrl = $this->getUrlWithoutQuery($request);
+    $rootUrl = rtrim($rootUrl, '/problem');
+
+    // $problems = $myItem->problem()->get()->toArray();
+    $problems = [];
+
+    foreach ($myItem->problems as $problem) {
+      $problems[] = $problem->toArray();
+    }
+
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
+    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
+    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
+    $viewData->addHeaderName($item->getTitle(1));
+    $viewData->addHeaderId($myItem->id);
+    $viewData->addIconId($item->getIcon());
+    $viewData->addColorId($myItem->getColor());
+
+    $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
+
+    $viewData->addData('fields', $item->getFormData($myItem));
+    $viewData->addData('feeds', $item->getFeeds($args['id']));
+    $viewData->addData('content', \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content));
+    $viewData->addData('problems', $problems);
+
+    $viewData->addTranslation('attachItem', $translator->translate('Attach to an existant problem'));
+    $viewData->addTranslation('selectItem', $translator->translate('Select problem...'));
+    $viewData->addTranslation('buttonAttach', $translator->translate('Attach'));
+    $viewData->addTranslation('addItem', $translator->translate('Add new problem'));
+    $viewData->addTranslation('buttonCreate', $translator->translate('Create'));
+    $viewData->addTranslation('attachedItems', $translator->translate('Problems attached'));
+    $viewData->addTranslation('updated', $translator->translate('Last update'));
+    $viewData->addTranslation('or', $translator->translate('Ou'));
+
+    return $view->render($response, 'subitem/problem.html.twig', (array) $viewData);
+  }
+
+  public function postProblem(Request $request, Response $response, $args)
+  {
+    $data = (object) $request->getParsedBody();
+
+    if (property_exists($data, 'problem') && is_numeric($data->problem))
+    {
+      $myItem = \App\Models\Ticket::find($args['id']);
+      $myItem->problems()->attach((int)$data->problem);
+
+      // add message to session
+      $session = new \SlimSession\Helper();
+      $session->message = "The ticket has been attached to problem correctly";
+    } else {
+      // add message to session
+      $session = new \SlimSession\Helper();
+      $session->message = "Error";
+    }
+
+    $uri = $request->getUri();
+    header('Location: ' . (string) $uri);
+    exit();
+  }
+
   public function showHistory(Request $request, Response $response, $args)
   {
     $item = new \App\Models\Ticket();
+    $view = Twig::fromRequest($request);
 
-    $globalViewData = [
-      'title'    => 'GSIT - ' . $item->getTitle(1),
-      'menu'     => \App\v1\Controllers\Menu::getMenu($request),
-      'rootpath' => \App\v1\Controllers\Toolbox::getRootPath($request),
-    ];
     $session = new \SlimSession\Helper();
 
-    if ($session->exists('message'))
-    {
-      $globalViewData['message'] = $session->message;
-      $session->delete('message');
-    }
-
-    $renderer = new PhpRenderer(__DIR__ . '/../Views/', $globalViewData);
-    $renderer->setLayout('layout.php');
-
     // Load the item
-    // $item->loadId($args['id']);
     $myItem = $item->find($args['id']);
 
     $logs = \App\Models\Log::
@@ -240,18 +293,32 @@ final class Ticket extends Common
 // new_value: post-only, Root entity, D
 
 
+    $rootUrl = $this->getUrlWithoutQuery($request);
+    $rootUrl = rtrim($rootUrl, '/history');
+
     // form data
-    $viewData = [
-      'name'         => $item->getTitle(1),
-      'fields'       => $item->getFormData($myItem),
-      'feeds'        => $item->getFeeds($args['id']), //[
-      'relatedPages' => $item->getRelatedPages($this->getUrlWithoutQuery($request)),
-      'icon'         => $item->getIcon(),
-      'color'        => $myItem->getColor(),
-      'content'      => \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content),
-      'history'      => $logs,
-    ];
-    return $renderer->render($response, 'subitem/history.php', $viewData);
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
+    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
+    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
+    $viewData->addHeaderName($item->getTitle(1));
+    $viewData->addHeaderId($myItem->id);
+    $viewData->addIconId($item->getIcon());
+    $viewData->addColorId($myItem->getColor());
+
+    $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
+
+    $viewData->addData('fields', $item->getFormData($myItem));
+    $viewData->addData('content', \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content));
+    $viewData->addData('history', $logs);
+
+    if ($session->exists('message'))
+    {
+      $viewData['message'] = $session->message;
+      $session->delete('message');
+    }
+
+    return $view->render($response, 'subitem/history.html.twig', (array)$viewData);
   }
 
   /**
@@ -285,6 +352,8 @@ final class Ticket extends Common
    */
   public function saveItem($data, $id = null)
   {
+    global $translator;
+
     $myItem = \App\Models\Ticket::find($id);
     $definitions = $myItem->getDefinitions();
 
@@ -293,7 +362,7 @@ final class Ticket extends Common
       'urgency' => 3,
       'impact'  => 3,
     ];
-    $propertiesList = ['impact', 'urgency', 'priority', 'name', 'content', 'status'];
+    $propertiesList = ['impact', 'urgency', 'priority', 'name', 'content', 'status', 'category'];
     foreach ($propertiesList as $property)
     {
       if (property_exists($data, $property))
@@ -323,9 +392,9 @@ final class Ticket extends Common
 
 
     // Convert data to rules
-    if (isset($input['categorie']))
+    if (isset($input['category']))
     {
-      $input['category_id'] = $input['category'];
+      $input['itilcategories_id'] = $input['category'];
     }
     // TODO itilcategories_id_cn && itilcategories_id_code
     //
@@ -376,8 +445,10 @@ final class Ticket extends Common
 
 
     // compute priority
-    $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
-
+    if ($myItem->priority == $data->priority)
+    {
+      $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
+    }
 
     // play rules
     $rule = new \App\v1\Controllers\Rules\Ticket();
@@ -407,10 +478,15 @@ final class Ticket extends Common
       }
     }
 
+    $itemFields = array_keys($myItem->getAttributes());
     foreach ($input as $field => $value)
     {
+      if ($field == 'category')
+      {
+        $field = 'category_id';
+      }
       if (
-          isset($myItem->{$field}) &&
+          in_array($field, $itemFields) &&
           $myItem->{$field} != $value &&
           !in_array($field, $exclude)
       )
@@ -486,6 +562,6 @@ final class Ticket extends Common
 
     // add message to session
     $session = new \SlimSession\Helper();
-    $session->message = "The ticket has been updated correctly";
+    $session->message = $translator->translate('Operation successful');
   }
 }

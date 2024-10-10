@@ -1,0 +1,58 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+<form method="post" class="ui form">
+  <button class="ui button right floated" type="submit">{{ translation.savebutton }}</button>
+  <div class="ui internally celled grid">
+    <div class="row">
+      <div class="height wide column">
+        {% for item in data.fields %}
+          {% if item.name != 'comment' %}
+            {{ include('fields.html.twig') }}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="height wide column">
+        {# infos #}
+        <div class="ui form blue segment">
+          <div class="field">
+            <label style="text-transform: uppercase;">
+              <span class="ui blue text">
+                Informations
+              </span>
+            </label>
+            Operating system: Windows 10 pro
+            <a href="{{ base_path() }}/computers/19737/softwares"><i class="external alternate icon"></i></a>
+          </div>
+        </div>
+
+
+        {% for item in data.fields %}
+          {% if item.name == 'comment' %}
+          <div class="field">
+            <label>{{ item.title }}</label>
+              <div id="editor{{ item.name }}">{{ item.value }}</div>
+              <textarea rows="3" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %}  style="display: none">{{ item.value }}</textarea>
+<script type="text/javascript">
+editor{{ item.name }} = new toastui.Editor({
+el: document.querySelector('#editor{{ item.name }}'),
+initialEditType: 'markdown',
+previewStyle: 'vertical',
+initialEditType: 'wysiwyg',
+events: {
+blur: () => {
+document.querySelector(`textarea[name='{{ item.name }}']`).value = editor{{ item.name }};
+},
+},
+});
+</script>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <button class="ui button right floated" type="submit">{{ translation.savebutton }}</button>
+</form>
+
+{{ include('footer.html.twig') }}

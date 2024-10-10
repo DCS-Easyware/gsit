@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Computer extends Common
 {
@@ -13,17 +15,17 @@ class Computer extends Common
   protected $icon = 'laptop';
 
   protected $appends = [
-    'type',
-    'model',
-    'state',
-    'manufacturer',
-    'network',
-    'groupstech',
-    'userstech',
-    'user',
-    'group',
-    'location',
-    'autoupdatesystem',
+    // 'type',
+    // 'model',
+    // 'state',
+    // 'manufacturer',
+    // 'network',
+    // 'groupstech',
+    // 'userstech',
+    // 'user',
+    // 'group',
+    // 'location',
+    // 'autoupdatesystem',
   ];
 
   protected $visible = [
@@ -52,6 +54,7 @@ class Computer extends Common
     'group:id,name',
     'location:id,name',
     'autoupdatesystem:id,name',
+    'softwareversions:id,name',
   ];
 
 
@@ -108,5 +111,10 @@ class Computer extends Common
   public function autoupdatesystem(): BelongsTo
   {
     return $this->belongsTo('\App\Models\Autoupdatesystem');
+  }
+
+  public function softwareversions(): MorphToMany
+  {
+    return $this->morphToMany('\App\Models\Softwareversion', 'item', 'item_softwareversion');
   }
 }
