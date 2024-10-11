@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Autoupdatesystem extends Common
 {
-  use SoftDeletes;
 
   protected $definition = '\App\Models\Definitions\Autoupdatesystem';
   protected $titles = ['Update Source', 'Update Sources'];

@@ -13,19 +13,24 @@
         {% endfor %}
       </div>
       <div class="height wide column">
-        {# infos #}
-        <div class="ui form blue segment">
-          <div class="field">
-            <label style="text-transform: uppercase;">
-              <span class="ui blue text">
-                Informations
-              </span>
-            </label>
-            Operating system: Windows 10 pro
-            <a href="{{ base_path() }}/computers/19737/softwares"><i class="external alternate icon"></i></a>
+        {# infos top #}
+        {% if information.top|length > 0 %}
+          <div class="ui form blue segment">
+            <div class="field">
+              <label style="text-transform: uppercase;">
+                <span class="ui blue text">
+                  Informations
+                </span>
+              </label>
+              {% for key, item_top in information.top %}
+                  <p>
+                    {{ item_top.value }}
+                    <a href="{{ item_top.link }}"><i class="external alternate icon"></i></a>
+                  </p>
+              {% endfor %}
+            </div>
           </div>
-        </div>
-
+        {% endif %}
 
         {% for item in data.fields %}
           {% if item.name == 'comment' %}
@@ -49,6 +54,25 @@ document.querySelector(`textarea[name='{{ item.name }}']`).value = editor{{ item
             </div>
           {% endif %}
         {% endfor %}
+
+        {# infos bottom #}
+        {% if information.bottom|length > 0 %}
+          <div class="ui form blue segment">
+            <div class="field">
+              <label style="text-transform: uppercase;">
+                <span class="ui blue text">
+                  Informations
+                </span>
+              </label>
+              {% for key, item_bottom in information.bottom %}
+                <p>
+                  {{ item_bottom.value }}
+                  <a href="{{ item_bottom.link }}"><i class="external alternate icon"></i></a>
+                </p>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>

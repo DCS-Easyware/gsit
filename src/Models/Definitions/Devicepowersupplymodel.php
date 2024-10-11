@@ -43,7 +43,7 @@ class Devicepowersupplymodel
     ];
   }
 
-  public static function getRelatedPages()
+  public static function getRelatedPages($rootUrl)
   {
     global $translator;
     return [

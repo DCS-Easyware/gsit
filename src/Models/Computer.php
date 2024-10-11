@@ -55,6 +55,7 @@ class Computer extends Common
     'location:id,name',
     'autoupdatesystem:id,name',
     'softwareversions:id,name',
+    'operatingsystems:id,name',
   ];
 
 
@@ -116,5 +117,10 @@ class Computer extends Common
   public function softwareversions(): MorphToMany
   {
     return $this->morphToMany('\App\Models\Softwareversion', 'item', 'item_softwareversion');
+  }
+
+  public function operatingsystems(): MorphToMany
+  {
+    return $this->morphToMany('\App\Models\Operatingsystem', 'item', 'item_operatingsystem')->withPivot('operatingsystemversion_id', 'operatingsystemservicepack_id', 'operatingsystemarchitecture_id', 'operatingsystemkernelversion_id', 'operatingsystemedition_id', 'license_number', 'licenseid');
   }
 }

@@ -4,8 +4,8 @@
 <table class="ui blue table">
   <thead>
     <tr>
-      <th>Software</th>
-      <th>version</th>
+      <th>{{ translation.software }}</th>
+      <th>{{ translation.version }}</th>
     </tr>
   </tr></thead><tbody>
     {% for softwareversion in data.softwares|sort((a, b) => a.software.name|lower <=> b.software.name|lower) %}

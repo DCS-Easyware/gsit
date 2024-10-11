@@ -37,7 +37,7 @@ final class ItemsOperatingsystemsMigration extends AbstractMigration
           [
             'id'                              => $row['id'],
             'item_id'                         => $row['items_id'],
-            'item_type'                       => $row['itemtype'],
+            'item_type'                       => 'App\\Models\\' . $row['itemtype'],
             'operatingsystem_id'              => $row['operatingsystems_id'],
             'operatingsystemversion_id'       => $row['operatingsystemversions_id'],
             'operatingsystemservicepack_id'   => $row['operatingsystemservicepacks_id'],

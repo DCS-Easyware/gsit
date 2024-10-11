@@ -6,12 +6,12 @@ trait Information
 {
   public function initInformationData()
   {
-    $this->information->top = (object)[];
-    $this->information->bottom = (object)[];
+    $this->information->top = [];
+    $this->information->bottom = [];
   }
 
-  public function addInformation($type, $key, $value)
+  public function addInformation($type, $key, $value, $link)
   {
-    $this->information->{$type}->{$key} = $value;
+    $this->information->{$type}[$key] = ['value' => $value, 'link' => $link];
   }
 }

@@ -78,6 +78,10 @@ class Common
 
     $viewData->addTranslation('savebutton', $translator->translate('Save'));
 
+    $viewData->addInformation('top', 'operatingsystem', $translator->translatePlural('Operating system', 'Operating systems', 1), $this->getUrlWithoutQuery($request) . '/operatingsystem');
+    $viewData->addInformation('top', 'softwares', $translator->translatePlural('Software', 'Software', 2), $this->getUrlWithoutQuery($request) . '/softwares');
+    $viewData->addInformation('bottom', '1', 'Operating system : Windows 11 pro', 'free.fr');
+
     return $view->render($response, 'genericForm.html.twig', (array)$viewData);
   }
 

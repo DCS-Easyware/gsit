@@ -4,12 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Taskcategory extends Common
 {
-  use SoftDeletes;
-
   protected $definition = '\App\Models\Definitions\Taskcategory';
   protected $titles = ['Task category', 'Task categories'];
   protected $icon = 'edit';

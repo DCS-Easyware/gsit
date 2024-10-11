@@ -117,9 +117,11 @@ class Common extends Model
    *
    * @return array
    */
-  public function getFormData($myItem)
+  public function getFormData($myItem, $otherDefs=false)
   {
     $def = $this->getDefinitions();
+    if ($otherDefs !== false) $def = $otherDefs;
+
     foreach ($def as &$field)
     {
       if ($field['type'] == 'dropdown_remote')
