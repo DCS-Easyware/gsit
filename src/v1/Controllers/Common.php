@@ -197,6 +197,58 @@ class Common
     if ($session->exists('message'))
     {
       $viewData->addMessage($session->message);
+      $session->delete('message');
+    }
+
+    return $view->render($response, 'ITILForm.html.twig', (array)$viewData);
+  }
+
+  public function commonShowITILNewItem(Request $request, Response $response, $args, $item): Response
+  {
+    global $translator;
+    $view = Twig::fromRequest($request);
+
+    $session = new \SlimSession\Helper();
+
+    // form data
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
+    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
+    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
+    $viewData->addHeaderName($item->getTitle(1));
+    $viewData->addIconId($item->getIcon());
+
+    $viewData->addRelatedPages($item->getRelatedPages($this->getUrlWithoutQuery($request)));
+
+    $viewData->addData('fields', $item->getFormData($item));
+    $viewData->addData('feeds', []);
+    $viewData->addData('content', '');
+
+    $viewData->addTranslation('description', $translator->translate('Description'));
+    $viewData->addTranslation('feeds', $translator->translate('Feeds'));
+    $viewData->addTranslation('followup', $translator->translatePlural('Followup', 'Followups', 1));
+    $viewData->addTranslation('solution', $translator->translatePlural('Solution', 'Solutions', 1));
+    $viewData->addTranslation('template', $translator->translatePlural('Template', 'Templates', 1));
+    $viewData->addTranslation('private', $translator->translate('Private'));
+    $viewData->addTranslation('sourcefollow', $translator->translate('Source of followup'));
+    $viewData->addTranslation('category', $translator->translatePlural('Category', 'Categories', 1));
+    $viewData->addTranslation('status', $translator->translate('Status'));
+    $viewData->addTranslation('duration', $translator->translate('Duration'));
+    $viewData->addTranslation('seconds', $translator->translatePlural('Second', 'Seconds', 2));
+    $viewData->addTranslation('minutes', $translator->translatePlural('Minute', 'Minutes', 2));
+    $viewData->addTranslation('hours', $translator->translatePlural('Hour', 'Hours', 2));
+    $viewData->addTranslation('user', $translator->translatePlural('User', 'Users', 1));
+    $viewData->addTranslation('group', $translator->translatePlural('Group', 'Groups', 1));
+    $viewData->addTranslation('addfollowup', $translator->translate('Add followup'));
+    $viewData->addTranslation('timespent', $translator->translate('Time spent'));
+    $viewData->addTranslation('savebutton', $translator->translate('Save'));
+    $viewData->addTranslation('selectvalue', $translator->translate('Select value...'));
+    $viewData->addTranslation('yes', $translator->translate('Yes'));
+    $viewData->addTranslation('no', $translator->translate('No'));
+
+    if ($session->exists('message'))
+    {
+      $viewData->addMessage($session->message);
       // $session->delete('message');
     }
 

@@ -84,6 +84,7 @@ final class FollowupsMigration extends AbstractMigration
             'timeline_position' => $row['timeline_position'],
             'sourceitem_id'     => 0,
             'sourceof_item_id'  => 0,
+            'is_tech'           => true,
           ];
 
           // id: 6

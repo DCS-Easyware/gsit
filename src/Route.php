@@ -184,12 +184,19 @@ final class Route
       $tickets->map(['GET'], '', \App\v1\Controllers\Ticket::class . ':getAll');
       $tickets->map(['POST'], '', \App\v1\Controllers\Ticket::class . ':postItem');
 
+      $tickets->group("/new", function (RouteCollectorProxy $ticketNew)
+      {
+        $ticketNew->map(['GET'], '', \App\v1\Controllers\Ticket::class . ':showNewItem');
+        $ticketNew->map(['POST'], '', \App\v1\Controllers\Ticket::class . ':newItem');
+      });
+
       $tickets->group("/{id:[0-9]+}", function (RouteCollectorProxy $ticketId)
       {
         $ticketId->map(['GET'], '', \App\v1\Controllers\Ticket::class . ':showItem');
         $ticketId->map(['POST'], '', \App\v1\Controllers\Ticket::class . ':updateItem');
         $ticketId->group('/', function (RouteCollectorProxy $sub)
         {
+          $sub->map(['GET'], 'stats', \App\v1\Controllers\Ticket::class . ':showStats');
           $sub->map(['GET'], 'problem', \App\v1\Controllers\Ticket::class . ':showProblem');
           $sub->map(['POST'], 'problem', \App\v1\Controllers\Ticket::class . ':postProblem');
           $sub->map(['GET'], 'history', \App\v1\Controllers\Ticket::class . ':showHistory');

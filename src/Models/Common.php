@@ -82,7 +82,7 @@ class Common extends Model
 
   public function getDropdownValues()
   {
-    $items = $this->orderBy('name')->get();
+    $items = $this->orderBy('name')->get()->take(50);
     $data = [];
     foreach ($items as $item)
     {

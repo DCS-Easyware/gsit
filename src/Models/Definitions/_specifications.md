@@ -26,7 +26,7 @@ Optional fields:
 * pivot" array | the field and value of a pivot table if required for dropdown_remote
 * values: array | only for type 'dropdown', can define the values (see next chapter)
 * readonly: readonly | field in readonly mode
-
+* displaygroup: name of panel (group many fields in same panel)
 
 
 

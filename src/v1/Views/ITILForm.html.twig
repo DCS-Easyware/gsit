@@ -1,27 +1,56 @@
 {{ include('header.html.twig') }}
 {{ include('headerForm.html.twig') }}
 
+  {% if header.id == 0 %}
+  <form method="post" class="ui form">
+  {% endif %}
   <div class="ui internally celled grid">
     <div class="row">
       <div class="twelve wide column">
-        <form class="ui form {{ color }} segment">
-          <div class="field">
-            <label>{{ translation.description }}</label>
+        <form class="ui form {{ header.color }} segment">
+          <a class="ui {{ header.color }} ribbon label" style="text-transform: capitalize" data-value="contentdescription">
+            {{ translation.description }}
+          </a>
+          <div name="contentdescription" class="field" style="display: block">
             <div class="itilcontent">
-              {{ data.content | raw }}
+              {% if header.id > 0 %}
+                {{ data.content | raw }}
+              {% else %}
+                <div id="editorcontent"></div>
+                <textarea rows="3" name="content" style="display: none"></textarea>
+              <script type="text/javascript">
+editorcontent = new toastui.Editor({
+  el: document.querySelector('#editorcontent'),
+  initialEditType: 'markdown',
+  previewStyle: 'vertical',
+  initialEditType: 'wysiwyg',
+  height: '200px',
+  minHeight: '200px',
+  events: {
+    blur: () => {
+      document.querySelector(`textarea[name='content']`).value = editorcontent.getMarkdown();
+    },
+  },
+});
+              </script>
+              {% endif %}
             </div>
           </div>
         </form>
         <!-- Tabs: followup, solutions -->
-        <div class="ui secondary menu">
-          <a class="item active" data-tab="feeds">{{ translation.feeds }}</a>
-          <a class="yellow item" data-tab="followup">{{ translation.followup }}</a>
-          <a class="blue item" data-tab="solution">{{ translation.solution }}</a>
-        </div>
+        {% if header.id > 0 %}
+          <div class="ui secondary menu">
+            <a class="item active" data-tab="feeds">{{ translation.feeds }}</a>
+            <a class="yellow item" data-tab="followup">{{ translation.followup }}</a>
+            <a class="blue item" data-tab="solution">{{ translation.solution }}</a>
+          </div>
+        {% endif %}
         <div class="ui tab segment" hidden data-tab="feeds">
         </div>
         <div class="ui active tab yellow segment" data-tab="followup">
+          {% if header.id > 0 %}
           <form method="post" action="/gsit/followups" class="ui form">
+          {% endif %}
             <div class="ui grid">
               <div class="eleven wide column">
                 <div id="editorfollowup"></div>
@@ -110,9 +139,14 @@ editorfollowup = new toastui.Editor({
               </div>
             </div>
             <div style="text-align: center;">
+              <input type="hidden" name="item_id" value="{{ header.id }}"/>
+              <input type="hidden" name="item_type" value="App\Models\Ticket"/>
+              <input type="hidden" name="redirect" value="{{ get_uri() }}"/>
               <button class="ui primary button" type="submit">{{ translation.addfollowup }}</button>
             </div>
+          {% if header.id > 0 %}
           </form>
+          {% endif %}
         </div>
         <div class="ui tab segment" data-tab="solution">
           TODO
@@ -159,14 +193,42 @@ editorfollowup = new toastui.Editor({
         </div>
       </div>
       <div class="four wide column" style="padding-top: 0px;">
-        <form method="post" class="ui form">
-          <button
-            class="ui primary button right floated"
-            style="position: fixed; top: 20px; z-index: 999; margin-left: 220px;"
-            type="submit"
-          >
-            {{ translation.savebutton }}
-          </button>
+        {% if header.id > 0 %}
+          <form method="post" class="ui form">
+            <span style="position: fixed; top: 20px; z-index: 999; margin-left: 30px; display: flex;">
+              <a href="{{ base_path() }}/tickets/new">
+                <button class="ui labeled icon button" type="button">
+                  <i class="plus icon"></i>Nouveau
+                </button>
+              </a>
+              <button
+                class="ui labeled icon primary button"
+                type="submit"
+              >
+                <i class="save icon"></i>
+                {{ translation.savebutton }}
+              </button>
+            </span>
+        {% else %}
+          <span style="position: fixed; top: 20px; z-index: 999; margin-left: 100px; display: flex;">
+            <button
+              class="ui labeled icon primary button"
+              name="save"
+              value="new"
+              type="submit"
+            >
+              <i class="save icon"></i>Nouveau
+            </button>
+            <button
+              class="ui labeled icon primary button"
+              name="save"
+              value="view"
+              type="submit"
+            >
+              <i class="save icon"></i>Voir
+            </button>
+          </span>
+        {% endif %}
           {% set displaygroup = '' %}
         {% for item in data.fields %}
           {% if item.name != 'content' %}
@@ -176,8 +238,8 @@ editorfollowup = new toastui.Editor({
             {% endif %}
 
             {% if displaygroup == '' or displaygroup != item.displaygroup %}
-            <div class="ui form teal segment">
-              <a class="ui teal right ribbon label" style="text-transform: capitalize" data-value="{{ item.displaygroup }}">
+            <div class="ui form {{ header.color }} segment">
+              <a class="ui {{ header.color }} right ribbon label" style="text-transform: capitalize" data-value="{{ item.displaygroup }}">
                 {{ item.displaygroup }}
               </a>
               <div name="{{ item.displaygroup }}" class="field" style="display: block">
@@ -188,10 +250,15 @@ editorfollowup = new toastui.Editor({
         {% endfor %}
         </div>
       </div>
+      {% if header.id > 0 %}
       </form>
+      {% endif %}
     </div>
   </div>
 </div>
+{% if header.id == 0 %}
+</form>
+{% endif %}
 
 <script>
 toggle = function() {

@@ -5,17 +5,21 @@
     <div class="content">
       {{ header.name }}
       | 
-      id <i>{{ header.id }}</i>
-      {% if data.feeds is defined %}
-        | 
-        {% for item in data.fields %}
-          {% if item.name == 'status' %}
-            <span class="ui {{ item.values[item.value].color }} text">
-              <i class="{{ item.values[item.value].icon }} icon"></i>
-              {{ item.values[item.value].title }}
-            </span>
-          {% endif %}
-        {% endfor %}
+      {% if header.id > 0 %}
+        id <i>{{ header.id }}</i>
+        {% if data.fields is defined %}
+          | 
+          {% for item in data.fields %}
+            {% if item.name == 'status' %}
+              <span class="ui {{ item.values[item.value].color }} text">
+                <i class="{{ item.values[item.value].icon }} icon"></i>
+                {{ item.values[item.value].title }}
+              </span>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% else %}
+        New
       {% endif %}
       <div class="sub header">
         {% if data.fields|length > 0 %}

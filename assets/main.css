@@ -79,6 +79,10 @@ blockquote {
   padding: 0 16px;
 }
 
+.itilcontent img {
+  width: 100%;
+}
+
 .event > .content {
   margin-bottom: 25px !important;
 }

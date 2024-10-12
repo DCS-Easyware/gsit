@@ -21,6 +21,32 @@ final class Ticket extends Common
     return $this->commonShowITILItem($request, $response, $args, $item);
   }
 
+  public function showNewItem(Request $request, Response $response, $args): Response
+  {
+    $item = new \App\Models\Ticket();
+    return $this->commonShowITILNewItem($request, $response, $args, $item);
+  }
+
+  public function newItem(Request $request, Response $response, $args): Response
+  {
+    $data = (object) $request->getParsedBody();
+    $id = $this->saveItem($data);
+
+    if (property_exists($data, 'save') && $data->save == 'view')
+    {
+      $uri = $request->getUri();
+      return $response
+        ->withHeader('Location', str_replace('/new', '/' . $id, (string) $uri))
+        ->withStatus(302);
+      exit;
+    }
+
+    $uri = $request->getUri();
+    return $response
+      ->withHeader('Location', (string) $uri)
+      ->withStatus(302);
+  }
+
   public function updateItem(Request $request, Response $response, $args): Response
   {
     $data = (object) $request->getParsedBody();
@@ -197,6 +223,69 @@ final class Ticket extends Common
     // return $this->commonUpdateItem($request, $response, $args, $item);
   }
 
+  public function showStats(Request $request, Response $response, $args)
+  {
+    global $translator;
+    $item = new \App\Models\Ticket();
+    $view = Twig::fromRequest($request);
+
+    $myItem = $item::find($args['id']);
+
+    $rootUrl = $this->getUrlWithoutQuery($request);
+    $rootUrl = rtrim($rootUrl, '/stats');
+
+    $feeds = [];
+
+    $feeds[] = [
+      'date'  => $myItem->date,
+      'text'  => $translator->translate('Opening date'),
+      'icon'  => 'pencil alternate',
+      'color' => 'blue'
+    ];
+
+    $feeds[] = [
+      'date'  => $myItem->time_to_resolve,
+      'text'  => $translator->translate('Time to resolve'),
+      'icon'  => 'hourglass half',
+      'color' => 'blue'
+    ];
+    if ($myItem->status >= 5)
+    {
+      $feeds[] = [
+        'date'  => $myItem->solvedate,
+        'text'  => $translator->translate('Resolution date'),
+        'icon'  => 'check circle',
+        'color' => 'blue'
+      ];
+    }
+    if ($myItem->status == 6)
+    {
+      $feeds[] = [
+        'date'  => $myItem->closedate,
+        'text'  => $translator->translate('Closing date'),
+        'icon'  => 'flag checkered',
+        'color' => 'blue'
+      ];
+    }
+
+
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
+    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
+    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
+    $viewData->addHeaderName($item->getTitle(1));
+    $viewData->addHeaderId($myItem->id);
+    $viewData->addIconId($item->getIcon());
+    $viewData->addColorId($myItem->getColor());
+
+    $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
+
+    $viewData->addData('feeds', $feeds);
+
+
+    return $view->render($response, 'subitem/stats.html.twig', (array) $viewData);
+  }
+
   public function showProblem(Request $request, Response $response, $args)
   {
     global $translator;
@@ -354,7 +443,12 @@ final class Ticket extends Common
   {
     global $translator;
 
-    $myItem = \App\Models\Ticket::find($id);
+    if (is_null($id))
+    {
+      $myItem = new \App\Models\Ticket();
+    } else {
+      $myItem = \App\Models\Ticket::find($id);
+    }
     $definitions = $myItem->getDefinitions();
 
     // Fill $input
@@ -362,7 +456,11 @@ final class Ticket extends Common
       'urgency' => 3,
       'impact'  => 3,
     ];
-    $propertiesList = ['impact', 'urgency', 'priority', 'name', 'content', 'status', 'category'];
+    $propertiesList = ['impact', 'urgency', 'priority', 'name', 'content', 'status', 'category', 'location'];
+    if (is_null($id))
+    {
+      $propertiesList[] = 'content';
+    }
     foreach ($propertiesList as $property)
     {
       if (property_exists($data, $property))
@@ -478,12 +576,24 @@ final class Ticket extends Common
       }
     }
 
-    $itemFields = array_keys($myItem->getAttributes());
+    $itemFields = [];
+    foreach ($definitions as $definition)
+    {
+      if (!is_null($id) && $definition['name'] == 'content')
+      {
+        continue;
+      }
+      $itemFields[] = $definition['name'];
+    }
     foreach ($input as $field => $value)
     {
       if ($field == 'category')
       {
         $field = 'category_id';
+      }
+      if ($field == 'location')
+      {
+        $field = 'location_id';
       }
       if (
           in_array($field, $itemFields) &&
@@ -563,5 +673,7 @@ final class Ticket extends Common
     // add message to session
     $session = new \SlimSession\Helper();
     $session->message = $translator->translate('Operation successful');
+
+    return $myItem->id;
   }
 }

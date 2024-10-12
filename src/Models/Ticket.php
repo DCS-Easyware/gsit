@@ -51,6 +51,13 @@ class Ticket extends Common
     'category:id,name',
   ];
 
+  // For default values
+  protected $attributes = [
+    'status'    => 1,
+    'urgency'   => 3,
+    'impact'    => 3,
+    'priority'  => 3,
+  ];
 
   public static function boot()
   {
@@ -144,11 +151,16 @@ class Ticket extends Common
     $followups = \App\Models\Followup::where('item_type', 'App\Models\Ticket')->where('item_id', $id)->get();
     foreach ($followups as $followup)
     {
+      $usertype = 'user';
+      if ($followup->is_tech)
+      {
+        $usertype = 'tech';
+      }
       $feeds[] = [
         "user"     => $followup->user->completename,
-        "usertype" => "tech",
+        "usertype" => $usertype,
         "type"     => "followup",
-        "date"     => $followup['created_at'],
+        "date"     => $followup->created_at,
         "summary"  => $translator->translate('added a followup'),
         "content"  => \App\v1\Controllers\Toolbox::convertMarkdownToHtml($followup['content']),
         "time"     => null,

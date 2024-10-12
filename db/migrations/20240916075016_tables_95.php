@@ -2448,6 +2448,7 @@ final class Tables95 extends AbstractMigration
           ->addColumn('timeline_position', 'boolean', ['null' => false, 'default' => false])
           ->addColumn('sourceitem_id', 'integer', ['null' => false, 'default' => '0'])
           ->addColumn('sourceof_item_id', 'integer', ['null' => false, 'default' => '0'])
+          ->addColumn('is_tech', 'boolean', ['null' => false, 'default' => false])
           ->addIndex(['item_type'])
           ->addIndex(['item_id'])
           ->addIndex(['item_type', 'item_id'], ['name' => 'item'])
