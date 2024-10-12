@@ -19,6 +19,11 @@ final class Route
 
     $app->group($prefix . '/api/v1', function (RouteCollectorProxy $v1)
     {
+      $v1->group('/fusioninventory', function (RouteCollectorProxy $fusioninventory)
+      {
+        $fusioninventory->map(['GET'], '', \App\v1\Controllers\Fusioninventory\Communication::class . ':null');
+        $fusioninventory->map(['POST'], '', \App\v1\Controllers\Fusioninventory\Communication::class . ':getConfig');
+      });
     });
 
     $app->map(['POST'], '/dropdown', \App\v1\Controllers\Dropdown::class . ':getAll');

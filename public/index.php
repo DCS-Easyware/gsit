@@ -51,7 +51,8 @@ $secret = sodium_base642bin('TEST', SODIUM_BASE64_VARIANT_ORIGINAL);
 $app->add(new Tuupola\Middleware\JwtAuthentication([
   "ignore" => [
     $prefix . "/gsit/ping",
-    $prefix . "/gsit/login"
+    $prefix . "/gsit/login",
+    $prefix . "/gsit/api/v1/fusioninventory",
   ],
   "secure" => false,
   "secret" => $secret,

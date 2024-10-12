@@ -67,6 +67,7 @@
         "slim/psr7": "^1.7",
         "slim/slim": "4.*",
         "slim/twig-view": "^3.4",
+        "spatie/array-to-xml": "^3.3",
         "symfony/console": "^5.0",
         "symfony/error-handler": "^6.4",
         "tecnickcom/tcpdf": "^6.2",
