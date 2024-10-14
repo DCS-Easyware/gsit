@@ -56,13 +56,10 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: create config_db.php used for PHPStan
-      run: echo -en "<?php\nclass DB extends DBmysql {\n   public \$dbhost     = '127.0.0.1';\n   public \$dbuser     = 'gsit';\n   public \$dbpassword = 'gsit';\n   public \$dbdefault  = 'gsit';\n}" > config/config_db.php
-
-    - name: create config_db_slave.php used for PHPStan
-      run: echo -en "<?php\nclass DBSlave extends DBmysql {\n   public \$dbhost     = '127.0.0.1';\n   public \$dbuser     = 'gsit';\n   public \$dbpassword = 'gsit';\n   public \$dbdefault  = 'gsit';\n}" > config/config_db_slave.php
+      run: echo -en "<?php\nclass DB {\n   public \$dbhost     = '127.0.0.1';\n   public \$dbuser     = 'gsit';\n   public \$dbpassword = 'gsit';\n   public \$dbdefault  = 'gsit';\n}" > config/config_db.php
 
     - name: Run PHPStan
-      run: phpstan analyse -l 0 ajax front inc install config
+      run: phpstan analyse db src public
 
   lint:
     # Do not run scheduled lint on tier repositories
@@ -107,9 +104,13 @@ jobs:
       - name: "Install dependencies"
         run: |
           .github/actions/init_install-dependencies.sh
-      - name: "PHP lint"
+      - name: "PHP lint (phpcs)"
         run: |
-          .github/actions/lint_php-lint.sh
+          files=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }} | grep '^\(db\|src\|public)' || true)
+          if [ -n "$files" ]; then
+            phpcs -q --report=checkstyle $files | cs2pr
+          fi
+
       - name: "JS lint"
         run: |
           .github/actions/lint_js-lint.sh
