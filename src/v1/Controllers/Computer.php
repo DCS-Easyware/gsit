@@ -45,6 +45,11 @@ final class Computer extends Common
       $ose = \App\Models\Operatingsystemedition::find($os->pivot->operatingsystemedition_id);
       $osln = $os->pivot->license_number;
       $oslid = $os->pivot->licenseid;
+      $osid = $os->pivot->installationdate;
+      $oswo = $os->pivot->winowner;
+      $oswc = $os->pivot->wincompany;
+      $osoc = $os->pivot->oscomment;
+      $oshid = $os->pivot->hostid;
 
       $architecture = '';
       if ($osa !== null) $architecture = $osa->name;
@@ -60,6 +65,16 @@ final class Computer extends Common
       if ($osln !== null) $license_number = $osln;
       $licenseid = '';
       if ($oslid !== null) $licenseid = $oslid;
+      $installationdate = '';
+      if ($osid !== null) $installationdate = $osid;
+      $winowner = '';
+      if ($oswo !== null) $winowner = $oswo;
+      $wincompany = '';
+      if ($oswc !== null) $wincompany = $oswc;
+      $oscomment = '';
+      if ($osoc !== null) $oscomment = $osoc;
+      $hostid = '';
+      if ($oshid !== null) $hostid = $oshid;
 
       $operatingsystem = [
         'id' => $os->id,
@@ -76,6 +91,11 @@ final class Computer extends Common
         'edition_id' => $os->pivot->operatingsystemedition_id,
         'licensenumber' => $license_number,
         'licenseid' => $licenseid,
+        'installationdate' => $installationdate,
+        'winowner' => $winowner,
+        'wincompany' => $wincompany,
+        'oscomment' => $oscomment,
+        'hostid' => $hostid,
       ];
     }
 
@@ -97,36 +117,37 @@ final class Computer extends Common
     $getDef = [];
     $myItemData = [];
 
-/*
-    $getDef = [
-      [
-        'id'    => 1,
-        'title' => $translator->translate('Name'),
-        'type'  => 'input',
-        'name'  => 'name',
-      ],
-      [
-        'id'    => 31,
-        'title' => $translator->translatePlural('Architecture', 'Architectures', 1),
-        'type'  => 'dropdown_remote',
-        'name'  => 'architecture',
-        'dbname' => 'operatingsystemarchitecture_id',
-        'itemtype' => '\App\Models\Operatingsystemarchitecture',
-      ],
-    ];
+
+    $getDefs = $item->getSpecificFunction('getDefinitionOperatingSystem');
+
     $myItemData = [
       'name'  => $operatingsystem['name'],
       'architecture'  => [
         'id' => $operatingsystem['architecture_id'],
         'name' => $operatingsystem['architecture'],
       ],
+      'kernelversion'  => [
+        'id' => $operatingsystem['kernelversion_id'],
+        'name' => $operatingsystem['kernelversion'],
+      ],
+      'version'  => [
+        'id' => $operatingsystem['version_id'],
+        'name' => $operatingsystem['version'],
+      ],
+      'servicepack'  => [
+        'id' => $operatingsystem['servicepack_id'],
+        'name' => $operatingsystem['servicepack'],
+      ],
+      'edition'  => [
+        'id' => $operatingsystem['edition_id'],
+        'name' => $operatingsystem['edition'],
+      ],
+      'licenseid'  => $operatingsystem['licenseid'],
+      'licensenumber'  => $operatingsystem['licensenumber'],
     ];
+    $myItemDataObject = json_decode(json_encode($myItemData));
 
-    var_dump($myItem);
-    var_dump($item->getFormData($myItemData, $getDef));
-    die();
-*/
-    $viewData->addData('fields', $item->getFormData($myItemData, $getDef));
+    $viewData->addData('fields', $item->getFormData($myItemDataObject, $getDefs));
     $viewData->addData('operatingsystem', $operatingsystem);
 
     return $view->render($response, 'subitem/operatingsystems.html.twig', (array)$viewData);
@@ -174,5 +195,46 @@ final class Computer extends Common
     $viewData->addTranslation('version', $translator->translatePlural('Version', 'Versions', 1));
 
     return $view->render($response, 'subitem/softwares.html.twig', (array)$viewData);
+  }
+
+  public function showHistory(Request $request, Response $response, $args)
+  {
+    $item = new \App\Models\Computer();
+    $view = Twig::fromRequest($request);
+
+    $session = new \SlimSession\Helper();
+
+    // Load the item
+    $myItem = $item->find($args['id']);
+
+    $logs = \App\Models\Log::
+        where('item_type', 'App\v1\Models\Computer')
+      ->where('item_id', $myItem->id)
+      ->get();
+
+    $rootUrl = $this->getUrlWithoutQuery($request);
+    $rootUrl = rtrim($rootUrl, '/history');
+
+    // form data
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
+    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
+    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
+    $viewData->addHeaderName($item->getTitle(1));
+    $viewData->addHeaderId($myItem->id);
+    $viewData->addIconId($item->getIcon());
+    // $viewData->addColorId($myItem->getColor());
+
+    $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
+
+    $viewData->addData('history', $logs);
+
+    if ($session->exists('message'))
+    {
+      $viewData['message'] = $session->message;
+      $session->delete('message');
+    }
+
+    return $view->render($response, 'subitem/history.html.twig', (array)$viewData);
   }
 }

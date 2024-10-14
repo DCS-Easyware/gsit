@@ -112,6 +112,15 @@ class Common extends Model
     return call_user_func($this->definition . '::getRelatedPages', $rootUrl);
   }
 
+  public function getSpecificFunction($functionName)
+  {
+    if (is_null($this->definition) || !method_exists($this->definition, $functionName))
+    {
+      return [];
+    }
+    return call_user_func($this->definition . '::' . $functionName);
+  }
+
   /**
    * Get form data for this item
    *

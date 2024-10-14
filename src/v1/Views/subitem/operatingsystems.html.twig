@@ -13,14 +13,11 @@
         {% endfor %}
       </div>
       <div class="height wide column">
-        {{ data.operatingsystem.name }}
-        {{ data.operatingsystem.architecture }}
-        {{ data.operatingsystem.version }}
-        {{ data.operatingsystem.servicepack }}
-        {{ data.operatingsystem.kernelversion }}
-        {{ data.operatingsystem.edition }}
-        {{ data.operatingsystem.licensenumber }}
-        {{ data.operatingsystem.licenseid }}
+        Entreprise: {{ data.operatingsystem.wincompany }}<br>
+        Commentaires: {{ data.operatingsystem.oscomment }}<br>
+        HostID: {{ data.operatingsystem.hostid }}<br>
+        Propriétaire: {{ data.operatingsystem.winowner }}<br>
+        Date d'installation: {{ data.operatingsystem.installationdate }}<br>
       </div>
     </div>
   </div>

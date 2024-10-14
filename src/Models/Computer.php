@@ -121,6 +121,6 @@ class Computer extends Common
 
   public function operatingsystems(): MorphToMany
   {
-    return $this->morphToMany('\App\Models\Operatingsystem', 'item', 'item_operatingsystem')->withPivot('operatingsystemversion_id', 'operatingsystemservicepack_id', 'operatingsystemarchitecture_id', 'operatingsystemkernelversion_id', 'operatingsystemedition_id', 'license_number', 'licenseid');
+    return $this->morphToMany('\App\Models\Operatingsystem', 'item', 'item_operatingsystem')->withPivot('operatingsystemversion_id', 'operatingsystemservicepack_id', 'operatingsystemarchitecture_id', 'operatingsystemkernelversion_id', 'operatingsystemedition_id', 'license_number', 'licenseid', 'installationdate', 'winowner', 'wincompany', 'oscomment', 'hostid');
   }
 }

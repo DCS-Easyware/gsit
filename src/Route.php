@@ -42,6 +42,7 @@ final class Route
         $computerId->group('/', function (RouteCollectorProxy $sub)
         {
           $sub->map(['GET'], 'softwares', \App\v1\Controllers\Computer::class . ':showSoftwares');
+          $sub->map(['GET'], 'history', \App\v1\Controllers\Computer::class . ':showHistory');
 
         });
       });
@@ -454,7 +455,7 @@ final class Route
           $ticketId->group('/', function (RouteCollectorProxy $sub)
           {
             $sub->map(['GET'], 'criteria', \App\v1\Controllers\Rules\Ticket::class . ':showCriteria');
-          });  
+          });
         });
       });
     });
