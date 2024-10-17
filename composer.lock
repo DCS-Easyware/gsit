@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "16be4c99ecdea828ccc166c7ae001db5",
+    "content-hash": "8eb47f84a5bbb1009f37dfee9be5da24",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -5829,6 +5829,190 @@
                 "source": "https://github.com/slimphp/Twig-View/tree/3.4.1"
             },
             "time": "2024-09-26T05:42:02+00:00"
+        },
+        {
+            "name": "socialconnect/auth",
+            "version": "3.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialConnect/auth.git",
+                "reference": "5bd774eb9afdb66147a973f958cc4ae348b33fbd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialConnect/auth/zipball/5bd774eb9afdb66147a973f958cc4ae348b33fbd",
+                "reference": "5bd774eb9afdb66147a973f958cc4ae348b33fbd",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.1",
+                "psr/http-client": "^1.0 || ^2.0",
+                "psr/http-factory": "^1.0 || ^2.0",
+                "psr/simple-cache": "^1.0 || ^2.0 || ^3.0",
+                "socialconnect/jwx": "^1.0"
+            },
+            "replace": {
+                "socialconnect/common": "self.version",
+                "socialconnect/oauth1": "self.version",
+                "socialconnect/oauth2": "self.version",
+                "socialconnect/openid": "self.version",
+                "socialconnect/openid-connect": "self.version",
+                "socialconnect/provider": "self.version"
+            },
+            "require-dev": {
+                "phpstan/phpstan-shim": "^0.11.12",
+                "phpunit/phpunit": "^7.5",
+                "socialconnect/http-client": "^1.0",
+                "squizlabs/php_codesniffer": "^3.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialConnect\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitry Patsura",
+                    "email": "talk@dmtry.me"
+                }
+            ],
+            "description": "Social Connect Auth Component",
+            "keywords": [
+                "amazon",
+                "auth",
+                "bitbucket",
+                "facebook",
+                "github",
+                "gitlab",
+                "google",
+                "login",
+                "oauth",
+                "slack",
+                "socialconnect",
+                "twitch",
+                "twitter",
+                "vk"
+            ],
+            "support": {
+                "issues": "https://github.com/SocialConnect/auth/issues",
+                "source": "https://github.com/SocialConnect/auth/tree/3.3.5"
+            },
+            "time": "2023-03-07T20:40:31+00:00"
+        },
+        {
+            "name": "socialconnect/http-client",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialConnect/http-client.git",
+                "reference": "1166b910b6fe67be413d12ba75b8a555b921e330"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialConnect/http-client/zipball/1166b910b6fe67be413d12ba75b8a555b921e330",
+                "reference": "1166b910b6fe67be413d12ba75b8a555b921e330",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "guzzlehttp/psr7": "^1.6",
+                "php": ">=7.1",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
+                "psr/simple-cache": "^1.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan-shim": "^0.11.12",
+                "phpunit/phpunit": "^6.5",
+                "symfony/http-foundation": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialConnect\\HttpClient\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitry Patsura",
+                    "email": "talk@dmtry.me"
+                }
+            ],
+            "description": "PSR-18 HTTP Client on top of Guzzle PSR7",
+            "keywords": [
+                "curl",
+                "http-client",
+                "psr-18"
+            ],
+            "support": {
+                "issues": "https://github.com/SocialConnect/http-client/issues",
+                "source": "https://github.com/SocialConnect/http-client/tree/1.0.0"
+            },
+            "time": "2019-07-23T18:13:21+00:00"
+        },
+        {
+            "name": "socialconnect/jwx",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialConnect/jwx.git",
+                "reference": "5eaf255906cc78d02e33732a688ac0cf35cdf581"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialConnect/jwx/zipball/5eaf255906cc78d02e33732a688ac0cf35cdf581",
+                "reference": "5eaf255906cc78d02e33732a688ac0cf35cdf581",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpstan/phpstan-shim": "^0.11.12",
+                "phpunit/phpunit": "^7.5"
+            },
+            "suggest": {
+                "ext-openssl": "Please install openssl extension to use RS encryption"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialConnect\\JWX\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitry Patsura",
+                    "email": "talk@dmtry.me"
+                }
+            ],
+            "description": "PHP library for JSON web tokens (JWT) and JWT",
+            "keywords": [
+                "JSON Web Token",
+                "JWE",
+                "jwt"
+            ],
+            "support": {
+                "issues": "https://github.com/SocialConnect/jwx/issues",
+                "source": "https://github.com/SocialConnect/jwx/tree/1.3.1"
+            },
+            "time": "2023-08-16T14:09:10+00:00"
         },
         {
             "name": "spatie/array-to-xml",

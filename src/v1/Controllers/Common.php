@@ -64,19 +64,20 @@ class Common
     $viewData->addTranslation('savebutton', $translator->translate('Save'));
     $viewData->addTranslation('selectvalue', $translator->translate('Select a value...'));
 
-    $viewData->addInformation(
-      'top',
-      'operatingsystem',
-      $translator->translatePlural('Operating system', 'Operating systems', 1),
-      $this->getUrlWithoutQuery($request) . '/operatingsystem'
-    );
-    $viewData->addInformation(
-      'top',
-      'softwares',
-      $translator->translatePlural('Software', 'Software', 2),
-      $this->getUrlWithoutQuery($request) . '/softwares'
-    );
-    $viewData->addInformation('bottom', '1', 'Operating system : Windows 11 pro', 'free.fr');
+    // Information TOP
+    $informations = $this->getInformationTop($myItem, $request);
+    foreach ($informations as $info)
+    {
+      $viewData->addInformation('top', $info['key'], $info['value'], $info['link']);
+    }
+
+    // Information BOTTOM
+    $informations = $this->getInformationBottom($myItem, $request);
+    foreach ($informations as $info)
+    {
+      $viewData->addInformation('bottom', $info['key'], $info['value'], $info['link']);
+    }
+
 
     if ($session->exists('message'))
     {
@@ -353,8 +354,39 @@ class Common
 
   public function saveItem($data, $id = null)
   {
+    // Manage fields like dropdown where name not same in database
+    $fieldsDef = [];
+    $booleans = [];
+    $item = new $this->model();
+    $definitions = $item->getDefinitions();
+    foreach ($definitions as $definition)
+    {
+      if (isset($definition['fillable']) && $definition['fillable'] && isset($definition['dbname']))
+      {
+        $fieldsDef[$definition['name']] = $definition['dbname'];
+      }
+      if ($definition['type'] == 'boolean')
+      {
+        $booleans[$definition['name']] = true;
+      }
+    }
+
+
     if (is_null($id))
     {
+      foreach ((array) $data as $key => $value)
+      {
+        if (isset($booleans[$key]))
+        {
+          if ($value == 'on')
+          {
+            $data->{$key} = true;
+          } else {
+            $data->{$key} = false;
+          }
+        }
+      }
+
       $item = $this->model::create((array) $data);
       return $item->id;
     }
@@ -367,22 +399,21 @@ class Common
       return $id;
     }
 
-    // Manage fields like dropdown where name not same in database
-    $fieldsDef = [];
-    $definitions = $item->getDefinitions();
-    foreach ($definitions as $definition)
-    {
-      if (isset($definition['fillable']) && $definition['fillable'] && isset($definition['dbname']))
-      {
-        $fieldsDef[$definition['name']] = $definition['dbname'];
-      }
-    }
     $aData = (array) $data;
     foreach ($aData as $key => $value)
     {
       if (isset($fieldsDef[$key]))
       {
         $aData[$fieldsDef[$key]] = $value;
+      }
+      if (isset($booleans[$key]))
+      {
+        if ($value == 'on')
+        {
+          $aData[$key] = true;
+        } else {
+          $aData[$key] = false;
+        }
       }
     }
 
@@ -430,5 +461,15 @@ class Common
       }
     }
     return $item->id;
+  }
+
+  protected function getInformationTop($item, $request)
+  {
+    return [];
+  }
+
+  protected function getInformationBottom($item, $request)
+  {
+    return [];
   }
 }

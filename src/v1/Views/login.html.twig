@@ -44,9 +44,20 @@
                 <i class="address card outline icon"></i>
                   Auto-login / SSO
                 </div>
-                <div class="ui primary button">
-                  Login
-                </div>
+                {% if sso|length == 0 %}
+                  <div class="ui labeled icon button">
+                    <i class="right pause icon"></i>
+                    Disabled
+                  </div>
+                {% endif %}
+                {% for item in sso %}
+                  <a href="{{ basePath }}/view/login/sso/{{ item.id }}">
+                    <div class="ui labeled icon primary button" style="margin-bottom: 5px;">
+                      <i class="right arrow icon"></i>
+                      {{ item.name }}
+                    </div>
+                  </a>
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -54,6 +65,5 @@
       </div>
     </div>
   </div>
-
 </body>
 </html>

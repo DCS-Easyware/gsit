@@ -10,20 +10,31 @@ final class Login extends Common
 {
   public function getLogin(Request $request, Response $response, $args): Response
   {
+    global $basePath;
+
     $view = Twig::fromRequest($request);
 
     $viewData = [
       'title'    => 'GSIT - ' . 'Login page',
       'rootpath' => \App\v1\Controllers\Toolbox::getRootPath($request),
+      'basePath' => $basePath,
+      'sso' => [],
     ];
+
+    $authsso = \App\Models\Authsso::where('is_active', true)->get();
+    foreach ($authsso as $sso)
+    {
+      $viewData['sso'][] = [
+        'id'    => $sso->callbackid,
+        'name'  => $sso->name,
+      ];
+    }
 
     return $view->render($response, 'login.html.twig', $viewData);
   }
 
   public function postLogin(Request $request, Response $response, $args): Response
   {
-    global $basePath;
-
     $data = (object) $request->getParsedBody();
     $token = new \App\v1\Controllers\Token();
 
@@ -50,6 +61,14 @@ final class Login extends Common
     {
       throw new \Exception('Login error', 401);
     }
+    $this->authOkAndRedirect($user);
+  }
+
+  private function authOkAndRedirect($user)
+  {
+    global $basePath;
+
+    $token = new \App\v1\Controllers\Token();
 
     // generate token
     // put into cookie, key token
@@ -62,9 +81,122 @@ final class Login extends Common
     // $cookie_domain   = ini_get('session.cookie_domain');
     // $cookie_secure   = (bool)ini_get('session.cookie_secure');
 
-    setcookie('token', $jwt['token']);//, $cookie_lifetime, $cookie_path, $cookie_domain, $cookie_secure, true);
+    setcookie('token', $jwt['token'], 0, $basePath . '/view');
+    //, $cookie_lifetime, $cookie_path, $cookie_domain, $cookie_secure, true);
 
     header('Location: ' . $basePath . '/view/computers');
     exit();
+  }
+
+  public function doSSO(Request $request, Response $response, $args)
+  {
+    $provider = $this->prepareSSOService($request, $args);
+
+    try {
+      header('Location: ' . $provider->makeAuthUrl());
+    } catch (\Exception $e) {
+        echo $e->getMessage();
+    }
+    exit;
+  }
+
+  public function callbackSSO(Request $request, Response $response, $args)
+  {
+    $provider = $this->prepareSSOService($request, $args);
+    $accessToken = $provider->getAccessTokenByRequestParameters($_GET);
+    $ssoUser = $provider->getIdentity($accessToken);
+
+    $user = \App\Models\User::firstOrCreate(['name' => $ssoUser->email]);
+
+    $this->authOkAndRedirect($user);
+  }
+
+  private function prepareSSOService($request, $args)
+  {
+    global $basePath;
+
+    $uri = $request->getUri();
+
+    $callbackid = $args['callbackid'];
+
+    $authsso = \App\Models\Authsso::where('callbackid', $callbackid)->where('is_active', true)->first();
+    if (is_null($authsso))
+    {
+      echo 'error';
+      exit;
+    }
+    $providers = \App\Models\Definitions\Authsso::getProviderArray();
+    $dataProvider = [];
+    if (!isset($providers[$authsso->provider]))
+    {
+      echo "error";
+      exit;
+    }
+    $item = $providers[$authsso->provider];
+    foreach ($item['fields'] as $field)
+    {
+      if ($field == 'scope')
+      {
+        $dataProvider['scope'] = [];
+        $scopes = \App\Models\Authssoscope::where('authsso_id', $authsso->id)->get();
+        foreach ($scopes as $scope)
+        {
+          $dataProvider['scope'][] = $scope->name;
+        }
+      }
+      elseif ($field == 'options')
+      {
+        $dataProvider['options'] = [];
+        $options = \App\Models\Authssooption::where('authsso_id', $authsso->id)->get();
+        if (isset($item['suboption']))
+        {
+          $dataProvider['options'][$item['suboption']] = [];
+          foreach ($options as $option)
+          {
+            if (is_null($option->key))
+            {
+              $dataProvider['options'][$item['suboption']][] = $option->value;
+            } else {
+              $dataProvider['options'][$item['suboption']][$option->key] = $option->value;
+            }
+          }
+        } else {
+          $dataProvider['options'] = [];
+          foreach ($options as $option)
+          {
+            if (is_null($option->key))
+            {
+              $dataProvider['options'][] = $option->value;
+            } else {
+              $dataProvider['options'][$option->key] = $option->value;
+            }
+          }
+        }
+      } else {
+        $dataProvider[$field] = $authsso->{strtolower($field)};
+      }
+    }
+
+    $configureProviders = [
+      'redirectUri' => $uri->getScheme() . '://' . $uri->getHost() . $basePath . '/view/login/sso/' . $callbackid . '/cb',
+      'provider' => [
+        $authsso->provider => $dataProvider,
+      ],
+    ];
+
+    $httpClient = new \SocialConnect\HttpClient\Curl();
+
+    $collectionFactory = null;
+    $service =  new \SocialConnect\Auth\Service(
+      new \SocialConnect\Common\HttpStack(
+        $httpClient,
+        new \SocialConnect\HttpClient\RequestFactory(),
+        new \SocialConnect\HttpClient\StreamFactory()
+      ),
+      new \SocialConnect\Provider\Session\Session(),
+      $configureProviders,
+      $collectionFactory
+    );
+    return $service->getProvider($authsso->provider);
   }
 }

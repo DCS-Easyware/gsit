@@ -345,6 +345,12 @@ final class Menu
         'icon' => 'tools',
         'sub'  => [
           [
+            'name' => $translator->translate('Auth SSO'),
+            'link' => $basePath . '/view/authssos',
+            'icon' => 'id card alternate',
+            'class' => $activePath == $basePath . '/view/authssos' ? 'active' : '',
+          ],
+          [
             'name' => $translator->translatePlural('Dropdown', 'Dropdowns', 2) . ' - ' .
                       $translator->translatePlural('Location', 'Locations', 2),
             'link' => $basePath . '/view/dropdowns/locations',

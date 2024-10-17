@@ -40,6 +40,12 @@ final class Route
       {
         $login->map(['GET'], '', \App\v1\Controllers\Login::class . ':getLogin');
         $login->map(['POST'], '', \App\v1\Controllers\Login::class . ':postLogin');
+
+        $login->group('/sso/{callbackid:[a-z0-9]+}', function (RouteCollectorProxy $loginsso)
+        {
+          $loginsso->map(['GET'], '', \App\v1\Controllers\Login::class . ':doSSO');
+          $loginsso->map(['GET'], '/cb', \App\v1\Controllers\Login::class . ':callbackSSO');
+        });
       });
 
       $view->group('/computers', function (RouteCollectorProxy $computers)
@@ -1952,6 +1958,29 @@ final class Route
         {
           $mailcollectorId->map(['GET'], '', \App\v1\Controllers\Mailcollector::class . ':showItem');
           $mailcollectorId->map(['POST'], '', \App\v1\Controllers\Mailcollector::class . ':updateItem');
+        });
+      });
+
+      $view->group('/authssos', function (RouteCollectorProxy $authssos)
+      {
+        $authssos->map(['GET'], '', \App\v1\Controllers\Authsso::class . ':getAll');
+        $authssos->map(['POST'], '', \App\v1\Controllers\Authsso::class . ':postItem');
+
+        $authssos->group("/new", function (RouteCollectorProxy $ssonew)
+        {
+          $ssonew->map(['GET'], '', \App\v1\Controllers\Authsso::class . ':showNewItem');
+          $ssonew->map(['POST'], '', \App\v1\Controllers\Authsso::class . ':newItem');
+        });
+
+        $authssos->group("/{id:[0-9]+}", function (RouteCollectorProxy $ssoId)
+        {
+          $ssoId->map(['GET'], '', \App\v1\Controllers\Authsso::class . ':showItem');
+          $ssoId->map(['POST'], '', \App\v1\Controllers\Authsso::class . ':updateItem');
+
+          $ssoId->group('/', function (RouteCollectorProxy $sub)
+          {
+            $sub->map(['GET'], 'history', \App\v1\Controllers\Authsso::class . ':showSubHistory');
+          });
         });
       });
     });

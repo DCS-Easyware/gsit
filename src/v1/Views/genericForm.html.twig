@@ -4,8 +4,8 @@
 <form method="post" class="ui form">
   {% if header.id > 0 %}
     <form method="post" class="ui form">
-      <span style="position: fixed; top: 20px; z-index: 999; margin-left: 800px; display: flex;">
-        <a href="{{ base_path() }}/tickets/new">
+      <span style="position: sticky; top: 20px; z-index: 999; float: right; display: block;">
+        <a href="{{ basePath }}/view/{{ header.route }}/new">
           <button class="ui labeled icon button" type="button">
             <i class="plus icon"></i>Nouveau
           </button>
@@ -19,7 +19,7 @@
         </button>
       </span>
   {% else %}
-    <span style="position: fixed; top: 20px; z-index: 999; margin-left: 800px; display: flex;">
+    <span style="position: sticky; top: 20px; z-index: 999; float: right; display: block;">
       <button
         class="ui labeled icon primary button"
         name="save"
@@ -61,7 +61,9 @@
               {% for key, item_top in information.top %}
                   <p>
                     {{ item_top.value }}
-                    <a href="{{ item_top.link }}"><i class="external alternate icon"></i></a>
+                    {% if item_top.link != null %}
+                      <a href="{{ item_top.link }}"><i class="external alternate icon"></i></a>
+                    {% endif %}
                   </p>
               {% endfor %}
             </div>
@@ -86,7 +88,9 @@
               {% for key, item_bottom in information.bottom %}
                 <p>
                   {{ item_bottom.value }}
-                  <a href="{{ item_bottom.link }}"><i class="external alternate icon"></i></a>
+                  {% if item_bottom.link != null %}
+                    <a href="{{ item_bottom.link }}"><i class="external alternate icon"></i></a>
+                  {% endif %}
                 </p>
               {% endfor %}
             </div>

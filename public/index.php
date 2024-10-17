@@ -68,6 +68,8 @@ $app->add(new Tuupola\Middleware\JwtAuthentication([
   "ignore" => [
     $basePath . "/ping",
     $basePath . "/view/login",
+    $basePath . "/view/sso",
+    $basePath . "/view/sso/cb",
     $basePath . "/api/v1/fusioninventory",
   ],
   "secure" => false,

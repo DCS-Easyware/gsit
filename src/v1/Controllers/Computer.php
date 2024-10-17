@@ -259,4 +259,33 @@ final class Computer extends Common
 
     return $view->render($response, 'subitem/history.html.twig', (array)$viewData);
   }
+
+  protected function getInformationTop($item, $request)
+  {
+    global $translator, $basePath;
+
+    return [
+      [
+        'key'   => 'operatingsystem',
+        'value' => $translator->translatePlural('Operating system', 'Operating systems', 1),
+        'link'  => $basePath . '/view/computers/' . $item->id . '/operatingsystem',
+      ],
+      [
+        'key'   => 'softwares',
+        'value' => $translator->translatePlural('Software', 'Software', 2),
+        'link'  => $basePath . '/view/computers/' . $item->id . '/softwares',
+      ],
+    ];
+  }
+
+  protected function getInformationBottom($item, $request)
+  {
+    return [
+      [
+        'key'   => '1',
+        'value' => 'Operating system : Windows 11 pro',
+        'link'  => 'free.fr',
+      ],
+    ];
+  }
 }

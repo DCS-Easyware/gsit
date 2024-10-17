@@ -196,7 +196,7 @@ editorfollowup = new toastui.Editor({
       <div class="four wide column" style="padding-top: 0px;">
         {% if header.id > 0 %}
           <form method="post" class="ui form">
-            <span style="position: fixed; top: 20px; z-index: 999; margin-left: 30px; display: flex;">
+            <span style="position: sticky; top: 20px; z-index: 999; float: reight; display: block;">
               <a href="{{ base_path() }}/tickets/new">
                 <button class="ui labeled icon button" type="button">
                   <i class="plus icon"></i>Nouveau
@@ -211,7 +211,7 @@ editorfollowup = new toastui.Editor({
               </button>
             </span>
         {% else %}
-          <span style="position: fixed; top: 20px; z-index: 999; margin-left: 100px; display: flex;">
+          <span style="position: sticky; top: 20px; z-index: 999; float: reight; display: block;">
             <button
               class="ui labeled icon primary button"
               name="save"

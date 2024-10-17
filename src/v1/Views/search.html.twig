@@ -3,18 +3,23 @@
 <div class="ui sticky" style="background-color: #ffffff">
   <div style="height: 1px"></div>
   <div class="ui blue dividing header">
-    <i class="big {{ header.icon }} icon"></i>
-    <div class="content">
-      {{ header.title }}
-      <div class="sub header">{{ data.fields.paging.total }} items</div>
-      <a href="{{ header.route }}/new">
-        <button
-          class="ui primary button right floated"
-          style="position: fixed; top: 20px; z-index: 999; margin-left: 1305px;"
-        >
-          New
-        </button>
-      </a>
+    <div style="display: flex">
+      <div style="width: 100%">
+        <i class="big {{ header.icon }} icon"></i>
+        <div class="content">
+          {{ header.title }}
+          <div class="sub header">{{ data.fields.paging.total }} items</div>
+        </div>
+      </div>
+      <span style="float: right;">
+        <a href="{{ header.route }}/new">
+          <button
+            class="ui primary button right floated"
+          >
+            New
+          </button>
+        </a>
+      </span>
     </div>
   </div>
 </div>

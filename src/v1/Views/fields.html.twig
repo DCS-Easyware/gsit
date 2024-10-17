@@ -1,11 +1,17 @@
 <div class="field">
-  <label>{{ item.title }}</label>
+  {% if item.type != 'boolean' %}
+    <label>{{ item.title }}</label>
+  {% endif %}
   {% if item.type == 'input' %}
     <input type="text" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %} value="{{ item.value }}">
   {% endif %}
 
+  {% if item.type == 'inputpassword' %}
+    <input type="password" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %} value="{{ item.value }}">
+  {% endif %}
+
   {% if item.type == 'dropdown' %}
-    <div class="ui selection dropdown">
+    <div class="ui search selection dropdown">
       <input type="hidden" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %} value="{{ item.value }}">
       <i class="dropdown icon"></i>
       <div class="default text">Select value...</div>
@@ -74,7 +80,13 @@ editor{{ item.name }} = new toastui.Editor({
   {% endif %}
 
   {% if item.type == 'boolean' %}
-    {% if item.readonly is defined %}
+    <div class="ui toggle checkbox">
+      <input type="hidden" name="{{ item.name }}" value="off">
+      <input type="checkbox" name="{{ item.name }}" {% if item.value %}checked{% endif %}>
+      <label>{{ item.title }}</label>
+    </div>
+
+    {# {% if item.readonly is defined %}
       {% if item.value == 1 %}{{ translation.yes }}{% endif %}
       {% if item.value == 0 %}{{ translation.no }}{% endif %}
     {% else %}
@@ -82,7 +94,7 @@ editor{{ item.name }} = new toastui.Editor({
         <option {% if item.value == 1 %}selected="selected"{% endif %} value="1">{{ translation.yes }}</option>
         <option {% if item.value == 0 %}selected="selected"{% endif %} value="0">{{ translation.no }}</option>
       </select>
-    {% endif %}
+    {% endif %} #}
   {% endif %}
 
   {% if item.type == 'date' %}
