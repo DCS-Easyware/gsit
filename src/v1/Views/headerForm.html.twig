@@ -1,31 +1,73 @@
 <div class="ui sticky" style="background-color: #ffffff">
   <div style="height: 1px"></div>
   <div class="ui {{ header.color }} dividing header">
-    <i class="big {{ header.icon }} icon"></i>
-    <div class="content">
-      {{ header.name }}
-      | 
-      {% if header.id > 0 %}
-        id <i>{{ header.id }}</i>
-        {% if data.fields is defined %}
-          {% for item in data.fields %}
-            {% if item.name == 'status' %}
-              |
-              <span class="ui {{ item.values[item.value].color }} text">
-                <i class="{{ item.values[item.value].icon }} icon"></i>
-                {{ item.values[item.value].title }}
-              </span>
+    <div style="display: flex; justify-content: space-between;">
+      <div>
+        <i class="big {{ header.icon }} icon"></i>
+        <div class="content">
+          {{ header.name }}
+          | 
+          {% if header.id > 0 %}
+            id <i>{{ header.id }}</i>
+            {% if data.fields is defined %}
+              {% for item in data.fields %}
+                {% if item.name == 'status' %}
+                  |
+                  <span class="ui {{ item.values[item.value].color }} text">
+                    <i class="{{ item.values[item.value].icon }} icon"></i>
+                    {{ item.values[item.value].title }}
+                  </span>
+                {% endif %}
+              {% endfor %}
             {% endif %}
-          {% endfor %}
-        {% endif %}
-      {% else %}
-        New
-      {% endif %}
-      <div class="sub header">
-        {% if data.fields|length > 0 %}
-          {{ data.fields|first.value }}
-        {% endif %}
+          {% else %}
+            New
+          {% endif %}
+          <div class="sub header">
+            {% if data.fields|length > 0 %}
+              {{ data.fields|first.value }}
+            {% endif %}
+          </div>
+        </div>
       </div>
+      {% if header.id > 0 %}
+        <span style="float: right;">
+          <a href="{{ basePath }}/view/{{ header.route }}/new">
+            <button class="ui labeled icon button" type="button">
+              <i class="plus icon"></i>Nouveau
+            </button>
+          </a>
+          <button
+            class="ui labeled icon primary button"
+            type="submit"
+            form="myform"
+          >
+            <i class="save icon"></i>
+            {{ translation.savebutton }}
+          </button>
+        </span>
+        {% else %}
+        <span style="float: right;">
+          <button
+            class="ui labeled icon primary button"
+            name="save"
+            value="new"
+            type="submit"
+            form="myform"
+          >
+            <i class="save icon"></i>Nouveau
+          </button>
+          <button
+            class="ui labeled icon primary button"
+            name="save"
+            value="view"
+            type="submit"
+            form="myform"
+          >
+            <i class="save icon"></i>Voir
+          </button>
+        </span>
+      {% endif %}
     </div>
   </div>
 </div>

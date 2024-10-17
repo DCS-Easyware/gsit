@@ -29,28 +29,6 @@ final class Ticket extends Common
     return $this->commonShowITILNewItem($request, $response, $args, $item);
   }
 
-  public function newItem(Request $request, Response $response, $args): Response
-  {
-    $data = (object) $request->getParsedBody();
-    $data = $this->prepareDataSave($data);
-
-    $this->saveItem($data);
-
-    // if (property_exists($data, 'save') && $data->save == 'view')
-    // {
-    //   $uri = $request->getUri();
-    //   return $response
-    //     ->withHeader('Location', str_replace('/new', '/' . $id, (string) $uri))
-    //     ->withStatus(302);
-    //   exit;
-    // }
-
-    $uri = $request->getUri();
-    return $response
-      ->withHeader('Location', (string) $uri)
-      ->withStatus(302);
-  }
-
   public function updateItem(Request $request, Response $response, $args): Response
   {
     $data = (object) $request->getParsedBody();

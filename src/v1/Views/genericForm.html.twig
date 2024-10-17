@@ -1,44 +1,7 @@
 {{ include('header.html.twig') }}
 {{ include('headerForm.html.twig') }}
 
-<form method="post" class="ui form">
-  {% if header.id > 0 %}
-    <form method="post" class="ui form">
-      <span style="position: sticky; top: 20px; z-index: 999; float: right; display: block;">
-        <a href="{{ basePath }}/view/{{ header.route }}/new">
-          <button class="ui labeled icon button" type="button">
-            <i class="plus icon"></i>Nouveau
-          </button>
-        </a>
-        <button
-          class="ui labeled icon primary button"
-          type="submit"
-        >
-          <i class="save icon"></i>
-          {{ translation.savebutton }}
-        </button>
-      </span>
-  {% else %}
-    <span style="position: sticky; top: 20px; z-index: 999; float: right; display: block;">
-      <button
-        class="ui labeled icon primary button"
-        name="save"
-        value="new"
-        type="submit"
-      >
-        <i class="save icon"></i>Nouveau
-      </button>
-      <button
-        class="ui labeled icon primary button"
-        name="save"
-        value="view"
-        type="submit"
-      >
-        <i class="save icon"></i>Voir
-      </button>
-    </span>
-  {% endif %}
-
+<form method="post" class="ui form" id="myform">
   <div class="ui internally celled grid">
     <div class="row">
       <div class="height wide column">
