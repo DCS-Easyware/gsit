@@ -18,13 +18,41 @@ $apiversion = 'v1';
 $app = AppFactory::create();
 
 $app->addRoutingMiddleware();
-$app->setBasePath('/gsit');
+$basePath = "";
+if (strstr($_SERVER['REQUEST_URI'], 'index.php'))
+{
+  $uri_spl = explode('index.php', $_SERVER['REQUEST_URI']);
+  $basePath = $uri_spl[0] . "index.php";
+}
+if (strstr($_SERVER['REQUEST_URI'], '/'))
+{
+  $uri_spl = explode('/', $_SERVER['REQUEST_URI']);
+  $paths = [];
+  foreach ($uri_spl as $path)
+  {
+    if ($path == '')
+    {
+      continue;
+    }
+    if (in_array($path, ['ping', 'view', 'api']))
+    {
+      break;
+    } else {
+      $paths[] = $path;
+    }
+  }
+  $basePath = '/' . implode('/', $paths);
+}
+$app->setBasePath($basePath);
+
+
 
 // Create Twig
 $twig = Twig::create('../src/v1/Views');
 
 // Add Twig-View Middleware
-$app->add(TwigMiddleware::create($app, $twig));
+// $app->add(TwigMiddleware::create($app, $twig));
+$app->add(new TwigMiddleware($twig, $app->getRouteCollector()->getRouteParser(), '', 'view'));
 
 // See https://github.com/tuupola/slim-jwt-auth
 $container = $app->getContainer();
@@ -34,25 +62,13 @@ $container["jwt"] = function ($container)
   return new StdClass();
 };
 
-$prefix = "";
-if (strstr($_SERVER['REQUEST_URI'], 'index.php'))
-{
-  $uri_spl = explode('index.php', $_SERVER['REQUEST_URI']);
-  $prefix = $uri_spl[0] . "index.php";
-}
-if (strstr($_SERVER['REQUEST_URI'], '/'))
-{
-  $uri_spl = explode('/', $_SERVER['REQUEST_URI']);
-  $prefix = $uri_spl[0];
-}
-
 $secret = sodium_base642bin('TEST', SODIUM_BASE64_VARIANT_ORIGINAL);
 
 $app->add(new Tuupola\Middleware\JwtAuthentication([
   "ignore" => [
-    $prefix . "/gsit/ping",
-    $prefix . "/gsit/login",
-    $prefix . "/gsit/api/v1/fusioninventory",
+    $basePath . "/ping",
+    $basePath . "/view/login",
+    $basePath . "/api/v1/fusioninventory",
   ],
   "secure" => false,
   "secret" => $secret,
@@ -73,9 +89,11 @@ $app->add(new Tuupola\Middleware\JwtAuthentication([
   },
   "error" => function ($response, $arguments)
   {
+    global $basePath;
+
     $GLOBALS['user_id'] = null;
     // for web, redirect to login page
-    header('Location: /gsit/login');
+    header('Location: ' . $basePath . '/view/login');
     exit();
 
     // for API
@@ -111,7 +129,7 @@ $app->add(
 );
 
 // Define routes
-\App\Route::setRoutes($app, $prefix);
+\App\Route::setRoutes($app);
 
 // Define Custom Error Handler
 $customErrorHandler = function (

@@ -13,14 +13,16 @@ class Devicecase
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 23,
         'title' => $translator->translatePlural('Manufacturer', 'Manufacturers', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'manufacturer',
-        'dbname' => 'manufacturers_id',
+        'dbname' => 'manufacturer_id',
         'itemtype' => '\App\Models\Manufacturer',
+        'fillable' => true,
       ],
       [
         'id'    => 12,
@@ -29,6 +31,7 @@ class Devicecase
         'name'  => 'type',
         'dbname' => 'devicecasetype_id',
         'itemtype' => '\App\Models\Devicecasetype',
+        'fillable' => true,
       ],
       [
         'id'    => 13,
@@ -37,12 +40,14 @@ class Devicecase
         'name'  => 'model',
         'dbname' => 'devicecasemodel_id',
         'itemtype' => '\App\Models\Devicecasetype',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       // [
       //   'id'    => 80,
@@ -56,19 +61,20 @@ class Devicecase
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
     ];

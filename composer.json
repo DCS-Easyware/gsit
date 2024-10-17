@@ -27,6 +27,7 @@
         "bryanjhv/slim-session": "~4.0",
         "elvanto/litemoji": "^4.3",
         "enshrined/svg-sanitize": "^0.15.4",
+        "fico7489/laravel-pivot": "^3.0",
         "genealabs/laravel-pivot-events": "*",
         "guzzlehttp/guzzle": "^7.4",
         "guzzlehttp/psr7": "^1.8",

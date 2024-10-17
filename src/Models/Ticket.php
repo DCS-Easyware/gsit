@@ -49,6 +49,7 @@ class Ticket extends Common
     'usersidlastupdater:id,name',
     'usersidrecipient:id,name',
     'category:id,name',
+    'location:id,name',
   ];
 
   // For default values
@@ -57,6 +58,21 @@ class Ticket extends Common
     'urgency'   => 3,
     'impact'    => 3,
     'priority'  => 3,
+  ];
+
+  protected $fillable = [
+    'name',
+    'entity_id',
+    'status',
+    'user_id_recipient',
+    'requesttype_id',
+    'content',
+    'urgency',
+    'impact',
+    'priority',
+    'category_id',
+    'type',
+    'location_id',
   ];
 
   public static function boot()
@@ -132,7 +148,12 @@ class Ticket extends Common
 
   public function category(): BelongsTo
   {
-    return $this->belongsTo('\App\Models\Category', 'category_id');
+    return $this->belongsTo('\App\Models\Category');
+  }
+
+  public function location(): BelongsTo
+  {
+    return $this->belongsTo('\App\Models\Location');
   }
 
   public function problems(): BelongsToMany

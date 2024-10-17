@@ -13,12 +13,14 @@ class Change
         'title' => $translator->translate('Title'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 21,
         'title' => $translator->translate('Description'),
         'type'  => 'textarea',
         'name'  => 'content',
+        'fillable' => true,
       ],
       [
         'id'    => 12,
@@ -27,6 +29,7 @@ class Change
         'name'  => 'status',
         'dbname'  => 'status',
         'values' => self::getStatusArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 10,
@@ -35,6 +38,7 @@ class Change
         'name'  => 'urgency',
         'dbname'  => 'urgency',
         'values' => self::getUrgencyArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 11,
@@ -43,6 +47,7 @@ class Change
         'name'  => 'impact',
         'dbname'  => 'impact',
         'values' => self::getImpactArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 3,
@@ -51,6 +56,7 @@ class Change
         'name'  => 'priority',
         'dbname'  => 'priority',
         'values' => self::getPriorityArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 15,
@@ -86,15 +92,16 @@ class Change
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
       ],
       [
         'id'    => 7,
         'title' => $translator->translate('Category'),
         'type'  => 'dropdown_remote',
-        'name'  => 'itilcategorie',
-        'dbname' => 'itilcategories_id',
-        'itemtype' => '\App\Models\ITILCategory',
+        'name'  => 'categorie',
+        'dbname' => 'category_id',
+        'itemtype' => '\App\Models\Category',
+        'fillable' => true,
       ],
       // [
       //   'id'    => 80,
@@ -116,7 +123,7 @@ class Change
         'title' => $translator->translate('Last edit by'),
         'type'  => 'dropdown_remote',
         'name'  => 'usersidlastupdater',
-        'dbname' => 'users_id_lastupdater',
+        'dbname' => 'user_id_lastupdater',
         'itemtype' => '\App\Models\User',
       ],
       [
@@ -124,7 +131,7 @@ class Change
         'title' => $translator->translate('Writer'),
         'type'  => 'dropdown_remote',
         'name'  => 'usersidrecipient',
-        'dbname'  => 'users_id_recipient',
+        'dbname'  => 'user_id_recipient',
         'itemtype' => '\App\Models\User',
       ],
       [
@@ -132,30 +139,35 @@ class Change
         'title' => $translator->translate('Analysis impact'),
         'type'  => 'textarea',
         'name'  => 'impactcontent',
+        'fillable' => true,
       ],
       [
         'id'    => 61,
         'title' => $translator->translate('Control list'),
         'type'  => 'textarea',
         'name'  => 'controlistcontent',
+        'fillable' => true,
       ],
       [
         'id'    => 62,
         'title' => $translator->translate('Deployment plan'),
         'type'  => 'textarea',
         'name'  => 'rolloutplancontent',
+        'fillable' => true,
       ],
       [
         'id'    => 63,
         'title' => $translator->translate('Backup plan'),
         'type'  => 'textarea',
         'name'  => 'backoutplancontent',
+        'fillable' => true,
       ],
       [
         'id'    => 67,
         'title' => $translator->translate('Checklist'),
         'type'  => 'textarea',
         'name'  => 'checklistcontent',
+        'fillable' => true,
       ],
 
 

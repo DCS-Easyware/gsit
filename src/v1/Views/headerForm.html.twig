@@ -8,9 +8,9 @@
       {% if header.id > 0 %}
         id <i>{{ header.id }}</i>
         {% if data.fields is defined %}
-          | 
           {% for item in data.fields %}
             {% if item.name == 'status' %}
+              |
               <span class="ui {{ item.values[item.value].color }} text">
                 <i class="{{ item.values[item.value].icon }} icon"></i>
                 {{ item.values[item.value].title }}
@@ -30,7 +30,7 @@
   </div>
 </div>
 {% if relatedPages|length > 0 %}
-  <div class="ui equal width labeled icon menu">
+  <div class="ui wrapped labeled icon wrapping menu related">
     {% for item in relatedPages %}
       {% if item.link != '' %}
         <a class="item" href="{{ item.link }}">

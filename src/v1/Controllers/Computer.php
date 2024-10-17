@@ -9,6 +9,8 @@ use Slim\Routing\RouteContext;
 
 final class Computer extends Common
 {
+  protected $model = '\App\Models\Computer';
+
   public function getAll(Request $request, Response $response, $args): Response
   {
     $item = new \App\Models\Computer();
@@ -37,7 +39,8 @@ final class Computer extends Common
     $myItem = $item::with('operatingsystems')->find($args['id']);
 
     $operatingsystem = [];
-    foreach ($myItem->operatingsystems as $os) {
+    foreach ($myItem->operatingsystems as $os)
+    {
       $osa = \App\Models\Operatingsystemarchitecture::find($os->pivot->operatingsystemarchitecture_id);
       $osv = \App\Models\Operatingsystemversion::find($os->pivot->operatingsystemversion_id);
       $ossp = \App\Models\Operatingsystemservicepack::find($os->pivot->operatingsystemservicepack_id);
@@ -52,17 +55,35 @@ final class Computer extends Common
       $oshid = $os->pivot->hostid;
 
       $architecture = '';
-      if ($osa !== null) $architecture = $osa->name;
+      if ($osa !== null)
+      {
+        $architecture = $osa->name;
+      }
       $version = '';
-      if ($osv !== null) $version = $osv->name;
+      if ($osv !== null)
+      {
+        $version = $osv->name;
+      }
       $servicepack = '';
-      if ($ossp !== null) $servicepack = $ossp->name;
+      if ($ossp !== null)
+      {
+        $servicepack = $ossp->name;
+      }
       $kernelversion = '';
-      if ($oskv !== null) $kernelversion = $oskv->name;
+      if ($oskv !== null)
+      {
+        $kernelversion = $oskv->name;
+      }
       $edition = '';
-      if ($ose !== null) $edition = $ose->name;
+      if ($ose !== null)
+      {
+        $edition = $ose->name;
+      }
       $license_number = '';
-      if ($osln !== null) $license_number = $osln;
+      if ($osln !== null)
+      {
+        $license_number = $osln;
+      }
       $licenseid = '';
       if ($oslid !== null) $licenseid = $oslid;
       $installationdate = '';
@@ -102,14 +123,7 @@ final class Computer extends Common
     $rootUrl = $this->getUrlWithoutQuery($request);
     $rootUrl = rtrim($rootUrl, '/operatingsystem');
 
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($myItem, $request);
     $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
 
     $viewData->addTranslation('savebutton', $translator->translate('Save'));
@@ -153,14 +167,28 @@ final class Computer extends Common
     return $view->render($response, 'subitem/operatingsystems.html.twig', (array)$viewData);
   }
 
-  public function showSoftwares(Request $request, Response $response, $args): Response
+  public function showSubSoftwares(Request $request, Response $response, $args): Response
   {
     global $translator;
 
     $item = new \App\Models\Computer();
     $view = Twig::fromRequest($request);
 
-    $myItem = $item::with('softwareversions.software:id,name')->find($args['id']);
+    $myItem = $item::with('softwareversions.software:id,name', 'antiviruses')->find($args['id']);
+
+    $myAntiviruses = [];
+    foreach ($myItem->antiviruses as $antivirus)
+    {
+      $myAntiviruses[] = [
+        'name'        => $antivirus->name,
+        'publisher'   => $antivirus->manufacturer_id,
+        'is_dynamic'  => $antivirus->is_dynamic,
+        'version'     => $antivirus->antivirus_version,
+        'signature'   => $antivirus->signature_version,
+        'is_active'   => $antivirus->is_active,
+        'is_uptodate' => $antivirus-> is_uptodate
+      ];
+    }
 
     $softwares = [];
     foreach ($myItem->softwareversions as $softwareversion)
@@ -178,18 +206,12 @@ final class Computer extends Common
     $rootUrl = $this->getUrlWithoutQuery($request);
     $rootUrl = rtrim($rootUrl, '/softwares');
 
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($myItem, $request);
     $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
 
     $viewData->addData('fields', $item->getFormData($myItem));
     $viewData->addData('softwares', $softwares);
+    $viewData->addData('antiviruses', $myAntiviruses);
 
     $viewData->addTranslation('software', $translator->translatePlural('Software', 'Software', 1));
     $viewData->addTranslation('version', $translator->translatePlural('Version', 'Versions', 1));

@@ -15,9 +15,12 @@ class Viewdata
   public object $translation;
   public object $information;
   public array $message;
+  public string $basePath;
 
-  public function __construct()
+  public function __construct($item, $request)
   {
+    global $basePath;
+
     $this->header = (object)[];
     $this->data = (object)[];
     $this->relatedPages = [];
@@ -25,7 +28,9 @@ class Viewdata
     $this->information = (object)[];
     $this->message = [];
 
-    $this->initHeaderData();
+    $this->basePath = $basePath;
+
+    $this->initHeaderData($item, $request);
     $this->initInformationData();
   }
 

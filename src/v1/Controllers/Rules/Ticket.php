@@ -31,14 +31,8 @@ final class Ticket extends Common
     $rootUrl = $this->getUrlWithoutQuery($request);
 
     // form data
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-    $viewData->addCOlorId('red');
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($myItem, $request);
+    $viewData->addHeaderColor('red');
 
     $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
 
@@ -63,19 +57,15 @@ final class Ticket extends Common
     $rootUrl = rtrim($rootUrl, '/criteria');
 
     // form data
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-    $viewData->addCOlorId('red');
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($myItem, $request);
+    $viewData->addHeaderColor('red');
 
     $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
 
     $viewData->addData('fields', $item->getFormData($myItem));
     $viewData->addData('criteria', $rulecriteria);
+
+    $viewData->addData('model', 'Ticket');
 
     return $view->render($response, 'subitem/rulecriteria.html.twig', (array)$viewData);
   }

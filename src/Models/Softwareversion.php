@@ -17,10 +17,17 @@ class Softwareversion extends Common
   ];
 
   protected $visible = [
+    'software_id'
   ];
 
   protected $with = [
     'software:id,name'
+  ];
+
+  protected $fillable = [
+    'name',
+    'entity_id',
+    'software_id'
   ];
 
   // We get all devices

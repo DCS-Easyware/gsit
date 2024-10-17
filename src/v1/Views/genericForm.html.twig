@@ -2,7 +2,43 @@
 {{ include('headerForm.html.twig') }}
 
 <form method="post" class="ui form">
-  <button class="ui button right floated" type="submit">{{ translation.savebutton }}</button>
+  {% if header.id > 0 %}
+    <form method="post" class="ui form">
+      <span style="position: fixed; top: 20px; z-index: 999; margin-left: 800px; display: flex;">
+        <a href="{{ base_path() }}/tickets/new">
+          <button class="ui labeled icon button" type="button">
+            <i class="plus icon"></i>Nouveau
+          </button>
+        </a>
+        <button
+          class="ui labeled icon primary button"
+          type="submit"
+        >
+          <i class="save icon"></i>
+          {{ translation.savebutton }}
+        </button>
+      </span>
+  {% else %}
+    <span style="position: fixed; top: 20px; z-index: 999; margin-left: 800px; display: flex;">
+      <button
+        class="ui labeled icon primary button"
+        name="save"
+        value="new"
+        type="submit"
+      >
+        <i class="save icon"></i>Nouveau
+      </button>
+      <button
+        class="ui labeled icon primary button"
+        name="save"
+        value="view"
+        type="submit"
+      >
+        <i class="save icon"></i>Voir
+      </button>
+    </span>
+  {% endif %}
+
   <div class="ui internally celled grid">
     <div class="row">
       <div class="height wide column">
@@ -34,24 +70,7 @@
 
         {% for item in data.fields %}
           {% if item.name == 'comment' %}
-          <div class="field">
-            <label>{{ item.title }}</label>
-              <div id="editor{{ item.name }}">{{ item.value }}</div>
-              <textarea rows="3" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %}  style="display: none">{{ item.value }}</textarea>
-<script type="text/javascript">
-editor{{ item.name }} = new toastui.Editor({
-el: document.querySelector('#editor{{ item.name }}'),
-initialEditType: 'markdown',
-previewStyle: 'vertical',
-initialEditType: 'wysiwyg',
-events: {
-blur: () => {
-document.querySelector(`textarea[name='{{ item.name }}']`).value = editor{{ item.name }};
-},
-},
-});
-</script>
-            </div>
+            {{ include('fields.html.twig') }}
           {% endif %}
         {% endfor %}
 
@@ -76,7 +95,6 @@ document.querySelector(`textarea[name='{{ item.name }}']`).value = editor{{ item
       </div>
     </div>
   </div>
-  <button class="ui button right floated" type="submit">{{ translation.savebutton }}</button>
 </form>
 
 {{ include('footer.html.twig') }}

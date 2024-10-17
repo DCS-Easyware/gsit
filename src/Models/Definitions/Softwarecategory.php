@@ -13,6 +13,7 @@ class Softwarecategory
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 12,
@@ -21,12 +22,14 @@ class Softwarecategory
         'name'  => 'category',
         'dbname' => 'softwarecategory_id',
         'itemtype' => '\App\Models\Softwarecategory',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
     ];
   }

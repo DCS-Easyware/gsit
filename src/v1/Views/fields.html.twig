@@ -31,13 +31,13 @@
       {% endif %}
     {% else %}
       <div
-        class="ui {% if item.multiple is defined %}multiple {% endif %}selection dropdown remotedropdown"
-        data-url="{{ base_path() }}/dropdown"
+        class="ui {% if item.multiple is defined %}multiple {% endif %}selection dropdown search remotedropdown"
+        data-url="{{ basePath }}/view/dropdown"
         data-itemtype="{{ item.itemtype }}"
       >
         <input type="hidden" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %}  value="{{ item.value }}">
         <i class="dropdown icon"></i>
-        {% if item.value == 0 %}
+        {% if item.value == 0 or item.value == '' %}
           <div class="default text">{{ translation.selectvalue }}</div>
         {% elseif item.value > 0 %}
           <div class="text">{{ item.valuename }}</div>

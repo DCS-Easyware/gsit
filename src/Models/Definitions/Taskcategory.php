@@ -13,6 +13,7 @@ class Taskcategory
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 13,
@@ -21,12 +22,14 @@ class Taskcategory
         'name'  => 'category',
         'dbname' => 'taskcategory_id',
         'itemtype' => '\App\Models\Taskcategory',
+        'fillable' => true,
       ],
       [
         'id'    => 8,
         'title' => $translator->translate('Active'),
         'type'  => 'boolean',
         'name'  => 'is_active',
+        'fillable' => true,
       ],
       [
         'id'    => 79,
@@ -35,6 +38,7 @@ class Taskcategory
         'name'  => 'knowbaseitemcategories',
         'dbname' => 'knowbaseitemcategory_id',
         'itemtype' => '\App\Models\Knowbaseitemcategory',
+        'fillable' => true,
       ],
       //  [
       //    'id'    => 80,
@@ -48,19 +52,20 @@ class Taskcategory
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
     ];

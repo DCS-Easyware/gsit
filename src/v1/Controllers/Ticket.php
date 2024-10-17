@@ -9,6 +9,8 @@ use Slim\Routing\RouteContext;
 
 final class Ticket extends Common
 {
+  protected $model = '\App\Models\Ticket';
+
   public function getAll(Request $request, Response $response, $args): Response
   {
     $item = new \App\Models\Ticket();
@@ -30,16 +32,18 @@ final class Ticket extends Common
   public function newItem(Request $request, Response $response, $args): Response
   {
     $data = (object) $request->getParsedBody();
-    $id = $this->saveItem($data);
+    $data = $this->prepareDataSave($data);
 
-    if (property_exists($data, 'save') && $data->save == 'view')
-    {
-      $uri = $request->getUri();
-      return $response
-        ->withHeader('Location', str_replace('/new', '/' . $id, (string) $uri))
-        ->withStatus(302);
-      exit;
-    }
+    $this->saveItem($data);
+
+    // if (property_exists($data, 'save') && $data->save == 'view')
+    // {
+    //   $uri = $request->getUri();
+    //   return $response
+    //     ->withHeader('Location', str_replace('/new', '/' . $id, (string) $uri))
+    //     ->withStatus(302);
+    //   exit;
+    // }
 
     $uri = $request->getUri();
     return $response
@@ -50,6 +54,9 @@ final class Ticket extends Common
   public function updateItem(Request $request, Response $response, $args): Response
   {
     $data = (object) $request->getParsedBody();
+
+    $data = $this->prepareDataSave($data, $args['id']);
+
     $this->saveItem($data, $args['id']);
 
     $uri = $request->getUri();
@@ -269,15 +276,7 @@ final class Ticket extends Common
     }
 
 
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-    $viewData->addColorId($myItem->getColor());
-
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($myItem, $request);
     $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
 
     $viewData->addData('feeds', $feeds);
@@ -304,15 +303,7 @@ final class Ticket extends Common
       $problems[] = $problem->toArray();
     }
 
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-    $viewData->addColorId($myItem->getColor());
-
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($myItem, $request);
     $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
 
     $viewData->addData('fields', $item->getFormData($myItem));
@@ -355,61 +346,6 @@ final class Ticket extends Common
     exit();
   }
 
-  public function showHistory(Request $request, Response $response, $args)
-  {
-    $item = new \App\Models\Ticket();
-    $view = Twig::fromRequest($request);
-
-    $session = new \SlimSession\Helper();
-
-    // Load the item
-    $myItem = $item->find($args['id']);
-
-    $logs = \App\Models\Log::
-        where('item_type', 'App\v1\Models\Ticket')
-      ->where('item_id', $myItem->id)
-      ->get();
-
-// id: 1
-// item_type: App\v1\Models\User
-// item_id: 6
-// itemtype_link: Profile_User
-// linked_action: 17
-// user_name: glpi
-// updated_at: 2012-01-24 10:21:20
-// id_search_option: 0
-// old_value: 
-// new_value: post-only, Root entity, D
-
-
-    $rootUrl = $this->getUrlWithoutQuery($request);
-    $rootUrl = rtrim($rootUrl, '/history');
-
-    // form data
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-    $viewData->addColorId($myItem->getColor());
-
-    $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
-
-    $viewData->addData('fields', $item->getFormData($myItem));
-    $viewData->addData('content', \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content));
-    $viewData->addData('history', $logs);
-
-    if ($session->exists('message'))
-    {
-      $viewData['message'] = $session->message;
-      $session->delete('message');
-    }
-
-    return $view->render($response, 'subitem/history.html.twig', (array)$viewData);
-  }
-
   /**
     * Compute Priority
     *
@@ -434,14 +370,13 @@ final class Ticket extends Common
   }
 
   /**
-   * Save a ticket
+   * Prepare data to save
    *   * manage compute priority
    *   * manage rules
    *   * store in DB the ticket, the users, the groups... so all linked to ticket
    */
-  public function saveItem($data, $id = null)
+  public function prepareDataSave($data, $id = null)
   {
-    global $translator;
 
     if (is_null($id))
     {
@@ -450,6 +385,22 @@ final class Ticket extends Common
       $myItem = \App\Models\Ticket::find($id);
     }
     $definitions = $myItem->getDefinitions();
+
+
+    if ($myItem->priority == $data->priority)
+    {
+      $data->priority = self::computePriority($data->urgency, $data->impact);
+    }
+
+    // TODO rules
+
+
+    return $data;
+
+    ////////////////////////// OLD CODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+    // global $translator;
+
 
     // Fill $input
     $input = [

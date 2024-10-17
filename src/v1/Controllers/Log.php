@@ -49,7 +49,6 @@ final class Log extends Common
       $log->new_value = $new_value;
     }
     $log->id_search_option = $idSearchOption;
-
     $log->save();
   }
 }

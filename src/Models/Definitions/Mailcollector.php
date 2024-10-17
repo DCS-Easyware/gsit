@@ -13,6 +13,7 @@ class Mailcollector
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 22,
@@ -26,18 +27,21 @@ class Mailcollector
         'title' => $translator->translate('Active'),
         'type'  => 'boolean',
         'name'  => 'is_active',
+        'fillable' => true,
       ],
       [
         'id'    => 20,
         'title' => $translator->translate('Accepted mail archive folder (optional)'),
         'type'  => 'input',
         'name'  => 'accepted',
+        'fillable' => true,
       ],
       [
         'id'    => 21,
         'title' => $translator->translate('Refused mail archive folder (optional)'),
         'type'  => 'input',
         'name'  => 'refused',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
@@ -46,12 +50,14 @@ class Mailcollector
         'name'  => 'filesize_max',
         'dbname'  => 'filesize_max',
         'values' => self::showMaxFilesize(),
+        'fillable' => true,
       ],
       [
         'id'    => 201,
         'title' => $translator->translate('Use mail date, instead of collect one'),
         'type'  => 'boolean',
         'name'  => 'use_mail_date',
+        'fillable' => true,
       ],
       [
         'id'    => 202,
@@ -60,18 +66,21 @@ class Mailcollector
         'name'  => 'requester_field',
         'dbname'  => 'requester_field',
         'values' => self::getRequesterField(),
+        'fillable' => true,
       ],
       [
         'id'    => 203,
         'title' => $translator->translate('Add CC users as observer'),
         'type'  => 'boolean',
         'name'  => 'add_cc_to_observer',
+        'fillable' => true,
       ],
       [
         'id'    => 204,
         'title' => $translator->translate('Collect only unread mail'),
         'type'  => 'boolean',
         'name'  => 'collect_only_unread',
+        'fillable' => true,
       ],
 
 
@@ -82,12 +91,13 @@ class Mailcollector
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
 /*

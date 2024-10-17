@@ -30,10 +30,10 @@ class Category extends Common
     'users',
     'groups',
     'knowbaseitemcategories',
-    'tickettemplatesDemand',
-    'tickettemplatesIncident',
-    'changetemplates',
-    'problemtemplates',
+    // 'tickettemplatesDemand',
+    // 'tickettemplatesIncident',
+    // 'changetemplates',
+    // 'problemtemplates',
   ];
 
   protected $with = [
@@ -41,10 +41,10 @@ class Category extends Common
     'users:id,name',
     'groups:id,name',
     'knowbaseitemcategories:id,name',
-    'tickettemplatesDemand:id,name',
-    'tickettemplatesIncident:id,name',
-    'changetemplates:id,name',
-    'problemtemplates:id,name',
+    // 'tickettemplatesDemand:id,name',
+    // 'tickettemplatesIncident:id,name',
+    // 'changetemplates:id,name',
+    // 'problemtemplates:id,name',
   ];
 
   public function category(): BelongsTo

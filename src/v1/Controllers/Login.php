@@ -22,6 +22,8 @@ final class Login extends Common
 
   public function postLogin(Request $request, Response $response, $args): Response
   {
+    global $basePath;
+
     $data = (object) $request->getParsedBody();
     $token = new \App\v1\Controllers\Token();
 
@@ -62,7 +64,7 @@ final class Login extends Common
 
     setcookie('token', $jwt['token']);//, $cookie_lifetime, $cookie_path, $cookie_domain, $cookie_secure, true);
 
-    header('Location: /gsit/computers');
+    header('Location: ' . $basePath . '/view/computers');
     exit();
   }
 }

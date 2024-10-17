@@ -1,6 +1,60 @@
 {{ include('header.html.twig') }}
 {{ include('headerForm.html.twig') }}
 
+
+<table class="ui blue table">
+  <thead>
+    <tr>
+      <th>Antivirus</th>
+      <th>Version</th>
+      <th>Publisher</th>
+      <th>Dynamic</th>
+      <th>Active</th>
+      <th>Uptodate</th>
+      <th>Signature</th>
+    </tr>
+  </tr></thead><tbody>
+    {% for antivirus in data.antiviruses|sort((a, b) => a.antivirus.name|lower <=> b.antivirus.name|lower) %}
+      <tr>
+        <td>{{ antivirus.name }}</td>
+        <td>{{ antivirus.version }}</td>
+        <td>{{ antivirus.publisher }}</td>
+        {% if antivirus.is_dynamic %}
+          <td class="positive">
+          <i class="check circle outline icon"></i>
+          Yes
+        {% else %}
+          <td class="negative">
+          <i class="times circle outline icon"></i>
+          No
+        {% endif %}
+        </td>
+        {% if antivirus.is_active %}
+          <td class="positive">
+          <i class="check circle outline icon"></i>
+          Yes
+        {% else %}
+          <td class="negative">
+          <i class="times circle outline icon"></i>
+          No
+        {% endif %}
+        </td>
+        {% if not antivirus.is_uptodate %}
+          <td class="positive">
+          <i class="check circle outline icon"></i>
+          Yes
+        {% else %}
+          <td class="negative">
+          <i class="times circle outline icon"></i>
+          No
+        {% endif %}
+        </td>
+        <td>{{ antivirus.signature }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 <table class="ui blue table">
   <thead>
     <tr>

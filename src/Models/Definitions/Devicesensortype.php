@@ -13,12 +13,14 @@ class Devicesensortype
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
     ];
   }

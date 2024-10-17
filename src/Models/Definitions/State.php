@@ -14,14 +14,16 @@ class State
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 13,
         'title' => $translator->translate('As child of'),
         'type'  => 'dropdown_remote',
         'name'  => 'state',
-        'dbname' => 'states_id',
+        'dbname' => 'state_id',
         'itemtype' => '\App\Models\State',
+        'fillable' => true,
       ],
       [
         'id'    => 21,
@@ -32,6 +34,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_computer',
+        'fillable' => true,
       ],
       [
         'id'    => 23,
@@ -42,6 +45,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_monitor',
+        'fillable' => true,
       ],
       [
         'id'    => 27,
@@ -52,6 +56,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_networkequipment',
+        'fillable' => true,
       ],
       [
         'id'    => 25,
@@ -62,6 +67,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_peripheral',
+        'fillable' => true,
       ],
       [
         'id'    => 26,
@@ -72,6 +78,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_phone',
+        'fillable' => true,
       ],
       [
         'id'    => 24,
@@ -82,6 +89,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_printer',
+        'fillable' => true,
       ],
       [
         'id'    => 28,
@@ -92,6 +100,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_softwarelicense',
+        'fillable' => true,
       ],
       [
         'id'    => 29,
@@ -102,6 +111,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_certificate',
+        'fillable' => true,
       ],
       [
         'id'    => 32,
@@ -112,6 +122,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_enclosure',
+        'fillable' => true,
       ],
       [
         'id'    => 33,
@@ -122,6 +133,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_pdu',
+        'fillable' => true,
       ],
       [
         'id'    => 31,
@@ -132,6 +144,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_line',
+        'fillable' => true,
       ],
       [
         'id'    => 30,
@@ -142,6 +155,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_rack',
+        'fillable' => true,
       ],
       [
         'id'    => 22,
@@ -152,6 +166,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_softwareversion',
+        'fillable' => true,
       ],
       [
         'id'    => 34,
@@ -162,6 +177,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_cluster',
+        'fillable' => true,
       ],
       [
         'id'    => 36,
@@ -172,6 +188,7 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_contract',
+        'fillable' => true,
       ],
       [
         'id'    => 37,
@@ -182,12 +199,14 @@ class State
         ),
         'type'  => 'boolean',
         'name'  => 'is_visible_appliance',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       // [
       //   'id'    => 80,
@@ -201,19 +220,20 @@ class State
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
       /*

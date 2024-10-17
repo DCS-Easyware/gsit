@@ -11,7 +11,9 @@ final class Dropdown extends Common
 {
   public function getAll(Request $request, Response $response, $args): Response
   {
-    $data = json_decode($request->getBody());
+    // $data = json_decode($request->getBody());
+    $data = (object) $request->getQueryParams();
+
     // POST
     // itemtype
     // filter
@@ -57,12 +59,102 @@ final class Dropdown extends Common
     if (property_exists($data, 'itemtype') && class_exists($data->itemtype))
     {
       $item = new $data->itemtype();
-      $dropData = $item->getDropdownValues();
+      $dropData = $item->getDropdownValues($data->q);
       $success = true;
     } else {
       $dropData = [];
       $success = false;
     }
+
+    $respdata = [
+      "success" => $success,
+      "results" => $dropData,
+    ];
+
+    $response->getBody()->write(json_encode($respdata));
+    return $response->withHeader('Content-Type', 'application/json');
+  }
+
+  public function getRuleCriteria(Request $request, Response $response, $args): Response
+  {
+    $data = (object) $request->getQueryParams();
+
+    $dropData = [];
+    $success = false;
+
+    $classname = '\\App\\v1\\Controllers\\Rules\\Criteria\\' . $data->itemtype;
+
+    $criteria = $classname::get();
+    foreach ($criteria as $id => $crit)
+    {
+      $dropData[] = [
+        'name'  => $crit['title'],
+        'value' => $id,
+      ];
+    }
+
+    $respdata = [
+      "success" => $success,
+      "results" => $dropData,
+    ];
+
+    $response->getBody()->write(json_encode($respdata));
+    return $response->withHeader('Content-Type', 'application/json');
+  }
+
+  public function getRuleCriteriaCondition(Request $request, Response $response, $args): Response
+  {
+    global $translator;
+    $data = (object) $request->getQueryParams();
+
+    $dropData = [
+      [
+        'name'  => $translator->translate('is'),
+        'value' => \App\v1\Controllers\Rules\Common::PATTERN_IS,
+      ],
+      [
+        'name'  => $translator->translate('is not'),
+        'value' => \App\v1\Controllers\Rules\Common::PATTERN_IS_NOT,
+      ],
+      [
+        'name'  => $translator->translate('contains'),
+        'value' => \App\v1\Controllers\Rules\Common::PATTERN_CONTAIN,
+      ],
+      [
+        'name'  => $translator->translate('does not contains'),
+        'value' => \App\v1\Controllers\Rules\Common::PATTERN_NOT_CONTAIN,
+      ],
+      [
+        'name'  => $translator->translate('starting with'),
+        'value' => \App\v1\Controllers\Rules\Common::PATTERN_BEGIN,
+      ],
+      [
+        'name'  => $translator->translate('finished by'),
+        'value' => \App\v1\Controllers\Rules\Common::PATTERN_END,
+      ],
+      [
+        'name'  => $translator->translate('regular expression matches'),
+        'value' => \App\v1\Controllers\Rules\Common::REGEX_MATCH,
+      ],
+      [
+        'name'  => $translator->translate('regular expression does not match'),
+        'value' => \App\v1\Controllers\Rules\Common::REGEX_NOT_MATCH,
+      ],
+      [
+        'name'  => $translator->translate('exists'),
+        'value' => \App\v1\Controllers\Rules\Common::PATTERN_EXISTS,
+      ],
+      [
+        'name'  => $translator->translate('does not exist'),
+        'value' => \App\v1\Controllers\Rules\Common::PATTERN_DOES_NOT_EXISTS,
+      ],
+    ];
+    $success = false;
+
+    $classname = '\\App\\v1\\Controllers\\Rules\\Criteria\\' . $data->itemtype;
+
+    // $criteria = $classname::get();
+    // $crit = $criteria[$data->criteria]
 
     $respdata = [
       "success" => $success,

@@ -13,13 +13,14 @@ class Savedsearch
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 3,
         'title' => $translator->translatePlural('User', 'Users', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'user',
-        'dbname' => 'users_id',
+        'dbname' => 'user_id',
         'itemtype' => '\App\Models\User',
         'readonly'  => 'readonly',
       ],
@@ -30,6 +31,7 @@ class Savedsearch
         'name'  => 'is_private',
         'dbname' => 'is_private',
         'values' => self::getVisibilityArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 10,
@@ -38,6 +40,7 @@ class Savedsearch
         'name'  => 'do_count',
         'dbname' => 'do_count',
         'values' => self::getCountArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 9,

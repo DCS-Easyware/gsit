@@ -21,13 +21,14 @@ class Rssfeed
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 2,
         'title' => $translator->translate('By'),
         'type'  => 'dropdown_remote',
         'name'  => 'user',
-        'dbname' => 'users_id',
+        'dbname' => 'user_id',
         'itemtype' => '\App\Models\User',
         'readonly'  => 'readonly',
       ],
@@ -36,12 +37,14 @@ class Rssfeed
         'title' => $translator->translate('URL'),
         'type'  => 'input',
         'name'  => 'url',
+        'fillable' => true,
       ],
       [
         'id'    => 4,
         'title' => $translator->translate('Active'),
         'type'  => 'boolean',
         'name'  => 'is_active',
+        'fillable' => true,
       ],
       [
         'id'    => 6,
@@ -57,12 +60,14 @@ class Rssfeed
         'name'  => 'max_items',
         'dbname'  => 'max_items',
         'values' => self::getNumberArray(5, 100, 5, [1 => 1], ''),
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
@@ -84,19 +89,20 @@ class Rssfeed
             ]
           ]
         ),
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
 

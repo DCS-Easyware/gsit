@@ -23,4 +23,13 @@ class Log extends Model
 
   protected $with = [
   ];
+
+  protected $fillable = [
+    'item_type',
+    'item_id',
+    'user_name',
+    'old_value',
+    'new_value',
+    'id_search_option',
+  ];
 }

@@ -20,6 +20,7 @@ class Projecttasktemplate
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 4,
@@ -28,6 +29,7 @@ class Projecttasktemplate
         'name'  => 'state',
         'dbname' => 'projectstate_id',
         'itemtype' => '\App\Models\Projectstate',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
@@ -36,6 +38,7 @@ class Projecttasktemplate
         'name'  => 'type',
         'dbname' => 'projecttasktype_id',
         'itemtype' => '\App\Models\Projecttasktype',
+        'fillable' => true,
       ],
       [
         'id'    => 6,
@@ -44,6 +47,7 @@ class Projecttasktemplate
         'name'  => 'projecttasks',
         'dbname' => 'projecttask_id',
         'itemtype' => '\App\Models\Projecttask',
+        'fillable' => true,
       ],
       [
         'id'    => 7,
@@ -52,36 +56,42 @@ class Projecttasktemplate
         'name'  => 'percent_done',
         'dbname'  => 'percent_done',
         'values' => self::getNumberArray(0, 100, 5, [], '%'),
+        'fillable' => true,
       ],
       [
         'id'    => 8,
         'title' => $translator->translate('Milestone'),
         'type'  => 'boolean',
         'name'  => 'is_milestone',
+        'fillable' => true,
       ],
       [
         'id'    => 9,
         'title' => $translator->translate('Planned start date'),
         'type'  => 'datetime',
         'name'  => 'plan_start_date',
+        'fillable' => true,
       ],
       [
         'id'    => 10,
         'title' => $translator->translate('Real start date'),
         'type'  => 'datetime',
         'name'  => 'real_start_date',
+        'fillable' => true,
       ],
       [
         'id'    => 11,
         'title' => $translator->translate('Planned end date'),
         'type'  => 'datetime',
         'name'  => 'plan_end_date',
+        'fillable' => true,
       ],
       [
         'id'    => 12,
         'title' => $translator->translate('Real end date'),
         'type'  => 'datetime',
         'name'  => 'real_end_date',
+        'fillable' => true,
       ],
       [
         'id'    => 13,
@@ -98,6 +108,7 @@ class Projecttasktemplate
             'inhours'         => true
           ]
         ),
+        'fillable' => true,
       ],
       [
         'id'    => 14,
@@ -114,24 +125,28 @@ class Projecttasktemplate
             'inhours'         => true
           ]
         ),
+        'fillable' => true,
       ],
       [
         'id'    => 15,
         'title' => $translator->translate('Description'),
         'type'  => 'textarea',
         'name'  => 'description',
+        'fillable' => true,
       ],
       [
         'id'    => 216,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comments',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       // [
       //    'id'    => 80,
@@ -145,19 +160,20 @@ class Projecttasktemplate
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
 

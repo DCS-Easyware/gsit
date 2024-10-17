@@ -39,17 +39,56 @@ editorcontent = new toastui.Editor({
         </form>
         <!-- Tabs: followup, solutions -->
         {% if header.id > 0 %}
-          <div class="ui secondary menu">
-            <a class="item active" data-tab="feeds">{{ translation.feeds }}</a>
+          <div class="ui secondary menu tabsystem">
+            <a class="{{ header.color }} item active" data-tab="feeds">{{ translation.feeds }}</a>
             <a class="yellow item" data-tab="followup">{{ translation.followup }}</a>
             <a class="blue item" data-tab="solution">{{ translation.solution }}</a>
           </div>
         {% endif %}
-        <div class="ui tab segment" hidden data-tab="feeds">
+        <div class="ui {{ header.color }} tab segment" data-tab="feeds">
+          <!-- Feeds -->
+          <div class="ui connected feed">
+            {% for feed in data.feeds %}
+              <div class="event">
+                <div class="label">
+                  {% if feed.type == 'event' %}
+                    <i class="circular colored inverted exchange alternate brown icon"></i>
+                  {% elseif feed.usertype == 'tech' %}
+                    <i class="circular colored inverted headset olive icon"></i>
+                  {% else %}
+                    <i class="circular colored inverted user blue icon"></i>
+                  {% endif %}
+                  <!-- <img src="/images/avatar/small/elliot.jpg"> -->
+                </div>
+                <div class="content">
+                  <div class="summary">
+                    <a class="user">
+                      {{ feed.user }}
+                    </a> {{ feed.summary | raw }}
+                    <div class="date">
+                      {{ feed.date }}
+                    </div>
+                  </div>
+                  {% if not feed.content is null %}
+                    <div class="extra text">
+                      {{ feed.content | raw }}
+                    </div>
+                  {% endif %}
+                  {% if not feed.time is null %}
+                    <div class="meta">
+                      <a class="like">
+                        {{ translation.timespent }}: {{ feed.time }} {{ translation.seconds }}
+                      </a>
+                    </div>
+                    {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
         </div>
         <div class="ui active tab yellow segment" data-tab="followup">
           {% if header.id > 0 %}
-          <form method="post" action="/gsit/followups" class="ui form">
+          <form method="post" action="{{ current_url() }}/followups" class="ui form">
           {% endif %}
             <div class="ui grid">
               <div class="eleven wide column">
@@ -152,45 +191,7 @@ editorfollowup = new toastui.Editor({
           TODO
         </div>
 
-        <!-- Feeds -->
-        <div class="ui connected feed">
-          {% for feed in data.feeds %}
-            <div class="event">
-              <div class="label">
-                {% if feed.type == 'event' %}
-                  <i class="circular colored inverted exchange alternate brown icon"></i>
-                {% elseif feed.usertype == 'tech' %}
-                  <i class="circular colored inverted headset olive icon"></i>
-                {% else %}
-                  <i class="circular colored inverted user blue icon"></i>
-                {% endif %}
-                <!-- <img src="/images/avatar/small/elliot.jpg"> -->
-              </div>
-              <div class="content">
-                <div class="summary">
-                  <a class="user">
-                    {{ feed.user }}
-                  </a> {{ feed.summary | raw }}
-                  <div class="date">
-                    {{ feed.date }}
-                  </div>
-                </div>
-                {% if not feed.content is null %}
-                  <div class="extra text">
-                    {{ feed.content | raw }}
-                  </div>
-                {% endif %}
-                {% if not feed.time is null %}
-                  <div class="meta">
-                    <a class="like">
-                      {{ translation.timespent }}: {{ feed.time }} {{ translation.seconds }}
-                    </a>
-                  </div>
-                  {% endif %}
-              </div>
-            </div>
-          {% endfor %}
-        </div>
+
       </div>
       <div class="four wide column" style="padding-top: 0px;">
         {% if header.id > 0 %}
@@ -273,12 +274,12 @@ toggle = function() {
         console.log($panel);
         if ($('[name="'+$panel+'"]').css('display') == 'block') {
           $('[name="'+$panel+'"]').css('display', 'none');
-          $(this).removeClass('teal').addClass('grey');
-          $(this).parent().removeClass('teal').addClass('grey');
+          $(this).removeClass('{{ header.color }}').addClass('grey');
+          $(this).parent().removeClass('{{ header.color }}').addClass('grey');
         } else {
           $('[name="'+$panel+'"]').css('display', 'block');
-          $(this).removeClass('grey').addClass('teal');
-          $(this).parent().removeClass('grey').addClass('teal');
+          $(this).removeClass('grey').addClass('{{ header.color }}');
+          $(this).parent().removeClass('grey').addClass('{{ header.color }}');
         }
         console.log('test1');
       }

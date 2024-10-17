@@ -26,12 +26,14 @@ class Tasktemplate
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 4,
         'title' => $translator->translate('Content'),
         'type'  => 'textarea',
         'name'  => 'content',
+        'fillable' => true,
       ],
       [
         'id'    => 3,
@@ -40,6 +42,7 @@ class Tasktemplate
         'name'  => 'category',
         'dbname' => 'taskcategory_id',
         'itemtype' => '\App\Models\Taskcategory',
+        'fillable' => true,
       ],
       [
         'id'    => 10,
@@ -48,12 +51,14 @@ class Tasktemplate
         'name'  => 'state',
         'dbname'  => 'state',
         'values' => self::getStateArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 5,
         'title' => $translator->translate('Private'),
         'type'  => 'boolean',
         'name'  => 'is_private',
+        'fillable' => true,
       ],
       [
         'id'    => 9,
@@ -70,22 +75,25 @@ class Tasktemplate
             'toadd'           => $toadd
           ]
         ),
+        'fillable' => true,
       ],
       [
         'id'    => 7,
         'title' => $translator->translate('By'),
         'type'  => 'dropdown_remote',
         'name'  => 'users',
-        'dbname' => 'users_id_tech',
+        'dbname' => 'user_id_tech',
         'itemtype' => '\App\Models\User',
+        'fillable' => true,
       ],
       [
         'id'    => 8,
         'title' => $translator->translatePlural('Group', 'Groups', 1),
         'type'  => 'dropdown_remote',
         'name'  => 'groups',
-        'dbname' => 'groups_id_tech',
+        'dbname' => 'group_id_tech',
         'itemtype' => '\App\Models\Group',
+        'fillable' => true,
       ],
       //  [
       //    'id'    => 80,
@@ -99,19 +107,20 @@ class Tasktemplate
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
     ];

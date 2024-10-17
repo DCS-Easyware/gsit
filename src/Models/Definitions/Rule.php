@@ -13,36 +13,42 @@ class Rule
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 3,
         'title' => $translator->translate('Ranking'),
         'type'  => 'input',
         'name'  => 'ranking',
+        'fillable' => true,
       ],
       [
         'id'    => 4,
         'title' => $translator->translate('Description'),
         'type'  => 'textarea',
         'name'  => 'description',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
         'title' => $translator->translate('Logical operator'),
         'type'  => 'input',
         'name'  => 'match',
+        'fillable' => true,
       ],
       [
         'id'    => 8,
         'title' => $translator->translate('Active'),
         'type'  => 'input',
         'name'  => 'is_active',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
     ];
   }

@@ -13,6 +13,7 @@ class Problemtemplate
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
     ];
   }

@@ -5,9 +5,8 @@ namespace App\v1\Controllers\Fusioninventory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Spatie\ArrayToXml\ArrayToXml;
-use App\v1\Controllers\Common;
 
-final class Computer extends Common
+final class Computer extends \App\v1\Controllers\Common
 {
   public function importComputer($dataStr)
   {
@@ -22,8 +21,11 @@ final class Computer extends Common
 
     // dictionnaries
 
-
-    $computer = \App\Models\Computer::find(35869);
+    $computer = \App\Models\Computer::where('serial', $dataObj->CONTENT->BIOS->SSN)->first();
+    if (is_null($computer))
+    {
+      $computer = new \App\Models\Computer();
+    }
     $computer->name = $dataObj->CONTENT->HARDWARE->NAME;
     $computer->uuid = $dataObj->CONTENT->HARDWARE->UUID;
     $computer->serial = $dataObj->CONTENT->BIOS->SSN;
@@ -35,9 +37,11 @@ final class Computer extends Common
     $computer->save();
 
     $this->operatingSystem($dataObj, $computer);
+    $this->softwares($dataObj, $computer);
+    $this->antivirus($dataObj, $computer);
   }
 
-  private function getOtherSerial($dataObj)
+  private function getOtherSerial(object $dataObj)
   {
     if (
         property_exists($dataObj->CONTENT, 'BIOS') &&
@@ -106,8 +110,76 @@ final class Computer extends Common
     return 0;
   }
 
-  private function operatingSystem($dataStr, \App\Models\Computer $computer)
+  private function operatingSystem(object $dataObj, \App\Models\Computer $computer)
   {
+  }
 
+  private function softwares(object $dataObj, \App\Models\Computer $computer)
+  {
+    if (property_exists($dataObj->CONTENT, 'SOFTWARES'))
+    {
+      $versionIds = [];
+      $content = json_decode(json_encode($dataObj->CONTENT));
+      foreach ($content->SOFTWARES as $contentSoftware)
+      {
+        if (empty($contentSoftware->NAME) || !is_string($contentSoftware->NAME))
+        {
+          continue;
+        }
+        $software = \App\Models\Software::firstOrCreate(
+          [
+            'name'      => $contentSoftware->NAME,
+            'entity_id' => 0
+          ],
+          [] // manage manufacturer? comment?
+        );
+        if (!property_exists($contentSoftware, 'VERSION'))
+        {
+          continue;
+        }
+        $softwareversion = \App\Models\Softwareversion::firstOrCreate(
+          [
+            'name'        => (string) $contentSoftware->VERSION,
+            'entity_id'   => 0,
+            'software_id' => $software->id
+          ],
+          [] // operatingsystem?
+        );
+        // file_put_contents('/tmp/softwares', print_r($softwareversion, true));
+        $versionIds[] = $softwareversion->id;
+      }
+      $computer->softwareversions()->syncWithPivotValues($versionIds, ['is_dynamic' => true]);
+    }
+  }
+
+  private function antivirus(object $dataObj, \App\Models\Computer $computer)
+  {
+    if (property_exists($dataObj->CONTENT, 'SOFTWARES'))
+    {
+      // $content = json_decode(json_encode($dataObj->CONTENT));
+      // foreach ($content->ANTIVIRUS as $contentAntivirus)
+      // {
+        $antivirus = \App\Models\Computerantivirus::firstOrCreate(
+          [
+            'name'        => (string) $dataObj->CONTENT->ANTIVIRUS->NAME,
+            'computer_id' => $computer->id
+          ],
+          []
+        );
+        $antivirus->antivirus_version = $dataObj->CONTENT->ANTIVIRUS->VERSION;
+        $antivirus->signature_version = $dataObj->CONTENT->ANTIVIRUS->BASE_VERSION;
+        $antivirus->is_active = $dataObj->CONTENT->ANTIVIRUS->ENABLED;
+        $antivirus->is_uptodate = $dataObj->CONTENT->ANTIVIRUS->UPTODATE;
+        $antivirus->is_dynamic = true;
+        $manufacturer = \App\Models\Manufacturer::firstOrCreate(
+          [
+            'name' => $dataObj->CONTENT->ANTIVIRUS->COMPANY,
+          ]
+        );
+        $antivirus->manufacturer_id = $manufacturer->id;
+
+        $antivirus->save();
+      // }
+    }
   }
 }

@@ -14,12 +14,14 @@ class Ticket
         'type'          => 'input',
         'name'          => 'name',
         'displaygroup'  => 'main',
+        'fillable' => true,
       ],
       [
         'id'    => 21,
         'title' => $translator->translate('Description'),
         'type'  => 'textarea',
         'name'  => 'content',
+        'fillable' => true,
       ],
       [
         'id'            => 12,
@@ -29,15 +31,17 @@ class Ticket
         'dbname'        => 'status',
         'values'        => self::getStatusArray(),
         'displaygroup'  => 'main',
+        'fillable' => true,
       ],
       [
         'id'            => 7,
         'title'         => $translator->translate('Category'),
         'type'          => 'dropdown_remote',
         'name'          => 'category',
-        'dbname'        => 'categorie_id',
+        'dbname'        => 'category_id',
         'itemtype'      => '\App\Models\Category',
         'displaygroup'  => 'main',
+        'fillable' => true,
       ],
       [
         'id'            => 3,
@@ -47,6 +51,7 @@ class Ticket
         'dbname'        => 'location_id',
         'itemtype'      => '\App\Models\Location',
         'displaygroup'  => 'main',
+        'fillable' => true,
       ],
       [
         'id'    => 45,
@@ -62,6 +67,7 @@ class Ticket
         // 'type'  => 'input',
         // 'name'  => 'actiontime',
         'displaygroup' => 'main',
+        'fillable' => true,
       ],
       [
         'id'    => 10,
@@ -71,6 +77,7 @@ class Ticket
         'dbname'  => 'urgency',
         'values' => self::getUrgencyArray(),
         'displaygroup' => 'priority',
+        'fillable' => true,
       ],
       [
         'id'    => 11,
@@ -80,6 +87,7 @@ class Ticket
         'dbname'  => 'impact',
         'values' => self::getImpactArray(),
         'displaygroup' => 'priority',
+        'fillable' => true,
       ],
       [
         'id'    => 3,
@@ -89,6 +97,7 @@ class Ticket
         'dbname'  => 'priority',
         'values' => self::getPriorityArray(),
         'displaygroup' => 'priority',
+        'fillable' => true,
       ],
       [
         'id'    => 15,
@@ -96,6 +105,7 @@ class Ticket
         'type'  => 'datetime',
         'name'  => 'date',
         'displaygroup' => 'dates',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
@@ -129,7 +139,7 @@ class Ticket
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
         'displaygroup' => 'dates',
       ],
@@ -138,9 +148,10 @@ class Ticket
         'title' => $translator->translate('Last edit by'),
         'type'  => 'dropdown_remote',
         'name'  => 'usersidlastupdater',
-        'dbname' => 'users_id_lastupdater',
+        'dbname' => 'user_id_lastupdater',
         'itemtype' => '\App\Models\User',
         'displaygroup' => 'contributor',
+        'fillable' => true,
       ],
       [
         'id'    => 4,
@@ -151,6 +162,7 @@ class Ticket
         'multiple' => true,
         'pivot' => ['type' => 1],
         'displaygroup' => 'contributor',
+        'fillable' => true,
       ],
       [
         'id'    => 71,
@@ -161,15 +173,17 @@ class Ticket
         'multiple' => true,
         'pivot' => ['type' => 1],
         'displaygroup' => 'contributor',
+        'fillable' => true,
       ],
       [
         'id'    => 22,
         'title' => $translator->translate('Writer'),
         'type'  => 'dropdown_remote',
         'name'  => 'usersidrecipient',
-        'dbname'  => 'users_id_recipient',
+        'dbname'  => 'user_id_recipient',
         'itemtype' => '\App\Models\User',
         'displaygroup' => 'contributor',
+        'fillable' => true,
       ],
       [
         'id'    => 66,
@@ -180,6 +194,7 @@ class Ticket
         'multiple' => true,
         'pivot' => ['type' => 3],
         'displaygroup' => 'contributor',
+        'fillable' => true,
       ],
       [
         'id'    => 65,
@@ -190,6 +205,7 @@ class Ticket
         'multiple' => true,
         'pivot' => ['type' => 3],
         'displaygroup' => 'contributor',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
@@ -200,6 +216,7 @@ class Ticket
         'multiple' => true,
         'pivot' => ['type' => 2],
         'displaygroup' => 'contributor',
+        'fillable' => true,
       ],
       // [ TODO supplier
       //   'id'    => 6,
@@ -218,6 +235,7 @@ class Ticket
         'multiple' => true,
         'pivot' => ['type' => 2],
         'displaygroup' => 'contributor',
+        'fillable' => true,
       ],
       /**/
     ];
@@ -488,7 +506,7 @@ class Ticket
         'link' => '',
       ],
       [
-        'title' => $translator->translate('Knowledge base'),
+        'title' => $translator->translate('Knowledge'),
         'icon' => 'book',
         'link' => '',
       ],

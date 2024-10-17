@@ -20,12 +20,14 @@ class Problem
         'title' => $translator->translate('Title'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 21,
         'title' => $translator->translate('Description'),
         'type'  => 'textarea',
         'name'  => 'content',
+        'fillable' => true,
       ],
       [
         'id'    => 12,
@@ -34,6 +36,7 @@ class Problem
         'name'  => 'status',
         'dbname'  => 'status',
         'values' => self::getStatusArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 10,
@@ -42,6 +45,7 @@ class Problem
         'name'  => 'urgency',
         'dbname'  => 'urgency',
         'values' => self::getUrgencyArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 11,
@@ -50,6 +54,7 @@ class Problem
         'name'  => 'impact',
         'dbname'  => 'impact',
         'values' => self::getImpactArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 3,
@@ -58,24 +63,28 @@ class Problem
         'name'  => 'priority',
         'dbname'  => 'priority',
         'values' => self::getPriorityArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 15,
         'title' => $translator->translate('Opening date'),
         'type'  => 'datetime',
         'name'  => 'date',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Closing date'),
         'type'  => 'datetime',
         'name'  => 'closedate',
+        'fillable' => true,
       ],
       [
         'id'    => 18,
         'title' => $translator->translate('Time to resolve'),
         'type'  => 'datetime',
         'name'  => 'time_to_resolve',
+        'fillable' => true,
       ],
       // [
       //   'id'    => 82,
@@ -88,12 +97,13 @@ class Problem
         'title' => $translator->translate('Resolution date'),
         'type'  => 'datetime',
         'name'  => 'solvedate',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
@@ -101,8 +111,9 @@ class Problem
         'title' => $translator->translate('Category'),
         'type'  => 'dropdown_remote',
         'name'  => 'itilcategorie',
-        'dbname' => 'itilcategories_id',
+        'dbname' => 'itilcategorie_id',
         'itemtype' => '\App\Models\ITILCategory',
+        'fillable' => true,
       ],
       [
         'id'    => 45,
@@ -115,22 +126,25 @@ class Problem
             'addfirstminutes' => true
           ]
         ),
+        'fillable' => true,
       ],
       [
         'id'    => 64,
         'title' => $translator->translate('Last edit by'),
         'type'  => 'dropdown_remote',
         'name'  => 'usersidlastupdater',
-        'dbname' => 'users_id_lastupdater',
+        'dbname' => 'user_id_lastupdater',
         'itemtype' => '\App\Models\User',
+        'fillable' => true,
       ],
       [
         'id'    => 22,
         'title' => $translator->translate('Writer'),
         'type'  => 'dropdown_remote',
         'name'  => 'usersidrecipient',
-        'dbname'  => 'users_id_recipient',
+        'dbname'  => 'user_id_recipient',
         'itemtype' => '\App\Models\User',
+        'fillable' => true,
       ],
       // [
       //   'id'    => 80,
@@ -144,18 +158,21 @@ class Problem
         'title' => $translator->translate('Impacts'),
         'type'  => 'textarea',
         'name'  => 'impactcontent',
+        'fillable' => true,
       ],
       [
         'id'    => 61,
         'title' => $translator->translate('Causes'),
         'type'  => 'textarea',
         'name'  => 'causecontent',
+        'fillable' => true,
       ],
       [
         'id'    => 62,
         'title' => $translator->translate('Symptoms'),
         'type'  => 'textarea',
         'name'  => 'symptomcontent',
+        'fillable' => true,
       ],
 
       /*

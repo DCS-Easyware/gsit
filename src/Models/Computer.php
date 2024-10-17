@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
 
 class Computer extends Common
 {
+  use PivotEventTrait;
+
   protected $definition = '\App\Models\Definitions\Computer';
   protected $titles = ['Computer', 'Computers'];
   protected $icon = 'laptop';
@@ -57,6 +60,28 @@ class Computer extends Common
     'softwareversions:id,name',
     'operatingsystems:id,name',
   ];
+
+  public static function boot()
+  {
+    parent::boot();
+
+    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes)
+    {
+      if ($relationName == 'softwareversions')
+      {
+        $softwareversions = \App\Models\Softwareversion::with('software:name')->whereIn('id', $pivotIds)->get();
+        foreach($softwareversions as $softwareversion)
+        {
+          $software = $softwareversion->software()->first();
+          \App\v1\Controllers\Log::addEntry(
+            $model,
+            'version ' . $softwareversion->name . ' of software ' . $software->name . ' installed',
+            $softwareversion->name . ' (' . $softwareversion->id . ')',
+          );
+        }
+      }
+    });
+  }
 
 
   public function type(): BelongsTo
@@ -121,6 +146,28 @@ class Computer extends Common
 
   public function operatingsystems(): MorphToMany
   {
-    return $this->morphToMany('\App\Models\Operatingsystem', 'item', 'item_operatingsystem')->withPivot('operatingsystemversion_id', 'operatingsystemservicepack_id', 'operatingsystemarchitecture_id', 'operatingsystemkernelversion_id', 'operatingsystemedition_id', 'license_number', 'licenseid', 'installationdate', 'winowner', 'wincompany', 'oscomment', 'hostid');
+    return $this->morphToMany(
+      '\App\Models\Operatingsystem',
+      'item',
+      'item_operatingsystem'
+    )->withPivot(
+      'operatingsystemversion_id',
+      'operatingsystemservicepack_id',
+      'operatingsystemarchitecture_id',
+      'operatingsystemkernelversion_id',
+      'operatingsystemedition_id',
+      'license_number',
+      'licenseid',
+      'installationdate',
+      'winowner',
+      'wincompany',
+      'oscomment',
+      'hostid'
+    );
+  }
+
+  public function antiviruses(): HasMany
+  {
+    return $this->hasMany('App\Models\Computerantivirus');
   }
 }

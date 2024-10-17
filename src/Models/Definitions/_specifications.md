@@ -27,6 +27,7 @@ Optional fields:
 * values: array | only for type 'dropdown', can define the values (see next chapter)
 * readonly: readonly | field in readonly mode
 * displaygroup: name of panel (group many fields in same panel)
+* fillable: true if database can be filled with these field (directly from form),
 
 
 

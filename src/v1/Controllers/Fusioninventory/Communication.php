@@ -5,9 +5,8 @@ namespace App\v1\Controllers\Fusioninventory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Spatie\ArrayToXml\ArrayToXml;
-use App\v1\Controllers\Common;
 
-final class Communication extends Common
+final class Communication extends \App\v1\Controllers\Common
 {
   public function getConfig(Request $request, Response $response, $args): Response
   {

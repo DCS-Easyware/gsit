@@ -4,29 +4,32 @@
   <script type="text/javascript">
     $('.ui.dropdown')
         .dropdown({
-        })
-    ;
+        });
+
     $('.remotedropdown')
       .dropdown({
         // minCharacters: 2,
         saveRemoteData: false,
-        // preserveHTML : false,
+        preserveHTML : false,
         apiSettings: {
           encodeParameters: false,
           cache: false,
-          url: '{url}',
-          method: 'post',
-          beforeSend: function(settings) {
-            // cancel request if no itemtype
-            if(!$(this).data('itemtype')) {
-              return false;
-            }
-            settings.data.itemtype = $(this).data('itemtype');
-            settings.data = JSON.stringify(settings.data);
-            return settings;
-          }          
+          url: '{url}?q={query}&itemtype={itemtype}',
         }      
       });
+
+      $('.remotedropdownrulecondition')
+      .dropdown({
+        // minCharacters: 2,
+        saveRemoteData: false,
+        preserveHTML : false,
+        apiSettings: {
+          encodeParameters: false,
+          cache: false,
+          url: '{url}?q={query}&itemtype={itemtype}&criteria={criteria}',
+        }      
+      });
+
 
     $('table').tablesort();
 
@@ -63,7 +66,7 @@
         }
       });
 
-      $('.menu .item')
+      $('.tabsystem .item')
         .tab();
 
       {% for m in message %}

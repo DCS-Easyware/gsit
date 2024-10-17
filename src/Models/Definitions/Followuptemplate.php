@@ -13,12 +13,14 @@ class Followuptemplate
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 4,
         'title' => $translator->translate('Content'),
         'type'  => 'textarea',
         'name'  => 'content',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
@@ -27,12 +29,14 @@ class Followuptemplate
         'name'  => 'source',
         'dbname' => 'requesttype_id',
         'itemtype' => '\App\Models\Requesttype',
+        'fillable' => true,
       ],
       [
         'id'    => 6,
         'title' => $translator->translate('Private'),
         'type'  => 'boolean',
         'name'  => 'is_private',
+        'fillable' => true,
       ],
       // [
       //   'id'    => 80,
@@ -46,19 +50,20 @@ class Followuptemplate
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
 

@@ -13,20 +13,23 @@ class Contract
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 3,
         'title' => $translator->translate('phone' . "\004" . 'Number'),
         'type'  => 'input',
         'name'  => 'num',
+        'fillable' => true,
       ],
       [
         'id'    => 31,
         'title' => $translator->translate('Status'),
         'type'  => 'dropdown_remote',
         'name'  => 'state',
-        'dbname' => 'states_id',
+        'dbname' => 'state_id',
         'itemtype' => '\App\Models\State',
+        'fillable' => true,
       ],
       [
         'id'    => 4,
@@ -35,24 +38,28 @@ class Contract
         'name'  => 'type',
         'dbname' => 'contracttype_id',
         'itemtype' => '\App\Models\Contracttype',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
         'title' => $translator->translate('Start date'),
         'type'  => 'date',
         'name'  => 'begin_date',
+        'fillable' => true,
       ],
       [
         'id'    => 10,
         'title' => $translator->translate('Account number'),
         'type'  => 'input',
         'name'  => 'accounting_number',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       // [
       //    'id'    => 80,
@@ -66,6 +73,7 @@ class Contract
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
+        'fillable' => true,
       ],
       [
         'id'    => 23,
@@ -74,6 +82,7 @@ class Contract
         'name'  => 'renewal',
         'dbname'  => 'renewal',
         'values' => self::getContractRenewalArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 6,
@@ -82,6 +91,7 @@ class Contract
         'name'  => 'duration',
         'dbname'  => 'duration',
         'values' => self::getNumberArray(1, 120, 1, [0 => '-----'], 'month'),
+        'fillable' => true,
       ],
       [
         'id'    => 7,
@@ -90,6 +100,7 @@ class Contract
         'name'  => 'notice',
         'dbname'  => 'notice',
         'values' => self::getNumberArray(0, 120, 1, [], 'month'),
+        'fillable' => true,
       ],
       [
         'id'    => 21,
@@ -110,6 +121,7 @@ class Contract
           ],
           'month'
         ),
+        'fillable' => true,
       ],
       [
         'id'    => 22,
@@ -130,19 +142,20 @@ class Contract
           ],
           'month'
         ),
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
 

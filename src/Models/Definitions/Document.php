@@ -13,6 +13,7 @@ class Document
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 7,
@@ -21,6 +22,7 @@ class Document
         'name'  => 'categorie',
         'dbname' => 'documentcategory_id',
         'itemtype' => '\App\Models\Documentcategory',
+        'fillable' => true,
       ],
       [
         'id'    => 3,
@@ -34,12 +36,14 @@ class Document
         'title' => $translator->translate('Web link'),
         'type'  => 'input',
         'name'  => 'link',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
         'title' => $translator->translate('MIME type'),
         'type'  => 'input',
         'name'  => 'mime',
+        'fillable' => true,
       ],
       [
         'id'    => 6,
@@ -64,6 +68,7 @@ class Document
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       // [
       //   'id'    => 80,
@@ -77,19 +82,20 @@ class Document
         'title' => $translator->translate('Child entities'),
         'type'  => 'boolean',
         'name'  => 'is_recursive',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
 

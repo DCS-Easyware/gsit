@@ -22,6 +22,7 @@ class Crontask
         'name'  => 'frequency',
         'dbname'  => 'frequency',
         'values' => self::getFrequencyArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 4,
@@ -30,6 +31,7 @@ class Crontask
         'name'  => 'state',
         'dbname'  => 'state',
         'values' => self::getStateArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 5,
@@ -38,6 +40,7 @@ class Crontask
         'name'  => 'mode',
         'dbname'  => 'mode',
         'values' => self::getModeArray(),
+        'fillable' => true,
       ],
       [
         'id'    => 17,
@@ -46,6 +49,7 @@ class Crontask
         'name'  => 'hourmin',
         'dbname'  => 'hourmin',
         'values' => self::getNumberArray(0, 24),
+        'fillable' => true,
       ],
       [
         'id'    => 18,
@@ -54,6 +58,7 @@ class Crontask
         'name'  => 'hourmax',
         'dbname'  => 'hourmax',
         'values' => self::getNumberArray(0, 24),
+        'fillable' => true,
       ],
       [
         'id'    => 19,
@@ -62,6 +67,7 @@ class Crontask
         'name'  => 'logs_lifetime',
         'dbname'  => 'logs_lifetime',
         'values' => self::getNumberArray(10, 360, 10, [0 => $translator->translate('Infinite')]),
+        'fillable' => true,
       ],
       [
         'id'    => 7,
@@ -75,19 +81,20 @@ class Crontask
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       [
         'id'    => 20,
         'title' => $translator->translate('Last update'),
         'type'  => 'datetime',
-        'name'  => 'date_mod',
+        'name'  => 'updated_at',
         'readonly'  => 'readonly',
       ],
       [
         'id'    => 121,
         'title' => $translator->translate('Creation date'),
         'type'  => 'datetime',
-        'name'  => 'date_creation',
+        'name'  => 'created_at',
         'readonly'  => 'readonly',
       ],
 

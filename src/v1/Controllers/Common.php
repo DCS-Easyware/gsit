@@ -8,6 +8,8 @@ use Slim\Views\Twig;
 
 class Common
 {
+  protected $model = '';
+
   protected function getUrlWithoutQuery(Request $request)
   {
     $uri = $request->getUri();
@@ -35,11 +37,8 @@ class Common
 
     $fields = $search->getData($item, $url, $page, $params);
 
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($item, $request);
     $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(2));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addIconId($item->getIcon());
 
     $viewData->addData('fields', $fields);
 
@@ -52,35 +51,38 @@ class Common
   {
     global $translator;
     $view = Twig::fromRequest($request);
-
     $session = new \SlimSession\Helper();
-
-    if ($session->exists('message'))
-    {
-      $globalViewData['message'] = $session->message;
-      $session->delete('message');
-    }
 
     $myItem = $item->find($args['id']);
 
     // form data
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($myItem, $request);
     $viewData->addRelatedPages($item->getRelatedPages($this->getUrlWithoutQuery($request)));
 
     $viewData->addData('fields', $item->getFormData($myItem));
 
     $viewData->addTranslation('savebutton', $translator->translate('Save'));
+    $viewData->addTranslation('selectvalue', $translator->translate('Select a value...'));
 
-    $viewData->addInformation('top', 'operatingsystem', $translator->translatePlural('Operating system', 'Operating systems', 1), $this->getUrlWithoutQuery($request) . '/operatingsystem');
-    $viewData->addInformation('top', 'softwares', $translator->translatePlural('Software', 'Software', 2), $this->getUrlWithoutQuery($request) . '/softwares');
+    $viewData->addInformation(
+      'top',
+      'operatingsystem',
+      $translator->translatePlural('Operating system', 'Operating systems', 1),
+      $this->getUrlWithoutQuery($request) . '/operatingsystem'
+    );
+    $viewData->addInformation(
+      'top',
+      'softwares',
+      $translator->translatePlural('Software', 'Software', 2),
+      $this->getUrlWithoutQuery($request) . '/softwares'
+    );
     $viewData->addInformation('bottom', '1', 'Operating system : Windows 11 pro', 'free.fr');
+
+    if ($session->exists('message'))
+    {
+      $viewData->addMessage($session->message);
+      $session->delete('message');
+    }
 
     return $view->render($response, 'genericForm.html.twig', (array)$viewData);
   }
@@ -88,49 +90,50 @@ class Common
   public function commonUpdateItem(Request $request, Response $response, $args, $item): Response
   {
     $data = (object) $request->getParsedBody();
-    $myItem = $item->find($args['id']);
+    // $myItem = $item->find($args['id']);
 
-    // rewrite data with right database name (for dropdown mainly)
-    $definitions = $item->getDefinitions();
-    foreach ($definitions as $def)
-    {
-      echo "<br>";
-      if (property_exists($data, $def['name']))
-      {
-        if (in_array($def['type'], ['input', 'textarea', 'dropdown']))
-        {
-          if ($myItem->{$def['name']} != $data->{$def['name']})
-          {
-            $myItem->{$def['name']} = $data->{$def['name']};
-          }
-        }
-        elseif ($def['type'] == 'dropdown_remote')
-        {
-          if (isset($def['multiple']))
-          {
-            $values = $data->{$def['name']};
-            if (!is_array($values))
-            {
-              if (empty($values))
-              {
-                $values = [];
-              } else {
-                $values = explode(',', $values);
-              }
-            }
-            // save
-            $myItem->{$def['name']}()->syncWithPivotValues($values, $def['pivot']);
-          }
-          elseif ($myItem->{$def['dbname']} != $data->{$def['name']})
-          {
-            $myItem->{$def['dbname']} = $data->{$def['name']};
-          }
-        }
-      }
-    }
+    // // rewrite data with right database name (for dropdown mainly)
+    // $definitions = $item->getDefinitions();
+    // foreach ($definitions as $def)
+    // {
+    //   echo "<br>";
+    //   if (property_exists($data, $def['name']))
+    //   {
+    //     if (in_array($def['type'], ['input', 'textarea', 'dropdown']))
+    //     {
+    //       if ($myItem->{$def['name']} != $data->{$def['name']})
+    //       {
+    //         $myItem->{$def['name']} = $data->{$def['name']};
+    //       }
+    //     }
+    //     elseif ($def['type'] == 'dropdown_remote')
+    //     {
+    //       if (isset($def['multiple']))
+    //       {
+    //         $values = $data->{$def['name']};
+    //         if (!is_array($values))
+    //         {
+    //           if (empty($values))
+    //           {
+    //             $values = [];
+    //           } else {
+    //             $values = explode(',', $values);
+    //           }
+    //         }
+    //         // save
+    //         $myItem->{$def['name']}()->syncWithPivotValues($values, $def['pivot']);
+    //       }
+    //       elseif ($myItem->{$def['dbname']} != $data->{$def['name']})
+    //       {
+    //         $myItem->{$def['dbname']} = $data->{$def['name']};
+    //       }
+    //     }
+    //   }
+    // }
 
-    // update
-    $myItem->save();
+    // // update
+    // $myItem->save();
+    $this->saveItem($data, $args['id']);
 
     // manage logs => manage it into model
 
@@ -157,20 +160,18 @@ class Common
     $myItem = $item->find($args['id']);
 
     // form data
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addHeaderId($myItem->id);
-    $viewData->addIconId($item->getIcon());
-    $viewData->addColorId($myItem->getColor());
-
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($myItem, $request);
     $viewData->addRelatedPages($item->getRelatedPages($this->getUrlWithoutQuery($request)));
+    $viewData->addHeaderColor($myItem->getColor());
 
     $viewData->addData('fields', $item->getFormData($myItem));
     $viewData->addData('feeds', $item->getFeeds($args['id']));
-    $viewData->addData('content', \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content));
+    if (is_null($myItem->content))
+    {
+      $viewData->addData('content', null);
+    } else {
+      $viewData->addData('content', \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content));
+    }
 
     $viewData->addTranslation('description', $translator->translate('Description'));
     $viewData->addTranslation('feeds', $translator->translate('Feeds'));
@@ -190,7 +191,7 @@ class Common
     $viewData->addTranslation('addfollowup', $translator->translate('Add followup'));
     $viewData->addTranslation('timespent', $translator->translate('Time spent'));
     $viewData->addTranslation('savebutton', $translator->translate('Save'));
-    $viewData->addTranslation('selectvalue', $translator->translate('Select value...'));
+    $viewData->addTranslation('selectvalue', $translator->translate('Select a value...'));
     $viewData->addTranslation('yes', $translator->translate('Yes'));
     $viewData->addTranslation('no', $translator->translate('No'));
 
@@ -203,6 +204,32 @@ class Common
     return $view->render($response, 'ITILForm.html.twig', (array)$viewData);
   }
 
+  public function showNewItem(Request $request, Response $response, $args): Response
+  {
+    global $translator;
+    $view = Twig::fromRequest($request);
+
+    $item = new $this->model();
+
+    $session = new \SlimSession\Helper();
+
+    // form data
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($item, $request);
+
+    $viewData->addData('fields', $item->getFormData($item));
+    $viewData->addData('content', '');
+
+    $viewData->addTranslation('selectvalue', $translator->translate('Select a value...'));
+
+    if ($session->exists('message'))
+    {
+      $viewData->addMessage($session->message);
+      $session->delete('message');
+    }
+
+    return $view->render($response, 'genericForm.html.twig', (array)$viewData);
+  }
+
   public function commonShowITILNewItem(Request $request, Response $response, $args, $item): Response
   {
     global $translator;
@@ -211,14 +238,7 @@ class Common
     $session = new \SlimSession\Helper();
 
     // form data
-    $viewData = new \App\v1\Controllers\Datastructures\Viewdata();
-    $viewData->addHeaderTitle('GSIT - ' . $item->getTitle(1));
-    $viewData->addHeaderMenu(\App\v1\Controllers\Menu::getMenu($request));
-    $viewData->addHeaderRootpath(\App\v1\Controllers\Toolbox::getRootPath($request));
-    $viewData->addHeaderName($item->getTitle(1));
-    $viewData->addIconId($item->getIcon());
-
-    $viewData->addRelatedPages($item->getRelatedPages($this->getUrlWithoutQuery($request)));
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($item, $request);
 
     $viewData->addData('fields', $item->getFormData($item));
     $viewData->addData('feeds', []);
@@ -242,7 +262,7 @@ class Common
     $viewData->addTranslation('addfollowup', $translator->translate('Add followup'));
     $viewData->addTranslation('timespent', $translator->translate('Time spent'));
     $viewData->addTranslation('savebutton', $translator->translate('Save'));
-    $viewData->addTranslation('selectvalue', $translator->translate('Select value...'));
+    $viewData->addTranslation('selectvalue', $translator->translate('Select a value...'));
     $viewData->addTranslation('yes', $translator->translate('Yes'));
     $viewData->addTranslation('no', $translator->translate('No'));
 
@@ -253,5 +273,162 @@ class Common
     }
 
     return $view->render($response, 'ITILForm.html.twig', (array)$viewData);
+  }
+
+  public function showSubHistory(Request $request, Response $response, $args)
+  {
+    $item = new $this->model();
+    $definitions = $item->getDefinitions();
+    $view = Twig::fromRequest($request);
+
+    $session = new \SlimSession\Helper();
+
+    // Load the item
+    $myItem = $item->find($args['id']);
+
+    $logs = \App\Models\Log::
+        where('item_type', ltrim($this->model, '\\'))
+      ->where('item_id', $myItem->id)
+      ->orderBy('id', 'desc')
+      ->get();
+
+// id: 1
+// item_type: App\v1\Models\User
+// item_id: 6
+// itemtype_link: Profile_User
+// linked_action: 17
+// user_name: glpi
+// updated_at: 2012-01-24 10:21:20
+// id_search_option: 0
+// old_value:
+// new_value: post-only, Root entity, D
+
+    $fieldsTitle = [];
+    foreach ($definitions as $def)
+    {
+      $fieldsTitle[$def['id']] = $def['title'];
+    }
+
+    $rootUrl = $this->getUrlWithoutQuery($request);
+    $rootUrl = rtrim($rootUrl, '/history');
+
+    // form data
+    $viewData = new \App\v1\Controllers\Datastructures\Viewdata($item, $request);
+
+    $viewData->addRelatedPages($item->getRelatedPages($rootUrl));
+
+    $viewData->addData('fields', $item->getFormData($myItem));
+    // $viewData->addData('content', \App\v1\Controllers\Toolbox::convertMarkdownToHtml($myItem->content));
+    $viewData->addData('history', $logs);
+    $viewData->addData('titles', $fieldsTitle);
+
+    if ($session->exists('message'))
+    {
+      $viewData['message'] = $session->message;
+      $session->delete('message');
+    }
+
+    return $view->render($response, 'subitem/history.html.twig', (array)$viewData);
+  }
+
+  public function newItem(Request $request, Response $response, $args): Response
+  {
+    $data = (object) $request->getParsedBody();
+    $id = $this->saveItem($data);
+
+    if (property_exists($data, 'save') && $data->save == 'view')
+    {
+      $uri = $request->getUri();
+      return $response
+        ->withHeader('Location', str_replace('/new', '/' . $id, (string) $uri))
+        ->withStatus(302);
+      exit;
+    }
+
+    $uri = $request->getUri();
+    return $response
+      ->withHeader('Location', (string) $uri)
+      ->withStatus(302);
+  }
+
+  public function saveItem($data, $id = null)
+  {
+    if (is_null($id))
+    {
+      $item = $this->model::create((array) $data);
+      return $item->id;
+    }
+
+    // update
+    $item = $this->model::find($id);
+    if (is_null($item))
+    {
+      // Error
+      return $id;
+    }
+
+    // Manage fields like dropdown where name not same in database
+    $fieldsDef = [];
+    $definitions = $item->getDefinitions();
+    foreach ($definitions as $definition)
+    {
+      if (isset($definition['fillable']) && $definition['fillable'] && isset($definition['dbname']))
+      {
+        $fieldsDef[$definition['name']] = $definition['dbname'];
+      }
+    }
+    $aData = (array) $data;
+    foreach ($aData as $key => $value)
+    {
+      if (isset($fieldsDef[$key]))
+      {
+        $aData[$fieldsDef[$key]] = $value;
+      }
+    }
+
+    $item->update($aData);
+
+    // manage multiple
+    foreach ($definitions as $def)
+    {
+      if (isset($def['multiple']))
+      {
+        $key = $def['name'];
+        $pivot = [];
+        if (isset($def['pivot']))
+        {
+          $pivot = $def['pivot'];
+        }
+        if (!is_array($data->{$key}))
+        {
+          if (empty($data->{$key}))
+          {
+            $data->{$key} = [];
+          } else {
+            $data->{$key} = explode(',', $data->{$key});
+          }
+        }
+
+        $dbItems = [];
+        foreach ($item->$key as $relationItem)
+        {
+          $dbItems[] = $relationItem->id;
+        }
+        // To delete
+        $toDelete = array_diff($dbItems, $data->{$key});
+        foreach ($toDelete as $groupId)
+        {
+          $item->$key()->detach($groupId, $pivot);
+        }
+
+        // To add
+        $toAdd = array_diff($data->{$key}, $dbItems);
+        foreach ($toAdd as $groupId)
+        {
+          $item->$key()->attach($groupId, $pivot);
+        }
+      }
+    }
+    return $item->id;
   }
 }

@@ -15,8 +15,28 @@ class Common extends Model
   protected $icon = '';
   protected $table = null;
 
-  // public const CREATED_AT = 'date_creation';
-  // public const UPDATED_AT = 'date_mod';
+  public function __construct(array $attributes = [])
+  {
+    parent::__construct($attributes);
+
+    // Set fillable variable
+    if (!is_null($this->definition) && empty($this->fillable))
+    {
+      $definitions = $this->getDefinitions();
+      foreach ($definitions as $definition)
+      {
+        if (isset($definition['fillable']) && $definition['fillable'])
+        {
+          if (isset($definition['dbname']))
+          {
+            $this->fillable[] = $definition['dbname'];
+          } else {
+            $this->fillable[] = $definition['name'];
+          }
+        }
+      }
+    }
+  }
 
   public static function booted()
   {
@@ -80,14 +100,32 @@ class Common extends Model
   //   }
   // }
 
-  public function getDropdownValues()
+  public function getDropdownValues($filter = null)
   {
-    $items = $this->orderBy('name')->get()->take(50);
+    $item = $this->orderBy('name');
+    if (!is_null($filter) && !empty($filter))
+    {
+      $item->where('name', 'LIKE', '%' . $filter . '%');
+      if (is_numeric($filter))
+      {
+        $item->orWhere('id', 'LIKE', '%' . $filter . '%');
+      }
+    }
+    $items = $item->take(50)->get();
     $data = [];
     foreach ($items as $item)
     {
+      $name = $item->name;
+      if ($item->name == '')
+      {
+        $name = $item->id;
+      }
+      if (is_numeric($filter))
+      {
+        $name .= ' - ' . $item->id;
+      }
       $data[] = [
-        "name"  => '[' . $item->id . ']' . $item->name,
+        "name"  => $name,
         "value" => $item->id
       ];
     }
@@ -126,10 +164,13 @@ class Common extends Model
    *
    * @return array
    */
-  public function getFormData($myItem, $otherDefs=false)
+  public function getFormData($myItem, $otherDefs = false)
   {
     $def = $this->getDefinitions();
-    if ($otherDefs !== false) $def = $otherDefs;
+    if ($otherDefs !== false)
+    {
+      $def = $otherDefs;
+    }
 
     foreach ($def as &$field)
     {
@@ -191,6 +232,7 @@ class Common extends Model
   {
     $changes = $this->getChanges();
     $casts = $this->getCasts();
+
     foreach ($changes as $key => $newValue)
     {
       if (in_array($key, ['created_at', 'updated_at']))
@@ -219,8 +261,12 @@ class Common extends Model
           $idSearchOption = $definition['id'];
           break;
         }
+        elseif (isset($definition['dbname']) && $definition['dbname'] == $key)
+        {
+          $idSearchOption = $definition['id'];
+          break;
+        }
       }
-
       \App\v1\Controllers\Log::addEntry(
         $this,
         '{username} changed ' . $key . ' to "{new_value}"',

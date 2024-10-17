@@ -13,6 +13,7 @@ class Computer
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 31,
@@ -21,6 +22,7 @@ class Computer
         'name'  => 'state',
         'dbname' => 'state_id',
         'itemtype' => '\App\Models\State',
+        'fillable' => true,
       ],
       [
         'id'    => 4,
@@ -29,6 +31,7 @@ class Computer
         'name'  => 'type',
         'dbname' => 'computertype_id',
         'itemtype' => '\App\Models\Computertype',
+        'fillable' => true,
       ],
       [
         'id'    => 70,
@@ -37,6 +40,7 @@ class Computer
         'name'  => 'user',
         'dbname' => 'user_id',
         'itemtype' => '\App\Models\User',
+        'fillable' => true,
       ],
       [
         'id'    => 23,
@@ -45,6 +49,7 @@ class Computer
         'name'  => 'manufacturer',
         'dbname' => 'manufacturer_id',
         'itemtype' => '\App\Models\Manufacturer',
+        'fillable' => true,
       ],
       [
         'id'    => 40,
@@ -53,18 +58,21 @@ class Computer
         'name'  => 'model',
         'dbname' => 'computermodel_id',
         'itemtype' => '\App\Models\Computermodel',
+        'fillable' => true,
       ],
       [
         'id'    => 5,
         'title' => $translator->translate('Serial number'),
         'type'  => 'input',
         'name'  => 'serial',
+        'fillable' => true,
       ],
       [
         'id'    => 6,
         'title' => $translator->translate('Inventory number'),
         'type'  => 'input',
         'name'  => 'otherserial',
+        'fillable' => true,
       ],
       [
         'id'    => 3,
@@ -73,34 +81,39 @@ class Computer
         'name'  => 'location',
         'dbname' => 'location_id',
         'itemtype' => '\App\Models\Location',
+        'fillable' => true,
       ],
       [
         'id'    => 24,
         'title' => $translator->translate('Technician in charge of the hardware'),
         'type'  => 'dropdown_remote',
         'name'  => 'userstech',
-        'dbname' => 'users_id_tech',
+        'dbname' => 'user_id_tech',
         'itemtype' => '\App\Models\User',
+        'fillable' => true,
       ],
       [
         'id'    => 49,
         'title' => $translator->translate('Group in charge of the hardware'),
         'type'  => 'dropdown_remote',
         'name'  => 'groupstech',
-        'dbname' => 'groups_id_tech',
+        'dbname' => 'group_id_tech',
         'itemtype' => '\App\Models\Group',
+        'fillable' => true,
       ],
       [
         'id'    => 7,
         'title' => $translator->translate('Alternate username'),
         'type'  => 'input',
         'name'  => 'contact',
+        'fillable' => true,
       ],
       [
         'id'    => 8,
         'title' => $translator->translate('Alternate username number'),
         'type'  => 'input',
         'name'  => 'contact_num',
+        'fillable' => true,
       ],
       [
         'id'    => 71,
@@ -109,6 +122,7 @@ class Computer
         'name'  => 'group',
         'dbname' => 'group_id',
         'itemtype' => '\App\Models\Group',
+        'fillable' => true,
       ],
       [
         'id'    => 32,
@@ -117,12 +131,14 @@ class Computer
         'name'  => 'network',
         'dbname' => 'network_id',
         'itemtype' => '\App\Models\Network',
+        'fillable' => true,
       ],
       [
         'id'    => 47,
         'title' => $translator->translate('UUID'),
         'type'  => 'input',
         'name'  => 'uuid',
+        'fillable' => true,
       ],
       [
         'id'    => 42,
@@ -131,12 +147,14 @@ class Computer
         'name'  => 'autoupdatesystem',
         'dbname' => 'autoupdatesystem_id',
         'itemtype' => '\App\Models\Autoupdatesystem',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
       [
         'id'    => 19,
@@ -269,28 +287,13 @@ class Computer
         'link' => '',
       ],
       [
-        'title' => $translator->translatePlural('Antivirus', 'Antiviruses', 2),
+        'title' => $translator->translate('Knowledge'),
         'icon' => 'caret square down outline',
         'link' => '',
       ],
       [
-        'title' => $translator->translate('Knowledge base'),
-        'icon' => 'caret square down outline',
-        'link' => '',
-      ],
-      [
-        'title' => $translator->translatePlural('Ticket', 'Tickets', 2),
-        'icon' => 'caret square down outline',
-        'link' => '',
-      ],
-      [
-        'title' => $translator->translatePlural('Problem', 'Problems', 2),
-        'icon' => 'caret square down outline',
-        'link' => '',
-      ],
-      [
-        'title' => $translator->translatePlural('Change', 'Changes', 2),
-        'icon' => 'caret square down outline',
+        'title' => $translator->translate('ITIL'),
+        'icon' => 'hands helping',
         'link' => '',
       ],
       [

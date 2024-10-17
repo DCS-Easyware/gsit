@@ -51,6 +51,11 @@ class Software extends Common
     // 'location:id,name',
   ];
 
+  protected $fillable = [
+    'name',
+    'entity_id'
+  ];
+
   public function category(): BelongsTo
   {
     return $this->belongsTo('\App\Models\Softwarecategory');

@@ -13,12 +13,14 @@ class Entity
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       [
         'id'    => 16,
         'title' => $translator->translate('Comments'),
         'type'  => 'textarea',
         'name'  => 'comment',
+        'fillable' => true,
       ],
 
       /*
@@ -166,7 +168,7 @@ class Entity
       $tab[] = [
         'id'                 => '122',
         'table'              => $this->getTable(),
-        'field'              => 'date_mod',
+        'field'              => 'updated_at',
         'name'               => __('Last update'),
         'datatype'           => 'datetime',
         'massiveaction'      => false
@@ -175,7 +177,7 @@ class Entity
       $tab[] = [
         'id'                 => '121',
         'table'              => $this->getTable(),
-        'field'              => 'date_creation',
+        'field'              => 'created_at',
         'name'               => __('Creation date'),
         'datatype'           => 'datetime',
         'massiveaction'      => false

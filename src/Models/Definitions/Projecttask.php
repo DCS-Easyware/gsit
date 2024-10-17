@@ -13,6 +13,7 @@ class Projecttask
         'title' => $translator->translate('Name'),
         'type'  => 'input',
         'name'  => 'name',
+        'fillable' => true,
       ],
       // [
       //   'id'    => 16,
@@ -24,14 +25,14 @@ class Projecttask
       //    'id'    => 19,
       //    'title' => $translator->translate('Last update'),
       //    'type'  => 'datetime',
-      //    'name'  => 'date_mod',
+      //    'name'  => 'updated_at',
       //    'readonly'  => 'readonly',
       // ],
       // [
       //    'id'    => 121,
       //    'title' => $translator->translate('Creation date'),
       //    'type'  => 'datetime',
-      //    'name'  => 'date_creation',
+      //    'name'  => 'created_at',
       //    'readonly'  => 'readonly',
       // ],
     ];
