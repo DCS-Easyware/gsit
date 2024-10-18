@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{{ header.rootpath }}/assets/fomantic-ui/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ header.rootpath }}/assets/main.css">
+  <link rel="stylesheet" href="{{ header.rootpath }}/assets/toast-ui/toastui-editor.min.css" />  <script type="text/javascript" src="{{ header.rootpath }}/assets/fomantic-ui/jquery-3.7.1.min.js"></script>
+  <script type="text/javascript" src="{{ header.rootpath }}/assets/fomantic-ui/semantic.min.js"></script>
+  <script type="text/javascript" src="{{ header.rootpath }}/assets/fomantic-ui/jquery.tablesort.min.js"></script>
+  <script src="{{ header.rootpath }}/assets/toast-ui/toastui-editor-all.min.js"></script>
+  <title>{{ header.title }}</title>
+</head>
+<body>
+  
+  <div class="ui grid">
+    <div class="three wide left attached column">
+      <div class="ui left vertical visible sidebar menu">
+      <div class="item">
+        <div class="ui icon input">
+          <input type="text" placeholder="Search...">
+          <i class="search icon"></i>
+        </div>
+      </div>
+      {% for item in header.menu %}
+        <div class="item">
+          <div class="header">
+            {{ item.name }}
+            <i class="{{ item.icon }} icon"></i>
+          </div>
+          <div class="menu">
+            {% for subitem in item.sub %}
+              <a class="item {{ subitem.class }}" href="{{ subitem.link }}">
+                {{ subitem.name }}
+                <i class="{{ subitem.icon }} icon"></i>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+    <div class="twelve wide right attached column">
+
+    {# <!-- <div class="ui resizable scrolling wide long container" style="margin: 40px; margin-left: 300px !important"> -->
+    <div class="overflowing pusher" style="margin: 20px;"> #}
+    

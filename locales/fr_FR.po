@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Cédric Anne, 2019
 # Thierry Bugier <tbugier@teclib.com>, 2019
@@ -19,7 +19,7 @@
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2021
 # Legastelois François <flegastelois@teclib.com>, 2021
 # CupidSG, 2021
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -23418,3 +23418,179 @@ msgid ""
 msgstr ""
 "L'évènement glissé est un évènement recrurent. Voulez vous changer la série "
 "ou l'instance ?"
+
+
+
+#: msgid "Alert"
+#: msgid_plural "Alerts"
+#: msgstr[0] "Alerte"
+#: msgstr[1] "Alertes"
+
+#: msgid "Form"
+#: msgid_plural "Forms"
+#: msgstr[0] "Formulaire"
+#: msgstr[1] "Formulaires"
+
+#: msgid "FusionInventory"
+#: msgstr "FusionInventory"
+
+#: msgid "Data injection"
+#: msgstr "Data Injection"
+
+#: msgid "Form Creator"
+#: msgstr "Formcreator"
+
+#: msgid "Direct access on homepage"
+#: msgstr "Accès direct depuis la page d'accueil"
+
+#: msgid "Header"
+#: msgid_plural "Headers"
+#: msgstr[0] "Entête"
+#: msgstr[1] "En-têtes"
+
+#: msgid "Need to be validate?"
+#: msgstr "Validation requise ?"
+
+#: msgid "Default form in service catalog"
+#: msgstr "Formulaire par défaut dans le catalogue de service"
+
+#: msgid "Question"
+#: msgid_plural "Questions"
+#: msgstr[0] "Question"
+#: msgstr[1] "Questions"
+
+#: msgid "Access type"
+#: msgid_plural "Access types"
+#: msgstr[0] "Types d'accès"
+#: msgstr[1] "Types d'accès"
+
+#: msgid "Form answer"
+#: msgid_plural "Form answers"
+#: msgstr[0] "Réponse de formulaire"
+#: msgstr[1] "Réponses de formulaire"
+
+#: msgid "Form category"
+#: msgid_plural "Form categories"
+#: msgstr[0] "Catégorie de formulaire"
+#: msgstr[1] "Catégories de formulaire"
+
+#: msgid "Boutique"
+#: msgstr "Boutique"
+
+#: msgid "Oauth IMAP application"
+#: msgid_plural "Oauth IMAP applications"
+#: msgstr[0] "Application Oauth IMAP"
+#: msgstr[1] "Applications Oauth IMAP"
+
+#: msgid "Tenant ID"
+#: msgstr "ID de l'annuaire (locataire)"
+
+#: msgid "Client ID"
+#: msgstr "ID d'application (client)"
+
+#: msgid "Oauth provider"
+#: msgstr "Fournisseur Oauth"
+
+#: msgid "Form"
+#: msgid_plural "Forms"
+#: msgstr[0] "Formulaire"
+#: msgstr[1] "Formulaires"
+
+#: msgid "Section"
+#: msgid_plural "Sections"
+#: msgstr[0] "Section"
+#: msgstr[1] "Sections"
+
+#: msgid "Question"
+#: msgid_plural "Questions"
+#: msgstr[0] "Question"
+#: msgstr[1] "Questions"
+
+#: msgid "Answer"
+#: msgid_plural "Answers"
+#: msgstr[0] "Réponse"
+#: msgstr[1] "Réponses"
+
+#: msgid "Checkboxes"
+#: msgstr "Boites à cocher"
+
+#: msgid "Radios"
+#: msgstr "Boutons radio"
+
+#: msgid "Select"
+#: msgstr "Sélection"
+
+#: msgid "Text"
+#: msgstr "Texte"
+
+#: msgid "Time"
+#: msgstr "Heure"
+
+#: msgid "Textarea"
+#: msgstr "Zone de texte"
+
+#: msgid "Multiselect"
+#: msgstr "Sélection multiple"
+
+#: msgid "Integer"
+#: msgstr "Entier"
+
+#: msgid "GLPI object"
+#: msgid_plural "GLPI objects"
+#: msgstr[0] "Objet GLPI"
+#: msgstr[1] "Objets GLPI"
+
+#: msgid "Float"
+#: msgstr "Flottant"
+
+#: msgid "Hidden field"
+#: msgid_plural "Hidden fields"
+#: msgstr[0] "Champ masqué"
+#: msgstr[1] "Champs masqués"
+
+#: msgid "Email"
+#: msgid_plural "Emails"
+#: msgstr[0] "Courriel"
+#: msgstr[1] "Adresses de messagerie"
+
+#: msgid "Date"
+#: msgid_plural "Dates"
+#: msgstr[0] "Date"
+#: msgstr[1] "Dates"
+
+#: msgid "Description"
+#: msgstr "Description"
+
+#: msgid "File"
+#: msgstr "Fichier"
+
+#: msgid "Dropdown"
+#: msgid_plural "Dropdowns"
+#: msgstr[0] "Intitulé"
+#: msgstr[1] "Intitulés"
+
+#: msgid "Urgency"
+#: msgstr "Urgence"
+
+#: msgid "Show empty"
+#: msgstr "Afficher une valeur vide"
+
+#: msgid "One per line"
+#: msgstr "Une par ligne"
+
+#: msgid "Value"
+#: msgid_plural "Values"
+#: msgstr[0] "Valeur"
+#: msgstr[1] "Valeurs"
+
+#: msgid "Min"
+#: msgstr "Min"
+
+#: msgid "Max"
+#: msgstr "Max"
+
+#: msgid "Additional validation"
+#: msgstr "Validation supplémentaire"
+
+#: msgid "Regular expression"
+#: msgstr "Expression rationnelle"

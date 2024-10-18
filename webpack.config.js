@@ -29,237 +29,237 @@
  * ---------------------------------------------------------------------
  */
 
-const webpack = require('webpack');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const webpack = require('webpack');
+// const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const glob = require('glob');
-const path = require('path');
+// const glob = require('glob');
+// const path = require('path');
 
-const libOutputPath = 'public/lib';
+// const libOutputPath = 'public/lib';
 
-/*
- * GLPI core files build configuration.
- */
-var glpiConfig = {
-   entry: {
-      'glpi': path.resolve(__dirname, 'js/main.js'),
-   },
-   output: {
-      filename: '[name].js',
-      path: path.resolve(__dirname, 'public/build'),
-   },
-};
+// /*
+//  * GLPI core files build configuration.
+//  */
+// var glpiConfig = {
+//    entry: {
+//       'glpi': path.resolve(__dirname, 'js/main.js'),
+//    },
+//    output: {
+//       filename: '[name].js',
+//       path: path.resolve(__dirname, 'public/build'),
+//    },
+// };
 
-/*
- * External libraries files build configuration.
- */
-var libsConfig = {
-   entry: function () {
-      // Create an entry per *.js file in lib/bundle directory.
-      // Entry name will be name of the file (without ext).
-      var entries = {};
+// /*
+//  * External libraries files build configuration.
+//  */
+// var libsConfig = {
+//    entry: function () {
+//       // Create an entry per *.js file in lib/bundle directory.
+//       // Entry name will be name of the file (without ext).
+//       var entries = {};
 
-      let files = glob.sync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
-      files.forEach(function (file) {
-         entries[path.basename(file, '.js')] = file;
-      });
+//       let files = glob.sync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
+//       files.forEach(function (file) {
+//          entries[path.basename(file, '.js')] = file;
+//       });
 
-      return entries;
-   },
-   output: {
-      filename: '[name].js',
-      path: path.resolve(__dirname, libOutputPath),
-      publicPath: '',
-   },
-   module: {
-      rules: [
-         {
-            // Load scripts with no compilation for packages that are directly providing "dist" files.
-            // This prevents useless compilation pass and can also
-            // prevents incompatibility issues with the webpack require feature.
-            // It also removes existing sourcemaps that cannot be used correctly.
-            test: /\.js$/,
-            include: [
-               path.resolve(__dirname, 'node_modules/@fullcalendar'),
-               path.resolve(__dirname, 'node_modules/codemirror'),
-               path.resolve(__dirname, 'node_modules/cystoscape'),
-               path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
-               path.resolve(__dirname, 'node_modules/gridstack'),
-               path.resolve(__dirname, 'node_modules/jquery-migrate'),
-               path.resolve(__dirname, 'node_modules/jstree'),
-               path.resolve(__dirname, 'node_modules/photoswipe'),
-               path.resolve(__dirname, 'node_modules/rrule'),
-               path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
-            ],
-            use: ['script-loader', 'strip-sourcemap-loader'],
-         },
-         {
-            // Build styles
-            test: /\.css$/,
-            use: [MiniCssExtractPlugin.loader, 'css-loader'],
-         },
-         {
-            // Copy images and fonts
-            test: /\.((gif|png|jp(e?)g)|(eot|ttf|svg|woff2?))$/,
-            type: 'asset/resource',
-            generator: {
-               filename: function (pathData) {
-                  // Keep only relative path
-                  var sanitizedPath = path.relative(__dirname, pathData.filename);
+//       return entries;
+//    },
+//    output: {
+//       filename: '[name].js',
+//       path: path.resolve(__dirname, libOutputPath),
+//       publicPath: '',
+//    },
+//    module: {
+//       rules: [
+//          {
+//             // Load scripts with no compilation for packages that are directly providing "dist" files.
+//             // This prevents useless compilation pass and can also
+//             // prevents incompatibility issues with the webpack require feature.
+//             // It also removes existing sourcemaps that cannot be used correctly.
+//             test: /\.js$/,
+//             include: [
+//                path.resolve(__dirname, 'node_modules/@fullcalendar'),
+//                path.resolve(__dirname, 'node_modules/codemirror'),
+//                path.resolve(__dirname, 'node_modules/cystoscape'),
+//                path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
+//                path.resolve(__dirname, 'node_modules/gridstack'),
+//                path.resolve(__dirname, 'node_modules/jquery-migrate'),
+//                path.resolve(__dirname, 'node_modules/jstree'),
+//                path.resolve(__dirname, 'node_modules/photoswipe'),
+//                path.resolve(__dirname, 'node_modules/rrule'),
+//                path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
+//             ],
+//             use: ['script-loader', 'strip-sourcemap-loader'],
+//          },
+//          {
+//             // Build styles
+//             test: /\.css$/,
+//             use: [MiniCssExtractPlugin.loader, 'css-loader'],
+//          },
+//          {
+//             // Copy images and fonts
+//             test: /\.((gif|png|jp(e?)g)|(eot|ttf|svg|woff2?))$/,
+//             type: 'asset/resource',
+//             generator: {
+//                filename: function (pathData) {
+//                   // Keep only relative path
+//                   var sanitizedPath = path.relative(__dirname, pathData.filename);
 
-                  // Sanitize name
-                  sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
+//                   // Sanitize name
+//                   sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
 
-                  // Remove the first directory (lib, node_modules, ...) and empty parts
-                  // and replace directory separator by '/' (windows case)
-                  sanitizedPath = sanitizedPath.split(path.sep)
-                     .filter(function (part, index) {
-                        return '' != part && index != 0;
-                     }).join('/');
+//                   // Remove the first directory (lib, node_modules, ...) and empty parts
+//                   // and replace directory separator by '/' (windows case)
+//                   sanitizedPath = sanitizedPath.split(path.sep)
+//                      .filter(function (part, index) {
+//                         return '' != part && index != 0;
+//                      }).join('/');
 
-                  return sanitizedPath;
-               },
-            },
-         },
-      ],
-   },
-   plugins: [
-      new webpack.ProvidePlugin(
-         {
-            process: 'process/browser', // required in util.js (indirect dependency of file-type.js)
-            Buffer: ['buffer', 'Buffer'], // required in file-type.js
-         }
-      ),
-      new webpack.NormalModuleReplacementPlugin(
-         /node:/,
-         (resource) => {
-            const mod = resource.request.replace(/^node:/, '');
-            switch (mod) {
-               case 'buffer':
-                  resource.request = 'buffer';
-                  break;
-               case 'stream':
-                  resource.request = 'readable-stream';
-                  break;
-               default:
-                  throw new Error(`Not found ${mod}`);
-            }
-         }
-      ),
-      new CleanWebpackPlugin(
-         {
-            cleanOnceBeforeBuildPatterns: [
-               path.join(process.cwd(), libOutputPath + '/**/*'),
-            ]
-         }
-      ), // Clean lib dir content
-      new MiniCssExtractPlugin(), // Extract styles into CSS files
-   ],
-   resolve: {
-      // Use only main file in requirement resolution as we do not yet handle modules correctly
-      mainFields: [
-         'main',
-      ],
-      alias: {
-         'stream': 'stream-browserify',
-         'os': 'os-browserify',
-         'tty': 'tty-browserify',
-      },
-   },
-};
+//                   return sanitizedPath;
+//                },
+//             },
+//          },
+//       ],
+//    },
+//    plugins: [
+//       new webpack.ProvidePlugin(
+//          {
+//             process: 'process/browser', // required in util.js (indirect dependency of file-type.js)
+//             Buffer: ['buffer', 'Buffer'], // required in file-type.js
+//          }
+//       ),
+//       new webpack.NormalModuleReplacementPlugin(
+//          /node:/,
+//          (resource) => {
+//             const mod = resource.request.replace(/^node:/, '');
+//             switch (mod) {
+//                case 'buffer':
+//                   resource.request = 'buffer';
+//                   break;
+//                case 'stream':
+//                   resource.request = 'readable-stream';
+//                   break;
+//                default:
+//                   throw new Error(`Not found ${mod}`);
+//             }
+//          }
+//       ),
+//       new CleanWebpackPlugin(
+//          {
+//             cleanOnceBeforeBuildPatterns: [
+//                path.join(process.cwd(), libOutputPath + '/**/*'),
+//             ]
+//          }
+//       ), // Clean lib dir content
+//       new MiniCssExtractPlugin(), // Extract styles into CSS files
+//    ],
+//    resolve: {
+//       // Use only main file in requirement resolution as we do not yet handle modules correctly
+//       mainFields: [
+//          'main',
+//       ],
+//       alias: {
+//          'stream': 'stream-browserify',
+//          'os': 'os-browserify',
+//          'tty': 'tty-browserify',
+//       },
+//    },
+// };
 
-var libs = {
-   '@fullcalendar': [
-      {
-         context: 'core',
-         from: 'locales/*.js',
-      }
-   ],
-   'flatpickr': [
-      {
-         context: 'dist',
-         from: 'l10n/*.js',
-      },
-      {
-         context: 'dist',
-         from: 'themes/*.css',
-      }
-   ],
-   'jquery-ui': [
-      {
-         context: 'ui',
-         from: 'i18n/*.js',
-      }
-   ],
-   'select2': [
-      {
-         context: 'dist',
-         from: 'js/i18n/*.js',
-      }
-   ],
-   'tinymce': [
-      {
-         from: 'skins/**/*',
-      }
-   ],
-   'tinymce-i18n': [
-      {
-         from: 'langs/*.js',
-      }
-   ],
-};
+// var libs = {
+//    '@fullcalendar': [
+//       {
+//          context: 'core',
+//          from: 'locales/*.js',
+//       }
+//    ],
+//    'flatpickr': [
+//       {
+//          context: 'dist',
+//          from: 'l10n/*.js',
+//       },
+//       {
+//          context: 'dist',
+//          from: 'themes/*.css',
+//       }
+//    ],
+//    'jquery-ui': [
+//       {
+//          context: 'ui',
+//          from: 'i18n/*.js',
+//       }
+//    ],
+//    'select2': [
+//       {
+//          context: 'dist',
+//          from: 'js/i18n/*.js',
+//       }
+//    ],
+//    'tinymce': [
+//       {
+//          from: 'skins/**/*',
+//       }
+//    ],
+//    'tinymce-i18n': [
+//       {
+//          from: 'langs/*.js',
+//       }
+//    ],
+// };
 
-for (let packageName in libs) {
-   let libPackage = libs[packageName];
-   let to = libOutputPath + '/' + packageName.replace(/^@/, ''); // remove leading @ in case of prefixed package
+// for (let packageName in libs) {
+//    let libPackage = libs[packageName];
+//    let to = libOutputPath + '/' + packageName.replace(/^@/, ''); // remove leading @ in case of prefixed package
 
-   let copyPatterns = [];
+//    let copyPatterns = [];
 
-   for (let e = 0; e < libPackage.length; e++) {
-      let packageEntry = libPackage[e];
+//    for (let e = 0; e < libPackage.length; e++) {
+//       let packageEntry = libPackage[e];
 
-      let context = 'node_modules/' + packageName;
-      if (Object.prototype.hasOwnProperty.call(packageEntry, 'context')) {
-         context += '/' + packageEntry.context;
-      }
+//       let context = 'node_modules/' + packageName;
+//       if (Object.prototype.hasOwnProperty.call(packageEntry, 'context')) {
+//          context += '/' + packageEntry.context;
+//       }
 
-      let copyParams = {
-         context: path.resolve(__dirname, context),
-         from:    packageEntry.from,
-         to:      path.resolve(__dirname, to),
-         toType:  'dir',
-      };
+//       let copyParams = {
+//          context: path.resolve(__dirname, context),
+//          from:    packageEntry.from,
+//          to:      path.resolve(__dirname, to),
+//          toType:  'dir',
+//       };
 
-      if (Object.prototype.hasOwnProperty.call(packageEntry, 'ignore')) {
-         copyParams.ignore = packageEntry.ignore;
-      }
+//       if (Object.prototype.hasOwnProperty.call(packageEntry, 'ignore')) {
+//          copyParams.ignore = packageEntry.ignore;
+//       }
 
-      copyPatterns.push(copyParams);
-   }
+//       copyPatterns.push(copyParams);
+//    }
 
-   libsConfig.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
-}
+//    libsConfig.plugins.push(new CopyWebpackPlugin({patterns:copyPatterns}));
+// }
 
-module.exports = function() {
-   var configs = [glpiConfig, libsConfig];
+// module.exports = function() {
+//    var configs = [glpiConfig, libsConfig];
 
-   for (let config of configs) {
-      config.mode = 'none'; // Force 'none' mode, as optimizations will be done on release process
-      config.devtool = 'source-map'; // Add sourcemap to files
+//    for (let config of configs) {
+//       config.mode = 'none'; // Force 'none' mode, as optimizations will be done on release process
+//       config.devtool = 'source-map'; // Add sourcemap to files
 
-      // Limit verbosity to only usefull information
-      config.stats = {
-         all: false,
-         errors: true,
-         errorDetails: true,
-         warnings: true,
+//       // Limit verbosity to only usefull information
+//       config.stats = {
+//          all: false,
+//          errors: true,
+//          errorDetails: true,
+//          warnings: true,
 
-         entrypoints: true,
-         timings: true,
-      };
-   }
+//          entrypoints: true,
+//          timings: true,
+//       };
+//    }
 
-   return configs;
-};
+//    return configs;
+// };

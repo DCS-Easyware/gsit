@@ -241,45 +241,7 @@ class CommonDBTM extends CommonGLPI {
       return sprintf('%s.%s', $tablename, $field);
    }
 
-   /**
-    * Retrieve an item from the database
-    *
-    * @param integer $ID ID of the item to get
-    *
-    * @return boolean true if succeed else false
-   **/
-   function getFromDB($ID) {
-      global $DB;
-      // Make new database object and fill variables
 
-      // != 0 because 0 is consider as empty
-      if (strlen($ID) == 0) {
-         return false;
-      }
-
-      $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            $this->getTable() . '.' . $this->getIndexName() => Toolbox::cleanInteger($ID)
-         ],
-         'LIMIT'  => 1
-      ]);
-
-      if (count($iterator) == 1) {
-         $this->fields = $iterator->next();
-         $this->post_getFromDB();
-         return true;
-      } else if (count($iterator) > 1) {
-         Toolbox::logWarning(
-            sprintf(
-               'getFromDB expects to get one result, %1$s found!',
-               count($iterator)
-            )
-         );
-      }
-
-      return false;
-   }
 
 
    /**
@@ -431,45 +393,6 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
-   /**
-    * Retrieve all items from the database
-    *
-    * @param array        $condition condition used to search if needed (empty get all) (default '')
-    * @param array|string $order     order field if needed (default '')
-    * @param integer      $limit     limit retrieved data if needed (default '')
-    *
-    * @return array all retrieved data in a associative array by id
-   **/
-   function find($condition = [], $order = [], $limit = null) {
-      global $DB;
-
-      $criteria = [
-         'FROM'   => $this->getTable()
-      ];
-
-      if (count($condition)) {
-         $criteria['WHERE'] = $condition;
-      }
-
-      if (!is_array($order)) {
-         $order = [$order];
-      }
-      if (count($order)) {
-         $criteria['ORDERBY'] = $order;
-      }
-
-      if ((int)$limit > 0) {
-         $criteria['LIMIT'] = (int)$limit;
-      }
-
-      $data = [];
-      $iterator = $DB->request($criteria);
-      while ($line = $iterator->next()) {
-         $data[$line['id']] = $line;
-      }
-
-      return $data;
-   }
 
 
    /**
@@ -5806,18 +5729,34 @@ class CommonDBTM extends CommonGLPI {
             $rand          = mt_rand();
 
             if (count($actions)) {
-               echo "<span class='single-actions'>";
-               echo "<button type='button' class='btn btn-secondary moreactions'>
-                        ".__("Actions")."
-                        <i class='fas fa-caret-down'></i>
-                     </button>";
-
-               echo "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>";
+               echo "<div class='ui text menu'>";
+               echo "<div class='ui dropdown item'>";
+               echo __("Actions");
+               echo "<i class='dropdown icon'></i>";
+               echo "<div class='menu'>";
                foreach ($actions as $key => $action) {
-                  echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
+                  echo "<div class='item'>";
+                  echo "<a data-action='$key' href='#'>$action</a>";
+                  echo "</div>";
                }
                echo "</div>";
-               echo "</span>";
+               echo "</div>";
+               echo "</div>";
+
+
+
+               // echo "<span class='single-actions'>";
+               // echo "<button type='button' class='btn btn-secondary moreactions'>
+               //          ".__("Actions")."
+               //          <i class='fas fa-caret-down'></i>
+               //       </button>";
+
+               // echo "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1'>";
+               // foreach ($actions as $key => $action) {
+               //    echo "<a class='dropdown-item' data-action='$key' href='#'>$action</a>";
+               // }
+               // echo "</div>";
+               // echo "</span>";
             }
 
             Html::openMassiveActionsForm();

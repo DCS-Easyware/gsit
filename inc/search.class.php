@@ -7619,9 +7619,9 @@ JAVASCRIPT;
 
          default :
             if ($fixed) {
-               $out = "<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
+               $out = "<div class='center'><table class='ui celled striped table'>\n";
             } else {
-               $out = "<div class='center'><table border='0' class='tab_cadrehov'>\n";
+               $out = "<div class='center'><table class='ui celled striped table'>\n";
             }
       }
       return $out;
@@ -7716,9 +7716,9 @@ JAVASCRIPT;
             break;
 
          default :
-            $class = " class='tab_bg_2".($is_deleted?'_2':'')."' ";
+            $class = " class='".($is_deleted?'_2':'')."' ";
             if ($odd) {
-               $class = " class='tab_bg_1".($is_deleted?'_2':'')."' ";
+               $class = " class='".($is_deleted?'_2':'')."' ";
             }
             $out = "<tr $class>";
       }

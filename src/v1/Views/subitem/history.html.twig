@@ -1,0 +1,33 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+<div class="ui form segment">
+  <div class="field">
+    <label>History</label>
+  </div>
+  <div class="ui connected feed">
+    {% for item in data.history %}
+      <div class="event">
+        <div class="label">
+          <i class="circular colored inverted exchange alternate brown icon"></i>
+        </div>
+        <div class="content">
+          <div class="summary">
+            <a class="user">
+              {{ item.user_name }}
+            </a> {{ item.summary }}
+            <div class="date">
+              {{ item.updated_at }}
+            </div>
+          </div>
+          <div class="extra text">
+            <span>{{ item.old_value }}</span>
+            <span> => </span>
+            <span>{{ item.new_value }}</span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{{ include('footer.html.twig') }}

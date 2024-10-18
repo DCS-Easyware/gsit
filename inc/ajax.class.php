@@ -377,128 +377,48 @@ class Ajax {
 
       $rand = mt_rand();
       if (count($tabs) > 0) {
-         echo "<div id='tabs$rand' class='center$mainclass $orientation'>";
+         echo "<div class='ui grid'>";
+         echo "<div class='two wide column'>";
+         echo "<div id='tabs$rand' class='ui vertical pointing blue secondary fluid tabular menu'>";
          if (CommonGLPI::isLayoutWithMain()
              && !CommonGLPI::isLayoutExcludedPage()) {
             $orientation = 'horizontal';
          }
-         echo "<ul>";
+         // echo "<ul>";
          $current = 0;
          $selected_tab = 0;
          foreach ($tabs as $key => $val) {
             if ($key == $active_tabs) {
                $selected_tab = $current;
             }
-            echo "<li><a title=\"".
+            echo "<a class='item' title=\"".
                  str_replace(["<sup class='tab_nb'>", '</sup>'], '', $val['title'])."\" ";
-            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
+            // echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
+            echo " data-tab='".$key."'>";
             // extract sup information
             // $title = '';
             // $limit = 16;
             // No title strip for horizontal menu
             $title = $val['title'];
-            echo $title."</a></li>";
+            echo $title."</a>";
             $current ++;
          }
-         echo "</ul>";
+         // echo "</ul>";
          echo "</div>";
-         $js = "
-         $(function(){
-         forceReload$rand = false;
-         $('#tabs$rand').tabs({
-            active: $selected_tab,
-            // Loading indicator
-            beforeLoad: function (event, ui) {
-
-               if ($(ui.panel).html()
-                   && !forceReload$rand) {
-                  event.preventDefault();
-               } else {
-                  forceReload$rand = false;
-                  var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . addslashes(__('Loading...')) . "</div></div>');
-                  ui.panel.html(_loader);
-
-                  ui.jqXHR.always(function() {
-                     $('#loadingtabs').remove();
-                  });
-
-                  ui.jqXHR.fail(function(e) {
-                     console.log(e);
-                     if (e.statusText != 'abort') {
-                        ui.panel.html(
-                           '<div class=\'error\'><h3>" .
-                           addslashes(__('An error occured loading contents!'))  . "</h3><p>" .
-                           addslashes(__('Please check GLPI logs or contact your administrator.'))  .
-                           "<br/>" . addslashes(__('or')) . " <a href=\'#\' onclick=\'return reloadTab()\'>" . addslashes(__('try to reload'))  . "</a></p></div>'
-                        );
-                     }
-                  });
-               }
-               // We need to manually set the current tab if the main event was prevented.
-               // It happens when user switch between tabs and then select a tab that was already shown before.
-               // It is displayed without having to be reloaded.
-               if (event.isDefaultPrevented()) {
-                  var tabs = ui.tab.parent().children();
-                  if (tabs.length > 1) {
-                     var newIndex = tabs.index(ui.tab);
-                     $.get(
-                        '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-                        { itemtype: '".addslashes($type)."', id: '$ID', tab: newIndex }
-                     );
-                  }
-               }
-            },
-            load: function(event) {
-               var _url = window.location.href;
-               //get the anchor
-               var _parts = _url.split('#');
-               if (_parts.length > 1) {
-                  var _anchor = _parts[1];
-
-                  //get the top offset of the target anchor
-                  if ($('#' + _anchor).length) {
-                     var target_offset = $('#' + _anchor).offset();
-                     var target_top = target_offset.top;
-
-                     //goto that anchor by setting the body scroll top to anchor top
-                     $('html, body').animate({scrollTop:target_top}, 2000, 'easeOutQuad');
-                  }
-               }
-            },
-            ajaxOptions: {type: 'POST'}
+         echo "</div>";
+         echo "<div class='twelve wide stretched column'>";
+         foreach ($tabs as $key => $val) {
+            echo "<div class='ui attached tab segment' data-tab='" . $key . "' data-url='" . $val['url'] . '?' . $val['params'] . "'>
+               Tab content ".print_r($val, true)."
+            </div>";
+         }
+         echo "</div>";
+         echo "</div>";
+         $firstTab = "
+         $(function() {
+            $('.menu .item').tab('change tab', '" . array_key_first($tabs) . "');
          });";
-
-         if ($orientation=='vertical') {
-            $js .=  "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
-         }
-
-         if (CommonGLPI::isLayoutWithMain()
-             && !CommonGLPI::isLayoutExcludedPage()) {
-            $js .=  "$('#tabs$rand').scrollabletabs();";
-         } else {
-            $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
-         }
-         $js .= '});';
-
-         $js .=  "// force reload global function
-            function reloadTab(add) {
-               forceReload$rand = true;
-               var current_index = $('#tabs$rand').tabs('option','active');
-
-               // remove scroll event bind, select2 bind it on parent with scrollbars (the tab currently)
-               // as the select2 disapear with this tab reload, remove the event to prevent issues (infinite scroll to top)
-               $('#tabs$rand .ui-tabs-panel[aria-hidden=false]').unbind('scroll');
-
-               // Save tab
-               var currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
-               $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
-               $('#tabs$rand').tabs( 'load' , current_index);
-
-               // Restore tab
-               $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
-            };";
-
-         echo Html::scriptBlock($js);
+         echo Html::scriptBlock($firstTab);
       }
    }
 

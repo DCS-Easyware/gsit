@@ -1,0 +1,21 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+<table class="ui blue table">
+  <thead>
+    <tr>
+      <th>{{ translation.software }}</th>
+      <th>{{ translation.version }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for softwareversion in data.softwares|sort((a, b) => a.software.name|lower <=> b.software.name|lower) %}
+      <tr>
+        <td><a>{{ softwareversion.software.name }}</a></td>
+        <td><a>{{ softwareversion.name }}</a></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{{ include('footer.html.twig') }}

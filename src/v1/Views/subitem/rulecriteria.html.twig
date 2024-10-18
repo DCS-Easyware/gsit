@@ -1,0 +1,26 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+{% for criterium in data.criteria %}
+  <div class="ui form segment">
+    <form class="ui form">
+      <div class="three fields">
+        <div class="field">
+          <label>Criterium</label>
+          
+          <input type="text" name="last-name" placeholder="Last Name" value="{{ criterium.criteria }}">
+        </div>
+        <div class="field">
+          <label>Condition</label>
+          <input type="text" name="last-name" placeholder="Last Name" value="{{ criterium.condition }}">
+        </div>
+        <div class="field">
+          <label>Pattern</label>
+          <input type="text" name="last-name" placeholder="Last Name" value="{{ criterium.pattern }}">
+        </div>
+      </div>
+      <button class="ui button" type="submit">Save</button>
+    </form>    
+  </div>
+{% endfor %}
+{{ include('footer.html.twig') }}
