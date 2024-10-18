@@ -15,7 +15,7 @@
   
   <div class="ui grid">
     <div class="three wide left attached column">
-      <div class="ui left vertical visible sidebar menu">
+      <div class="ui left vertical visible menu" style="border-radius: unset;width: 300px;border-top: unset;">
       <div class="item">
         <div class="ui icon input">
           <input type="text" placeholder="Search...">
@@ -35,6 +35,48 @@
                 <i class="{{ subitem.icon }} icon"></i>
               </a>
             {% endfor %}
+            {% if item.more|length > 0 %}
+              <div class="ui dropdown item">
+                More
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                  {% for moreitem in item.more %}
+                    <a class="item {{ moreitem.class }}" href="{{ moreitem.link }}">
+                      <i class="{{ moreitem.icon }} icon"></i>
+                      {{ moreitem.name }}
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+            {% if item.dropdown|length > 0 %}
+              <div class="ui dropdown item">
+                Dropdown
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                  {% for moreitem in item.dropdown %}
+                    <a class="item {{ moreitem.class }}" href="{{ moreitem.link }}">
+                      <i class="{{ moreitem.icon }} icon"></i>
+                      {{ moreitem.name }}
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+            {% if item.component|length > 0 %}
+              <div class="ui dropdown item">
+                Component
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                  {% for moreitem in item.component %}
+                    <a class="item {{ moreitem.class }}" href="{{ moreitem.link }}">
+                      <i class="{{ moreitem.icon }} icon"></i>
+                      {{ moreitem.name }}
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
           </div>
         </div>
       {% endfor %}
