@@ -23490,3 +23490,107 @@ msgstr ""
 
 #: msgid "Oauth provider"
 #: msgstr "Fournisseur Oauth"
+
+#: msgid "Form"
+#: msgid_plural "Forms"
+#: msgstr[0] "Formulaire"
+#: msgstr[1] "Formulaires"
+
+#: msgid "Section"
+#: msgid_plural "Sections"
+#: msgstr[0] "Section"
+#: msgstr[1] "Sections"
+
+#: msgid "Question"
+#: msgid_plural "Questions"
+#: msgstr[0] "Question"
+#: msgstr[1] "Questions"
+
+#: msgid "Answer"
+#: msgid_plural "Answers"
+#: msgstr[0] "Réponse"
+#: msgstr[1] "Réponses"
+
+#: msgid "Checkboxes"
+#: msgstr "Boites à cocher"
+
+#: msgid "Radios"
+#: msgstr "Boutons radio"
+
+#: msgid "Select"
+#: msgstr "Sélection"
+
+#: msgid "Text"
+#: msgstr "Texte"
+
+#: msgid "Time"
+#: msgstr "Heure"
+
+#: msgid "Textarea"
+#: msgstr "Zone de texte"
+
+#: msgid "Multiselect"
+#: msgstr "Sélection multiple"
+
+#: msgid "Integer"
+#: msgstr "Entier"
+
+#: msgid "GLPI object"
+#: msgid_plural "GLPI objects"
+#: msgstr[0] "Objet GLPI"
+#: msgstr[1] "Objets GLPI"
+
+#: msgid "Float"
+#: msgstr "Flottant"
+
+#: msgid "Hidden field"
+#: msgid_plural "Hidden fields"
+#: msgstr[0] "Champ masqué"
+#: msgstr[1] "Champs masqués"
+
+#: msgid "Email"
+#: msgid_plural "Emails"
+#: msgstr[0] "Courriel"
+#: msgstr[1] "Adresses de messagerie"
+
+#: msgid "Date"
+#: msgid_plural "Dates"
+#: msgstr[0] "Date"
+#: msgstr[1] "Dates"
+
+#: msgid "Description"
+#: msgstr "Description"
+
+#: msgid "File"
+#: msgstr "Fichier"
+
+#: msgid "Dropdown"
+#: msgid_plural "Dropdowns"
+#: msgstr[0] "Intitulé"
+#: msgstr[1] "Intitulés"
+
+#: msgid "Urgency"
+#: msgstr "Urgence"
+
+#: msgid "Show empty"
+#: msgstr "Afficher une valeur vide"
+
+#: msgid "One per line"
+#: msgstr "Une par ligne"
+
+#: msgid "Value"
+#: msgid_plural "Values"
+#: msgstr[0] "Valeur"
+#: msgstr[1] "Valeurs"
+
+#: msgid "Min"
+#: msgstr "Min"
+
+#: msgid "Max"
+#: msgstr "Max"
+
+#: msgid "Additional validation"
+#: msgstr "Validation supplémentaire"
+
+#: msgid "Regular expression"
+#: msgstr "Expression rationnelle"

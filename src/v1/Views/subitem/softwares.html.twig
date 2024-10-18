@@ -7,7 +7,8 @@
       <th>{{ translation.software }}</th>
       <th>{{ translation.version }}</th>
     </tr>
-  </tr></thead><tbody>
+  </thead>
+  <tbody>
     {% for softwareversion in data.softwares|sort((a, b) => a.software.name|lower <=> b.software.name|lower) %}
       <tr>
         <td><a>{{ softwareversion.software.name }}</a></td>

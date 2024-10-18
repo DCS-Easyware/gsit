@@ -142,6 +142,36 @@ final class Menu
         ],
       ],
       [
+        'name' => $translator->translatePlural('Form', 'Forms', 2),
+        'icon' => 'hands helping',
+        'sub'  => [
+          [
+            'name'  => $translator->translatePlural('Form', 'Forms', 2),
+            'link'  => $basepath . '/forms',
+            'icon'  => 'hands helping',
+            'class' => $activePath == $basepath . '/forms' ? 'active' : '',
+          ],
+          [
+            'name'  => $translator->translatePlural('Section', 'Sections', 2),
+            'link'  => $basepath . '/sections',
+            'icon'  => 'exclamation triangle',
+            'class' => $activePath == $basepath . '/sections' ? 'active' : '',
+          ],
+          [
+            'name'  => $translator->translatePlural('Question', 'Questions', 2),
+            'link'  => $basepath . '/questions',
+            'icon'  => 'clipboard check',
+            'class' => $activePath == $basepath . '/questions' ? 'active' : '',
+          ],
+          [
+            'name'  => $translator->translatePlural('Answer', 'Answers', 2),
+            'link'  => $basepath . '/answers',
+            'icon'  => 'clipboard check',
+            'class' => $activePath == $basepath . '/answers' ? 'active' : '',
+          ],
+        ],
+      ],
+      [
         'name' => $translator->translate('Management'),
         'icon' => 'block layout',
         'sub'  => [
@@ -307,12 +337,6 @@ final class Menu
             'link' => $basepath . '/events',
             'icon' => 'scroll',
             'class' => $activePath == $basepath . '/events' ? 'active' : '',
-          ],
-          [
-            'name' => $translator->translatePlural('Form', 'Forms', 2),
-            'link' => $basepath . '/forms',
-            'icon' => 'edit',
-            'class' => $activePath == $basepath . '/forms' ? 'active' : '',
           ],
         ],
       ],
@@ -1095,13 +1119,6 @@ final class Menu
             'link' => $basepath . '/dropdowns/oauthimapapplications',
             'icon' => 'edit',
             'class' => $activePath == $basepath . '/dropdowns/oauthimapapplications' ? 'active' : '',
-          ],
-          [
-            'name' => $translator->translatePlural('Dropdown', 'Dropdowns', 2) . ' - ' .
-                      $translator->translatePlural('Form category', 'Form categories', 2),
-            'link' => $basepath . '/dropdowns/formcreatorcategories',
-            'icon' => 'edit',
-            'class' => $activePath == $basepath . '/dropdowns/formcreatorcategories' ? 'active' : '',
           ],
           [
             'name' => $translator->translatePlural('Component', 'Components', 2) . ' - ' .

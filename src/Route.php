@@ -489,16 +489,6 @@ final class Route
         $eventId->map(['POST'], '', \App\v1\Controllers\Event::class . ':updateItem');
       });
     });
-    $app->group('/forms', function (RouteCollectorProxy $forms)
-    {
-      $forms->map(['GET'], '', \App\v1\Controllers\Form::class . ':getAll');
-      $forms->map(['POST'], '', \App\v1\Controllers\Form::class . ':postItem');
-      $forms->group("/{id:[0-9]+}", function (RouteCollectorProxy $formId)
-      {
-        $formId->map(['GET'], '', \App\v1\Controllers\Form::class . ':showItem');
-        $formId->map(['POST'], '', \App\v1\Controllers\Form::class . ':updateItem');
-      });
-    });
     $app->group('/dropdowns', function (RouteCollectorProxy $dropdowns)
     {
       $dropdowns->group('/locations', function (RouteCollectorProxy $locations)
@@ -1589,16 +1579,6 @@ final class Route
           $oauthimapapplicationId->map(['POST'], '', \App\v1\Controllers\OauthimapApplication::class . ':updateItem');
         });
       });
-      $dropdowns->group('/formcreatorcategories', function (RouteCollectorProxy $formcreatorcategories)
-      {
-        $formcreatorcategories->map(['GET'], '', \App\v1\Controllers\FormcreatorCategory::class . ':getAll');
-        $formcreatorcategories->map(['POST'], '', \App\v1\Controllers\FormcreatorCategory::class . ':postItem');
-        $formcreatorcategories->group("/{id:[0-9]+}", function (RouteCollectorProxy $formcreatorcategoryId)
-        {
-          $formcreatorcategoryId->map(['GET'], '', \App\v1\Controllers\FormcreatorCategory::class . ':showItem');
-          $formcreatorcategoryId->map(['POST'], '', \App\v1\Controllers\FormcreatorCategory::class . ':updateItem');
-        });
-      });
     });
 
     $app->group('/devices', function (RouteCollectorProxy $devices)
@@ -1851,6 +1831,80 @@ final class Route
       {
         $mailcollectorId->map(['GET'], '', \App\v1\Controllers\Mailcollector::class . ':showItem');
         $mailcollectorId->map(['POST'], '', \App\v1\Controllers\Mailcollector::class . ':updateItem');
+      });
+    });
+
+    $app->group('/forms', function (RouteCollectorProxy $forms)
+    {
+      $forms->map(['GET'], '', \App\v1\Controllers\Forms\Form::class . ':getAll');
+      // $forms->map(['POST'], '', \App\v1\Controllers\Forms\Form::class . ':postItem');
+
+      // $forms->group("/new", function (RouteCollectorProxy $formNew)
+      // {
+      //   $formNew->map(['GET'], '', \App\v1\Controllers\Forms\Form::class . ':showNewItem');
+      //   $formNew->map(['POST'], '', \App\v1\Controllers\Forms\Form::class . ':newItem');
+      // });
+
+      $forms->group("/{id:[0-9]+}", function (RouteCollectorProxy $formId)
+      {
+        $formId->map(['GET'], '', \App\v1\Controllers\Forms\Form::class . ':showItem');
+        // $formId->map(['POST'], '', \App\v1\Controllers\Forms\Form::class . ':updateItem');
+        $formId->group('/', function (RouteCollectorProxy $sub)
+        {
+          $sub->map(['GET'], 'sections', \App\v1\Controllers\Forms\Form::class . ':showSections');
+          $sub->map(['GET'], 'questions', \App\v1\Controllers\Forms\Form::class . ':showQuestions');
+        //   $sub->map(['GET'], 'problem', \App\v1\Controllers\Forms\Form::class . ':showProblem');
+        //   $sub->map(['POST'], 'problem', \App\v1\Controllers\Forms\Form::class . ':postProblem');
+        //   $sub->map(['GET'], 'history', \App\v1\Controllers\Forms\Form::class . ':showHistory');
+        });
+      });
+    });
+    $app->group('/sections', function (RouteCollectorProxy $sections)
+    {
+      $sections->map(['GET'], '', \App\v1\Controllers\Forms\Section::class . ':getAll');
+      // $sections->map(['POST'], '', \App\v1\Controllers\Forms\Section::class . ':postItem');
+
+      // $sections->group("/new", function (RouteCollectorProxy $sectionNew)
+      // {
+      //   $sectionNew->map(['GET'], '', \App\v1\Controllers\Forms\Section::class . ':showNewItem');
+      //   $sectionNew->map(['POST'], '', \App\v1\Controllers\Forms\Section::class . ':newItem');
+      // });
+
+      $sections->group("/{id:[0-9]+}", function (RouteCollectorProxy $sectionId)
+      {
+        $sectionId->map(['GET'], '', \App\v1\Controllers\Forms\Section::class . ':showItem');
+        // $sectionId->map(['POST'], '', \App\v1\Controllers\Forms\Section::class . ':updateItem');
+        $sectionId->group('/', function (RouteCollectorProxy $sub)
+        {
+          $sub->map(['GET'], 'questions', \App\v1\Controllers\Forms\Section::class . ':showQuestions');
+        //   $sub->map(['GET'], 'problem', \App\v1\Controllers\Forms\Section::class . ':showProblem');
+        //   $sub->map(['POST'], 'problem', \App\v1\Controllers\Forms\Section::class . ':postProblem');
+        //   $sub->map(['GET'], 'history', \App\v1\Controllers\Forms\Section::class . ':showHistory');
+        });
+      });
+    });
+    $app->group('/questions', function (RouteCollectorProxy $questions)
+    {
+      $questions->map(['GET'], '', \App\v1\Controllers\Forms\Question::class . ':getAll');
+      // $questions->map(['POST'], '', \App\v1\Controllers\Forms\Question::class . ':postItem');
+
+      // $questions->group("/new", function (RouteCollectorProxy $questionNew)
+      // {
+      //   $questionNew->map(['GET'], '', \App\v1\Controllers\Forms\Question::class . ':showNewItem');
+      //   $questionNew->map(['POST'], '', \App\v1\Controllers\Forms\Question::class . ':newItem');
+      // });
+
+      $questions->group("/{id:[0-9]+}", function (RouteCollectorProxy $questionId)
+      {
+        $questionId->map(['GET'], '', \App\v1\Controllers\Forms\Question::class . ':showItem');
+        // $questionId->map(['POST'], '', \App\v1\Controllers\Forms\Question::class . ':updateItem');
+        // $questionId->group('/', function (RouteCollectorProxy $sub)
+        // {
+        //   $sub->map(['GET'], 'stats', \App\v1\Controllers\Forms\Question::class . ':showStats');
+        //   $sub->map(['GET'], 'problem', \App\v1\Controllers\Forms\Question::class . ':showProblem');
+        //   $sub->map(['POST'], 'problem', \App\v1\Controllers\Forms\Question::class . ':postProblem');
+        //   $sub->map(['GET'], 'history', \App\v1\Controllers\Forms\Question::class . ':showHistory');
+        // });
       });
     });
   }

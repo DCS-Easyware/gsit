@@ -1,0 +1,44 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+{% if data.src == 'section' %}
+  <table class="ui blue table">
+    <thead>
+      <tr>
+        <th>{{ translation.question }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for question in data.questions %}
+        <tr>
+          <td><a>{{ question.name }}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% if data.src == 'form' %}
+  {% for section in data.sections %}
+    <fieldset>
+      <legend>{{ section.name }}</legend>
+
+      <table class="ui blue table">
+        <thead>
+          <tr>
+            <th>{{ translation.question }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for question in section.questions %}
+            <tr>
+              <td><a>{{ question.name }}</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </fieldset>
+  {% endfor %}
+{% endif %}
+
+{{ include('footer.html.twig') }}
