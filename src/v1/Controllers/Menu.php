@@ -348,10 +348,16 @@ final class Menu
         'icon' => 'tools',
         'sub'  => [
           [
-            'name' => $translator->translate('Auth SSO'),
+            'name' => $translator->translate('Authentication SSO'),
             'link' => $basePath . '/view/authssos',
             'icon' => 'id card alternate',
             'class' => $activePath == $basePath . '/view/authssos' ? 'active' : '',
+          ],
+          [
+            'name' => $translator->translate('Provisionning LDAP'),
+            'link' => $basePath . '/view/authldaps',
+            'icon' => 'address book outline',
+            'class' => $activePath == $basePath . '/view/authldaps' ? 'active' : '',
           ],
           [
             'name' => $translator->translatePlural('Notification', 'Notifications', 2) . ' - ' .

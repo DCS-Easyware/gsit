@@ -25,6 +25,7 @@
         "ext-zlib": "*",
         "blueimp/jquery-file-upload": "^10.2",
         "bryanjhv/slim-session": "~4.0",
+        "directorytree/ldaprecord": "^3.7",
         "elvanto/litemoji": "^4.3",
         "enshrined/svg-sanitize": "^0.15.4",
         "fico7489/laravel-pivot": "^3.0",

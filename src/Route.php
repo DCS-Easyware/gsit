@@ -1983,6 +1983,24 @@ final class Route
           });
         });
       });
+
+      $view->group('/authldaps', function (RouteCollectorProxy $ldaps)
+      {
+        $ldaps->map(['GET'], '', \App\v1\Controllers\Authldap::class . ':getAll');
+        $ldaps->map(['POST'], '', \App\v1\Controllers\Authldap::class . ':postItem');
+
+        $ldaps->group("/new", function (RouteCollectorProxy $ldapNew)
+        {
+          $ldapNew->map(['GET'], '', \App\v1\Controllers\Authldap::class . ':showNewItem');
+          $ldapNew->map(['POST'], '', \App\v1\Controllers\Authldap::class . ':newItem');
+        });
+
+        $ldaps->group("/{id:[0-9]+}", function (RouteCollectorProxy $ldapId)
+        {
+          $ldapId->map(['GET'], '', \App\v1\Controllers\Authldap::class . ':showItem');
+          $ldapId->map(['POST'], '', \App\v1\Controllers\Authldap::class . ':updateItem');
+        });
+      });
     });
 
     $app->group('/forms', function (RouteCollectorProxy $forms)

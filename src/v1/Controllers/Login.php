@@ -49,19 +49,50 @@ final class Login extends Common
       throw new \Exception('Login error', 401);
     }
 
-    // check if account exists
-    $user = \App\Models\User::where('name', $data->login)->first();
+    // check if account exists in local
+    $user = \App\Models\User::
+        where('name', $data->login)
+      ->where('is_active', true)
+      ->where('auth_id', 0)
+      ->first();
     if (is_null($user))
     {
-      throw new \Exception('Login error', 401);
+      // Search in LDAP
+      $users = \App\Models\User::
+          where('name', $data->login)
+      ->where('is_active', true)
+      ->where('auth_id', '>', 0)
+      ->get();
+      foreach ($users as $user)
+      {
+        $authRet = \App\v1\Controllers\Authldap::tryAuth($user->auth_id, $user->user_dn, $data->password);
+        if ($authRet)
+        {
+          $this->authOkAndRedirect($user);
+          exit;
+        }
+      }
     }
-    // check passwords
-    $check = $token->checkPassword($data->password, $user->password);
-    if (!$check)
+
+    // Not found in database, so now try to find into ldaps
+    $ldaps = \App\Models\Authldap::where('is_active', true)->get();
+    foreach ($ldaps as $ldap)
     {
-      throw new \Exception('Login error', 401);
+      $foundDN = \App\v1\Controllers\Authldap::importUsers($ldap, $data->login);
+      if ($foundDN != false)
+      {
+        // Create user
+        $user = new \App\Models\User();
+        $user->name = $data->login;
+        $user->is_active = true;
+        $user->auth_id = $ldap->id;
+        $user->user_dn = $foundDN;
+        $user->save();
+        $this->authOkAndRedirect($user);
+        exit;
+      }
     }
-    $this->authOkAndRedirect($user);
+    throw new \Exception('Login or password error', 401);
   }
 
   private function authOkAndRedirect($user)
