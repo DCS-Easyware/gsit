@@ -55,14 +55,9 @@ final class Route
 
         $computers->group("/new", function (RouteCollectorProxy $computerNew)
         {
-<<<<<<< HEAD
-          $sub->map(['GET'], 'softwares', \App\v1\Controllers\Computer::class . ':showSoftwares');
-          $sub->map(['GET'], 'history', \App\v1\Controllers\Computer::class . ':showHistory');
-=======
           $computerNew->map(['GET'], '', \App\v1\Controllers\Computer::class . ':showNewItem');
           $computerNew->map(['POST'], '', \App\v1\Controllers\Computer::class . ':newItem');
         });
->>>>>>> dce911b2c1 (Many updated for fillable and tickets too. Add code to mana prefix (path of url)
 
         $computers->group("/{id:[0-9]+}", function (RouteCollectorProxy $computerId)
         {
@@ -249,58 +244,21 @@ final class Route
           $ticketId->map(['POST'], '', \App\v1\Controllers\Ticket::class . ':updateItem');
           $ticketId->group('/', function (RouteCollectorProxy $sub)
           {
-<<<<<<< HEAD
             $sub->map(['GET'], 'criteria', \App\v1\Controllers\Rules\Ticket::class . ':showCriteria');
-=======
             $sub->map(['POST'], 'followups', \App\v1\Controllers\Followup::class . ':postItem');
             $sub->map(['GET'], 'stats', \App\v1\Controllers\Ticket::class . ':showStats');
             $sub->map(['GET'], 'problem', \App\v1\Controllers\Ticket::class . ':showProblem');
             $sub->map(['POST'], 'problem', \App\v1\Controllers\Ticket::class . ':postProblem');
             $sub->map(['GET'], 'history', \App\v1\Controllers\Ticket::class . ':showSubHistory');
->>>>>>> dce911b2c1 (Many updated for fillable and tickets too. Add code to mana prefix (path of url)
           });
         });
       });
       $view->group('/problems', function (RouteCollectorProxy $problems)
       {
-<<<<<<< HEAD
-        $profileId->map(['GET'], '', \App\v1\Controllers\Profile::class . ':showItem');
-        $profileId->map(['POST'], '', \App\v1\Controllers\Profile::class . ':updateItem');
-      });
-    });
-    $app->group('/queuednotifications', function (RouteCollectorProxy $queuednotifications)
-    {
-      $queuednotifications->map(['GET'], '', \App\v1\Controllers\Queuednotification::class . ':getAll');
-      $queuednotifications->map(['POST'], '', \App\v1\Controllers\Queuednotification::class . ':postItem');
-      $queuednotifications->group("/{id:[0-9]+}", function (RouteCollectorProxy $queuednotificationId)
-      {
-        $queuednotificationId->map(['GET'], '', \App\v1\Controllers\Queuednotification::class . ':showItem');
-        $queuednotificationId->map(['POST'], '', \App\v1\Controllers\Queuednotification::class . ':updateItem');
-      });
-    });
-    $app->group('/events', function (RouteCollectorProxy $events)
-    {
-      $events->map(['GET'], '', \App\v1\Controllers\Event::class . ':getAll');
-      $events->map(['POST'], '', \App\v1\Controllers\Event::class . ':postItem');
-      $events->group("/{id:[0-9]+}", function (RouteCollectorProxy $eventId)
-      {
-        $eventId->map(['GET'], '', \App\v1\Controllers\Event::class . ':showItem');
-        $eventId->map(['POST'], '', \App\v1\Controllers\Event::class . ':updateItem');
-      });
-    });
-    $app->group('/dropdowns', function (RouteCollectorProxy $dropdowns)
-    {
-      $dropdowns->group('/locations', function (RouteCollectorProxy $locations)
-      {
-        $locations->map(['GET'], '', \App\v1\Controllers\Location::class . ':getAll');
-        $locations->map(['POST'], '', \App\v1\Controllers\Location::class . ':postItem');
-        $locations->group("/{id:[0-9]+}", function (RouteCollectorProxy $locationId)
-=======
         $problems->map(['GET'], '', \App\v1\Controllers\Problem::class . ':getAll');
         $problems->map(['POST'], '', \App\v1\Controllers\Problem::class . ':postItem');
 
         $problems->group("/{id:[0-9]+}", function (RouteCollectorProxy $problemId)
->>>>>>> dce911b2c1 (Many updated for fillable and tickets too. Add code to mana prefix (path of url)
         {
           $problemId->map(['GET'], '', \App\v1\Controllers\Problem::class . ':showItem');
           $problemId->map(['POST'], '', \App\v1\Controllers\Problem::class . ':updateItem');
