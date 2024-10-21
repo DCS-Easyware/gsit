@@ -1,0 +1,60 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+<div class="ui placeholder segment">
+  <div class="ui two column stackable center aligned grid">
+    <div class="ui vertical divider">{{ translation.or }}</div>
+    <div class="middle aligned row">
+      <div class="column">
+        <div class="ui icon header">
+          <i class="search icon"></i>
+          {{ translation.attachItem }}
+        </div>
+        <form method="post">
+          <div class="field">
+            <div
+              class="ui search selection dropdown remotedropdown"
+              data-url="{{ base_path() }}/view/dropdown"
+              data-itemtype="App\Models\Problem"
+            >
+              <input type="hidden" name="problem" value="0">
+              <i class="dropdown icon"></i>
+              <div class="default text">{{ translation.selectItem }}</div>
+              <div class="menu"></div>
+            </div>
+          </div>
+          <br>
+          <button class="ui primary button right" type="submit">{{ translation.buttonAttach }}</button>
+        </form>
+      </div>
+      <div class="column">
+        <div class="ui icon header">
+          <i class="plus icon"></i>
+          {{ translation.addItem }}
+        </div>
+        <div class="ui primary button">
+          {{ translation.buttonCreate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui form segment">
+  <div class="field">
+    <label>{{ translation.attachedItems }}</label>
+  </div>
+  <div class="ui relaxed divided list">
+    {% for problem in data.problems %}
+      <div class="item">
+        <i class="large exclamation triangle middle aligned icon"></i>
+        <div class="content">
+          <a class="header">{{ problem.id }} - {{ problem.name }}</a>
+          <div class="description">{{ translation.updated }} {{ problem.updated_at|date("d/m/Y")}}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{{ include('footer.html.twig') }}

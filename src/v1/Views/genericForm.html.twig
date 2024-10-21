@@ -1,0 +1,67 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+<form method="post" class="ui form" id="myform">
+  <div class="ui internally celled grid">
+    <div class="row">
+      <div class="height wide column">
+        {% for item in data.fields %}
+          {% if item.name != 'comment' %}
+            {{ include('fields.html.twig') }}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="height wide column">
+        {# infos top #}
+        {% if information.top|length > 0 %}
+          <div class="ui form blue segment">
+            <div class="field">
+              <label style="text-transform: uppercase;">
+                <span class="ui blue text">
+                  Informations
+                </span>
+              </label>
+              {% for key, item_top in information.top %}
+                  <p>
+                    {{ item_top.value }}
+                    {% if item_top.link != null %}
+                      <a href="{{ item_top.link }}"><i class="external alternate icon"></i></a>
+                    {% endif %}
+                  </p>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% for item in data.fields %}
+          {% if item.name == 'comment' %}
+            {{ include('fields.html.twig') }}
+          {% endif %}
+        {% endfor %}
+
+        {# infos bottom #}
+        {% if information.bottom|length > 0 %}
+          <div class="ui form blue segment">
+            <div class="field">
+              <label style="text-transform: uppercase;">
+                <span class="ui blue text">
+                  Informations
+                </span>
+              </label>
+              {% for key, item_bottom in information.bottom %}
+                <p>
+                  {{ item_bottom.value }}
+                  {% if item_bottom.link != null %}
+                    <a href="{{ item_bottom.link }}"><i class="external alternate icon"></i></a>
+                  {% endif %}
+                </p>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</form>
+
+{{ include('footer.html.twig') }}

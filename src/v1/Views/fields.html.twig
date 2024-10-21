@@ -1,0 +1,119 @@
+<div class="field">
+  {% if item.type != 'boolean' %}
+    <label>{{ item.title }}</label>
+  {% endif %}
+  {% if item.type == 'input' %}
+    <input type="text" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %} value="{{ item.value }}">
+  {% endif %}
+
+  {% if item.type == 'inputpassword' %}
+    <input type="password" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %} value="{{ item.value }}">
+  {% endif %}
+
+  {% if item.type == 'dropdown' %}
+    <div class="ui search selection dropdown">
+      <input type="hidden" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %} value="{{ item.value }}">
+      <i class="dropdown icon"></i>
+      <div class="default text">Select value...</div>
+      <div class="menu">
+        {% for key, val in item.values %}
+          <div class="item" data-value="{{ key }}">
+            {% if val.icon is defined %}
+              {% if val.icon != '' %}
+                <i class="{{ val.color }} {{ val.icon }} icon"></i>
+              {% endif %}
+            {% endif %}
+            {{ val.title }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if item.type == 'dropdown_remote' %}
+    {% if item.readonly is defined %}
+      {% if item.value > 0 %}
+        <div class="text">{{ item.valuename }}</div>
+      {% endif %}
+    {% else %}
+      <div
+        class="ui {% if item.multiple is defined %}multiple {% endif %}selection dropdown search remotedropdown"
+        data-url="{{ basePath }}/view/dropdown"
+        data-itemtype="{{ item.itemtype }}"
+      >
+        <input type="hidden" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %}  value="{{ item.value }}">
+        <i class="dropdown icon"></i>
+        {% if item.value == 0 or item.value == '' %}
+          <div class="default text">{{ translation.selectvalue }}</div>
+        {% elseif item.value > 0 %}
+          <div class="text">{{ item.valuename }}</div>
+        {% endif %}
+        <div class="menu">
+          {% if item.multiple is defined %}
+            {% if item.value != '' %}
+              {% for i in 0..item.value|split(',')|length %}
+                <div class="item" data-value="{{ item.value|split(',')[i] }}">{{ item.valuename|split(',')[i] }}</div>
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% if item.type == 'textarea' %}
+    <div id="editor{{ item.name }}">{{ item.value }}</div>
+    <textarea rows="3" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %}  style="display: none">{{ item.value }}</textarea>
+<script type="text/javascript">
+editor{{ item.name }} = new toastui.Editor({
+  el: document.querySelector('#editor{{ item.name }}'),
+  initialEditType: 'markdown',
+  previewStyle: 'vertical',
+  initialEditType: 'wysiwyg',
+  events: {
+    blur: () => {
+      document.querySelector(`textarea[name='{{ item.name }}']`).value = editor{{ item.name }}.getMarkdown();
+    },
+  },
+});
+</script>
+  {% endif %}
+
+  {% if item.type == 'boolean' %}
+    <div class="ui toggle checkbox">
+      <input type="hidden" name="{{ item.name }}" value="off">
+      <input type="checkbox" name="{{ item.name }}" {% if item.value %}checked{% endif %}>
+      <label>{{ item.title }}</label>
+    </div>
+
+    {# {% if item.readonly is defined %}
+      {% if item.value == 1 %}{{ translation.yes }}{% endif %}
+      {% if item.value == 0 %}{{ translation.no }}{% endif %}
+    {% else %}
+      <select name="{{ item.name }}">
+        <option {% if item.value == 1 %}selected="selected"{% endif %} value="1">{{ translation.yes }}</option>
+        <option {% if item.value == 0 %}selected="selected"{% endif %} value="0">{{ translation.no }}</option>
+      </select>
+    {% endif %} #}
+  {% endif %}
+
+  {% if item.type == 'date' %}
+    {% if item.readonly is defined %}
+      {{ item.value }}
+    {% else %}
+      <input type="date" name="{{ item.name }}" value="{{ item.value }}">
+    {% endif %}
+  {% endif %}
+
+  {% if item.type == 'email' %}
+    <input type="email" name="{{ item.name }}" {% if item.readonly is defined %}readonly="{{ item.readonly }}"{% endif %} value="{{ item.value }}">
+  {% endif %}
+
+  {% if item.type == 'datetime' %}
+    {% if item.readonly is defined %}
+      {{ item.value }}
+    {% else %}
+      <input type="text" name="{{ item.name }}" value="{{ item.value }}">
+    {% endif %}
+  {% endif %}
+</div>

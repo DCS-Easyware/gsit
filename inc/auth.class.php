@@ -290,36 +290,7 @@ class Auth extends CommonGLPI {
       }
    }
 
-   /**
-    * Check is a password match the stored hash
-    *
-    * @since 0.85
-    *
-    * @param string $pass Password (pain-text)
-    * @param string $hash Hash
-    *
-    * @return boolean
-    */
-   static function checkPassword($pass, $hash) {
 
-      $tmp = password_get_info($hash);
-
-      if (isset($tmp['algo']) && $tmp['algo']) {
-         $ok = password_verify($pass, $hash);
-
-      } else if (strlen($hash)==32) {
-         $ok = md5($pass) === $hash;
-
-      } else if (strlen($hash)==40) {
-         $ok = sha1($pass) === $hash;
-
-      } else {
-         $salt = substr($hash, 0, 8);
-         $ok = ($salt.sha1($salt.$pass) === $hash);
-      }
-
-      return $ok;
-   }
 
    /**
     * Is the hash stored need to be regenerated

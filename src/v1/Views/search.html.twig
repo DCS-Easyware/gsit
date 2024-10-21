@@ -1,0 +1,149 @@
+{{ include('header.html.twig') }}
+
+<div class="ui sticky" style="background-color: #ffffff">
+  <div style="height: 1px"></div>
+  <div class="ui blue dividing header">
+    <div style="display: flex; justify-content: space-between">
+      <div>
+        <i class="big {{ header.icon }} icon"></i>
+        <div class="content">
+          {{ header.title }}
+          <div class="sub header">{{ data.fields.paging.total }} items</div>
+        </div>
+      </div>
+      <span style="float: right;">
+        <a href="{{ header.route }}/new">
+          <button
+            class="ui primary button labeled icon floated"
+          >
+          <i class="plus icon"></i>Nouveau
+          </button>
+        </a>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="ui secondary segment">
+  <form class="ui form">
+    <div class="thread fields">
+      <div class="field">
+        <div class="ui selection dropdown searchfield" style="min-width: 220px;">
+          <input type="hidden" name="field">
+          <i class="dropdown icon"></i>
+          <div class="default text">Select a field to search</div>
+          <div class="scrollhint menu">
+            {% for field in data.definition %}
+              <div
+                class="item"
+                data-type="{{ field.type }}"
+                data-itemtype="{% if field.itemtype is defined %}{{ field.itemtype }}{% else %}''{% endif %}"
+                data-value="{{ field.id }}"
+              >{{ field.title }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <!-- Disable by default [input] -->
+        <div class="ui input" hidden id="search-input">
+          <input type="text" placeholder="value...">
+        </div>
+        <!-- Disable by default [dropdown remote] -->
+        <div
+          class="ui selection dropdown remotedropdown"
+          hidden
+          id="search-dropdown"
+          data-url="dropdown"
+          data-itemtype=""
+        >
+          <input type="hidden" placeholder="value...">
+          <div class="default text">my test dropdown</div>
+          <div class="menu">
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <button class="ui primary button" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<table class="ui fixed sortable celled striped small blue table">
+  <thead>
+    <th></th>
+    {% for title in data.fields.header %}
+      <th>{{ title }}</th>
+    {% endfor %}
+  </tr></thead>
+  <tbody>
+  {% for item in data.fields.data %}
+    <tr>
+      <td class="collapsing">
+        <div class="ui fitted mini toggle checkbox">
+          <input type="checkbox"> <label></label>
+        </div>
+      </td>
+      {% for value in item %}
+        {% if value.link is defined %}
+          <td><a href="{{ value.link }}">{{ value.value }}</a></td>
+        {% else %}
+          {% if value.value is iterable %}
+            <td class="left {% if value.value.color is defined %}
+                {{ value.value.color }}
+              {% endif %}
+              {% if value.value.displaystyle is defined %}
+                {{ value.value.displaystyle }}
+              {% endif %}"
+            >
+              {% if value.value.color is defined %}
+                <span class="ui {{ value.value.color }} text">
+                  {% if value.value.icon is defined %}
+                    <i class="{{ value.value.icon }} icon"></i>
+                  {% endif %}
+                  {{ value.value.title }}
+                </span>
+              {% else %}
+                  {{ value.value.title }}
+              {% endif %}
+            </td>
+          {% else %}
+            <td>{{ value.value }}</td>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr><th colspan="{{ data.fields|first|length + 1 }}">
+      <div class="ui right floated pagination menu">
+        <a class="icon item">
+          <i class="left chevron icon"></i>
+        </a>
+        {% for i in 1..data.fields.paging.pages %}
+          {% if i > (data.fields.paging.current - 2) and i < data.fields.paging.current %}  
+            <a href="{{ data.fields.paging.linkpage }}{{ i }}" class="item">{{ i }}</a>
+          {% endif %}
+          {% if i == data.fields.paging.current %}  
+            <a href="{{ data.fields.paging.linkpage }}{{ i }}" class="active item">{{ i }}</a>
+          {% endif %}
+          {% if i < (data.fields.paging.current + 2) and i > data.fields.paging.current %}  
+            <a href="{{ data.fields.paging.linkpage }}{{ i }}" class="item">{{ i }}</a>
+          {% endif %}
+          {% if i == (data.fields.paging.current + 2) %}  
+            <a class="item">...</a>
+          {% endif %}
+          {% if i == data.fields.paging.pages and i != data.fields.paging.current %}  
+            <a href="{{ data.fields.paging.linkpage }}{{ i }}" class="item">{{ i }}</a>
+          {% endif %}
+        {% endfor %}
+        <a class="icon item">
+          <i class="right chevron icon"></i>
+        </a>
+      </div>
+    </th>
+  </tr></tfoot>
+</table>
+{{ include('footer.html.twig') }}

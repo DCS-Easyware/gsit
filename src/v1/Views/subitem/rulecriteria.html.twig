@@ -1,0 +1,82 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+{% for criterium in data.criteria %}
+  <div class="ui form segment">
+    <form class="ui form">
+      <div class="three fields">
+        <div class="field">
+          <label>Criterium</label>
+            <div
+              class="ui selection dropdown search remotedropdown"
+              data-url="{{ base_path() }}/view/dropdown/rule/criteria"
+              data-itemtype="{{ data.model }}"
+            >
+              <input type="hidden" id="criteriaxx" name="{{ item.name }}" value="{{ item.value }}">
+              <i class="dropdown icon"></i>
+              {% if item.value == 0 or item.value == '' %}
+                <div class="default text">{{ translation.selectvalue }}</div>
+              {% elseif item.value > 0 %}
+                <div class="text">{{ item.valuename }}</div>
+              {% endif %}
+              <div class="menu">
+                {% if item.multiple is defined %}
+                  {% if item.value != '' %}
+                    {% for i in 0..item.value|split(',')|length %}
+                      <div class="item" data-value="{{ item.value|split(',')[i] }}">{{ item.valuename|split(',')[i] }}</div>
+                    {% endfor %}
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+        </div>
+        <div class="field">
+          <label>Condition</label>
+          <div
+            class="ui selection dropdown search remotedropdownrulecondition"
+            data-url="{{ base_path() }}/view/dropdown/rule/criteria/condition"
+            data-itemtype="{{ data.model }}"
+            data-criteria=""
+            id="conditiondiv"
+          >
+            <input type="hidden" id="operator" name="{{ item.name }}" value="{{ item.value }}">
+            <i class="dropdown icon"></i>
+            {% if item.value == 0 or item.value == '' %}
+              <div class="default text">{{ translation.selectvalue }}</div>
+            {% elseif item.value > 0 %}
+              <div class="text">{{ item.valuename }}</div>
+            {% endif %}
+            <div class="menu">
+              {% if item.multiple is defined %}
+                {% if item.value != '' %}
+                  {% for i in 0..item.value|split(',')|length %}
+                    <div class="item" data-value="{{ item.value|split(',')[i] }}">{{ item.valuename|split(',')[i] }}</div>
+                  {% endfor %}
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+
+
+
+          {# <input type="text" name="last-name" placeholder="Last Name" value="{{ criterium.condition }}"> #}
+        </div>
+        <div class="field">
+          <label>Pattern</label>
+          <input type="text" name="last-name" placeholder="Last Name" value="{{ criterium.pattern }}">
+        </div>
+      </div>
+      <button class="ui button" type="submit">Save</button>
+    </form>    
+  </div>
+{% endfor %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#criteriaxx').on("change", function() {
+      console.log('test1');
+      console.log($(this).val());
+      $('#conditiondiv').attr('data-criteria', $(this).val());
+    });
+  });
+</script>
+{{ include('footer.html.twig') }}

@@ -1,0 +1,27 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+<form method="post" class="ui form">
+  <button class="ui button right floated" type="submit">{{ translation.savebutton }}</button>
+  <div class="ui internally celled grid">
+    <div class="row">
+      <div class="height wide column">
+        {% for item in data.fields %}
+          {% if item.name != 'comment' %}
+            {{ include('fields.html.twig') }}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="height wide column">
+        Entreprise: {{ data.operatingsystem.wincompany }}<br>
+        Commentaires: {{ data.operatingsystem.oscomment }}<br>
+        HostID: {{ data.operatingsystem.hostid }}<br>
+        Propriétaire: {{ data.operatingsystem.winowner }}<br>
+        Date d'installation: {{ data.operatingsystem.installationdate }}<br>
+      </div>
+    </div>
+  </div>
+  <button class="ui button right floated" type="submit">{{ translation.savebutton }}</button>
+</form>
+
+{{ include('footer.html.twig') }}

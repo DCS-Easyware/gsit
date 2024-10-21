@@ -1,0 +1,27 @@
+{{ include('header.html.twig') }}
+{{ include('headerForm.html.twig') }}
+
+<div class="ui segment">
+Stats
+
+  <div class="ui connected feed">
+    {% for feed in data.feeds %}
+      <div class="event">
+        <div class="label">
+          <i class="{{ feed.icon }} {{ feed.color }} icon"></i>
+        </div>
+        <div class="content">
+          <div class="summary">
+            {{ feed.text }}
+            <div class="date">
+              {{ feed.date }}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  TODO to finish with SLA
+</div>
+
+{{ include('footer.html.twig') }}
