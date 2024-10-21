@@ -55,6 +55,18 @@ final class Login extends Common
       ->where('is_active', true)
       ->where('auth_id', 0)
       ->first();
+    if (!is_null($user))
+    {
+      // check passwords
+      $check = $token->checkPassword($data->password, $user->password);
+      if (!$check)
+      {
+        throw new \Exception('Login or password error', 401);
+      }
+      $this->authOkAndRedirect($user);
+      exit;
+    }
+
     if (is_null($user))
     {
       // Search in LDAP
